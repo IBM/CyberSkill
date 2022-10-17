@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!DOCTYPE project>
+<project name="Challenges" default="main" basedir=".">
+	<description>
+		Cyber Awareness Platform (CAP)
+	</description>
+	
+	<!-- Sets variables which can later be used. -->
+	<!-- The value of a property is accessed via ${} -->
+	
+	<!-- Path to the tomcat libs for building.
+		 This should be set to the tomcat libs folder on the hudson box.
+		 
+		 DO NOT CHANGE THIS EVER TO YOUR LOCAL PATH FOR DEVELOPING ON YOUR
+		 LOCAL MACHINE, USE ECLIPSE FOR DEV / DEBUGGING!!!
+	-->
+	<property name="tomcatlibs.dir" value="/usr/share/tomcat9/lib" />
+	<property name="war.name" value="${ant.project.name}" />
+	
+	<path id="classpath">
+		<!-- include the tomcat runtime libs -->
+		<fileset dir="${tomcatlibs.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	
+		<!-- include the web application libs -->
+		<fileset dir="WebContent/WEB-INF/lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<!-- Cleans build and dist directories -->
+	<target name="clean">
+		<delete dir="build" />
+		<delete dir="dist" />
+		<echo message="Project cleaned" />
+	</target>
+	
+	<!-- Bundles contents of docs and regenerates the javadoc -->
+	<target name="docs">
+		<!-- Update the javadoc -->
+		<delete dir="docs/javadoc" />
+		<javadoc destdir="docs/javadoc" classpathref="classpath">
+			<fileset dir="." defaultexcludes="yes">
+				<include name="src/**" />
+				<include name="test/**" />
+				<exclude name="src/**/*.properties" />
+				<exclude name="src/**/*.xml" />
+			</fileset>
+		</javadoc>
+		
+		<!-- Bundle the documentation up in a zip in dist/ -->
+		<zip destfile="dist/docs.zip" basedir="docs" />
+	</target>
+	
+	<!-- Compiles the java code -->
+	<target name="compile_source" depends="clean">
+		<mkdir dir="build/classes" />
+		<copy includeemptydirs="false" todir="build/classes">
+			<fileset dir="src">
+				<exclude name="**/*.launch"/>
+				<exclude name="**/*.java"/>
+				<exclude name="logback-test.xml"/>
+			</fileset>
+		</copy>
+		<javac srcdir="src" destdir="build/classes" classpathref="classpath" includeantruntime="false">
+		</javac>
+	</target>
+	
+	<!-- Compiles the JUnit tests.
+	     You will need the junit4 jar (incorporating Hamcrest) in
+		 WebContent/WEB-INF/lib in order to run this task
+	-->
+	<target name="compile_tests" depends="compile_source">
+		<mkdir dir="build/classes" />
+		<copy includeemptydirs="false" todir="build/classes">
+			<fileset dir="test">
+				<exclude name="**/*.launch"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+		<javac srcdir="test" destdir="build/classes" classpathref="classpath" includeantruntime="false">
+		</javac>
+	</target>
+	
+	<!-- Runs the JUnit tests.
+		 You will need the junit4 jar (incorporating Hamcrest) in
+	     WebContent/WEB-INF/lib in order to run this task
+	-->
+	<target name="junit" depends="compile_tests">
+		<junit printsummary="on" fork="true" haltonfailure="no">
+			<classpath>
+				<path refid="classpath" />
+				<!-- include the compiled classes on the classpath -->
+				<pathelement location="build/classes" />
+			</classpath>
+			<formatter type="plain" usefile="false" />
+			<batchtest>
+				<fileset dir="test" />
+			</batchtest>
+		</junit>
+	</target>
+	
+	<!-- Creates the deployable war file -->
+	<target name="war" depends="compile_source">
+		<war destfile="dist/${war.name}.war" webxml="WebContent/WEB-INF/web.xml" manifest="WebContent/META-INF/MANIFEST.MF" update="true">
+			<classes dir="build/classes"/>
+			<fileset dir="WebContent">
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="META-INF/MANIFEST.MF" />
+			</fileset>
+		</war>
+	</target>
+	
+	<target name="main" depends="war">
+		<description>Main target</description>
+		<echo message="war generated at dist/${war.name}.war" />
+	</target>
+</project>
