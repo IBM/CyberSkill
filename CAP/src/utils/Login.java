@@ -182,13 +182,13 @@ public class Login extends HttpServlet
 				login = (String) request.getParameter("login").toLowerCase();
 				logger.debug("login Submitted: " + login + " IP: " + ipAddress);
 			}
-			if(request.getParameter("pwd") == null)
+			if(request.getParameter("password") == null)
 			{
 				logger.error("Offense ID: 11 - Login Submitting Wrong password - Login Abuse Could not find submitted password. Submitter IP: " + ipAddress);
 			}
 			else
 			{
-				password = (String) request.getParameter("pwd");
+				password = (String) request.getParameter("password");
 				if(password.isEmpty())
 				{
 					logger.error("Offense ID: 16 - Login Submitting blank email - Login Abuse Blank Password Submitted.  Submitter IP: " + ipAddress);

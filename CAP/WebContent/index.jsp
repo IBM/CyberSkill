@@ -78,24 +78,45 @@ if (request.getSession() != null)
 
 %>
 
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-	<title>Cyber Awareness Platform (CAP)</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="css/global.css" rel="stylesheet" type="text/css" media="screen" />
-	<link href="css/theResponsiveCss.css" rel="stylesheet" type="text/css" media="screen">
+<title>Cyber Awareness Platform</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/beta/w3.css">
+<link rel="stylesheet" href="css/beta/overRides.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+
+</style>
 </head>
 <body>
-	<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
-		<div class="index-contain"> 
-		<header>
-			<h1><span>Login to</span> CAP</h1>
-			<form name="loginForm" method="POST" action="Login">
-				<input type="text" class="text-input" name="login" value="" placeholder="Username / Email" autocomplete="OFF" autofocus />
-				<input type="password" class="text-input" name="pwd" placeholder="Password" autocomplete="OFF" />
-				<input type="submit" class="submit" name="loginButton" value="Sign In" />
-				<%
+
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+    CAP
+  </div>
+  <div class="w3-display-middle">
+    <h1 class="w3-jumbo w3-animate-top">Cyber Awareness Platform</h1>
+    <hr class="w3-border-grey" style="margin:auto;width:40%">
+    <p class="w3-large w3-center">
+    
+    		<div>
+			  <form method="POST"  action="Login">
+			    <label for="login">login</label>
+			    <input type="text" id="login" name="login" placeholder="Your name">
+			
+			    <label for="password">Last Name</label>
+			    <input type="text" id="password" name="password" placeholder="Your password">
+			
+			    <label for="faction">Faction</label>
+			    <select id="faction" name="faction">
+			      <option value="unknown">unknown</option>
+			      <option value="open">open</option>
+			      <option value="private">private</option>
+			    </select>
+			  	<%
 					if(errors)
 					{
 						%>
@@ -103,11 +124,18 @@ if (request.getSession() != null)
 						<%
 					}
 				%>
-			</form>
-			
-		</header>
-		<footer onclick="window.location.href = 'https://www.youtube.com/watch?v=2Q_ZzBGPdqE';">Problems? Click here to access the support forum</footer>
-		</div>
-	
+			    <input type="submit" value="Submit">
+			  </form>
+			</div>
+    </p>
+  </div>
+  <div class="w3-display-bottomleft w3-padding-large">
+    Powered by <a href="" target="_blank">OpenSource</a>
+  </div>
+</div>
+
 </body>
 </html>
+
+
+
