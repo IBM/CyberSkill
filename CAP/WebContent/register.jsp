@@ -95,45 +95,42 @@ if (request.getSession() != null)
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
   <div class="w3-display-topleft w3-padding-large w3-xlarge">
-    CAP
-  </div>
-   <div class="w3-display-topright w3-padding-large w3-xlarge">
-    <a href="register.jsp">REGISTER</a>
+   <a href="index.jsp">LOGIN</a>
   </div>
   <div class="w3-display-middle">
     <h1 class="w3-jumbo w3-animate-top">Cyber Awareness Platform</h1>
     <hr class="w3-border-grey" style="margin:auto;width:40%">
     <p class="w3-large w3-center">
-    
-    		<div>
-			  <form method="POST"  action="Login">
-			    <label for="login">Email</label>
-			    <input type="text" id="login" name="login" placeholder="Your name">
-			
-			    <label for="password">Password</label>
-			    <p></p>
-			    <input type="password" id="password" name="password" placeholder="Your password">
-			<p></p>
-			    <label for="faction">Faction</label>
-			    <select id="faction" name="faction">
-			      <option value="unknown">unknown</option>
-			      <option value="open">open</option>
-			      <option value="private">private</option>
-			    </select>
-			  	<%
-					if(errors)
+  <div>
+  <section class="banner">
+			<article class="signup">
+				<%
+					Properties siteProperties = PropertiesReader.readSiteProperties();
+					String authType = siteProperties.getProperty("authentication");
+					String localAuthenticationProperty = new String("local");
+					if(authType.equalsIgnoreCase(localAuthenticationProperty))
 					{
-						%>
-						<br><%=errorCode%>
-						<%
-					}
 				%>
-			    <input type="submit" value="Submit">
-			  </form>
-			</div>
-    </p>
-    
-  </div>
+				<h1>Sign Up</h1>
+				<p>It's Free</p>
+				
+				<form name="signupForm" method="POST" action="register">					
+					<input class="su-text-input" type="text" name="userAddress" id="userAddress" autocomplete="OFF" placeholder="Email Address"/>
+					<input class="su-text-input" type="password" name="passWord" id="passWord" autocomplete="OFF" placeholder="Password"/>
+					<input class="su-text-input" type="password" name="passWordConfirm" id="passWordConfirm" autocomplete="OFF" placeholder="Confirm Password"/>
+					<input type="submit" name="submit" value="Sign up!" />
+					<%
+						if(registererrors)
+						{
+							%>
+							<br><%=registererrorCode%>
+							<%
+						}
+					%>
+				</form>
+				<% } %>
+			</article>
+		</section></div>
   <div class="w3-display-bottomleft w3-padding-large">
     Powered by <a href="" target="_blank">OpenSource</a>
   </div>
