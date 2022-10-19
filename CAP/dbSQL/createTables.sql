@@ -9,6 +9,7 @@
 -- createdb -T template0 -E UTF8 CAP
 CREATE DATABASE "CAP" TEMPLATE template0 ENCODING UTF8;
 CREATE USER capuser;
+ALTER USER capuser WITH PASSWORD 'password';
 
 DROP TABLE if exists claimed CASCADE;
 
@@ -130,5 +131,5 @@ ALTER TABLE users
 INSERT INTO users (username, password, comporganization, employeeid, email, admin)  VALUES ('admin@test.com', 'ce36f6bf7f87caf5135e817761084f6d421e350020de966ed89bb651fd1b33ac', 'admin@test.com', 'admin@test.com', 'admin@test.com', true);
 -- Username: test@test.com
 -- Password: password
---INSERT INTO users (username, password, comporganization, employeeid, email, admin)  VALUES ('test@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test@test.com', 'test@test.com', 'test@test.com', false);
+INSERT INTO users (username, password, comporganization, employeeid, email, admin)  VALUES ('test@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test@test.com', 'test@test.com', 'test@test.com', false);
 
