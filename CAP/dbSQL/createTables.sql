@@ -109,6 +109,8 @@ CREATE TABLE users
 (
   userid integer,
   id serial NOT NULL,
+  firstname character varying(250),
+  lastname character varying(250),
   username character varying(400),
   password character varying(512),
   compOrganization character varying(128),
@@ -117,6 +119,7 @@ CREATE TABLE users
   admin boolean default false,
   faction character varying(128),
   geo character varying(400),
+  active boolean default false,
   CONSTRAINT users_pkey PRIMARY KEY (id)
 )
 WITH (
@@ -128,8 +131,8 @@ ALTER TABLE users
 
 -- Username: admin@test.com
 -- Password: passw0rd!  
-INSERT INTO users (username, password, comporganization, employeeid, email, admin)  VALUES ('admin@test.com', 'ce36f6bf7f87caf5135e817761084f6d421e350020de966ed89bb651fd1b33ac', 'admin@test.com', 'admin@test.com', 'admin@test.com', true);
+INSERT INTO users (username, password, comporganization, employeeid, email, admin,active)  VALUES ('admin@test.com', 'ce36f6bf7f87caf5135e817761084f6d421e350020de966ed89bb651fd1b33ac', 'admin@test.com', 'admin@test.com', 'admin@test.com', true,true);
 -- Username: test@test.com
 -- Password: password
-INSERT INTO users (username, password, comporganization, employeeid, email, admin)  VALUES ('test@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test@test.com', 'test@test.com', 'test@test.com', false);
+INSERT INTO users (firstname,lastname,username, password, comporganization, employeeid, email, admin,active)  VALUES ('test@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test@test.com', 'test@test.com', 'test@test.com', false,false);
 

@@ -106,7 +106,7 @@ public class Login extends HttpServlet
 		Database db = new Database();
 		Connection con = db.getConnection();
 		logger.debug("Executing Login Query");
-		PreparedStatement ps = con.prepareStatement("SELECT email FROM users WHERE email = ? AND password = ?");
+		PreparedStatement ps = con.prepareStatement("SELECT email FROM users WHERE email = ? AND password = ? AND active is true");
 		ps.setString(1, username.toLowerCase());
 		ps.setString(2, password);
 		ResultSet rs = ps.executeQuery();

@@ -82,6 +82,8 @@ public class Register extends HttpServlet
 	{
 		boolean validData = false;
 		boolean authenticated = false;
+		String firstname = new String();
+		String lastname = new String();
 		String login = new String(); //Could be username or email
 		String password = new String();
 		//Auth Type Detection Params
@@ -98,6 +100,40 @@ public class Register extends HttpServlet
 		error = "";
 		try 	
 		{
+			if (request.getParameter("firstName") == null)
+			{
+				logger.error("Error 1.2.UDIW There has been an error with the user registering their data. Firstname is blank");
+			}
+			else
+			{
+				firstname = (String) request.getParameter("firstName");
+				if (firstname.isEmpty())
+				{
+					logger.error("Error 1.2.UDIF There has been an error with the user registering their data. Firstname is blank");
+				}
+				else
+				
+					logger.debug("Firstname Submitted");
+				
+				
+				
+			}
+			if (request.getParameter("lastName") == null)
+			{
+				logger.error("Error 1.2.UDIL There has been an error with the user registering their data. Lastname is blank");
+			}
+			else
+			{
+				lastname = (String) request.getParameter("lastName");
+				if (lastname.isEmpty())
+				{
+					logger.error("Error 1.2.UDIL There has been an error with the user registering their data. Lastname is blank");
+				}
+				else
+				
+					logger.debug("Last Name Submitted");
+				
+			}
 			if (request.getParameter("userAddress") == null)
 			{
 				logger.error("Offense ID: 12 - Register Submitting wrong username - Register Abuse. Could not find submitted userAddress. Submitter IP Address: " + ipAddress);
@@ -131,13 +167,14 @@ public class Register extends HttpServlet
 				else
 					logger.debug("Password Submitted");
 			}
+		
 		}
 		catch (Exception e)
 		{
 			logger.debug("Username or Password was blank");
 			error="6";
 		}
-		validData = (!login.isEmpty() && !password.isEmpty() && error == "");
+		validData = (!firstname.isEmpty() && !lastname.isEmpty() && !login.isEmpty() && !password.isEmpty() && error == "");
         
 		if(validData)
 		{
@@ -148,13 +185,14 @@ public class Register extends HttpServlet
 				{
 					if(!UserFunctions.userEmailExists(login)) //Check if the user has an entry in our local DB
 					{
-						UserFunctions.createUser(login, hashAndSaltPass(password), login, login, login);
+						UserFunctions.createUser(firstname,lastname,login, hashAndSaltPass(password), login, login, login);
 						authenticated = true; //Not Authenticated, just lazy to rename
 					}
 					else
 					{
 						logger.debug("Email address already registered");
 						error="13";
+						authenticated = true;
 						//TODO - Failed Local Auth Error
 					}
 				}
@@ -175,25 +213,12 @@ public class Register extends HttpServlet
 		}
 		if(!authenticated)
 		{
-			String nextJSP = "index.jsp?registererror="+error;
-			response.sendRedirect(nextJSP);
+			response.sendRedirect("registered.jsp");
 		}
 		else 
 		{
-			//Create Session
-			HttpSession ses = request.getSession(true);
-		    ses.invalidate();
-			ses = request.getSession(true);
-			//TODO - Remove userName / userPk references and uniform to login
-			ses.setAttribute("userName", login.toLowerCase()); //login
-			ses.setAttribute("userPk", login.toLowerCase()); //also Login
-			ses.setAttribute("login", login.toLowerCase()); //also Login
-			if(	checkIfGlobalScoreboardIsNeeded(siteProperties) ) {
-				ses.setAttribute("globalLeaderboards","true");
-			} else {
-				ses.setAttribute("globalLeaderboards","false");
-			}
-			response.sendRedirect("dashboard.jsp");
+			String nextJSP = "index.jsp?registererror="+error;
+			response.sendRedirect(nextJSP);
 		}
 	}
 

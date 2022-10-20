@@ -71,7 +71,7 @@ if (request.getSession() != null)
 	HttpSession ses = request.getSession();
 	if(SessionValidator.validate(ses))
 	{
-		response.sendRedirect("dashboard.jsp");
+		response.sendRedirect("index.jsp");
 	}
 }
 
@@ -114,9 +114,11 @@ if (request.getSession() != null)
 				<h1>Sign Up</h1>
 				<p>It's Free</p>
 				
-				<form name="signupForm" method="POST" action="register">					
+				<form name="signupForm" method="POST" action="register">
+					<input class="su-text-input" type="text" name="firstName" id="firstName" autocomplete="OFF" placeholder="First Name"/>
+					<input class="su-text-input" type="text" name="lastName" id="lastName" autocomplete="OFF" placeholder="Last Name"/>					
 					<input class="su-text-input" type="text" name="userAddress" id="userAddress" autocomplete="OFF" placeholder="Email Address"/>
-					<input class="su-text-input" type="password" name="passWord" id="passWord" autocomplete="OFF" placeholder="Password"/>
+					<input class="su-text-input" type="passWord" name="passWord" id="passWord" autocomplete="OFF" placeholder="Password"/>
 					<input class="su-text-input" type="password" name="passWordConfirm" id="passWordConfirm" autocomplete="OFF" placeholder="Confirm Password"/>
 					<input type="submit" name="submit" value="Sign up!" />
 					<%
