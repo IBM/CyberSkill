@@ -1,15 +1,4 @@
--- Table: claimed
-
--- Create a database named CAP before running this script
--- Create user  capuser
---
--- Commands:
---
--- dropdb CAP
--- createdb -T template0 -E UTF8 CAP
-CREATE DATABASE "CAP" TEMPLATE template0 ENCODING UTF8;
-CREATE USER capuser;
-ALTER USER capuser WITH PASSWORD 'password';
+select * from users
 
 DROP TABLE if exists claimed CASCADE;
 
@@ -109,15 +98,15 @@ CREATE TABLE users
 (
   userid integer,
   id serial NOT NULL,
-  firstname character varying(250),
-  lastname character varying(250),
-  username character varying(400),
-  password character varying(512),
-  compOrganization character varying(128),
-  employeeId character varying(128),
-  email character varying(128),
+  firstname character varying(250) NOT NULL,
+  lastname character varying(250) NOT NULL,
+  username character varying(400) NOT NULL,
+  password character varying(512) NOT NULL,
+  compOrganization character varying(128) NOT NULL,
+  employeeId character varying(128) NOT NULL,
+  email character varying(128) NOT NULL,
   admin boolean default false,
-  faction character varying(128),
+  faction character varying(128)NOT NULL,
   geo character varying(400),
   active boolean default false,
   CONSTRAINT users_pkey PRIMARY KEY (id)
@@ -131,8 +120,8 @@ ALTER TABLE users
 
 -- Username: admin@test.com
 -- Password: passw0rd!  
-INSERT INTO users (username, password, comporganization, employeeid, email, admin,active)  VALUES ('admin@test.com', 'ce36f6bf7f87caf5135e817761084f6d421e350020de966ed89bb651fd1b33ac', 'admin@test.com', 'admin@test.com', 'admin@test.com', true,true);
+INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active)  VALUES ('ad','min','adminators','admin@test.com', 'ce36f6bf7f87caf5135e817761084f6d421e350020de966ed89bb651fd1b33ac', 'admin@test.com', 'admin@test.com', 'admin@test.com', true,true);
 -- Username: test@test.com
 -- Password: password
-INSERT INTO users (firstname,lastname,username, password, comporganization, employeeid, email, admin,active)  VALUES ('test@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test@test.com', 'test@test.com', 'test@test.com', false,false);
+INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active)  VALUES ('test','testy','testers','test@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test@test.com', 'test@test.com', 'test@test.com', false,false);
 

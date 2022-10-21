@@ -31,6 +31,7 @@ else
 	if(error.compareTo("11")==0){errorCode="We could not retrieve your Serial Number: you dont have one";}
 	if(error.compareTo("12")==0){errorCode="Invalid e-mail address";}
 	if(error.compareTo("13")==0){errorCode="Email address already registered";}
+	if(error.compareTo("14")==0){errorCode="Account not activated";}
 	
 	String originalUri = (String)request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
 	logger.error("Index error: "+errorCode+ " for page: " + originalUri+" Submitter IP: " + request.getHeader("X-FORWARDED-FOR") + " Submitter IP no proxy: " + request.getRemoteAddr());
@@ -108,7 +109,7 @@ if (request.getSession() != null)
     		<div>
 			  <form method="POST"  action="Login">
 			    <label for="login">Email</label>
-			    <input type="text" id="login" name="login" placeholder="Your name">
+			    <input type="text" id="login" name="login" placeholder="Your email">
 			
 			    <label for="password">Password</label>
 			    <p></p>

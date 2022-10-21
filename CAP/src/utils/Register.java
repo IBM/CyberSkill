@@ -84,6 +84,7 @@ public class Register extends HttpServlet
 		boolean authenticated = false;
 		String firstname = new String();
 		String lastname = new String();
+		String faction = new String();
 		String login = new String(); //Could be username or email
 		String password = new String();
 		//Auth Type Detection Params
@@ -134,6 +135,25 @@ public class Register extends HttpServlet
 					logger.debug("Last Name Submitted");
 				
 			}
+
+			if (request.getParameter("faction") == null)
+			{
+				logger.error("Error 1.2.UDIFA There has been an error with the user registering their data. Faction is blank");
+			}
+			else
+			{
+				faction = (String) request.getParameter("firstName");
+				if (faction.isEmpty())
+				{
+					logger.error("Error 1.2.UDIFA There has been an error with the user registering their data. Faction is blank");
+				}
+				else
+				
+					logger.debug("Faction Submitted");
+				
+				
+				
+			}
 			if (request.getParameter("userAddress") == null)
 			{
 				logger.error("Offense ID: 12 - Register Submitting wrong username - Register Abuse. Could not find submitted userAddress. Submitter IP Address: " + ipAddress);
@@ -174,7 +194,7 @@ public class Register extends HttpServlet
 			logger.debug("Username or Password was blank");
 			error="6";
 		}
-		validData = (!firstname.isEmpty() && !lastname.isEmpty() && !login.isEmpty() && !password.isEmpty() && error == "");
+		validData = (!firstname.isEmpty() && !lastname.isEmpty() && !faction.isEmpty() && !login.isEmpty() && !password.isEmpty() && error == "");
         
 		if(validData)
 		{
@@ -185,7 +205,7 @@ public class Register extends HttpServlet
 				{
 					if(!UserFunctions.userEmailExists(login)) //Check if the user has an entry in our local DB
 					{
-						UserFunctions.createUser(firstname,lastname,login, hashAndSaltPass(password), login, login, login);
+						UserFunctions.createUser(firstname,lastname,faction,login, hashAndSaltPass(password), login, login, login);
 						authenticated = true; //Not Authenticated, just lazy to rename
 					}
 					else

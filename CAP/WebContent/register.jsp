@@ -116,7 +116,8 @@ if (request.getSession() != null)
 				
 				<form name="signupForm" method="POST" action="register">
 					<input class="su-text-input" type="text" name="firstName" id="firstName" autocomplete="OFF" placeholder="First Name"/>
-					<input class="su-text-input" type="text" name="lastName" id="lastName" autocomplete="OFF" placeholder="Last Name"/>					
+					<input class="su-text-input" type="text" name="lastName" id="lastName" autocomplete="OFF" placeholder="Last Name"/>	
+					<input class="su-text-input" type="text" name="faction" id="faction" autocomplete="OFF" placeholder="Faction"/>					
 					<input class="su-text-input" type="text" name="userAddress" id="userAddress" autocomplete="OFF" placeholder="Email Address"/>
 					<input class="su-text-input" type="passWord" name="passWord" id="passWord" autocomplete="OFF" placeholder="Password"/>
 					<input class="su-text-input" type="password" name="passWordConfirm" id="passWordConfirm" autocomplete="OFF" placeholder="Confirm Password"/>

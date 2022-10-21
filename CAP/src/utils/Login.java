@@ -219,7 +219,7 @@ public class Login extends HttpServlet
 					else
 					{
 						logger.debug("Local Authentication Failed");
-						error="7";
+						error="14";
 						//TODO - Failed Local Auth Error
 					}
 				}

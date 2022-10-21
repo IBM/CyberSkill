@@ -25,22 +25,23 @@ public class UserFunctions
 	 * @return True if ran without error
 	 * @throws SQLException
 	 */
-	public static boolean createUser (String firstname, String lastname, String username, String hashedPass, String email, String employeeId, String compOrganization) throws SQLException
+	public static boolean createUser (String firstname, String lastname, String faction,String username, String hashedPass, String email, String employeeId, String compOrganization) throws SQLException
 	{
 		boolean result = false;
 		logger.debug("Connecting to DB");
 		Database db = new Database();
 		Connection con = db.getConnection();
 		logger.debug("Executing Create User Statement");
-		PreparedStatement ps = con.prepareStatement("INSERT INTO users (firstname, lastname, username, password, email, employeeId, compOrganization, active) VALUES (?,?,?, ?, ?, ?, ?,?)");
+		PreparedStatement ps = con.prepareStatement("INSERT INTO users (firstname, lastname, faction,username, password, email, employeeId, compOrganization, active) VALUES (?,?,?,?, ?, ?, ?, ?,?)");
 		ps.setString(1, firstname.toLowerCase());
 		ps.setString(2, lastname.toLowerCase());
-		ps.setString(3, username.toLowerCase());
-		ps.setString(4, hashedPass);
-		ps.setString(5, email.toLowerCase());
-		ps.setString(6, employeeId);
-		ps.setString(7, compOrganization);
-		ps.setBoolean(8, false);
+		ps.setString(3, faction.toLowerCase());
+		ps.setString(4, username.toLowerCase());
+		ps.setString(5, hashedPass);
+		ps.setString(6, email.toLowerCase());
+		ps.setString(7, employeeId);
+		ps.setString(8, compOrganization);
+		ps.setBoolean(9, false);
 		ps.execute();
 		result = true;
 		logger.debug("Successfully Created User in Local DB");
