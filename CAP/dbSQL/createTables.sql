@@ -108,6 +108,7 @@ CREATE TABLE users
   admin boolean default false,
   faction character varying(128)NOT NULL,
   geo character varying(400),
+  status character varying(400),
   active boolean default false,
   CONSTRAINT users_pkey PRIMARY KEY (id)
 )

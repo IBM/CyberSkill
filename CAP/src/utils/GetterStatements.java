@@ -13,6 +13,8 @@ public class GetterStatements
 	public static String get_all_scores_in_a_faction_by_username = "select sum(scoreboard_breakdown.score), users.faction, users.username from users, scoreboard_breakdown where scoreboard_breakdown.username = users.username and faction = (select users.faction from users where users.username = ?) group by users.username, users.faction";
 	
 	public static String get_all_scores_aggregated_by_faction = "Select users.faction, SUM(scoreboard_breakdown.score) from users, scoreboard_breakdown  where scoreboard_breakdown.username = users.username group by users.faction";
-
+	
+	public static String get_all_factions = "select faction from users";
+	
 	
 }

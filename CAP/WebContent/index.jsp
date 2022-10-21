@@ -88,6 +88,7 @@ if (request.getSession() != null)
 <link rel="stylesheet" href="css/beta/w3.css">
 <link rel="stylesheet" href="css/beta/overRides.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+
 <style>
 
 </style>
@@ -109,7 +110,7 @@ if (request.getSession() != null)
     		<div>
 			  <form method="POST"  action="Login">
 			    <label for="login">Email</label>
-			    <input type="text" id="login" name="login" placeholder="Your email">
+			    <input type="text" id="login" name="login" placeholder="Your name">
 			
 			    <label for="password">Password</label>
 			    <p></p>
@@ -117,6 +118,7 @@ if (request.getSession() != null)
 			<p></p>
 			    <label for="faction">Faction</label>
 			    <select id="faction" name="faction">
+			    <option selected=true disabled>Select a Faction</option>
 			      <option value="unknown">unknown</option>
 			      <option value="open">open</option>
 			      <option value="private">private</option>

@@ -1148,6 +1148,34 @@ public class Api
 		return json;
 	}
 	
+	//New API work
+	/**********************************************/
+	public ArrayList<String[]> getAllFactions()
+	{
+		ArrayList<String[]> factions = new ArrayList<String[]>();
+		Connection connection = null;
+		try 
+		{
+			Database db = new Database();
+			connection = db.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(GetterStatements.get_all_factions);
+			ResultSet results = preparedStatement.executeQuery();
+			
+			while(results.next())
+			{	
+				String[] result = new String[25];
+				result[0] = results.getString("faction");
+				factions.add(result);
+			}
+
+		}
+		catch(Exception e)
+		{
+			logger.error("getAllFactions: " + e.toString());
+		}
+
+		return factions;
+	}
 
 }
 

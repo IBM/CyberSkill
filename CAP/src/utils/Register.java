@@ -85,6 +85,8 @@ public class Register extends HttpServlet
 		String firstname = new String();
 		String lastname = new String();
 		String faction = new String();
+		String institution = new String();
+		String status = new String();
 		String login = new String(); //Could be username or email
 		String password = new String();
 		//Auth Type Detection Params
@@ -142,7 +144,7 @@ public class Register extends HttpServlet
 			}
 			else
 			{
-				faction = (String) request.getParameter("firstName");
+				faction = (String) request.getParameter("faction");
 				if (faction.isEmpty())
 				{
 					logger.error("Error 1.2.UDIFA There has been an error with the user registering their data. Faction is blank");
@@ -150,6 +152,42 @@ public class Register extends HttpServlet
 				else
 				
 					logger.debug("Faction Submitted");
+				
+				
+				
+			}
+			if (request.getParameter("institution") == null)
+			{
+				logger.error("Error 1.2.UDII There has been an error with the user registering their data. Institution is blank");
+			}
+			else
+			{
+				institution = (String) request.getParameter("institution");
+				if (institution.isEmpty())
+				{
+					logger.error("Error 1.2.UDII There has been an error with the user registering their data. Institution is blank");
+				}
+				else
+				
+					logger.debug("Institution Submitted");
+				
+				
+				
+			}
+			if (request.getParameter("status") == null)
+			{
+				logger.error("Error 1.2.UDIS There has been an error with the user registering their data. Status is blank");
+			}
+			else
+			{
+				status = (String) request.getParameter("status");
+				if (status.isEmpty())
+				{
+					logger.error("Error 1.2.UDIS There has been an error with the user registering their data. Status is blank");
+				}
+				else
+				
+					logger.debug("Status Submitted");
 				
 				
 				
@@ -194,7 +232,7 @@ public class Register extends HttpServlet
 			logger.debug("Username or Password was blank");
 			error="6";
 		}
-		validData = (!firstname.isEmpty() && !lastname.isEmpty() && !faction.isEmpty() && !login.isEmpty() && !password.isEmpty() && error == "");
+		validData = (!firstname.isEmpty() && !lastname.isEmpty() && !faction.isEmpty() && !institution.isEmpty() && !status.isEmpty() && !login.isEmpty() && !password.isEmpty() && error == "");
         
 		if(validData)
 		{
@@ -205,7 +243,7 @@ public class Register extends HttpServlet
 				{
 					if(!UserFunctions.userEmailExists(login)) //Check if the user has an entry in our local DB
 					{
-						UserFunctions.createUser(firstname,lastname,faction,login, hashAndSaltPass(password), login, login, login);
+						UserFunctions.createUser(firstname,lastname,faction,institution, status, login, hashAndSaltPass(password), login, login);
 						authenticated = true; //Not Authenticated, just lazy to rename
 					}
 					else
@@ -231,7 +269,7 @@ public class Register extends HttpServlet
 				error="9";
 			}
 		}
-		if(!authenticated)
+		if(!authenticated && error==null)
 		{
 			response.sendRedirect("registered.jsp");
 		}
