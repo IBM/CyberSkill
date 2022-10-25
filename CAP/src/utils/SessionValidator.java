@@ -18,11 +18,11 @@ public class SessionValidator {
 		if (ses == null) {
 			logger.debug("No Session Found");
 		} else {
-			if (ses.getAttribute("userName") != null) {
-				logger.debug("User + " + ses.getAttribute("userName").toString() + " detected");
+			if (ses.getAttribute("JWT") != null) {
+				logger.debug("JWT + " + ses.getAttribute("JWT").toString() + " detected");
 				result = true;
 			} else {
-				logger.debug("Session has no credentials");
+				logger.debug("Session has no JWT credentials");
 			}
 		}
 		return result;

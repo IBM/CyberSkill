@@ -20,6 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +104,7 @@ public class Login extends HttpServlet
 	 * @return Boolean representing successful auth or not
 	 * @throws SQLException DB Layer Failure
 	 */
-	private static boolean localAuthentication (String username, String password) throws SQLException
+	private static String localAuthentication (String username, String password) throws SQLException
 	{
 		boolean result = false;
 		password = hashAndSaltPass(password);
@@ -106,13 +112,45 @@ public class Login extends HttpServlet
 		Database db = new Database();
 		Connection con = db.getConnection();
 		logger.debug("Executing Login Query");
-		PreparedStatement ps = con.prepareStatement("SELECT email FROM users WHERE email = ? AND password = ? AND active is true");
+		PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE email = ? AND password = ? AND active is true");
 		ps.setString(1, username.toLowerCase());
 		ps.setString(2, password);
 		ResultSet rs = ps.executeQuery();
+		String id = "";
+		String firstname = "";
+		String lastname = "";
+		String comporganization ="";
+		String employeeid = "";
+		String email = "";
+		String admin = "";
+		String faction = "";
+		String geo = "";
+		String status = "";
+		
+		String issuer = "honeyn3t";
+		String subject = "honey3t_jwt_subject";
+		
+		String JWTResponse= "void";
+		
 		if(rs.next())
 		{
 			logger.debug("Successful Local Authentication");
+			
+			id = rs.getString("id");
+			firstname = rs.getString("firstname");
+			lastname = rs.getString("lastname");
+			comporganization = rs.getString("comporganization");
+			employeeid = rs.getString("employeeid");
+			email = rs.getString("email");
+			admin = rs.getString("admin");
+			faction = rs.getString("faction");
+			geo = rs.getString("geo");
+			status = rs.getString("status");
+			long timeInMillis = getTimeMilisecond();
+			
+			
+			JWT jwt = new JWT();
+			JWTResponse = jwt.createJWT(id, issuer, subject, timeInMillis, username, faction);
 			result = true;
 		}
 		else
@@ -123,7 +161,7 @@ public class Login extends HttpServlet
 		//Close Connections
 		rs.close();ps.close();
 		
-		return result;
+		return JWTResponse;
 	}
 	
 	/**
@@ -164,7 +202,8 @@ public class Login extends HttpServlet
 		String localAuthenticationProperty = new String("local");
 		String ldapAuthenticationProperty = new String("ldap");
 		String disabledAuthenticationProperty = new String("none");
-		String ipAddress = request.getHeader("X-FORWARDED-FOR");  
+		String ipAddress = request.getHeader("X-FORWARDED-FOR"); 
+		String JWT = "";
 		if (ipAddress == null) 
 		{  
 			ipAddress = request.getRemoteAddr();  
@@ -210,9 +249,10 @@ public class Login extends HttpServlet
 			//Decide What Type of Authentication To Perform
 			try 
 			{
+				JWT = localAuthentication(login, password);
 				if(authType.equalsIgnoreCase(localAuthenticationProperty))
 				{
-					if(localAuthentication(login, password))
+					if(JWT.compareToIgnoreCase("void") != 0)
 					{
 						authenticated = true;
 					}
@@ -223,19 +263,10 @@ public class Login extends HttpServlet
 						//TODO - Failed Local Auth Error
 					}
 				}
-				
-				else if (authType.equalsIgnoreCase(disabledAuthenticationProperty))
-				{
-					logger.debug("Authentication Is Disabled via Properties File");
-				}
-				else 
-				{
-					logger.error("No Authentication Mechanism Correctly Specificed! Unknown Property Value Detected: " + authType);
-				}
 			} 
-			catch (SQLException e)
+			catch (Exception e)
 			{
-				logger.error("SQL Failure: " + e.toString());
+				logger.error("Unable to log in even with valid data:  " + e.toString());
 				error="9";
 			}
 		}
@@ -251,28 +282,7 @@ public class Login extends HttpServlet
 		    ses.invalidate();
 			ses = request.getSession(true);
 			//TODO - Remove userName / userPk references and uniform to login
-			ses.setAttribute("userName", login.toLowerCase()); //login
-			ses.setAttribute("userPk", login.toLowerCase()); //also Login
-			ses.setAttribute("login", login.toLowerCase()); //also Login
-			if(	checkIfGlobalScoreboardIsNeeded(siteProperties) ) {
-				ses.setAttribute("globalLeaderboards","true");
-			} else {
-				ses.setAttribute("globalLeaderboards","false");
-			}
-			try 
-			{
-				if (authType.equalsIgnoreCase(ldapAuthenticationProperty))
-				{
-					String employeeId = new String();
-					//LDAP Users Have EmployeeId's too
-					employeeId = UserFunctions.getEmpoyeeId(login.toLowerCase());
-					ses.setAttribute("employeeId", employeeId);
-				} 
-			}
-			catch (SQLException e) 
-			{
-				logger.error("Could not find ID: " + e.toString());
-			}
+			ses.setAttribute("JWT", JWT); //login
 			response.sendRedirect("dashboard.jsp");
 		}
 	}
@@ -285,6 +295,27 @@ public class Login extends HttpServlet
 			return true;
 		}
 		
+	}
+	
+	public static long getTimeMilisecond()
+	{
+
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+			String dateInString = "22-01-2015 10:20:56";
+			Date date;
+			try 
+			{
+				date = sdf.parse(dateInString);
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(date);
+				return calendar.getTimeInMillis();
+			} 
+			catch (Exception e) 
+			{
+				// TODO Auto-generated catch block
+				logger.error("Unable to generate time in mili's " + e.toString());
+			}
+			return 0;
 	}
 	
 }

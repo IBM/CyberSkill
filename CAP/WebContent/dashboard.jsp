@@ -30,7 +30,7 @@ else
 	HttpSession ses = request.getSession();
 	if(!SessionValidator.validate(ses))
 	{
-		logger.error("Attempt to access a page without an invalid session:" + completeURL+" Submitter IP: " + request.getHeader("X-FORWARDED-FOR") + " Submitter IP no proxy: " + request.getRemoteAddr());
+		logger.error("Attempt to access a page without an valid session:" + completeURL+" Submitter IP: " + request.getHeader("X-FORWARDED-FOR") + " Submitter IP no proxy: " + request.getRemoteAddr());
 		response.sendRedirect("index.jsp");
 	} 
 	else
@@ -46,6 +46,11 @@ else
 	<link rel="stylesheet" href="css/beta/overRideDashBoard.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	
+	
+	
 	
 	</head>
 	<body class="w3-light-grey">
