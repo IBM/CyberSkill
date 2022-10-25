@@ -55,7 +55,7 @@ else
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	
+	<script src="https://d3js.org/d3.v4.js"></script>
 	
 	
 	
@@ -70,11 +70,11 @@ else
 	        <h2>Faction Chat</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>Some text..</p>
-	        <p>Some text..</p>
+	        <p>This is faction chat, this feature allows teams to talk to each other and solve challenges co-operatively</p>
+	        <p>This feature is coming soon!</p>
 	      </div>
 	      <footer class="w3-container w3-red">
-	        <p>Modal Footer</p>
+	        <p>Powered by OpenSource</p>
 	      </footer>
 	    </div>
   	</div>
@@ -91,7 +91,7 @@ else
 	        <p>Some text..</p>
 	      </div>
 	      <footer class="w3-container w3-blue">
-	        <p>Modal Footer</p>
+	        <p>Powered by OpenSource</p>
 	      </footer>
 	    </div>
   	</div>
@@ -108,7 +108,7 @@ else
 	        <p>Some text..</p>
 	      </div>
 	      <footer class="w3-container w3-teal">
-	        <p>Modal Footer</p>
+	        <p>Powered by OpenSource</p>
 	      </footer>
 	    </div>
   	</div>
@@ -125,7 +125,7 @@ else
 	        <p>Some text..</p>
 	      </div>
 	      <footer class="w3-container w3-orange">
-	        <p>Modal Footer</p>
+	        <p>Powered by OpenSource</p>
 	      </footer>
 	    </div>
   	</div>
@@ -229,7 +229,7 @@ else
 	    <div class="w3-row-padding" style="margin:0 -16px">
 	      <div class="w3-third">
 	        <h5>Performance Data</h5>
-	        <img src="/w3images/region.jpg" style="width:100%" alt="Google Regional Map">
+	        <svg id="myPlot" style="width:100%; height:250px;"></svg>
 	      </div>
 	      <div class="w3-twothird">
 	        <h5>Open Challenges</h5>
@@ -422,6 +422,56 @@ else
 	  overlayBg.style.display = "none";
 	}
 	</script>
+	
+	<script>
+		// Set Dimensions
+		const xSize = 500; 
+		const ySize = 250;
+		const margin = 20;
+		const xMax = xSize - margin*2;
+		const yMax = ySize - margin*2;
+		
+		// Create Random Points
+		const numPoints = 100;
+		const data = [];
+		for (let i = 0; i < numPoints; i++) {
+		  data.push([Math.random() * xMax, Math.random() * yMax]);
+		}
+		
+		// Append SVG Object to the Page
+		const svg = d3.select("#myPlot")
+		  .append("svg")
+		  .append("g")
+		  .attr("transform","translate(" + margin + "," + margin + ")");
+		
+		// X Axis
+		const x = d3.scaleLinear()
+		  .domain([0, 500])
+		  .range([0, xMax]);
+		
+		svg.append("g")
+		  .attr("transform", "translate(0," + yMax + ")")
+		  .call(d3.axisBottom(x));
+		
+		// Y Axis
+		const y = d3.scaleLinear()
+		  .domain([0, 500])
+		  .range([ yMax, 0]);
+		
+		svg.append("g")
+		  .call(d3.axisLeft(y));
+		
+		// Dots
+		svg.append('g')
+		  .selectAll("dot")
+		  .data(data).enter()
+		  .append("circle")
+		  .attr("cx", function (d) { return d[0] } )
+		  .attr("cy", function (d) { return d[1] } )
+		  .attr("r", 3)
+		  .style("fill", "Red");
+	</script>
+	
 	
 	</body>
 	</html>
