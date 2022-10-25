@@ -76,13 +76,10 @@ else
 	  <div class="w3-bar-block">
 	    <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
 	    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-eye fa-fw"></i>  Views</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Traffic</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Geo</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-diamond fa-fw"></i>  Orders</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bell fa-fw"></i>  News</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bank fa-fw"></i>  General</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  History</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-eye fa-fw"></i>  Faction Chat</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Scoreboard</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Challenges</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-diamond fa-fw"></i>  Users</a>
 	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Settings</a><br><br>
 	  </div>
 	</nav>
@@ -107,7 +104,7 @@ else
 	          <h3>52</h3>
 	        </div>
 	        <div class="w3-clear"></div>
-	        <h4>Messages</h4>
+	        <h4>Faction Chat</h4>
 	      </div>
 	    </div>
 	    <div class="w3-quarter">
@@ -117,7 +114,7 @@ else
 	          <h3>99</h3>
 	        </div>
 	        <div class="w3-clear"></div>
-	        <h4>Views</h4>
+	        <h4>Scoreboard</h4>
 	      </div>
 	    </div>
 	    <div class="w3-quarter">
@@ -127,7 +124,7 @@ else
 	          <h3>23</h3>
 	        </div>
 	        <div class="w3-clear"></div>
-	        <h4>Shares</h4>
+	        <h4>Challenges</h4>
 	      </div>
 	    </div>
 	    <div class="w3-quarter">
@@ -145,11 +142,11 @@ else
 	  <div class="w3-panel">
 	    <div class="w3-row-padding" style="margin:0 -16px">
 	      <div class="w3-third">
-	        <h5>Regions</h5>
+	        <h5>Performance Data</h5>
 	        <img src="/w3images/region.jpg" style="width:100%" alt="Google Regional Map">
 	      </div>
 	      <div class="w3-twothird">
-	        <h5>Feeds</h5>
+	        <h5>Open Challenges</h5>
 	        <table class="w3-table w3-striped w3-white">
 	          <tr>
 	            <td><i class="fa fa-user w3-text-blue w3-large"></i></td>
@@ -192,18 +189,18 @@ else
 	  </div>
 	  <hr>
 	  <div class="w3-container">
-	    <h5>General Stats</h5>
-	    <p>New Visitors</p>
+	    <h5>Faction Data</h5>
+	    <p>Challenges Solved</p>
 	    <div class="w3-grey">
 	      <div class="w3-container w3-center w3-padding w3-green" style="width:25%">+25%</div>
 	    </div>
 	
-	    <p>New Users</p>
+	    <p>Challenges Open</p>
 	    <div class="w3-grey">
 	      <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
 	    </div>
 	
-	    <p>Bounce Rate</p>
+	    <p>Incorrect Submissions</p>
 	    <div class="w3-grey">
 	      <div class="w3-container w3-center w3-padding w3-red" style="width:75%">75%</div>
 	    </div>
@@ -211,38 +208,38 @@ else
 	  <hr>
 	
 	  <div class="w3-container">
-	    <h5>Countries</h5>
+	    <h5>Faction Player First Solve</h5>
 	    <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
 	      <tr>
-	        <td>United States</td>
+	        <td>John Doe</td>
 	        <td>65%</td>
 	      </tr>
 	      <tr>
-	        <td>UK</td>
+	        <td>Jane Doe</td>
 	        <td>15.7%</td>
 	      </tr>
 	      <tr>
-	        <td>Russia</td>
+	        <td>Blink 182</td>
 	        <td>5.6%</td>
 	      </tr>
 	      <tr>
-	        <td>Spain</td>
+	        <td>Jeremy Jones</td>
 	        <td>2.1%</td>
 	      </tr>
 	      <tr>
-	        <td>India</td>
+	        <td>John Clarke</td>
 	        <td>1.9%</td>
 	      </tr>
 	      <tr>
-	        <td>France</td>
+	        <td>Jason Flood</td>
 	        <td>1.5%</td>
 	      </tr>
 	    </table><br>
-	    <button class="w3-button w3-dark-grey">More Countries<i class="fa fa-arrow-right"></i></button>
+	    <button class="w3-button w3-dark-grey">More Player Data<i class="fa fa-arrow-right"></i></button>
 	  </div>
 	  <hr>
 	  <div class="w3-container">
-	    <h5>Recent Users</h5>
+	    <h5>Recent Faction Logins</h5>
 	    <ul class="w3-ul w3-card-4 w3-white">
 	      <li class="w3-padding-16">
 	        <img src="css/images/beta/avatars/avatar1.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
@@ -261,7 +258,7 @@ else
 	  <hr>
 	
 	  <div class="w3-container">
-	    <h5>Recent Comments</h5>
+	    <h5>Recent Faction Comments</h5>
 	    <div class="w3-row">
 	      <div class="w3-col m2 text-center">
 	        <img class="w3-circle" src="css/images/beta/avatars/avatar2.png" style="width:96px;height:96px">
@@ -286,23 +283,22 @@ else
 	  <div class="w3-container w3-dark-grey w3-padding-32">
 	    <div class="w3-row">
 	      <div class="w3-container w3-third">
-	        <h5 class="w3-bottombar w3-border-green">Demographic</h5>
-	        <p>Language</p>
-	        <p>Country</p>
-	        <p>City</p>
+	        <h5 class="w3-bottombar w3-border-green">OWASP</h5>
+	        <p>About</p>
+	        <p>Location</p>
+	        <p>Getting Involved</p>
 	      </div>
 	      <div class="w3-container w3-third">
-	        <h5 class="w3-bottombar w3-border-red">System</h5>
-	        <p>Browser</p>
-	        <p>OS</p>
-	        <p>More</p>
+	        <h5 class="w3-bottombar w3-border-red">Sans</h5>
+	        <p>About</p>
+	        <p>Location</p>
+	        <p>Getting Involved</p>
 	      </div>
 	      <div class="w3-container w3-third">
-	        <h5 class="w3-bottombar w3-border-orange">Target</h5>
-	        <p>Users</p>
-	        <p>Active</p>
-	        <p>Geo</p>
-	        <p>Interests</p>
+	        <h5 class="w3-bottombar w3-border-orange">Honeynet</h5>
+	        <p>About</p>
+	        <p>Location</p>
+	        <p>Getting Involved</p>
 	      </div>
 	    </div>
 	  </div>

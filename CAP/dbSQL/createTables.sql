@@ -1,4 +1,4 @@
-select * from users
+select * from users;
 
 DROP TABLE if exists claimed CASCADE;
 
