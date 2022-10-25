@@ -62,6 +62,80 @@ else
 	</head>
 	<body class="w3-light-grey">
 	
+	 <div id="id01" class="w3-modal">
+	    <div class="w3-modal-content w3-animate-top w3-card-4">
+	      <header class="w3-container w3-red"> 
+	        <span onclick="document.getElementById('id01').style.display='none'" 
+	        class="w3-button w3-display-topright">&times;</span>
+	        <h2>Faction Chat</h2>
+	      </header>
+	      <div class="w3-container">
+	        <p>Some text..</p>
+	        <p>Some text..</p>
+	      </div>
+	      <footer class="w3-container w3-red">
+	        <p>Modal Footer</p>
+	      </footer>
+	    </div>
+  	</div>
+  	
+  	 <div id="id02" class="w3-modal">
+	    <div class="w3-modal-content w3-animate-top w3-card-4">
+	      <header class="w3-container w3-blue"> 
+	        <span onclick="document.getElementById('id02').style.display='none'" 
+	        class="w3-button w3-display-topright">&times;</span>
+	        <h2>Scoreboard</h2>
+	      </header>
+	      <div class="w3-container">
+	        <p>Some text..</p>
+	        <p>Some text..</p>
+	      </div>
+	      <footer class="w3-container w3-blue">
+	        <p>Modal Footer</p>
+	      </footer>
+	    </div>
+  	</div>
+  	
+  	 <div id="id03" class="w3-modal">
+	    <div class="w3-modal-content w3-animate-top w3-card-4">
+	      <header class="w3-container w3-teal"> 
+	        <span onclick="document.getElementById('id03').style.display='none'" 
+	        class="w3-button w3-display-topright">&times;</span>
+	        <h2>Challenges</h2>
+	      </header>
+	      <div class="w3-container">
+	        <p>Some text..</p>
+	        <p>Some text..</p>
+	      </div>
+	      <footer class="w3-container w3-teal">
+	        <p>Modal Footer</p>
+	      </footer>
+	    </div>
+  	</div>
+  	
+  	 <div id="id04" class="w3-modal">
+	    <div class="w3-modal-content w3-animate-top w3-card-4">
+	      <header class="w3-container w3-orange"> 
+	        <span onclick="document.getElementById('id04').style.display='none'" 
+	        class="w3-button w3-display-topright">&times;</span>
+	        <h2>Users</h2>
+	      </header>
+	      <div class="w3-container">
+	        <p>Some text..</p>
+	        <p>Some text..</p>
+	      </div>
+	      <footer class="w3-container w3-orange">
+	        <p>Modal Footer</p>
+	      </footer>
+	    </div>
+  	</div>
+	
+	
+	
+	
+	
+	
+	
 	<!-- Top container -->
 	<div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
 	  <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey" onclick="w3_open();"><i class="fa fa-bars"></i>  Menu</button>
@@ -87,11 +161,11 @@ else
 	  </div>
 	  <div class="w3-bar-block">
 	    <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-eye fa-fw"></i>  Faction Chat</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Scoreboard</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Challenges</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-diamond fa-fw"></i>  Users</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue" ><i class="fa fa-users fa-fw"></i>  Overview</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('id01').style.display='block'"><i class="fa fa-eye fa-fw"></i>  Faction Chat</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('id02').style.display='block'"><i class="fa fa-users fa-fw"></i>  Scoreboard</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('id03').style.display='block'"><i class="fa fa-bullseye fa-fw"></i>  Challenges</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('id04').style.display='block'"><i class="fa fa-diamond fa-fw"></i>  Users</a>
 	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Settings</a><br><br>
 	  </div>
 	</nav>
@@ -109,7 +183,7 @@ else
 	  </header>
 	
 	  <div class="w3-row-padding w3-margin-bottom">
-	    <div class="w3-quarter">
+	    <div class="w3-quarter" onclick="document.getElementById('id01').style.display='block'">
 	      <div class="w3-container w3-red w3-padding-16">
 	        <div class="w3-left"><i class="fa fa-comment w3-xxxlarge"></i></div>
 	        <div class="w3-right">
@@ -119,7 +193,7 @@ else
 	        <h4>Faction Chat</h4>
 	      </div>
 	    </div>
-	    <div class="w3-quarter">
+	    <div class="w3-quarter" onclick="document.getElementById('id02').style.display='block'">
 	      <div class="w3-container w3-blue w3-padding-16">
 	        <div class="w3-left"><i class="fa fa-eye w3-xxxlarge"></i></div>
 	        <div class="w3-right">
@@ -129,7 +203,7 @@ else
 	        <h4>Scoreboard</h4>
 	      </div>
 	    </div>
-	    <div class="w3-quarter">
+	    <div class="w3-quarter" onclick="document.getElementById('id03').style.display='block'" >
 	      <div class="w3-container w3-teal w3-padding-16">
 	        <div class="w3-left"><i class="fa fa-share-alt w3-xxxlarge"></i></div>
 	        <div class="w3-right">
@@ -139,7 +213,7 @@ else
 	        <h4>Challenges</h4>
 	      </div>
 	    </div>
-	    <div class="w3-quarter">
+	    <div class="w3-quarter" onclick="document.getElementById('id04').style.display='block'">
 	      <div class="w3-container w3-orange w3-text-white w3-padding-16">
 	        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
 	        <div class="w3-right">
