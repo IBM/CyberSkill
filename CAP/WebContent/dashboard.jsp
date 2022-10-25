@@ -128,7 +128,8 @@ else
 		var svg = d3.select("#myFactionScore").append("svg")
 		    .attr("width", width + margin.left + margin.right)
 		    .attr("height", height + margin.top + margin.bottom)
-		    .attr("align","center")
+		    .attr("align-content","center")
+		    .attr("display", "block")
 		  .append("g")
 		    .attr("transform", 
 		          "translate(" + margin.left + "," + margin.top + ")");
@@ -202,8 +203,8 @@ else
 	        <h2>Scoreboard</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>Some text..</p>
-	        <p style="fill: steelblue;  align-content: center;"> <svg id="myFactionScore" style="width:600px; height:500px;"></svg></p>
+	        <p>This is your faction score.</p>
+	        <p style="fill: steelblue;  align-content: center;"> <svg id="myFactionScore" style="width:600px; height:500px; display:block; align-content: center"></svg></p>
 	      </div>
 	      <footer class="w3-container w3-blue">
 	        <p>Powered by OpenSource</p>
