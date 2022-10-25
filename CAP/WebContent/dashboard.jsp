@@ -2,6 +2,8 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="org.slf4j.Logger"%>
 <%@ page import="org.slf4j.LoggerFactory"%>
+<%@ page import="utils.JWT"%>
+<%@ page import="io.jsonwebtoken.Claims"%>
 
 
 <%-- Get a reference to the logger for this class --%>
@@ -35,6 +37,11 @@ else
 	} 
 	else
 	{
+	JWT jwt = new JWT();
+	String JWT_session = ses.getAttribute("JWT").toString();
+	logger.debug("JWT_session: " + JWT_session);
+	Claims claim = jwt.decodeJWT(JWT_session);
+	logger.debug("username: " + claim.get("username"));	
 %>
 	<!DOCTYPE html>
 	<html>
@@ -68,7 +75,7 @@ else
 	      <img src="css/images/beta/avatars/avatar2.png" class="w3-circle w3-margin-right" style="width:46px">
 	    </div>
 	    <div class="w3-col s8 w3-bar">
-	      <span>Welcome, <strong>Mike</strong></span><br>
+	      <span>Welcome, <strong><%=claim.get("username")%></strong></span><br>
 	      <a href="#" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i></a>
 	      <a href="#" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
 	      <a href="#" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
