@@ -58,6 +58,123 @@ else
 	<script src="https://d3js.org/d3.v4.js"></script>
 	
 	
+	<script>
+	function genenerateScatterChart()
+	{
+		// Set Dimensions
+		const xSize = 500; 
+		const ySize = 250;
+		const margin = 20;
+		const xMax = xSize - margin*2;
+		const yMax = ySize - margin*2;
+		
+		// Create Random Points
+		const numPoints = 100;
+		const data = [];
+		for (let i = 0; i < numPoints; i++) {
+		  data.push([Math.random() * xMax, Math.random() * yMax]);
+		}
+		
+		// Append SVG Object to the Page
+		const svg = d3.select("#myPlot")
+		  .append("svg")
+		  .append("g")
+		  .attr("transform","translate(" + margin + "," + margin + ")");
+		
+		// X Axis
+		const x = d3.scaleLinear()
+		  .domain([0, 500])
+		  .range([0, xMax]);
+		
+		svg.append("g")
+		  .attr("transform", "translate(0," + yMax + ")")
+		  .call(d3.axisBottom(x));
+		
+		// Y Axis
+		const y = d3.scaleLinear()
+		  .domain([0, 500])
+		  .range([ yMax, 0]);
+		
+		svg.append("g")
+		  .call(d3.axisLeft(y));
+		
+		// Dots
+		svg.append('g')
+		  .selectAll("dot")
+		  .data(data).enter()
+		  .append("circle")
+		  .attr("cx", function (d) { return d[0] } )
+		  .attr("cy", function (d) { return d[1] } )
+		  .attr("r", 3)
+		  .style("fill", "Red");
+	}
+	</script>
+	
+	
+	<script>
+	function genenerateBarChart()
+	{
+			var score_svg = d3.select("svg"),
+		    score_margin = 400,
+		    width = score_svg.attr("width") - score_margin,
+		    height = score_svg.attr("height") - score_margin
+		
+		    score_svg.append("text")
+		   .attr("transform", "translate(100,0)")
+		   .attr("x", 50)
+		   .attr("y", 50)
+		   .attr("font-size", "24px")
+		   .text("Faction Performance")
+		
+		var xScale = d3.scaleBand().range([0, score_margin]).padding(0.4),
+		    yScale = d3.scaleLinear().range([height, 0]);
+		
+		var g = score_svg.append("g")
+		           .attr("transform", "translate(" + 100 + "," + 100 + ")");
+		
+		d3.csv("XYZ.csv", function(error, data) {
+		    if (error) {
+		        throw error;
+		    }
+		
+		    xScale.domain(data.map(function(d) { return d.year; }));
+		    yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
+		
+		    g.append("g")
+		     .attr("transform", "translate(0," + height + ")")
+		     .call(d3.axisBottom(xScale))
+		     .append("text")
+		     .attr("y", height - 250)
+		     .attr("x", score_margin - 100)
+		     .attr("text-anchor", "end")
+		     .attr("stroke", "black")
+		     .text("Year");
+		
+		    g.append("g")
+		     .call(d3.axisLeft(yScale).tickFormat(function(d){
+		         return "$" + d;
+		     })
+		     .ticks(10))
+		     .append("text")
+		     .attr("transform", "rotate(-90)")
+		     .attr("y", 6)
+		     .attr("dy", "-5.1em")
+		     .attr("text-anchor", "end")
+		     .attr("stroke", "black")
+		     .text("Stock Price");
+		
+		    g.selectAll(".bar")
+		     .data(data)
+		     .enter().append("rect")
+		     .attr("class", "bar")
+		     .attr("x", function(d) { return xScale(d.year); })
+		     .attr("y", function(d) { return yScale(d.value); })
+		     .attr("width", xScale.bandwidth())
+		     .attr("height", function(d) { return height - yScale(d.value); });
+		});
+	}
+</script>
+	
 	
 	</head>
 	<body class="w3-light-grey">
@@ -88,7 +205,7 @@ else
 	      </header>
 	      <div class="w3-container">
 	        <p>Some text..</p>
-	        <p>Some text..</p>
+	        <p><svg width="600" height="500"></svg></p>
 	      </div>
 	      <footer class="w3-container w3-blue">
 	        <p>Powered by OpenSource</p>
@@ -424,53 +541,12 @@ else
 	</script>
 	
 	<script>
-		// Set Dimensions
-		const xSize = 500; 
-		const ySize = 250;
-		const margin = 20;
-		const xMax = xSize - margin*2;
-		const yMax = ySize - margin*2;
-		
-		// Create Random Points
-		const numPoints = 100;
-		const data = [];
-		for (let i = 0; i < numPoints; i++) {
-		  data.push([Math.random() * xMax, Math.random() * yMax]);
-		}
-		
-		// Append SVG Object to the Page
-		const svg = d3.select("#myPlot")
-		  .append("svg")
-		  .append("g")
-		  .attr("transform","translate(" + margin + "," + margin + ")");
-		
-		// X Axis
-		const x = d3.scaleLinear()
-		  .domain([0, 500])
-		  .range([0, xMax]);
-		
-		svg.append("g")
-		  .attr("transform", "translate(0," + yMax + ")")
-		  .call(d3.axisBottom(x));
-		
-		// Y Axis
-		const y = d3.scaleLinear()
-		  .domain([0, 500])
-		  .range([ yMax, 0]);
-		
-		svg.append("g")
-		  .call(d3.axisLeft(y));
-		
-		// Dots
-		svg.append('g')
-		  .selectAll("dot")
-		  .data(data).enter()
-		  .append("circle")
-		  .attr("cx", function (d) { return d[0] } )
-		  .attr("cy", function (d) { return d[1] } )
-		  .attr("r", 3)
-		  .style("fill", "Red");
+	genenerateBarChart();
+	genenerateScatterChart();
+	
 	</script>
+	
+	
 	
 	
 	</body>
