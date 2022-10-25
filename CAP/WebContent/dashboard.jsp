@@ -114,65 +114,63 @@ else
 	<script>
 	function genenerateBarChart()
 	{
-			var score_svg = d3.select("svg"),
-		    score_margin = 400,
-		    width = score_svg.attr("width") - score_margin,
-		    height = score_svg.attr("height") - score_margin
-		
-		    score_svg.append("text")
-		   .attr("transform", "translate(100,0)")
-		   .attr("x", 50)
-		   .attr("y", 50)
-		   .attr("font-size", "24px")
-		   .text("Faction Performance")
-		
-		var xScale = d3.scaleBand().range([0, score_margin]).padding(0.4),
-		    yScale = d3.scaleLinear().range([height, 0]);
-		
-		var g = score_svg.append("g")
-		           .attr("transform", "translate(" + 100 + "," + 100 + ")");
-		
-		d3.csv("XYZ.csv", function(error, data) {
-		    if (error) {
-		        throw error;
-		    }
-		
-		    xScale.domain(data.map(function(d) { return d.year; }));
-		    yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
-		
-		    g.append("g")
-		     .attr("transform", "translate(0," + height + ")")
-		     .call(d3.axisBottom(xScale))
-		     .append("text")
-		     .attr("y", height - 250)
-		     .attr("x", score_margin - 100)
-		     .attr("text-anchor", "end")
-		     .attr("stroke", "black")
-		     .text("Year");
-		
-		    g.append("g")
-		     .call(d3.axisLeft(yScale).tickFormat(function(d){
-		         return "$" + d;
-		     })
-		     .ticks(10))
-		     .append("text")
-		     .attr("transform", "rotate(-90)")
-		     .attr("y", 6)
-		     .attr("dy", "-5.1em")
-		     .attr("text-anchor", "end")
-		     .attr("stroke", "black")
-		     .text("Stock Price");
-		
-		    g.selectAll(".bar")
-		     .data(data)
-		     .enter().append("rect")
-		     .attr("class", "bar")
-		     .attr("x", function(d) { return xScale(d.year); })
-		     .attr("y", function(d) { return yScale(d.value); })
-		     .attr("width", xScale.bandwidth())
-		     .attr("height", function(d) { return height - yScale(d.value); });
+		// Set graph margins and dimensions
+		var margin = {top: 20, right: 20, bottom: 30, left: 40},
+		    width = 600 - margin.left - margin.right,
+		    height = 500 - margin.top - margin.bottom;
+
+		// Set ranges
+		var x = d3.scaleBand()
+		          .range([0, width])
+		          .padding(0.1);
+		var y = d3.scaleLinear()
+		          .range([height, 0]);
+		var svg = d3.select("#myFactionScore").append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		    .attr("align","center")
+		  .append("g")
+		    .attr("transform", 
+		          "translate(" + margin.left + "," + margin.top + ")");
+
+		// Get data
+		d3.csv("XYZ.csv", function(error, data){
+
+		  // Format data
+		  data.forEach(function(d) 
+		  {
+		    d.value = +d.value;
+		  });
+
+		  // Scale the range of the data in the domains
+		  x.domain(data.map(function(d) { return d.year; }));
+		  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+		  // Append rectangles for bar chart
+		  svg.selectAll(".bar")
+		      .data(data)
+		    .enter().append("rect")
+		      .attr("class", "bar")
+		      .attr("x", function(d) { return x(d.year); })
+		      .attr("width", x.bandwidth())
+		      .attr("y", function(d) { return y(d.value); })
+		      .attr("height", function(d) { return height - y(d.value); });
+
+		  // Add x axis
+		  svg.append("g")
+		      .attr("transform", "translate(0," + height + ")")
+		      .call(d3.axisBottom(x));
+
+		  // Add y axis
+		  svg.append("g")
+		      .call(d3.axisLeft(y));
+
 		});
-	}
+		
+		
+		
+		
+				}
 </script>
 	
 	
@@ -205,7 +203,7 @@ else
 	      </header>
 	      <div class="w3-container">
 	        <p>Some text..</p>
-	        <p><svg width="600" height="500"></svg></p>
+	        <p style="fill: steelblue;  align-content: center;"> <svg id="myFactionScore" style="width:600px; height:500px;"></svg></p>
 	      </div>
 	      <footer class="w3-container w3-blue">
 	        <p>Powered by OpenSource</p>
