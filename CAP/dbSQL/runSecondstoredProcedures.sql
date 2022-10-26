@@ -89,7 +89,7 @@ $BODY$
 ------------------ 
 
  CREATE OR REPLACE FUNCTION allLevels()
-RETURNS TABLE(id integer, level_name character varying,sans_cateogory character varying, status character varying, originalscore integer) 
+RETURNS TABLE(id integer, level_name character varying,sans_cateogory character varying, status character varying, originalscore integer,timeopened timestamp) 
 AS $$
 BEGIN
  RETURN QUERY SELECT 
@@ -97,7 +97,8 @@ BEGIN
 	  levels.name as name,
 	  levels.sans25category as category,
 	  levels.status as status,
-	  levels.originalscore as originalscore
+	  levels.originalscore as originalscore,
+	  levels.timeopened as timeopened
 	FROM 
 	  public.levels
 	ORDER BY
@@ -114,12 +115,13 @@ RETURNS SETOF boolean AS
 $$
 DECLARE
 	dbstatus character varying(25);
+	timeopened date;
 BEGIN
 	SELECT status into dbstatus FROM levels where name = levelName;
 	if dbstatus = 'enabled' THEN
 		update levels SET status = 'disabled' where lower(name) = lower(levelName);
 	else
-		update levels SET status = 'enabled' where lower(name) = lower(levelName);
+		update levels SET timeopened = now(),status = 'enabled' where lower(name) = lower(levelName);
 	end if;
 END; $$
 
