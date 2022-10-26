@@ -14,7 +14,7 @@
 		 DO NOT CHANGE THIS EVER TO YOUR LOCAL PATH FOR DEVELOPING ON YOUR
 		 LOCAL MACHINE, USE ECLIPSE FOR DEV / DEBUGGING!!!
 	-->
-	<property name="tomcatlibs.dir" value="/usr/share/tomcat9/lib" />
+	<property name="tomcatlibs.dir" value="/opt/tomcat/lib" />
 	<property name="war.name" value="${ant.project.name}" />
 	
 	<path id="classpath">
