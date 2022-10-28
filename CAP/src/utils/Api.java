@@ -559,13 +559,15 @@ public class Api
 				int sans25category = 3;
 				int status = 4;
 				int originalscore = 5;
-				String[] result = new String[5];
+				int timeopened = 6;
+				String[] result = new String[6];
 				i++;
 				result[0] = resultSet.getString(id);
 				result[1] = resultSet.getString(levelName);
 				result[2] = resultSet.getString(sans25category); 
 				result[3] = resultSet.getString(status);
 				result[4] = resultSet.getString(originalscore);
+				result[5] = resultSet.getString(timeopened);
 				modules.add(result);
 			}
 			logger.debug("Returning list with " + i + " entries.");
@@ -1176,6 +1178,53 @@ public class Api
 
 		return factions;
 	}
+	
+	/**
+	 * Get all Levels in DB
+	 * @return
+	 */
+	public ArrayList<String[]> getAllEnabledLevels(){
+		logger.debug("Getting all Open Modules");
+		logger.debug("Module Feed API Called");
+		ArrayList<String[]> modules = new ArrayList<String[]>();
+		Database db = new Database();
+		Connection con = db.getConnection();
+		try
+		{
+			
+			PreparedStatement preparedStatement = con.prepareStatement(GetterStatements.get_all_open_challenges_by_time);
+			logger.debug("Executing getAllEnabledLevels Function");
+			ResultSet results = preparedStatement.executeQuery();
+			logger.debug("Opening Result Set from allOpenLevels");
+			int i = 0;
+			while(results.next())
+			{
+				//Index in Response From DB Procedure where each element resides
+				int id = 1;
+				int levelName = 2;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				;
+				int sans25category = 3;
+				int status = 4;
+				int originalscore = 5;
+				int timeopened = 6;
+				String[] result = new String[6];
+				i++;
+				result[0] = results.getString(id);
+				result[1] = results.getString(levelName);
+				result[2] = results.getString(sans25category); 
+				result[3] = results.getString(status);
+				result[4] = results.getString(originalscore);
+				result[5] = results.getString(timeopened);
+				modules.add(result);
+			}
+			logger.debug("Returning list with " + i + " entries.");
+		}
+		catch (SQLException e)
+		{
+			logger.error("Could not execute query: " + e.toString());
+		}
+		return modules;
+	}
+
 
 }
 
