@@ -109,6 +109,31 @@ LANGUAGE plpgsql;
  
 ------------------
 
+ CREATE OR REPLACE FUNCTION allOpenLevels()
+RETURNS TABLE(id integer, level_name character varying,sans_cateogory character varying, status character varying, originalscore integer,timeopened timestamp) 
+AS $$
+BEGIN
+ RETURN QUERY SELECT 
+ 	  levels.id as id,
+	  levels.name as name,
+	  levels.sans25category as category,
+	  levels.status as status,
+	  levels.originalscore as originalscore,
+	  levels.timeopened as timeopened
+	FROM 
+	  public.levels
+	WHERE
+	  levels.status = 'enabled'
+	 AND
+	 levels.timeopened is NOT NULL
+	ORDER BY
+	  originalscore ASC, name ASC;
+END; $$
+
+LANGUAGE plpgsql;
+ 
+------------------
+
 
  CREATE OR REPLACE FUNCTION toggleLevel(levelName character varying)
 RETURNS SETOF boolean AS

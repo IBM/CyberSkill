@@ -7,7 +7,10 @@ INSERT INTO public.levels (directory, name, score, originalscore, status, owaspc
 ('a05e8206b7f83729cfae4b66436ed2a9','Use of Hard-Coded Creds',65,65,'disabled','Security Misconfiguration','17'),
 ('590df80f17969356918aa57b3cdffeb3','Verbose Error Message',65,65,'disabled','Error Handling','19');
 
-
+select toggleLevel('SQL Injection 1');
+select toggleLevel('SQL Injection Quotation');
+select toggleLevel('Verbose Error Message');
+select toggleLevel('A XSS');
 
 select submitUserSolution('test1@test.com','A XSS');
 select submitUserSolution('test4@test.com','A XSS');
