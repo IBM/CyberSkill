@@ -415,6 +415,41 @@ public class Api
 		return scoresByDate;
 	}
 	/**********************************************/
+	public ArrayList<String[]> getAllMembersOfMyFaction(String faction)
+	{
+		ArrayList<String[]> factionMembers = new ArrayList<String[]>();
+		Connection connection = null;
+		try 
+		{
+			Database db = new Database();
+			connection = db.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(GetterStatements.get_all_members_of_my_faction);
+			preparedStatement.setString(1, faction);
+			ResultSet results = preparedStatement.executeQuery();
+			
+			while(results.next())
+			{	
+				String[] result = new String[4];
+				
+				result[0] = results.getString("firstname");
+				result[1] = results.getString("lastname");
+				result[2] = results.getString("email");
+				result[3] = results.getString("username");
+				factionMembers.add(result);
+			}
+
+		}
+		catch(Exception e)
+		{
+			logger.error("get_all_members_of_my_faction: " + e.toString());
+		}
+
+		return factionMembers;
+	}
+	
+	
+	
+	/**********************************************/
 	public ArrayList<String[]> getAllScoresInAFactionByUsername(String faction)
 	{
 		ArrayList<String[]> scoresByDate = new ArrayList<String[]>();

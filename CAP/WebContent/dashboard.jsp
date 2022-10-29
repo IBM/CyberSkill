@@ -117,6 +117,21 @@ else
 		});
 	}
 	
+	function GetAllMembersOfMyFaction() {
+		$.ajax({
+		    url: 'getAllMembersOfMyFaction',
+		    type: 'GET',
+		    success: function (response) {
+		    	console.log(response);
+		        var trHTML = '';
+		        $.each(JSON.parse(response), function (i, item) {
+		            trHTML += '<tr><td>' + item.firstname + '</td><td>' + item.username + '</td></tr>';
+		        });
+		        $('#faction_member_table').append(trHTML);
+		    }
+		});
+	}
+	
 	
 	</script>
 	
@@ -188,8 +203,12 @@ else
 	        <h2>Users</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>Some text..</p>
-	        <p>Some text..</p>
+	       <table id="faction_member_table" class="w3-table w3-striped w3-white">
+	        	<tr>
+            		<th>firstname</th>
+            		<th>username</th>
+            	</tr>
+	        </table>
 	      </div>
 	      <footer class="w3-container w3-orange">
 	        <p>Powered by OpenSource</p>
@@ -465,6 +484,7 @@ else
 	GetOpenChallenges();
 	GetMyFactionScore();
 	Get10MostRecentEnabledLevels();
+	GetAllMembersOfMyFaction();
 	</script>
 	
 	
