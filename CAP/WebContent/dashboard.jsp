@@ -57,126 +57,15 @@ else
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://d3js.org/d3.v4.js"></script>
 	
-	
-	<script>
-	function genenerateScatterChart()
-	{
-		// Set Dimensions
-		const xSize = 500; 
-		const ySize = 250;
-		const margin = 20;
-		const xMax = xSize - margin*2;
-		const yMax = ySize - margin*2;
-		
-		// Create Random Points
-		const numPoints = 100;
-		const data = [];
-		for (let i = 0; i < numPoints; i++) {
-		  data.push([Math.random() * xMax, Math.random() * yMax]);
-		}
-		
-		// Append SVG Object to the Page
-		const svg = d3.select("#myPlot")
-		  .append("svg")
-		  .append("g")
-		  .attr("transform","translate(" + margin + "," + margin + ")");
-		
-		// X Axis
-		const x = d3.scaleLinear()
-		  .domain([0, 500])
-		  .range([0, xMax]);
-		
-		svg.append("g")
-		  .attr("transform", "translate(0," + yMax + ")")
-		  .call(d3.axisBottom(x));
-		
-		// Y Axis
-		const y = d3.scaleLinear()
-		  .domain([0, 500])
-		  .range([ yMax, 0]);
-		
-		svg.append("g")
-		  .call(d3.axisLeft(y));
-		
-		// Dots
-		svg.append('g')
-		  .selectAll("dot")
-		  .data(data).enter()
-		  .append("circle")
-		  .attr("cx", function (d) { return d[0] } )
-		  .attr("cy", function (d) { return d[1] } )
-		  .attr("r", 3)
-		  .style("fill", "Red");
-	}
-	</script>
+	<script src="js/GenerateScatterChart.js"></script>
+	<script src="js/GenerateBarChart.js"></script>
 	
 	
-	<script>
-	function genenerateBarChart()
-	{
-		// Set graph margins and dimensions
-		var margin = {top: 20, right: 20, bottom: 30, left: 40},
-		    width = 600 - margin.left - margin.right,
-		    height = 500 - margin.top - margin.bottom;
-
-		// Set ranges
-		var x = d3.scaleBand()
-		          .range([0, width])
-		          .padding(0.1);
-		var y = d3.scaleLinear()
-		          .range([height, 0]);
-		var svg = d3.select("#myFactionScore").append("svg")
-		    .attr("width", width + margin.left + margin.right)
-		    .attr("height", height + margin.top + margin.bottom)
-		    .attr("align-content","center")
-		    .attr("display", "block")
-		  .append("g")
-		    .attr("transform", 
-		          "translate(" + margin.left + "," + margin.top + ")");
-
-		// Get data
-		d3.csv("XYZ.csv", function(error, data){
-
-		  // Format data
-		  data.forEach(function(d) 
-		  {
-		    d.value = +d.value;
-		  });
-
-		  // Scale the range of the data in the domains
-		  x.domain(data.map(function(d) { return d.year; }));
-		  y.domain([0, d3.max(data, function(d) { return d.value; })]);
-
-		  // Append rectangles for bar chart
-		  svg.selectAll(".bar")
-		      .data(data)
-		    .enter().append("rect")
-		      .attr("class", "bar")
-		      .attr("x", function(d) { return x(d.year); })
-		      .attr("width", x.bandwidth())
-		      .attr("y", function(d) { return y(d.value); })
-		      .attr("height", function(d) { return height - y(d.value); });
-
-		  // Add x axis
-		  svg.append("g")
-		      .attr("transform", "translate(0," + height + ")")
-		      .call(d3.axisBottom(x));
-
-		  // Add y axis
-		  svg.append("g")
-		      .call(d3.axisLeft(y));
-
-		});
-		
-		
-		
-		
-				}
-</script>
+	
 	<script>
 	function GetOpenChallenges() {
 		$.ajax({
-		    url: '/TradCTF/getAllOpenLevels',
+		    url: 'getAllOpenLevels',
 		    type: 'GET',
 		    success: function (response) {
 		    	console.log(response);
@@ -188,6 +77,26 @@ else
 		    }
 		});
 	}
+	function GetMyFactionScore() {
+		$.ajax({
+		    url: 'getAllScoresAggregatedByFaction',
+		    type: 'GET',
+		    success: function (response) {
+		    	console.log(response);
+		        var trHTML = '';
+		        $.each(JSON.parse(response), function (i, item) 
+		        {
+		            if(item.faction == "<%=claim.get("faction")%>")
+		            {
+		            	trHTML = item.total;	
+		            }
+		        });
+		        $('#factionTotalScore').html(trHTML);
+		    }
+		});
+	}
+	
+	
 	</script>
 	
 	</head>
@@ -218,7 +127,7 @@ else
 	        <h2>Scoreboard</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>This is your faction score.</p>
+	        <p>This is your faction score breakdown.</p>
 	        <p style="fill: steelblue;  align-content: center;"> <svg id="myFactionScore" style="width:600px; height:500px; display:block; align-content: center"></svg></p>
 	      </div>
 	      <footer class="w3-container w3-blue">
@@ -328,7 +237,7 @@ else
 	      <div class="w3-container w3-blue w3-padding-16">
 	        <div class="w3-left"><i class="fa fa-eye w3-xxxlarge"></i></div>
 	        <div class="w3-right">
-	          <h3>99</h3>
+	          <h3 id="factionTotalScore">99</h3>
 	        </div>
 	        <div class="w3-clear"></div>
 	        <h4>Scoreboard</h4>
@@ -527,7 +436,7 @@ else
 	genenerateBarChart();
 	genenerateScatterChart();
 	GetOpenChallenges();
-	
+	GetMyFactionScore();
 	</script>
 	
 	
