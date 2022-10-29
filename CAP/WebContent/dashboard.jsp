@@ -70,13 +70,34 @@ else
 		    success: function (response) {
 		    	console.log(response);
 		        var trHTML = '';
+		        var levelCount = 0;
+		        
+		        $.each(JSON.parse(response), function (i, item) {
+		            trHTML += '<tr><td>' + item.name + '</td><td>' + item.timeopened + '</td></tr>';
+		            levelCount ++;
+		        });
+		        $('#all_challenge_table').append(trHTML);
+		        $('#challenge_total_number').html(levelCount);
+		    }
+		});
+	}
+	
+	function Get10MostRecentEnabledLevels() {
+		$.ajax({
+		    url: 'get10MostRecentOpenLevels',
+		    type: 'GET',
+		    success: function (response) {
+		    	console.log(response);
+		        var trHTML = '';
 		        $.each(JSON.parse(response), function (i, item) {
 		            trHTML += '<tr><td>' + item.name + '</td><td>' + item.timeopened + '</td></tr>';
 		        });
 		        $('#challenge_table').append(trHTML);
+		       
 		    }
 		});
 	}
+	
 	function GetMyFactionScore() {
 		$.ajax({
 		    url: 'getAllScoresAggregatedByFaction',
@@ -144,8 +165,14 @@ else
 	        <h2>Challenges</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>Some text..</p>
-	        <p>Some text..</p>
+	        <h5>All Opened Challenges</h5>
+	        <table id="all_challenge_table" class="w3-table w3-striped w3-white">
+	        	<tr>
+            		<th>Challenge</th>
+            		<th>Time Opened</th>
+            	</tr>
+	        </table>
+	        
 	      </div>
 	      <footer class="w3-container w3-teal">
 	        <p>Powered by OpenSource</p>
@@ -247,10 +274,10 @@ else
 	      <div class="w3-container w3-teal w3-padding-16">
 	        <div class="w3-left"><i class="fa fa-share-alt w3-xxxlarge"></i></div>
 	        <div class="w3-right">
-	          <h3>23</h3>
+	          <h3 id="challenge_total_number">23</h3>
 	        </div>
 	        <div class="w3-clear"></div>
-	        <h4>Challenges</h4>
+	        <h4>All Challenges</h4>
 	      </div>
 	    </div>
 	    <div class="w3-quarter" onclick="document.getElementById('id04').style.display='block'">
@@ -260,7 +287,7 @@ else
 	          <h3>50</h3>
 	        </div>
 	        <div class="w3-clear"></div>
-	        <h4>Users</h4>
+	        <h4>My Faction</h4>
 	      </div>
 	    </div>
 	  </div>
@@ -272,7 +299,7 @@ else
 	        <svg id="myPlot" style="width:100%; height:250px;"></svg>
 	      </div>
 	      <div class="w3-twothird">
-	        <h5>Open Challenges</h5>
+	        <h5>10 Most Recently Opened Challenges</h5>
 	        <table id="challenge_table" class="w3-table w3-striped w3-white">
 	        	<tr>
             		<th>Challenge</th>
@@ -437,6 +464,7 @@ else
 	genenerateScatterChart();
 	GetOpenChallenges();
 	GetMyFactionScore();
+	Get10MostRecentEnabledLevels();
 	</script>
 	
 	

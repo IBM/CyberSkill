@@ -17,7 +17,9 @@ public class GetterStatements
 	public static String get_all_scores_aggregated_by_faction = "Select users.faction, SUM(scoreboard_breakdown.score) from users, scoreboard_breakdown  where scoreboard_breakdown.username = users.username group by users.faction";
 	
 	public static String get_all_factions = "select faction from users";
+	
 	public static String get_all_open_challenges_by_time = "select id,name,sans25Category,status,originalScore,timeopened from levels where status = 'enabled' AND timeopened is not NULL";
 	
+	public static String get_10_open_challenges_by_time = "select id,name,sans25Category,status,originalScore,timeopened from levels where status = 'enabled' AND timeopened is not NULL order by timeopened DESC LIMIT 10";
 	
 }

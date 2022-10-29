@@ -1224,7 +1224,51 @@ public class Api
 		}
 		return modules;
 	}
-
+	/**
+	 * Get 10 most recent open Levels in DB
+	 * @return
+	 */
+	public ArrayList<String[]> get10MostRecentEnabledLevels(){
+		logger.debug("Getting all get10MostRecentEnabledLevels");
+		logger.debug("Module Feed API Called");
+		ArrayList<String[]> modules = new ArrayList<String[]>();
+		Database db = new Database();
+		Connection con = db.getConnection();
+		try
+		{
+			
+			PreparedStatement preparedStatement = con.prepareStatement(GetterStatements.get_10_open_challenges_by_time);
+			logger.debug("Executing get10MostRecentEnabledLevels Function");
+			ResultSet results = preparedStatement.executeQuery();
+			logger.debug("Opening Result Set from get10MostRecentEnabledLevels");
+			int i = 0;
+			while(results.next())
+			{
+				//Index in Response From DB Procedure where each element resides
+				int id = 1;
+				int levelName = 2;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				;
+				int sans25category = 3;
+				int status = 4;
+				int originalscore = 5;
+				int timeopened = 6;
+				String[] result = new String[6];
+				i++;
+				result[0] = results.getString(id);
+				result[1] = results.getString(levelName);
+				result[2] = results.getString(sans25category); 
+				result[3] = results.getString(status);
+				result[4] = results.getString(originalscore);
+				result[5] = results.getString(timeopened);
+				modules.add(result);
+			}
+			logger.debug("Returning list with " + i + " entries.");
+		}
+		catch (SQLException e)
+		{
+			logger.error("Could not execute query: " + e.toString());
+		}
+		return modules;
+	}
 
 }
 
