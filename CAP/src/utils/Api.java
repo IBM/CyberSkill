@@ -1265,6 +1265,17 @@ public class Api
 	 * Get 10 most recent open Levels in DB
 	 * @return
 	 */
+	public boolean validateLevelIsOpen(String level)
+	{
+		boolean result = true;
+		return result;
+	}
+	
+	
+	/**
+	 * Get 10 most recent open Levels in DB
+	 * @return
+	 */
 	public ArrayList<String[]> get10MostRecentEnabledLevels(){
 		logger.debug("Getting all get10MostRecentEnabledLevels");
 		logger.debug("Module Feed API Called");
