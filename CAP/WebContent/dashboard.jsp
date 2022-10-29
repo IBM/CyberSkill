@@ -124,10 +124,13 @@ else
 		    success: function (response) {
 		    	console.log(response);
 		        var trHTML = '';
+		        var factionCount = 0;
 		        $.each(JSON.parse(response), function (i, item) {
 		            trHTML += '<tr><td>' + item.firstname + '</td><td>' + item.username + '</td></tr>';
+		            factionCount ++
 		        });
 		        $('#faction_member_table').append(trHTML);
+		        $('#faction_total_number').html(factionCount);
 		    }
 		});
 	}
@@ -303,7 +306,7 @@ else
 	      <div class="w3-container w3-orange w3-text-white w3-padding-16">
 	        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
 	        <div class="w3-right">
-	          <h3>50</h3>
+	          <h3 id="faction_total_number">50</h3>
 	        </div>
 	        <div class="w3-clear"></div>
 	        <h4>My Faction</h4>
