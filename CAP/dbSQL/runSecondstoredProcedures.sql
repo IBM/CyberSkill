@@ -1,4 +1,7 @@
- CREATE OR REPLACE FUNCTION submitUserSolution(usernameIN character varying,levelName character varying)
+DROP FUNCTION if exists alllevels();  
+ 
+
+CREATE OR REPLACE FUNCTION submitUserSolution(usernameIN character varying,levelName character varying)
   RETURNS boolean AS
 $BODY$
     DECLARE
