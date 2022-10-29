@@ -18,9 +18,9 @@ public class GetterStatements
 	
 	public static String get_all_factions = "select faction from users";
 	
-	public static String get_all_open_challenges_by_time = "select id,name,sans25Category,status,originalScore,timeopened from levels where status = 'enabled' AND timeopened is not NULL";
+	public static String get_all_open_challenges_by_time = "select directory, id,name,sans25Category,status,originalScore,timeopened from levels where status = 'enabled' AND timeopened is not NULL order by timeopened DESC";
 	
-	public static String get_10_open_challenges_by_time = "select id,name,sans25Category,status,originalScore,timeopened from levels where status = 'enabled' AND timeopened is not NULL order by timeopened DESC LIMIT 10";
+	public static String get_10_open_challenges_by_time = "select directory, id,name,sans25Category,status,originalScore,timeopened from levels where status = 'enabled' AND timeopened is not NULL order by timeopened DESC LIMIT 10";
 	
 	public static String get_all_members_of_my_faction = "select firstname, lastname, email, username from users where faction = ?";
 }

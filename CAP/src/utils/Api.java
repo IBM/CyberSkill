@@ -1235,20 +1235,22 @@ public class Api
 			while(results.next())
 			{
 				//Index in Response From DB Procedure where each element resides
-				int id = 1;
-				int levelName = 2;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				;
-				int sans25category = 3;
-				int status = 4;
-				int originalscore = 5;
-				int timeopened = 6;
-				String[] result = new String[6];
+				int directory = 1;
+				int id = 2;
+				int levelName = 3;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				;
+				int sans25category = 4;
+				int status = 5;
+				int originalscore = 6;
+				int timeopened = 7;
+				String[] result = new String[7];
 				i++;
-				result[0] = results.getString(id);
-				result[1] = results.getString(levelName);
-				result[2] = results.getString(sans25category); 
-				result[3] = results.getString(status);
-				result[4] = results.getString(originalscore);
-				result[5] = results.getString(timeopened);
+				result[0] = results.getString(directory);
+				result[1] = results.getString(id);
+				result[2] = results.getString(levelName);
+				result[3] = results.getString(sans25category); 
+				result[4] = results.getString(status);
+				result[5] = results.getString(originalscore);
+				result[6] = results.getString(timeopened);
 				modules.add(result);
 			}
 			logger.debug("Returning list with " + i + " entries.");
@@ -1280,20 +1282,22 @@ public class Api
 			while(results.next())
 			{
 				//Index in Response From DB Procedure where each element resides
-				int id = 1;
-				int levelName = 2;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				;
-				int sans25category = 3;
-				int status = 4;
-				int originalscore = 5;
-				int timeopened = 6;
-				String[] result = new String[6];
+				int directory = 1;
+				int id = 2;
+				int levelName = 3;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				;
+				int sans25category = 4;
+				int status = 5;
+				int originalscore = 6;
+				int timeopened = 7;
+				String[] result = new String[7];
 				i++;
-				result[0] = results.getString(id);
-				result[1] = results.getString(levelName);
-				result[2] = results.getString(sans25category); 
-				result[3] = results.getString(status);
-				result[4] = results.getString(originalscore);
-				result[5] = results.getString(timeopened);
+				result[0] = results.getString(directory);
+				result[1] = results.getString(id);
+				result[2] = results.getString(levelName);
+				result[3] = results.getString(sans25category); 
+				result[4] = results.getString(status);
+				result[5] = results.getString(originalscore);
+				result[6] = results.getString(timeopened);
 				modules.add(result);
 			}
 			logger.debug("Returning list with " + i + " entries.");

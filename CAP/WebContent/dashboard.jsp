@@ -73,7 +73,7 @@ else
 		        var levelCount = 0;
 		        
 		        $.each(JSON.parse(response), function (i, item) {
-		            trHTML += '<tr><td>' + item.name + '</td><td>' + item.timeopened + '</td></tr>';
+		            trHTML += '<tr onclick=challengeLoader(\''+item.directory+'\')><td>' + item.name + '</td><td>' + item.timeopened + '</td></tr>';
 		            levelCount ++;
 		        });
 		        $('#all_challenge_table').append(trHTML);
@@ -90,7 +90,7 @@ else
 		    	console.log(response);
 		        var trHTML = '';
 		        $.each(JSON.parse(response), function (i, item) {
-		            trHTML += '<tr><td>' + item.name + '</td><td>' + item.timeopened + '</td></tr>';
+		            trHTML += '<tr onclick=challengeLoader(\''+item.directory+'\')><td>' + item.name + '</td><td>' + item.timeopened + '</td></tr>';
 		        });
 		        $('#challenge_table').append(trHTML);
 		       
@@ -135,6 +135,11 @@ else
 		});
 	}
 	
+	function challengeLoader(directory)
+	{
+		console.log("loading challenge :" + directory);
+		$("body").load("levels/" + directory + ".jsp");
+	}
 	
 	</script>
 	

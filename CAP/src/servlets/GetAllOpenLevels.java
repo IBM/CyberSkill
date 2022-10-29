@@ -64,12 +64,13 @@ public class GetAllOpenLevels extends HttpServlet{
 				{
 					String[] openedLevel = levelsArray.get(i);
 					jsonInner = new JSONObject(); //Clear JSON Object
-					jsonInner.put("id", Encode.forHtml(openedLevel[0]));
-					jsonInner.put("name", Encode.forHtml(openedLevel[1]));
-					jsonInner.put("category", Encode.forHtml(openedLevel[2]));
-					jsonInner.put("status", Encode.forHtml(openedLevel[3]));
-					jsonInner.put("originalScore", Encode.forHtml(openedLevel[4]));
-					jsonInner.put("timeopened", Encode.forHtml(openedLevel[5]));
+					jsonInner.put("directory", Encode.forHtml(openedLevel[0]));
+					jsonInner.put("id", Encode.forHtml(openedLevel[1]));
+					jsonInner.put("name", Encode.forHtml(openedLevel[2]));
+					jsonInner.put("category", Encode.forHtml(openedLevel[3]));
+					jsonInner.put("status", Encode.forHtml(openedLevel[4]));
+					jsonInner.put("originalScore", Encode.forHtml(openedLevel[5]));
+					jsonInner.put("timeopened", Encode.forHtml(openedLevel[6]));
 					json.add(jsonInner); //Add JSON Object to JSON Array
 					
 				}
