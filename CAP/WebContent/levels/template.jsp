@@ -6,22 +6,31 @@
 <%@ page import="utils.Api"%>
 <%@ page import="io.jsonwebtoken.Claims"%>
 
-<% Logger logger  = LoggerFactory.getLogger( this.getClass(  ) ); %>
+<% Logger logger  = LoggerFactory.getLogger(this.getClass()); %>
 
 <% 
 
 HttpSession ses = request.getSession(true);
+String username;
+
 boolean answerCorrect = false;
+
 if(SessionValidator.validate(ses))
 {
 	logger.debug("Session has been validated");
+	
+	JWT jwt = new JWT();
+	String JWT_session = ses.getAttribute("JWT").toString();
+	logger.debug("JWT_session: " + JWT_session);
+	Claims claim = jwt.decodeJWT(JWT_session);
+	username = claim.get("username").toString();
+	logger.debug("username: " + username);	
+	
 	StringBuffer accessURL = request.getRequestURL();
 	String accessPage = accessURL.substring(accessURL.lastIndexOf("/")+1, accessURL.lastIndexOf(".jsp"));
 	logger.debug("Validating page accessed: " + accessPage + " is open for play");
 	utils.Api api = new utils.Api();
 	boolean levelOpen = api.validateLevelIsOpen(accessPage);
-	
-	
 	
 	if(levelOpen)
 	{
@@ -29,9 +38,16 @@ if(SessionValidator.validate(ses))
 		String answer = (String) request.getParameter("answer");
 		logger.debug("Answer: " + answer);
 		
-		if(answer.compareToIgnoreCase("templateAnswer") == 0)
+		if(answer != null)
 		{
-			answerCorrect = true;
+			if(answer.compareToIgnoreCase("templateAnswer") == 0)
+			{
+				answerCorrect = true;
+			}
+		}
+		else
+		{
+			answer = "";
 		}
 		
 		
@@ -89,6 +105,7 @@ if(SessionValidator.validate(ses))
 					<p>Congratulations you are correct</p>
 				
 				<%
+					api.submitValidSolution(username, accessPage);
 		        }
 		        %>				
 		      </div>

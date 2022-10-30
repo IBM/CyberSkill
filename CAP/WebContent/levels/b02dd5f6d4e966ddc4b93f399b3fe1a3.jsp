@@ -1,79 +1,150 @@
- %>
-<%@ page import="utils.SessionValidator"%>
-<% HttpSession ses = request.getSession(true);
-if(SessionValidator.validate(ses)){
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" import="utils.*" errorPage="" %>
+<%@ page import="java.util.Properties"%>
+<%@ page import="org.slf4j.Logger"%>
+<%@ page import="org.slf4j.LoggerFactory"%>
+<%@ page import="utils.JWT"%>
+<%@ page import="utils.Api"%>
+<%@ page import="io.jsonwebtoken.Claims"%>
 
-%>
+<% Logger logger  = LoggerFactory.getLogger(this.getClass()); %>
 
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Cyber Awareness Platform - Level</title>
-<meta name="viewport" content="width=device-width; initial-scale=1.0;"><link href="css/global.css" rel="stylesheet" type="text/css" media="screen" /></head>
-<body>
-<script type="text/javascript" src="../js/jquery-2.1.1.min.js"></script>
-<jsp:include page="../header.jsp" /> <% //Header Entry %><jsp:include page="../levelFront.jsp" /> <% //Level Front Entry %>
-<%@ page import="java.math.BigInteger, java.security.SecureRandom, levelUtils.XSSCheck"%>
 <% 
-response.setHeader("X-XSS-Protection", "0");
-String randomString = new String();
-String csrfToken = new String();
-boolean csrfCheck = false;
-boolean newCsrfTokenNeeded = true;
-boolean showResult = false;
-String result = new String();
-try
+
+HttpSession ses = request.getSession(true);
+String username;
+
+boolean answerCorrect = false;
+
+if(SessionValidator.validate(ses))
 {
-	byte byteArray[] = new byte[16];
-	SecureRandom psn1 = SecureRandom.getInstance("SHA1PRNG");
-	psn1.setSeed(psn1.nextLong());
-	psn1.nextBytes(byteArray);
-	BigInteger bigInt = new BigInteger(byteArray);
-	randomString = bigInt.toString();
+	logger.debug("Session has been validated");
+	
+	JWT jwt = new JWT();
+	String JWT_session = ses.getAttribute("JWT").toString();
+	logger.debug("JWT_session: " + JWT_session);
+	Claims claim = jwt.decodeJWT(JWT_session);
+	username = claim.get("username").toString();
+	logger.debug("username: " + username);	
+	
+	StringBuffer accessURL = request.getRequestURL();
+	String accessPage = accessURL.substring(accessURL.lastIndexOf("/")+1, accessURL.lastIndexOf(".jsp"));
+	logger.debug("Validating page accessed: " + accessPage + " is open for play");
+	utils.Api api = new utils.Api();
+	boolean levelOpen = api.validateLevelIsOpen(accessPage);
+	
+	if(levelOpen)
+	{
+		logger.debug("level " + accessPage + " is open for play");
+		String answer = (String) request.getParameter("answer");
+		logger.debug("Answer: " + answer);
+		
+		if(answer != null)
+		{
+			if(answer.compareToIgnoreCase("templateAnswer") == 0)
+			{
+				answerCorrect = true;
+			}
+		}
+		else
+		{
+			answer = "";
+		}
+		
+		
+	%>			
+		<!DOCTYPE html>
+		<html>
+		<head>
+		<title>W3.CSS Template</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="css/beta/w3.css">
+		</head>
+		<body class="w3-content" style="max-width:1300px">
+		
+		<!-- First Grid: Logo & About -->
+		<div class="w3-row">
+		  <div class="w3-half w3-black w3-container w3-center" style="height:700px">
+		    <div class="w3-padding-64">
+		      <h1>Challenge Assistance</h1>
+		    </div>
+		    <div class="w3-padding-64">
+		      <a href="#" class="w3-button w3-black w3-block w3-hover-blue-grey w3-padding-16">About</a>
+		      <a href="#" class="w3-button w3-black w3-block w3-hover-blue-grey w3-padding-16">Clue</a>
+		    </div>
+		  </div>
+		  <div class="w3-half w3-blue-grey w3-container" style="height:700px">
+		    <div class="w3-padding-64 w3-center">
+		      <h1>Challenge</h1>
+		      <img src="css/images/7.svg" class="w3-margin w3-circle" alt="Person" style="width:50%">
+		      <div class="w3-left-align w3-padding-large">
+		        
+		        <%
+		        if(!answerCorrect)
+		        {
+		       	%>
+			        <p>Some high level question facts</p>
+			        
+			        
+			        <p>
+			        	<form action="#" method="get">
+							<!-- Here is where we ask the question, change nothing only the question. -->
+							 Actual Question Stuff 
+							
+							<p align=center> 
+							<input class="textbox" name="answer" id="answer" type="text" autocomplete="off" value="Answer">
+							</p>
+						    	<p align=center> <input type="submit" name="Submit" value="Submit" > </p>
+						</form> 
+					</p>
+				<%
+		        }
+		        else
+		        {
+				%>
+					<p>Congratulations you are correct</p>
+				
+				<%
+					api.submitValidSolution(username, accessPage);
+		        }
+		        %>				
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		
+		<!-- Footer -->
+		<footer class="w3-container w3-grey w3-padding-16">
+		  <p>Powered by OpenSource</p>
+		</footer>
+		
+		</body>
+		</html>	
+	<% 			
+	}
+	else
+	{
+		logger.debug("level " + accessPage + " is NOT open for play");
+	}
+
+%>
+	
+
+
+
+	
+<%
 }
-catch(Exception e)
+else
 {
-	System.out.println("Random Number Error : " + e.toString());
-}
-String param = new String();
-if(request.getParameter("levelInput") != null) {
-param = request.getParameter("levelInput");
- // No Filter In this challenge
-}
-if(ses.getAttribute("xssCsrfToken") != null){
-if(ses.getAttribute("xssCsrfToken").toString().isEmpty()){
-newCsrfTokenNeeded = true;
-} else if(!param.isEmpty()){
-//Check CSRF Token
-if(request.getParameter("csrfToken") != null) {csrfToken = request.getParameter("csrfToken");}
-if(csrfToken.equalsIgnoreCase(ses.getAttribute("xssCsrfToken").toString())) {
-newCsrfTokenNeeded = false;
-result = "Your user input is included in this message in order to simulate a Reflected Cross Site Scripting Scenario. <a href=\"" + param + "\">" + param + "</a>";
-if(XSSCheck.check("<html><head></head><body><a href=\"" + param + "\">" + param + "</a></body></html>")){
-showResult = true;}
-}
-}
-}
-if(newCsrfTokenNeeded){
-ses.setAttribute("xssCsrfToken", randomString);
-csrfToken = randomString;
+	StringBuffer requestURL = request.getRequestURL();
+	if (request.getQueryString() != null) 
+	{
+	    requestURL.append("?").append(request.getQueryString());
+	}
+	String completeURL = requestURL.toString();
+	logger.error("Attempt to access a page without a session:" + completeURL+" Submitter IP: " + request.getHeader("X-FORWARDED-FOR") + " Submitter IP no proxy: " + request.getRemoteAddr());
+	response.sendRedirect("dashboard.jsp");
 }
 %>
-<h1  class="title">A XSS</h1>
-<p class="levelText">This is an XSS challenge. Your objective is to submit some malicious input that will cause an alert popup to display on the page.</p>
-<p class="levelText"><h1>Please note that:</h1><ul><li>An 'XSS' (in terms of the game) means getting a JavaScript alert box, prompt box, or confirm box to display</li><li>The alert box must be displayed within the context of this page, i.e. not in the url or loaded from an external src</li><li>Any code that requires some form of manual user interaction (e.g. click, press a key, etc.) to get an alert dialog to display might not complete the level. The alert dialog should display itself automatically.</li></ul></p>
-<form id="levelForm" method="POST"><em class="formLabel">User Input: </em>
-<input id="csrfToken" name="csrfToken" type="hidden" value="<%= csrfToken %>"><input id="levelInput" name="levelInput" type='text' autocomplete="off"><input type="submit" value="Submit"></form>
-<div id="formResults">
-<%= result %>
-</div>
-<% /* Common Solution */ String uri = request.getRequestURI();String level = uri.substring(uri.lastIndexOf("/")+1);%>
-<form id="solutionInput" ACTION="javascript:;" method="POST"><em class="formLabel">Solution Key: </em>
-<input id="key" name="key" type='text' autocomplete="off"><input type="submit" value="Submit"><input type="hidden" id ="level" name="level" value="<%=  java.net.URLDecoder.decode(level, "UTF-8").substring(0, java.net.URLDecoder.decode(level, "UTF-8").length()-4) %>"></form>
-<div id="solutionSubmitResults"></div>
-<% /* Common Footer */ %>
-<jsp:include page="../levelBottom.jsp" /> <% //Level Bottom Entry %>
-
-</body></html>
-
-<% } else { %>
-You are not currently signed in. Please Sign in<% } %>
-
-

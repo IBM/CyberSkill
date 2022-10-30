@@ -1262,7 +1262,7 @@ public class Api
 		return modules;
 	}
 	/**
-	 * Get 10 most recent open Levels in DB
+	 * Ensure that the level is open
 	 * @return
 	 */
 	public boolean validateLevelIsOpen(String level)
@@ -1270,7 +1270,39 @@ public class Api
 		boolean result = true;
 		return result;
 	}
-	
+	/**
+	 * Submit a solution
+	 * @return
+	 */
+	public boolean submitValidSolution(String username, String accessPage)
+	{
+		boolean result = false;
+		
+		logger.debug("submitValidSolution");
+		
+		Database db = new Database();
+		Connection con = db.getConnection();
+		try
+		{
+			
+			String querry = SetterStatements.submit_valid_solution;
+			logger.debug("QUERRY: " + querry + " --> " + username + ", " + accessPage);
+			PreparedStatement preparedStatement = con.prepareStatement(querry);
+			preparedStatement.setString(1,username);
+			preparedStatement.setString(2,accessPage);
+			ResultSet rs = preparedStatement.executeQuery();
+         	while(rs.next())
+         	{
+         		logger.debug("Result of submit_valid_solution: " + rs.getString("submitusersolution"));
+         	}
+		}
+		catch (SQLException e)
+		{
+			logger.error("Could not execute query: " + e.toString());
+		}
+		
+		return result;
+	}
 	
 	/**
 	 * Get 10 most recent open Levels in DB

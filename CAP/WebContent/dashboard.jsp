@@ -138,7 +138,7 @@ else
 	function challengeLoader(directory)
 	{
 		console.log("loading challenge :" + directory);
-		$("body").load("levels/" + directory + ".jsp");
+		window.location = "levels/" + directory + ".jsp";
 	}
 	
 	</script>

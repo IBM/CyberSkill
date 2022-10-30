@@ -1,48 +1,150 @@
- %>
-<%@ page import="utils.SessionValidator"%>
-<% HttpSession ses = request.getSession(true);
-if(SessionValidator.validate(ses)){
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" import="utils.*" errorPage="" %>
+<%@ page import="java.util.Properties"%>
+<%@ page import="org.slf4j.Logger"%>
+<%@ page import="org.slf4j.LoggerFactory"%>
+<%@ page import="utils.JWT"%>
+<%@ page import="utils.Api"%>
+<%@ page import="io.jsonwebtoken.Claims"%>
+
+<% Logger logger  = LoggerFactory.getLogger(this.getClass()); %>
+
+<% 
+
+HttpSession ses = request.getSession(true);
+String username;
+
+boolean answerCorrect = false;
+
+if(SessionValidator.validate(ses))
+{
+	logger.debug("Session has been validated");
+	
+	JWT jwt = new JWT();
+	String JWT_session = ses.getAttribute("JWT").toString();
+	logger.debug("JWT_session: " + JWT_session);
+	Claims claim = jwt.decodeJWT(JWT_session);
+	username = claim.get("username").toString();
+	logger.debug("username: " + username);	
+	
+	StringBuffer accessURL = request.getRequestURL();
+	String accessPage = accessURL.substring(accessURL.lastIndexOf("/")+1, accessURL.lastIndexOf(".jsp"));
+	logger.debug("Validating page accessed: " + accessPage + " is open for play");
+	utils.Api api = new utils.Api();
+	boolean levelOpen = api.validateLevelIsOpen(accessPage);
+	
+	if(levelOpen)
+	{
+		logger.debug("level " + accessPage + " is open for play");
+		String answer = (String) request.getParameter("answer");
+		logger.debug("Answer: " + answer);
+		
+		if(answer != null)
+		{
+			if(answer.compareToIgnoreCase("templateAnswer") == 0)
+			{
+				answerCorrect = true;
+			}
+		}
+		else
+		{
+			answer = "";
+		}
+		
+		
+	%>			
+		<!DOCTYPE html>
+		<html>
+		<head>
+		<title>W3.CSS Template</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="css/beta/w3.css">
+		</head>
+		<body class="w3-content" style="max-width:1300px">
+		
+		<!-- First Grid: Logo & About -->
+		<div class="w3-row">
+		  <div class="w3-half w3-black w3-container w3-center" style="height:700px">
+		    <div class="w3-padding-64">
+		      <h1>Challenge Assistance</h1>
+		    </div>
+		    <div class="w3-padding-64">
+		      <a href="#" class="w3-button w3-black w3-block w3-hover-blue-grey w3-padding-16">About</a>
+		      <a href="#" class="w3-button w3-black w3-block w3-hover-blue-grey w3-padding-16">Clue</a>
+		    </div>
+		  </div>
+		  <div class="w3-half w3-blue-grey w3-container" style="height:700px">
+		    <div class="w3-padding-64 w3-center">
+		      <h1>Challenge</h1>
+		      <img src="css/images/7.svg" class="w3-margin w3-circle" alt="Person" style="width:50%">
+		      <div class="w3-left-align w3-padding-large">
+		        
+		        <%
+		        if(!answerCorrect)
+		        {
+		       	%>
+			        <p>Some high level question facts</p>
+			        
+			        
+			        <p>
+			        	<form action="#" method="get">
+							<!-- Here is where we ask the question, change nothing only the question. -->
+							 Actual Question Stuff 
+							
+							<p align=center> 
+							<input class="textbox" name="answer" id="answer" type="text" autocomplete="off" value="Answer">
+							</p>
+						    	<p align=center> <input type="submit" name="Submit" value="Submit" > </p>
+						</form> 
+					</p>
+				<%
+		        }
+		        else
+		        {
+				%>
+					<p>Congratulations you are correct</p>
+				
+				<%
+					api.submitValidSolution(username, accessPage);
+		        }
+		        %>				
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		
+		<!-- Footer -->
+		<footer class="w3-container w3-grey w3-padding-16">
+		  <p>Powered by OpenSource</p>
+		</footer>
+		
+		</body>
+		</html>	
+	<% 			
+	}
+	else
+	{
+		logger.debug("level " + accessPage + " is NOT open for play");
+	}
 
 %>
-
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Cyber Awareness Platform - Level</title>
-<meta name="viewport" content="width=device-width; initial-scale=1.0;"><link href="css/global.css" rel="stylesheet" type="text/css" media="screen" /></head>
-<body>
-<script type="text/javascript" src="../js/jquery-2.1.1.min.js"></script>
-<jsp:include page="../header.jsp" /> <% //Header Entry %><jsp:include page="../levelFront.jsp" /> <% //Level Front Entry %>
-<%@ page import="levelUtils.InMemoryDatabase"%>
-<% InMemoryDatabase imdb = new InMemoryDatabase();
-imdb.Create();
-String param = new String();
-if(request.getParameter("levelInput") != null) {param = request.getParameter("levelInput");}
-String sql = "CREATE TABLE COMPANY (ID INT PRIMARY KEY NOT NULL, NAME TEXT NOT NULL,AGE INT NOT NULL,ADDRESS CHAR(50), SALARY REAL)";
-imdb.CreateTable(sql);
-
-//No Filter 
-
-sql = "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (1, \'Wayland Dennis Dannel\', 32, \'Tehran\', 200.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (2, \'Josiah Ricky Outterridge\', 25, \'Ankara\', 100.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (3, \'Ted Leighton Belanger\', 27, \'Mumbai\', 600.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (4, \'Amias Patrick Hunt\', 26, \'Hong Kong\', 90.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (5, \'Kev Marvyn Patrickson\', 43, \'Bangkok\', 920.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (6, \'Kody Lemoine Yap\', 33, \'Hanoi\', 90.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (7, \'Quinn Tristram Irvin\', 53, \'Mexico City\', 902.42 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (8, \'Leyton Osborn Hall\', 39, \'Surat\', 500.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (9, \'Ripley Hadley Espenson\', 26, \'Surat\', 600 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (10, \'Chase Nat Washington\', 25, \'Riyadh\', 9030 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (11, \'Aldous Tristram Elliston\', 21, \'Delhi\', 920.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (12, \'Esm\303\251 Selwyn Lacey\', 22, \'Bangkok\', 90.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (13, \'Rod Deryck Benjaminson\', 24, \'Mumbai\', 90.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (14, \'Oz Tod Dane\', 32, \'Karachi\', 51.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (15, \'Lauren Seth Gibb\', 29, \'Los Angeles\', 67200.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (16, \'Ivor Raven Frye\', 27, \'Chennai\', 5312300.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (17, \'Isadore Quincy Landon\', 27, \'Dhaka\', 53140.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (18, \'Monty Chase Phillips\', 28, \'Moscow\', 56100.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (19, \'Wil Leyton Bunker\', 39, \'Busan\', 7910.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (20, \'Burt Laurie Alden\', 54, \'Johannesburg\', 970.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (21, \'Will Goodwin Elwyn\', 34, \'Paris\', 891.12);INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (22, \'Barrett Wynne Goffe\', 33, \'Istanbul\', 90.00 );";
-imdb.InsertTableData(sql);
-sql = "SELECT NAME, ADDRESS FROM COMPANY WHERE NAME=\"" + param + "\" ORDER BY NAME ASC;";
-String htmlTable = imdb.inMemorySelectOperation(sql);%>
-
-<h1  class="title">SQL Injection Quotation</h1>
-<p class="levelText">Use SQL Injection to retreive all the data stored in the database table. The key to this challenge is the location of the user whos first name is Ripley <br>If you would like to read more about SQL injection you can do so <a href=" https://owasp.org/www-community/attacks/SQL_Injection" target="_blank">here</a>.
-	</p>
-<form id="levelForm"><em class="formLabel">User Input: </em>
-<input id="levelInput" name="levelInput" type='text' autocomplete="off"><input type="submit" value="Submit"></form>
-<div id="formResults">
-<%= htmlTable %>
-</div>
-<% /* Common Solution */ String uri = request.getRequestURI();String level = uri.substring(uri.lastIndexOf("/")+1);%>
-<form id="solutionInput" ACTION="javascript:;" method="POST"><em class="formLabel">Solution Key: </em>
-<input id="key" name="key" type='text' autocomplete="off"><input type="submit" value="Submit"><input type="hidden" id ="level" name="level" value="<%=  java.net.URLDecoder.decode(level, "UTF-8").substring(0, java.net.URLDecoder.decode(level, "UTF-8").length()-4) %>"></form>
-<div id="solutionSubmitResults"></div>
- %>
-<jsp:include page="../levelBottom.jsp" /> <% //Level Bottom Entry %>
-
-</body></html>
-
-<% } else { %>
-You are not currently signed in. Please Sign in<% } %>
+	
 
 
+
+	
+<%
+}
+else
+{
+	StringBuffer requestURL = request.getRequestURL();
+	if (request.getQueryString() != null) 
+	{
+	    requestURL.append("?").append(request.getQueryString());
+	}
+	String completeURL = requestURL.toString();
+	logger.error("Attempt to access a page without a session:" + completeURL+" Submitter IP: " + request.getHeader("X-FORWARDED-FOR") + " Submitter IP no proxy: " + request.getRemoteAddr());
+	response.sendRedirect("dashboard.jsp");
+}
+%>
