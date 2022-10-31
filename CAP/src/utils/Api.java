@@ -1391,7 +1391,58 @@ public class Api
 	     }
 		return json;
 	}
-	
+	/*
+	 * Get Level Details	
+	 */
+	public static JSONObject getBasicPerformanceStats(String username)
+	{
+	    Database db = new Database();
+		Connection con = db.getConnection();
+		JSONArray json = new JSONArray();
+		JSONObject performanceObject = new JSONObject();
+		try
+		{
+			PreparedStatement ps = con.prepareStatement(GetterStatements.get_basic_performance_stats); 
+			ps.setString(1,username);
+			ps.setString(2,username);
+			logger.debug("Executing get getBasicPerformanceStats query");
+			ResultSet rs = ps.executeQuery();
+			int i =0;
+			while(rs.next()) 
+			{
+				//logger.debug("-------->" + rs.getString("count"));
+				
+				if(i == 0)
+	        	{
+	        		performanceObject.put("playerMedalsForSolve", rs.getString("count"));
+	        		logger.debug("playerMedalsForSolve:" + rs.getString("count") );
+	        	}
+	        	if(i == 1)
+	        	{
+	        		performanceObject.put("playerLevelsSolve", rs.getString("count"));
+	        		logger.debug("playerLevelsSolve:" + rs.getString("count"));
+	        	}
+	        	if(i == 2)
+		        {
+	        		performanceObject.put("systemMedalsIssued", rs.getString("count"));
+	        		logger.debug("systemMedalsIssued:" + rs.getString("count"));
+		        }
+	        	if(i == 3)
+	        	{
+	        		performanceObject.put("systemLevelsIssued", rs.getString("count"));
+	        		logger.debug("systemLevelsIssued:" + rs.getString("count"));
+	        	}
+	        	i = i+1;
+			}		
+	        
+	                             
+	     } 
+		catch(Exception e) 
+		{
+	             logger.error("Unable to connect to database: " + e.toString());
+	     }
+		return performanceObject;
+	}
 	
 }
 

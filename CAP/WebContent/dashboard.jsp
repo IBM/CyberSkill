@@ -3,8 +3,9 @@
 <%@ page import="org.slf4j.Logger"%>
 <%@ page import="org.slf4j.LoggerFactory"%>
 <%@ page import="utils.JWT"%>
+<%@ page import="utils.Api"%>
 <%@ page import="io.jsonwebtoken.Claims"%>
-
+<%@ page import="org.json.simple.JSONObject"%>
 
 <%-- Get a reference to the logger for this class --%>
 <% Logger logger  = LoggerFactory.getLogger( this.getClass(  ) ); %>
@@ -134,6 +135,7 @@ else
 		    }
 		});
 	}
+	
 	
 	function challengeLoader(directory)
 	{
@@ -338,20 +340,39 @@ else
 	  </div>
 	  <hr>
 	  <div class="w3-container">
+	  
+	  <%
+	  	JSONObject json = Api.getBasicPerformanceStats(claim.get("username").toString());
+	  	Float playerMedalsForSolve = Float.parseFloat(json.get("playerMedalsForSolve").toString());
+	  	Float playerLevelsSolve =  Float.parseFloat(json.get("playerLevelsSolve").toString());
+	  	Float systemMedalsIssued =  Float.parseFloat(json.get("systemMedalsIssued").toString());
+	  	Float systemLevelsIssued =  Float.parseFloat(json.get("systemLevelsIssued").toString());
+	  	
+	  	Float ans1 = (playerLevelsSolve/systemLevelsIssued) * 100;
+	  	logger.debug("ans1: " + ans1);
+	  	
+	  	Float ans2 = (playerMedalsForSolve/systemLevelsIssued) * 100;
+	  	logger.debug("ans2: " + ans2);
+	  	
+	  	Float ans3 = (playerMedalsForSolve/systemMedalsIssued) * 100;
+	  	logger.debug("ans3: " + ans3);
+	  
+	  %>
+	  
 	    <h5>Faction Data</h5>
 	    <p>Open challenges solved by me</p>
 	    <div class="w3-grey">
-	      <div class="w3-container w3-center w3-padding w3-green" style="width:25%">+25%</div>
+	      <div class="w3-container w3-center w3-padding w3-green" style="width:<%= ans1%>%">+<%= ans1%>%</div>
 	    </div>
 	
 	    <p>Player medals</p>
 	    <div class="w3-grey">
-	      <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
+	      <div class="w3-container w3-center w3-padding w3-orange" style="width:<%= ans2%>%">+<%= ans2%>%</div>
 	    </div>
 	
 	    <p>Player awards</p>
 	    <div class="w3-grey">
-	      <div class="w3-container w3-center w3-padding w3-red" style="width:75%">75%</div>
+	      <div class="w3-container w3-center w3-padding w3-red" style="width:<%= ans3%>%">+<%= ans3%>%</div>
 	    </div>
 	  </div>
 	  <hr>

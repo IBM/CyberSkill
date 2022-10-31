@@ -26,4 +26,11 @@ public class GetterStatements
 	
 	public static String get_level_details_by_directory = "select * from levels where directory = ?";
 	
+	public static String get_basic_performance_stats = "(Select count(*) from claimed where userid = (select id from users where username = ?) and award IS NOT NULL)\r\n"
+			+ "UNION ALL\r\n"
+			+ "(Select count(*) from claimed where userid = (select id from users where username = ?))\r\n"
+			+ "UNION ALL\r\n"
+			+ "(Select count(*) from claimed where award IS NOT NULL)\r\n"
+			+ "UNION ALL\r\n"
+			+ "(Select count(*) from claimed);";
 }
