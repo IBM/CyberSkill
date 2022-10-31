@@ -162,7 +162,7 @@ if(SessionValidator.validate(ses))
 					else
 					{
 						%>
-						<p>You have not been awarded points for this submission!</p>
+						<p>As you have already solved this, you have not been awarded points for this submission!</p>
 						<%
 					}
 		        }
