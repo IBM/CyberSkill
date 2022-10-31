@@ -1351,6 +1351,47 @@ public class Api
 		}
 		return modules;
 	}
-
+	/*
+	 * Get Level Details	
+	 */
+	public static JSONArray getLevelDetailsByDirectory(String directory)
+	{
+	    Database db = new Database();
+		Connection con = db.getConnection();
+		JSONArray json = new JSONArray();
+		try
+		{
+			JSONObject levelObject = new JSONObject();
+			PreparedStatement ps = con.prepareStatement(GetterStatements.get_level_details_by_directory); 
+			ps.setString(1,directory);
+			logger.debug("Executing get getLevelDetailsByDirectory query");
+			ResultSet rs = ps.executeQuery();
+	         while(rs.next()) 
+	         {
+	         	logger.debug("Gathering level data for " + rs.getString("directory"));
+	         	levelObject = new JSONObject();
+	         	//Create userObject
+	         	levelObject.put("directory", rs.getString("directory"));
+	         	levelObject.put("id", rs.getInt("id"));
+	         	levelObject.put("name", rs.getString("name"));
+	         	levelObject.put("score", rs.getString("score"));
+	         	levelObject.put("originalscore", rs.getString("originalscore"));
+	         	levelObject.put("status", rs.getString("status"));
+	         	levelObject.put("owaspcategory", rs.getString("owaspcategory"));
+	         	levelObject.put("sans25category", rs.getString("sans25category"));
+	         	levelObject.put("timeopened", rs.getString("timeopened"));
+	         	
+	         	json.add(levelObject);
+	         }
+	                             
+	     } 
+		catch(Exception e) 
+		{
+	             logger.error("Unable to connect to database: " + e.toString());
+	     }
+		return json;
+	}
+	
+	
 }
 

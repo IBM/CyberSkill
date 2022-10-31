@@ -23,4 +23,7 @@ public class GetterStatements
 	public static String get_10_open_challenges_by_time = "select directory, id,name,sans25Category,status,originalScore,timeopened from levels where status = 'enabled' AND timeopened is not NULL order by timeopened DESC LIMIT 10";
 	
 	public static String get_all_members_of_my_faction = "select firstname, lastname, email, username from users where faction = ?";
+	
+	public static String get_level_details_by_directory = "select * from levels where directory = ?";
+	
 }
