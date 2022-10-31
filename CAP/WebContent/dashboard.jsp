@@ -339,17 +339,17 @@ else
 	  <hr>
 	  <div class="w3-container">
 	    <h5>Faction Data</h5>
-	    <p>Challenges Solved</p>
+	    <p>Open challenges solved by me</p>
 	    <div class="w3-grey">
 	      <div class="w3-container w3-center w3-padding w3-green" style="width:25%">+25%</div>
 	    </div>
 	
-	    <p>Challenges Open</p>
+	    <p>Player medals</p>
 	    <div class="w3-grey">
 	      <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
 	    </div>
 	
-	    <p>Incorrect Submissions</p>
+	    <p>Player awards</p>
 	    <div class="w3-grey">
 	      <div class="w3-container w3-center w3-padding w3-red" style="width:75%">75%</div>
 	    </div>
