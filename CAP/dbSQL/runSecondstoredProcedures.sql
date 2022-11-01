@@ -1,13 +1,11 @@
 DROP FUNCTION if exists alllevels();  
  
 
-CREATE OR REPLACE FUNCTION public.submitusersolution(
+CREATE OR REPLACE FUNCTION submitusersolution(
 	usernamein character varying,
 	directoryin character varying)
     RETURNS boolean
     LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
 AS $BODY$
     DECLARE
     claimedResult RECORD;
