@@ -128,6 +128,7 @@ CREATE TABLE activity
   compOrganization character varying(128) NOT NULL,
   faction character varying(128)NOT NULL,
   lastlogin timestamp NOT NULL,
+  ipaddress character varying (100),
   CONSTRAINT activity_pkey PRIMARY KEY (id)
 )
 WITH (
