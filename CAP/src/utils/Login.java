@@ -104,7 +104,7 @@ public class Login extends HttpServlet
 	 * @return Boolean representing successful auth or not
 	 * @throws SQLException DB Layer Failure
 	 */
-	private static String localAuthentication (String username, String password) throws SQLException
+	private static String localAuthentication (String username, String password,String ipAddress) throws SQLException
 	{
 		boolean result = false;
 		password = hashAndSaltPass(password);
@@ -152,7 +152,8 @@ public class Login extends HttpServlet
 			JWT jwt = new JWT();
 			JWTResponse = jwt.createJWT(id, issuer, subject, timeInMillis, username, faction,firstname,lastname);
 			result = true;
-			UserFunctions.updateActivity(firstname, lastname, username, comporganization, faction);
+			UserFunctions.updateActivity(firstname, lastname, username, comporganization, faction, ipAddress);
+			
 		}
 		else
 		{
@@ -209,6 +210,7 @@ public class Login extends HttpServlet
 		{  
 			ipAddress = request.getRemoteAddr();  
 		}
+		
 		logger.debug("Getting username/password from request");
 		try 	
 		{
@@ -250,7 +252,7 @@ public class Login extends HttpServlet
 			//Decide What Type of Authentication To Perform
 			try 
 			{
-				JWT = localAuthentication(login, password);
+				JWT = localAuthentication(login, password,ipAddress);
 				if(authType.equalsIgnoreCase(localAuthenticationProperty))
 				{
 					if(JWT.compareToIgnoreCase("void") != 0)

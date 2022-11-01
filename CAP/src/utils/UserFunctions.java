@@ -52,22 +52,20 @@ public class UserFunctions
 		return result;
 	}
 	
-	public static boolean updateActivity (String firstname, String lastname, String username, String compOrganization,String faction) throws SQLException
+	public static boolean updateActivity (String firstname, String lastname, String username, String compOrganization,String faction, String ipaddress) throws SQLException
 	{
 		boolean result = false;
 		logger.debug("Connecting to DB");
 		Database db = new Database();
 		Connection con = db.getConnection();
 		logger.debug("Executing Update Activity");
-		PreparedStatement ps = con.prepareStatement(" INSERT INTO activity (firstname,lastname,username,comporganization,faction,lastlogin) VALUES (?,?,?,?,?,now())\r\n"
-				+ "  ON CONFLICT (username)\r\n"
-				+ "  DO\r\n"
-				+ "  UPDATE SET lastlogin = now();");
+		PreparedStatement ps = con.prepareStatement(" INSERT INTO activity (firstname,lastname,username,comporganization,faction,lastlogin,ipaddress) VALUES (?,?,?,?,?,now(),?)");
 		ps.setString(1, firstname.toLowerCase());
 		ps.setString(2, lastname);
 		ps.setString(3, username.toLowerCase());
 		ps.setString(4, compOrganization);
 		ps.setString(5, faction);
+		ps.setString(6, ipaddress);
 		ps.execute();
 		result = true;
 		logger.debug("Successfully Update Activity Local DB");
