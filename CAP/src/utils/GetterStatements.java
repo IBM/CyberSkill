@@ -40,5 +40,7 @@ public class GetterStatements
 			+ "JOIN users U on U.username = SB.username\r\n"
 			+ "where faction = ?";
 	
-	public static String  get_faction_login_activity = "SELECT * FROM ACTIVITY where faction = ?";
+	public static String  get_faction_login_activity = "SELECT * FROM ACTIVITY where faction = ? ORDER BY lastlogin DESC limit 10";
+	
+	public static String get_admin_comments = "SELECT * FROM admincomments ORDER BY submitted limit 10";
 }

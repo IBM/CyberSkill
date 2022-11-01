@@ -1513,6 +1513,39 @@ public class Api
 		return factionMembers;
 	}
 	
+	/**********************************************/
+	public ArrayList<String[]> getAdminComments()
+	{
+		ArrayList<String[]> adminComments = new ArrayList<String[]>();
+		Connection connection = null;
+		try 
+		{
+			Database db = new Database();
+			connection = db.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(GetterStatements.get_admin_comments);
+			ResultSet results = preparedStatement.executeQuery();
+			
+			while(results.next())
+			{	
+				String[] result = new String[5];
+				
+				result[0] = results.getString("firstname");
+				result[1] = results.getString("lastname");
+				result[2] = results.getString("username");
+				result[3] = results.getString("thecomments");
+				result[4] = results.getString("submitted");
+				adminComments.add(result);
+			}
+
+		}
+		catch(Exception e)
+		{
+			logger.error("get_admin_comments: " + e.toString());
+		}
+
+		return adminComments;
+	}
+	
 	
 }
 

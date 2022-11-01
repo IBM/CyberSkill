@@ -124,16 +124,33 @@ CREATE TABLE activity
   id serial NOT NULL,
   firstname character varying(250) NOT NULL,
   lastname character varying(250) NOT NULL,
-  username character varying(400) UNIQUE NOT NULL,
+  username character varying(400) NOT NULL,
   compOrganization character varying(128) NOT NULL,
   faction character varying(128)NOT NULL,
   lastlogin timestamp NOT NULL,
-  CONSTRAINT activity_pkey PRIMARY KEY (username)
+  CONSTRAINT activity_pkey PRIMARY KEY (id)
 )
 WITH (
   OIDS=FALSE
 );
 ALTER TABLE activity
+  OWNER TO capuser;
+  
+DROP TABLE IF EXISTS admincomments CASCADE;
+CREATE TABLE activity 
+(
+  id serial NOT NULL,
+  firstname character varying(250) NOT NULL,
+  lastname character varying(250) NOT NULL,
+  username character varying(400) NOT NULL,
+  comment character varying(400) NOT NULL,
+  submitted timestamp NOT NULL,
+  CONSTRAINT activity_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE admincomments
   OWNER TO capuser;
   
   

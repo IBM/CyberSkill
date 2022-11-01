@@ -172,6 +172,24 @@ else
 		});
 	}
 	
+	function GetAdminComments() {
+		$.ajax({
+		    url: 'getAdminComments',
+		    type: 'GET',
+		    success: function (response) {
+		    	console.log(response);
+		        var trHTML = '';
+		        var factionCount = 0;
+		        $.each(JSON.parse(response), function (i, item) {
+		            trHTML += '<div class="w3-col m2 text-center"><img class="w3-circle" src="css/images/beta/avatars/avatar5.png" style="width:96px;height:96px"></div><div class="w3-col m10 w3-container"><h4>'+item.firstname + '<span class="w3-opacity w3-medium">'+item.submitted+'</span></h4><p>'+item.thecomments+'</p><br></div>';
+		            
+		            factionCount ++
+		        });
+		        $('#admin_comments_row').append(trHTML);
+		    }
+		});
+	}
+	
 	function challengeLoader(directory)
 	{
 		console.log("loading challenge :" + directory);
@@ -440,24 +458,8 @@ else
 	
 	  <div class="w3-container">
 	    <h5>Recent Admin Comments</h5>
-	    <div class="w3-row">
-	      <div class="w3-col m2 text-center">
-	        <img class="w3-circle" src="css/images/beta/avatars/avatar2.png" style="width:96px;height:96px">
-	      </div>
-	      <div class="w3-col m10 w3-container">
-	        <h4>John <span class="w3-opacity w3-medium">Sep 29, 2014, 9:12 PM</span></h4>
-	        <p>Keep up the GREAT work! I am cheering for you!! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><br>
-	      </div>
-	    </div>
-	
-	    <div class="w3-row">
-	      <div class="w3-col m2 text-center">
-	        <img class="w3-circle" src="css/images/beta/avatars/avatar5.png" style="width:96px;height:96px">
-	      </div>
-	      <div class="w3-col m10 w3-container">
-	        <h4>Bo <span class="w3-opacity w3-medium">Sep 28, 2014, 10:15 PM</span></h4>
-	        <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><br>
-	      </div>
+	    <div id="admin_comments_row" class="w3-row">
+	    
 	    </div>
 	  </div>
 	  <br>
@@ -527,6 +529,7 @@ else
 	GetAllMembersOfMyFaction();
 	GetFactionMemberBySolveTime();
 	GetFactionLoginActivity();
+	GetAdminComments();
 	</script>
 	
 	
