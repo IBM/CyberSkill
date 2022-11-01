@@ -19,7 +19,11 @@ d3.json("getMorePlayerData?username=test1@test.com", function(error, data)
 {
   // When reading the csv, I must format variables:
   data.forEach(function(d) {
-        //d.submitted = dateParser(new Date(d.submitted));
+        //
+        var toDate = d3.timeParse("%Y-%m-%d %H:%M:%S.%L000");
+        var hold = new Date(d.submitted);
+        console.log(d.submitted + " --> " + hold);
+        
         //console.log("--> " +  d3.timeParse("%Y-%m-%d %H:%M:%S")(d.submitted) +  "value: " + d.score)
   })
 }
