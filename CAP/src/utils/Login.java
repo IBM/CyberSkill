@@ -138,7 +138,9 @@ public class Login extends HttpServlet
 			
 			id = rs.getString("id");
 			firstname = rs.getString("firstname");
+			logger.debug("Firstname from rs: ", firstname);
 			lastname = rs.getString("lastname");
+			logger.debug("Lastname from rs: ", lastname);
 			comporganization = rs.getString("comporganization");
 			employeeid = rs.getString("employeeid");
 			email = rs.getString("email");
@@ -147,11 +149,10 @@ public class Login extends HttpServlet
 			geo = rs.getString("geo");
 			status = rs.getString("status");
 			long timeInMillis = getTimeMilisecond();
-			
-			
 			JWT jwt = new JWT();
-			JWTResponse = jwt.createJWT(id, issuer, subject, timeInMillis, username, faction);
+			JWTResponse = jwt.createJWT(id, issuer, subject, timeInMillis, username, faction,firstname,lastname);
 			result = true;
+			UserFunctions.updateActivity(firstname, lastname, username, comporganization, faction);
 		}
 		else
 		{

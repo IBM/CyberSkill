@@ -1444,5 +1444,75 @@ public class Api
 		return performanceObject;
 	}
 	
+	
+	/**********************************************/
+	public ArrayList<String[]> getFactionMemberBySolveTime(String faction)
+	{
+		ArrayList<String[]> factionMembers = new ArrayList<String[]>();
+		Connection connection = null;
+		try 
+		{
+			Database db = new Database();
+			connection = db.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(GetterStatements.get_faction_member_by_solve_time);
+			preparedStatement.setString(1, faction);
+			ResultSet results = preparedStatement.executeQuery();
+			
+			while(results.next())
+			{	
+				String[] result = new String[4];
+				
+				result[0] = results.getString("username");
+				result[1] = results.getString("submitted");
+				result[2] = results.getString("name");
+				result[3] = results.getString("faction");
+				factionMembers.add(result);
+			}
+
+		}
+		catch(Exception e)
+		{
+			logger.error("get_faction_member_by_solve_time: " + e.toString());
+		}
+
+		return factionMembers;
+	}
+	
+	/**********************************************/
+	public ArrayList<String[]> getFactionLoginActivity(String faction)
+	{
+		ArrayList<String[]> factionMembers = new ArrayList<String[]>();
+		Connection connection = null;
+		try 
+		{
+			Database db = new Database();
+			connection = db.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(GetterStatements.get_faction_login_activity);
+			preparedStatement.setString(1, faction);
+			ResultSet results = preparedStatement.executeQuery();
+			
+			while(results.next())
+			{	
+				String[] result = new String[6];
+				
+				result[0] = results.getString("firstname");
+				result[1] = results.getString("lastname");
+				result[2] = results.getString("username");
+				result[3] = results.getString("comporganization");
+				result[4] = results.getString("faction");
+				result[5] = results.getString("lastlogin");
+				factionMembers.add(result);
+			}
+
+		}
+		catch(Exception e)
+		{
+			logger.error("get_faction_login_activity: " + e.toString());
+		}
+
+		return factionMembers;
+	}
+	
+	
 }
 

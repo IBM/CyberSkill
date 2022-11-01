@@ -43,6 +43,8 @@ else
 	logger.debug("JWT_session: " + JWT_session);
 	Claims claim = jwt.decodeJWT(JWT_session);
 	logger.debug("username: " + claim.get("username"));	
+	logger.debug("firstname: " + claim.get("firstname"));	
+	logger.debug("lastname: " + claim.get("lastname"));	
 %>
 	<!DOCTYPE html>
 	<html>
@@ -136,6 +138,39 @@ else
 		});
 	}
 	
+	function GetFactionMemberBySolveTime() {
+		$.ajax({
+		    url: 'getFactionMemberBySolveTime',
+		    type: 'GET',
+		    success: function (response) {
+		    	console.log(response);
+		        var trHTML = '';
+		        var factionCount = 0;
+		        $.each(JSON.parse(response), function (i, item) {
+		            trHTML += '<tr><td>' + item.username + '</td><td>' + item.name + '</td><td>' + item.solved + '</td></tr>';
+		            factionCount ++
+		        });
+		        $('#faction_member_solve').append(trHTML);
+		    }
+		});
+	}
+	
+	function GetFactionLoginActivity() {
+		$.ajax({
+		    url: 'getFactionLoginActivity',
+		    type: 'GET',
+		    success: function (response) {
+		    	console.log(response);
+		        var trHTML = '';
+		        var factionCount = 0;
+		        $.each(JSON.parse(response), function (i, item) {
+		            trHTML += '<tr><td>' + item.username + '</td><td>' + item.lastlogin + '</td></tr>';
+		            factionCount ++
+		        });
+		        $('#faction_member_logins').append(trHTML);
+		    }
+		});
+	}
 	
 	function challengeLoader(directory)
 	{
@@ -245,7 +280,7 @@ else
 	      <img src="css/images/beta/avatars/avatar2.png" class="w3-circle w3-margin-right" style="width:46px">
 	    </div>
 	    <div class="w3-col s8 w3-bar">
-	      <span>Welcome, <strong><%=claim.get("username")%></strong></span><br>
+	      <span>Welcome, <strong><%=claim.get("firstname")%> <%=claim.get("lastname")%></strong></span><br>
 	      <a href="#" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i></a>
 	      <a href="#" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
 	      <a href="#" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
@@ -379,30 +414,12 @@ else
 	
 	  <div class="w3-container">
 	    <h5>Faction Player First Solve</h5>
-	    <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+	    <table id="faction_member_solve" class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
 	      <tr>
-	        <td>John Doe</td>
-	        <td>65%</td>
-	      </tr>
-	      <tr>
-	        <td>Jane Doe</td>
-	        <td>15.7%</td>
-	      </tr>
-	      <tr>
-	        <td>Blink 182</td>
-	        <td>5.6%</td>
-	      </tr>
-	      <tr>
-	        <td>Jeremy Jones</td>
-	        <td>2.1%</td>
-	      </tr>
-	      <tr>
-	        <td>John Clarke</td>
-	        <td>1.9%</td>
-	      </tr>
-	      <tr>
-	        <td>Jason Flood</td>
-	        <td>1.5%</td>
+	       <th>Username</th>
+	       <th>Time solved</th>
+	       <th>Challenge</th>
+	       
 	      </tr>
 	    </table><br>
 	    <button class="w3-button w3-dark-grey">More Player Data<i class="fa fa-arrow-right"></i></button>
@@ -410,25 +427,19 @@ else
 	  <hr>
 	  <div class="w3-container">
 	    <h5>Recent Faction Logins</h5>
-	    <ul class="w3-ul w3-card-4 w3-white">
-	      <li class="w3-padding-16">
-	        <img src="css/images/beta/avatars/avatar1.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
-	        <span class="w3-xlarge">Mike</span><br>
-	      </li>
-	      <li class="w3-padding-16">
-	        <img src="css/images/beta/avatars/avatar3.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
-	        <span class="w3-xlarge">Jill</span><br>
-	      </li>
-	      <li class="w3-padding-16">
-	        <img src="css/images/beta/avatars/avatar5.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
-	        <span class="w3-xlarge">Jane</span><br>
-	      </li>
-	    </ul>
+	    <table id="faction_member_logins" class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+	      <tr>
+	       <th>Username</th>
+	       <th>Last logged in</th>
+	       <th></th>
+	       
+	      </tr>
+	    </table>
 	  </div>
 	  <hr>
 	
 	  <div class="w3-container">
-	    <h5>Recent Faction Comments</h5>
+	    <h5>Recent Admin Comments</h5>
 	    <div class="w3-row">
 	      <div class="w3-col m2 text-center">
 	        <img class="w3-circle" src="css/images/beta/avatars/avatar2.png" style="width:96px;height:96px">
@@ -514,6 +525,8 @@ else
 	GetMyFactionScore();
 	Get10MostRecentEnabledLevels();
 	GetAllMembersOfMyFaction();
+	GetFactionMemberBySolveTime();
+	GetFactionLoginActivity();
 	</script>
 	
 	

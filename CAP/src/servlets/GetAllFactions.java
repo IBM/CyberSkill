@@ -62,7 +62,7 @@ public class GetAllFactions extends HttpServlet{
 			
 			for (int i = 0; i < factionArray.size(); i++)
 			{
-				String[] currentFaction = factionArray.get(i); //Get level string[] from the array list to populate JSON Object
+				String[] currentFaction = factionArray.get(i); //Get faction string[] from the array list to populate JSON Object
 				jsonInner = new JSONObject(); //Clear JSON Object
 				jsonInner.put("faction", Encode.forHtml(currentFaction[0]));
 				json.add(jsonInner); //Add JSON Object to JSON Array

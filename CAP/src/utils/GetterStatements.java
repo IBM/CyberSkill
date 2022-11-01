@@ -33,4 +33,12 @@ public class GetterStatements
 			+ "(Select count(*) from claimed where award IS NOT NULL)\r\n"
 			+ "UNION ALL\r\n"
 			+ "(Select count(*) from claimed);";
+	
+	public static String get_faction_member_by_solve_time = "select distinct SB.username, SB.submitted, l.name, U.faction\r\n"
+			+ "from scoreboard_breakdown SB\r\n"
+			+ "JOIN levels l on l.id = SB.fk_level_id\r\n"
+			+ "JOIN users U on U.username = SB.username\r\n"
+			+ "where faction = ?";
+	
+	public static String  get_faction_login_activity = "SELECT * FROM ACTIVITY where faction = ?";
 }

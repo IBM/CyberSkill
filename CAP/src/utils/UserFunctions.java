@@ -32,7 +32,7 @@ public class UserFunctions
 		Database db = new Database();
 		Connection con = db.getConnection();
 		logger.debug("Executing Create User Statement");
-		PreparedStatement ps = con.prepareStatement("INSERT INTO users (firstname, lastname, faction,compOrganization,status,username, password, email, employeeId, active) VALUES (?,?,?,?, ?, ?, ?, ?,?,?)");
+		PreparedStatement ps = con.prepareStatement("INSERT INTO users (firstname, lastname, faction,compOrganization,status,username, password, email, employeeId, active,registered) VALUES (?,?,?,?, ?, ?, ?, ?,?,?,now())");
 		ps.setString(1, firstname.toLowerCase());
 		ps.setString(2, lastname.toLowerCase());
 		ps.setString(3, faction.toLowerCase());
@@ -46,6 +46,31 @@ public class UserFunctions
 		ps.execute();
 		result = true;
 		logger.debug("Successfully Created User in Local DB");
+		
+		//Close Connections
+		ps.close();
+		return result;
+	}
+	
+	public static boolean updateActivity (String firstname, String lastname, String username, String compOrganization,String faction) throws SQLException
+	{
+		boolean result = false;
+		logger.debug("Connecting to DB");
+		Database db = new Database();
+		Connection con = db.getConnection();
+		logger.debug("Executing Update Activity");
+		PreparedStatement ps = con.prepareStatement(" INSERT INTO activity (firstname,lastname,username,comporganization,faction,lastlogin) VALUES (?,?,?,?,?,now())\r\n"
+				+ "  ON CONFLICT (username)\r\n"
+				+ "  DO\r\n"
+				+ "  UPDATE SET lastlogin = now();");
+		ps.setString(1, firstname.toLowerCase());
+		ps.setString(2, lastname);
+		ps.setString(3, username.toLowerCase());
+		ps.setString(4, compOrganization);
+		ps.setString(5, faction);
+		ps.execute();
+		result = true;
+		logger.debug("Successfully Update Activity Local DB");
 		
 		//Close Connections
 		ps.close();

@@ -21,7 +21,7 @@ public class JWT
 	 	private static String SECRET_KEY = "oeRaYY7Wo24sDqKSX3IM9ASGmdGPmkTd9jo1QTy4b7P9Ze5_9hKolVX8xNrQDcNRfVEdTZNOuOyqEGhXEbdJI-ZQ19k_o9MI0y3eZN2lp9jow55FfXMiINEdt1XR85VipRLSOkT6kSpzs2x-jbLDiz9iFVzkd81YKxMgPA7VfZeQUm4n-mOmnWMaVX30zGFU4L3oPBctYKkl4dYfqYWqRNfrgPJVi5DGFjywgxx0ASEiJHtV72paI3fDR2XwlSkyhhmY-ICjCRmsJN4fX1pdoL8a18-aQrvyu4j0Os6dVPYIoPvvY0SAZtWYKHfM15g7A3HD4cVREf9cUsprCRK93w";
 	 	private static final Logger logger = LoggerFactory.getLogger(JWT.class);
 	 	
-		public static String createJWT(String id, String issuer, String subject, long ttlMillis, String username, String faction) 
+		public static String createJWT(String id, String issuer, String subject, long ttlMillis, String username, String faction,String firstname, String lastname) 
 		{
 			//The JWT signature algorithm we will be using to sign the token
 		    SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -34,6 +34,8 @@ public class JWT
 		    Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 		
 		    logger.debug("Username for JWT:" + username);
+		    logger.debug("Firstname for JWT:" + firstname);
+		    logger.debug("Lastname for JWT:" + lastname);
 		    
 		    //Let's set the JWT Claims
 		    JwtBuilder builder = Jwts.builder().setId(id)
@@ -42,6 +44,8 @@ public class JWT
 		            .setIssuer(issuer)
 		            .claim("username", username)
 		            .claim("faction", faction)
+		            .claim("firstname", firstname)
+		            .claim("lastname", lastname)
 		            .signWith(signatureAlgorithm, signingKey);
 		  
 		    //if it has been specified, let's add the expiration
@@ -62,6 +66,8 @@ public class JWT
 			            .parseClaimsJws(jwt).getBody();
 			    
 			    logger.debug("Claims: " + claims.get("username"));
+			    logger.debug("Claims: " + claims.get("firstname"));
+			    logger.debug("Claims: " + claims.get("lastname"));
 			    return claims;
 		}
 }
