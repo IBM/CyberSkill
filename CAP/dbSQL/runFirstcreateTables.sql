@@ -137,7 +137,7 @@ ALTER TABLE activity
   OWNER TO capuser;
   
 DROP TABLE IF EXISTS admincomments CASCADE;
-CREATE TABLE activity 
+CREATE TABLE admincomments 
 (
   id serial NOT NULL,
   firstname character varying(250) NOT NULL,
@@ -145,7 +145,7 @@ CREATE TABLE activity
   username character varying(400) NOT NULL,
   comment character varying(400) NOT NULL,
   submitted timestamp NOT NULL,
-  CONSTRAINT activity_pkey PRIMARY KEY (id)
+  CONSTRAINT admincomments_pkey PRIMARY KEY (id)
 )
 WITH (
   OIDS=FALSE
@@ -160,7 +160,7 @@ ALTER TABLE admincomments
 INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active,registered)  VALUES ('ad','min','adminators','admin@test.com', 'ce36f6bf7f87caf5135e817761084f6d421e350020de966ed89bb651fd1b33ac', 'admin@test.com', 'admin@test.com', 'admin@test.com', true,true,now());
 -- Username: testN@test.com
 -- Password: password
-INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active)  VALUES ('test1','user1','testers1','test1@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test1@test.com', 'test1@test.com', 'test1@test.com', false,true,now());
+INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active,registered)  VALUES ('test1','user1','testers1','test1@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test1@test.com', 'test1@test.com', 'test1@test.com', false,true,now());
 INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active,registered)  VALUES ('test2','user2','testers1','test2@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test2@test.com', 'test2@test.com', 'test2@test.com', false,true,now());
 INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active,registered)  VALUES ('test3','user3','testers1','test3@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test3@test.com', 'test3@test.com', 'test3@test.com', false,true,now());
 INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active,registered)  VALUES ('test4','user4','testers2','test4@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test4@test.com', 'test4@test.com', 'test4@test.com', false,true,now());
