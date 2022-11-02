@@ -144,7 +144,7 @@ CREATE TABLE admincomments
   firstname character varying(250) NOT NULL,
   lastname character varying(250) NOT NULL,
   username character varying(400) NOT NULL,
-  comment character varying(400) NOT NULL,
+  thecomments character varying(400) NOT NULL,
   submitted timestamp NOT NULL,
   CONSTRAINT admincomments_pkey PRIMARY KEY (id)
 )
@@ -155,7 +155,7 @@ ALTER TABLE admincomments
   OWNER TO capuser;
   
   
----------------------TEST DATA----------------------------------------------------------------------------------------------------------
+---------------------TEST USERS DATA----------------------------------------------------------------------------------------------------------
 -- Username: admin@test.com
 -- Password: passw0rd!  
 INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active,registered)  VALUES ('ad','min','adminators','admin@test.com', 'ce36f6bf7f87caf5135e817761084f6d421e350020de966ed89bb651fd1b33ac', 'admin@test.com', 'admin@test.com', 'admin@test.com', true,true,now());
@@ -171,6 +171,9 @@ INSERT INTO users (firstname,lastname,faction,username, password, comporganizati
 INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active,registered)  VALUES ('test8','user8','testers3','test8@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test8@test.com', 'test8@test.com', 'test8@test.com', false,true,now());
 INSERT INTO users (firstname,lastname,faction,username, password, comporganization, employeeid, email, admin,active,registered)  VALUES ('test9','user9','testers3','test9@test.com', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'test9@test.com', 'test9@test.com', 'test9@test.com', false,true,now());
 
+
+-----------------TEST COMMENTS DATA --------------------------------------------------------------------------------------------------
+ INSERT INTO admincomments (firstname,lastname,username,thecomments,submitted) VALUES ('ad','min','admin@test.com','Today is a good day to die,sorry dye your hair',now());
 
 
 
