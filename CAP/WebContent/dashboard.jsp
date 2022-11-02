@@ -62,6 +62,7 @@ else
 	
 	<script src="js/GenerateScatterChart.js"></script>
 	<script src="js/GenerateBarChart.js"></script>
+	<script src="js/GenerateLineChart.js"></script>
 	
 	
 	
@@ -188,6 +189,22 @@ else
 		    }
 		});
 	}
+	
+	function GetMorePlayerData() {
+		$.ajax({
+		    url: 'getMorePlayerData',
+		    type: 'GET',
+		    data: {'username': '<%=claim.get("username")%>'},
+		    success: function (response) 
+		    {
+		    	console.log("" + response);
+		        
+		    }
+		});
+	}
+	
+	
+	
 	
 	function challengeLoader(directory)
 	{
@@ -439,7 +456,7 @@ else
 	       
 	      </tr>
 	    </table><br>
-	    <button class="w3-button w3-dark-grey">More Player Data<i class="fa fa-arrow-right"></i></button>
+	    <%// <button class="w3-button w3-dark-grey">More Player Data<i class="fa fa-arrow-right"></i></button>  %>
 	  </div>
 	  <hr>
 	  <div class="w3-container">
@@ -485,6 +502,9 @@ else
 	    </div>
 	  </div>
 	
+	
+	
+	
 	  <!-- Footer -->
 	  <footer class="w3-container w3-padding-16 w3-light-grey">
 	    <h4>FOOTER</h4>
@@ -522,6 +542,7 @@ else
 	<script>
 	genenerateBarChart();
 	genenerateScatterChart();
+	genenerateLineChart();
 	GetOpenChallenges();
 	GetMyFactionScore();
 	Get10MostRecentEnabledLevels();
@@ -529,6 +550,7 @@ else
 	GetFactionMemberBySolveTime();
 	GetFactionLoginActivity();
 	GetAdminComments();
+	
 	</script>
 	
 	

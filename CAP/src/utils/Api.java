@@ -511,7 +511,36 @@ public class Api
 
 		return scoresByDate;
 	}
-	
+	/**********************************************/
+	public ArrayList<String[]> getMorePlayerData(String username)
+	{
+		ArrayList<String[]> scoresByDate = new ArrayList<String[]>();
+		Connection connection = null;
+		try 
+		{
+			Database db = new Database();
+			connection = db.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(GetterStatements.get_more_player_data);
+			preparedStatement.setString(1, username);
+			ResultSet results = preparedStatement.executeQuery();
+			
+			while(results.next())
+			{	
+				String[] result = new String[3];
+				result[0] = results.getString("score");
+				result[1] = results.getString("submitted");
+				result[2] = results.getString("levelId");
+				scoresByDate.add(result);
+			}
+
+		}
+		catch(Exception e)
+		{
+			logger.error("getMorePlayerData: " + e.toString());
+		}
+
+		return scoresByDate;
+	}
 	/**********************************************/
 	public boolean setPersistantDatabase(String directory, String level, String difficulty, String owaspCategory, String sans25Category, String status)
 	{

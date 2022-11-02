@@ -1,9 +1,12 @@
 DROP FUNCTION if exists alllevels();  
  
 
-CREATE OR REPLACE FUNCTION submitUserSolution(usernameIN character varying,levelName character varying)
-  RETURNS boolean AS
-$BODY$
+CREATE OR REPLACE FUNCTION submitusersolution(
+	usernamein character varying,
+	directoryin character varying)
+    RETURNS boolean
+    LANGUAGE 'plpgsql'
+AS $BODY$
     DECLARE
     claimedResult RECORD;
     useridIN integer;
@@ -24,8 +27,8 @@ $BODY$
     levelidIN=0;
     originalLevelScoreIN = 0;
     
-    SELECT id INTO levelidIN FROM levels where name = levelName;
-    SELECT originalScore INTO originalLevelScoreIN FROM levels where name = levelName;
+    SELECT id INTO levelidIN FROM levels where directory = directoryIN;
+    SELECT originalScore INTO originalLevelScoreIN FROM levels where directory = directoryIN;
     SELECT id into useridIN FROM scoreboard where username = usernameIN;
     if useridIN IS NULL THEN
 	SELECT id into useridIN FROM users where lower(email) = usernameIN;
@@ -85,13 +88,11 @@ $BODY$
 	RETURN false;
     END IF;
     RETURN true;
-    END;
-$BODY$
-  LANGUAGE plpgsql;
+    END; 
+$BODY$;
 
------------------- 
-
- CREATE OR REPLACE FUNCTION allLevels()
+/**/
+CREATE OR REPLACE FUNCTION allLevels()
 RETURNS TABLE(id integer, level_name character varying,sans_cateogory character varying, status character varying, originalscore integer,timeopened timestamp) 
 AS $$
 BEGIN
@@ -112,7 +113,7 @@ LANGUAGE plpgsql;
  
 ------------------
 
- CREATE OR REPLACE FUNCTION allOpenLevels()
+CREATE OR REPLACE FUNCTION allOpenLevels()
 RETURNS TABLE(id integer, level_name character varying,sans_cateogory character varying, status character varying, originalscore integer,timeopened timestamp) 
 AS $$
 BEGIN
@@ -138,7 +139,7 @@ LANGUAGE plpgsql;
 ------------------
 
 
- CREATE OR REPLACE FUNCTION toggleLevel(levelName character varying)
+CREATE OR REPLACE FUNCTION toggleLevel(levelName character varying)
 RETURNS SETOF boolean AS
 $$
 DECLARE
