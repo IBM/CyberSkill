@@ -42,5 +42,5 @@ public class GetterStatements
 	
 	public static String  get_faction_login_activity = "SELECT * FROM ACTIVITY where faction = ? ORDER BY lastlogin DESC limit 10";
 	
-	public static String get_admin_comments = "SELECT * FROM admincomments ORDER BY submitted limit 10";
+	public static String get_admin_comments = "SELECT firstname,lastname,username,thecomments,to_char(admincomments.submitted, 'Day, DD Mon HH12:MI:SS') as submitted FROM admincomments ORDER BY submitted limit 10";
 }

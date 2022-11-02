@@ -178,14 +178,13 @@ else
 		    type: 'GET',
 		    success: function (response) {
 		    	console.log(response);
-		        var trHTML = '';
-		        var factionCount = 0;
+		        var HTML = '';
 		        $.each(JSON.parse(response), function (i, item) {
-		            trHTML += '<div class="w3-col m2 text-center"><img class="w3-circle" src="css/images/beta/avatars/avatar5.png" style="width:96px;height:96px"></div><div class="w3-col m10 w3-container"><h4>'+item.firstname + '<span class="w3-opacity w3-medium">'+item.submitted+'</span></h4><p>'+item.thecomments+'</p><br></div>';
+		            HTML += '<div class="w3-col m2 text-center"><img class="w3-circle" src="css/images/beta/avatars/avatar5.png" style="width:96px;height:96px"></div><div class="w3-col m10 w3-container"><h4>'+ item.firstname + '</h4><span class="w3-opacity w3-medium">' + item.submitted + '</span><p>'+item.thecomments+'</p><br></div>';
 		            
-		            factionCount ++
+		            
 		        });
-		        $('#admin_comments_row').append(trHTML);
+		        $('#admin_comments_row').append(HTML);
 		    }
 		});
 	}
