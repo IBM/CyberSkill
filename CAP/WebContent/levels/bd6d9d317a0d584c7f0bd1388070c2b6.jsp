@@ -101,7 +101,9 @@ if(SessionValidator.validate(ses))
 	        <h2>About This Challenge</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>This is faction chat, this feature allows teams to talk to each other and solve challenges co-operatively</p>
+	        <p>Read all about SQL injection on OWASP <form action="https://owasp.org/www-community/attacks/SQL_Injection" target="_blank">
+    <input type="submit" value="GO TO OWASP SQL Injection" />
+</form></p>
 	      </div>
 	      <footer class="w3-container w3-cyan">
 	        <p>Powered by OpenSource</p>
@@ -117,7 +119,7 @@ if(SessionValidator.validate(ses))
 	        <h2>Challenge Clue</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>This is your faction score breakdown.</p>
+	        <p>All will be revealed when everything is true!!</p>
 	       </div>
 	      <footer class="w3-container w3-cyan">
 	        <p>Powered by OpenSource</p>
