@@ -84,7 +84,6 @@ csrfToken = randomString;
 <form id="solutionInput" ACTION="javascript:;" method="POST"><em class="formLabel">Solution Key: </em>
 <input id="key" name="key" type='text' autocomplete="off"><input type="submit" value="Submit"><input type="hidden" id ="level" name="level" value="<%=  java.net.URLDecoder.decode(level, "UTF-8").substring(0, java.net.URLDecoder.decode(level, "UTF-8").length()-4) %>"></form>
 <div id="solutionSubmitResults"></div>
- %>
 <jsp:include page="../levelBottom.jsp" /> <% //Level Bottom Entry %>
 
 </body></html>

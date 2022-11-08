@@ -1,6 +1,7 @@
 DROP FUNCTION if exists alllevels();  
- 
-
+DROP FUNCTION if exists submitusersolution(character varying,character varying);  
+DROP FUNCTION if exists allOpenLevels();
+DROP FUNCTION if exists toggleLevel(character varying);
 CREATE OR REPLACE FUNCTION submitusersolution(
 	usernamein character varying,
 	directoryin character varying)

@@ -7,6 +7,7 @@
 <%@ page import="io.jsonwebtoken.Claims"%>
 <%@ page import="org.json.simple.JSONArray"%>
 <%@ page import="org.json.simple.JSONObject"%>
+<%@ page import="java.math.BigInteger, java.security.SecureRandom, java.util.regex.Matcher, java.util.regex.Pattern"%>
 
 <% Logger logger  = LoggerFactory.getLogger(this.getClass()); %>
 
@@ -39,6 +40,66 @@ if(SessionValidator.validate(ses))
 	
 	if(levelOpen)
 	{
+		String randomString = new String();
+		String csrfToken = new String();
+		boolean csrfCheck = false;
+		boolean newCsrfTokenNeeded = true;
+		boolean showResult = false;
+		String result = new String();
+		try
+		{
+			byte byteArray[] = new byte[16];
+			SecureRandom psn1 = SecureRandom.getInstance("SHA1PRNG");
+			psn1.setSeed(psn1.nextLong());
+			psn1.nextBytes(byteArray);
+			BigInteger bigInt = new BigInteger(byteArray);
+			randomString = bigInt.toString();
+		}
+		catch(Exception e)
+		{
+			System.out.println("Random Number Error : " + e.toString());
+		}
+		String param = new String();
+		if(request.getParameter("fileName") != null) {
+		param = request.getParameter("fileName");}
+		if(ses.getAttribute("fileCsrfToken") != null){
+		if(ses.getAttribute("fileCsrfToken").toString().isEmpty()){
+		newCsrfTokenNeeded = true;
+		} else if(!param.isEmpty()){
+		//Check CSRF Token
+		if(request.getParameter("csrfToken") != null) {csrfToken = request.getParameter("csrfToken");}
+		if(csrfToken.equalsIgnoreCase(ses.getAttribute("fileCsrfToken").toString())) {
+		newCsrfTokenNeeded = false;
+		String mfileRegex = "([^\\s]+(\\.(?i)(regcmddmgisohta))$)";
+		String ifileRegex = "([^\\s]+(\\.(?i)(jpg|jpeg|gif|png|bmp|svg))$)";
+		String exefileRegex = "([^\\s]+(\\.(?i)(exe|jar|py|sh))$)";
+		Pattern maliciousFileRegex = Pattern.compile(mfileRegex);
+		Pattern imageFileRegex = Pattern.compile(ifileRegex);
+		Pattern executableFileRegex = Pattern.compile(exefileRegex);
+		Matcher exeMatch = executableFileRegex.matcher(param);
+		Matcher maliciousMatch = maliciousFileRegex.matcher(param);
+		Matcher imageMatch = imageFileRegex.matcher(param);
+		if(maliciousMatch.matches()){
+		result = "File <b>" + param + "</b> uploaded successfully. Looks like this executable file could be dangerous...";
+		showResult = false;
+		}
+		else if (imageMatch.matches()){
+		result = "File <b>" + param + "</b> uploaded successfully.";
+		}
+		else if (exeMatch.matches()){
+		result = "File <b>" + param + "</b> Unable to view this file. The DLE is unavailable to respond to requests. Please try again later. (org.apach.http.conn ConnectionTimeoutException: Connect to 103.22.17.3:5000 failed: Connection timed out.)";
+		}
+		else {
+		result = "<b>" + param + "</b> - invalid file name or type. File not uploaded.";
+		}
+		}
+		}
+		}
+		if(newCsrfTokenNeeded){
+		ses.setAttribute("fileCsrfToken", randomString);
+		csrfToken = randomString;
+		}
+		
 		logger.debug("level " + accessPage + " is open for play");
 		String answer = (String) request.getParameter("answer");
 		logger.debug("Answer: " + answer);
@@ -53,7 +114,7 @@ if(SessionValidator.validate(ses))
 		
 		if(answer != null)
 		{
-			if(answer.compareToIgnoreCase("templateAnswer") == 0)
+			if(answer.compareToIgnoreCase("103.22.17.3:5000") == 0)
 			{
 				answerCorrect = true;
 			}
@@ -83,14 +144,14 @@ if(SessionValidator.validate(ses))
 	        <h2>About This Challenge</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>This is faction chat, this feature allows teams to talk to each other and solve challenges co-operatively</p>
-	      </div>
+	       <p>Read all about Error handling on OWASP <form action="https://owasp.org/www-community/Improper_Error_Handling" target="_blank">
+    <input type="submit" value="GO TO OWASP Improper Error Handling" />
+</form></p></div>
 	      <footer class="w3-container w3-cyan">
 	        <p>Powered by OpenSource</p>
 	      </footer>
 	    </div>
   	</div>
-  	
   	 <div id="id02" class="w3-modal">
 	    <div class="w3-modal-content w3-animate-top w3-card-4">
 	      <header class="w3-container w3-cyan"> 
@@ -99,7 +160,7 @@ if(SessionValidator.validate(ses))
 	        <h2>Challenge Clue</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>This is your faction score breakdown.</p>
+	        <p>Some files are automatically flagged as suspicious.</p>
 	       </div>
 	      <footer class="w3-container w3-cyan">
 	        <p>Powered by OpenSource</p>
@@ -123,29 +184,35 @@ if(SessionValidator.validate(ses))
 		  <div class="w3-half w3-blue-grey w3-container" style="height:700px">
 		    <div class="w3-padding-64 w3-center">
 		      <h1><%=rec_name%></h1>
-		      <img src="css/images/7.svg" class="w3-margin w3-circle" alt="Person" style="width:50%">
+		      <img src="css/images/7.svg" class="w3-margin w3-circle" alt="Person" style="width:10%">
 		      <div class="w3-left-align w3-padding-large">
 		        
 		        <%
 		        if(!answerCorrect)
 		        {
 		       	%>
-			        <p>Some high level question facts</p>
+			        <p>Applications should be ready for unexpected user input, often error messages can give away details about network topology through stack traces. Find the details of the server and enter it into the Solution key box to complete this level. </p>
 			        
 			        
 			        <p>
-			        	<form action="#" method="get">
-							<!-- Here is where we ask the question, change nothing only the question. -->
-							 Actual Question Stuff 
-							
-							<p align=center> 
-							<input class="textbox" name="answer" id="answer" type="text" autocomplete="off" value="Answer">
-							</p>
-						    	<p align=center> <input type="submit" name="Submit" value="Submit" > </p>
-						</form> 
+			        	<script>function validateFileName() {    var f = document.forms["levelForm"]["levelInput"].value;    var ext = f.substring(f.lastIndexOf('.') + 1);    if(ext == "gif" || ext == "GIF" || ext == "JPEG" || ext == "jpeg" || ext == "jpg" || ext == "JPG" || ext == "png" || ext == "PNG" || ext == "bmp" || ext == "BMP" || +ext == "SVG" || ext == "svg") {        return true;    }  else if(ext == "exe" || ext == "bat" || ext == "sh" || ext == "jar" || ext == "py"){        document.getElementById('jsresult').innerHTML = '<h4 style="color:red;">Unable to view this file. The DLE is unavailable to respond to requests. Please try again later. (org.apach.http.conn ConnectionTimeoutException: Connect to 103.22.17.3:5000 failed: Connection timed out.)</h4>';        return false;    }	   else{        document.getElementById('jsresult').innerHTML = '<h4 style="color:red;">Please upload image files only.</h4>';			return false;			}}</script>
+
+			        	<form onsubmit="return validateFileName()" id="levelForm">
+			        		<em class="formLabel">File Name: </em>
+							<input id="csrfToken" name="csrfToken" type="hidden" value="<%= csrfToken %>">
+							<input id="levelInput" name="levelInput" type='text' autocomplete="off">
+							<input type="submit" value="Upload File">
+						</form>
+			        	<div id="jsresult"></div>
+						<div id="formResults">
+			        	
+			        	<% /* Common Solution */ String uri = request.getRequestURI();String level = uri.substring(uri.lastIndexOf("/")+1);%>
+<form ACTION="#" method="GET"><em class="formLabel">Solution: </em>
+<input id="answer" name="answer" type='text' autocomplete="off"><input type="submit" value="Submit"></form>
 					</p>
 				<%
 		        }
+		        
 		        else
 		        {
 				%>
