@@ -7,6 +7,7 @@
 <%@ page import="io.jsonwebtoken.Claims"%>
 <%@ page import="org.json.simple.JSONArray"%>
 <%@ page import="org.json.simple.JSONObject"%>
+<%@ page import="levelUtils.InMemoryDatabase"%>
 
 <% Logger logger  = LoggerFactory.getLogger(this.getClass()); %>
 
@@ -40,6 +41,19 @@ if(SessionValidator.validate(ses))
 	if(levelOpen)
 	{
 		logger.debug("level " + accessPage + " is open for play");
+		InMemoryDatabase imdb = new InMemoryDatabase();
+		imdb.Create();
+		String param1 = new String();
+		String param2 = new String();
+		String answerKey = new String();
+		if(request.getParameter("username") != null && request.getParameter("password") != null){
+			 param1 = request.getParameter("username");
+			 param2 = request.getParameter("password");
+		if (param1.equals("admin0") && param2.equals("d41d8cd98f00b204e9800998ecf8427e")) {
+		 	 answerKey = " 39F8AD24BA58094DAE474E312DBB1157E321AD30C0F958E0B4A8D5205B86662D ";} 
+		else answerKey = "<p style='color:red'>Wrong Username or Password!</p>"; 
+		}
+		String htmlTable = "AnswerKey is: " + answerKey;
 		String answer = (String) request.getParameter("answer");
 		logger.debug("Answer: " + answer);
 		
@@ -53,7 +67,7 @@ if(SessionValidator.validate(ses))
 		
 		if(answer != null)
 		{
-			if(answer.compareToIgnoreCase("templateAnswer") == 0)
+			if(answer.compareToIgnoreCase("39F8AD24BA58094DAE474E312DBB1157E321AD30C0F958E0B4A8D5205B86662D") == 0)
 			{
 				answerCorrect = true;
 			}
@@ -83,8 +97,9 @@ if(SessionValidator.validate(ses))
 	        <h2>About This Challenge</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>This is faction chat, this feature allows teams to talk to each other and solve challenges co-operatively</p>
-	      </div>
+	       <p>Read all about Hard Coded Credentials <form action="https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password" target="_blank">
+    <input type="submit" value="GO TO OWASP Session Management Cheat Sheet" />
+</form></p></div>
 	      <footer class="w3-container w3-cyan">
 	        <p>Powered by OpenSource</p>
 	      </footer>
@@ -99,7 +114,7 @@ if(SessionValidator.validate(ses))
 	        <h2>Challenge Clue</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>This is your faction score breakdown.</p>
+	        <p>Its all about the power of the source.</p>
 	       </div>
 	      <footer class="w3-container w3-cyan">
 	        <p>Powered by OpenSource</p>
@@ -130,20 +145,22 @@ if(SessionValidator.validate(ses))
 		        if(!answerCorrect)
 		        {
 		       	%>
-			        <p>Some high level question facts</p>
+			        <p>The developers left some hard-coded credentials somewhere. You need to find them. </p>
 			        
 			        
 			        <p>
-			        	<form action="#" method="get">
-							<!-- Here is where we ask the question, change nothing only the question. -->
-							 Actual Question Stuff 
-							
-							<p align=center> 
-							<input class="textbox" name="answer" id="answer" type="text" autocomplete="off" value="Answer">
-							</p>
-						    	<p align=center> <input type="submit" name="Submit" value="Submit" > </p>
-						</form> 
+			        	<form id="levelForm">
+			        	<em class="username">username: </em><input id="levelInput" name="username" type='text' autocomplete="off">
+			        	</br>
+<em class="password">password: </em><input id="levelInput" name="password" type='text' autocomplete="off"><input type="submit" value="Submit"></form>
+<div id="formResults">
+<%= htmlTable %>
+</div>
+<% /* Common Solution */ String uri = request.getRequestURI();String level = uri.substring(uri.lastIndexOf("/")+1);%>
+<form ACTION="#" method="GET"><em class="formLabel">Solution: </em>
+<input id="answer" name="answer" type='text' autocomplete="off"><input type="submit" value="Submit"></form><div id="solutionSubmitResults"></div>
 					</p>
+					<a href="webapp.properties" type="hidden"></a>
 				<%
 		        }
 		        else
