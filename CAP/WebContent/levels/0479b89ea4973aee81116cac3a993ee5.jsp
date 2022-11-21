@@ -7,6 +7,7 @@
 <%@ page import="io.jsonwebtoken.Claims"%>
 <%@ page import="org.json.simple.JSONArray"%>
 <%@ page import="org.json.simple.JSONObject"%>
+<%@ page import="java.util.Random"%>
 
 <% Logger logger  = LoggerFactory.getLogger(this.getClass()); %>
 
@@ -39,7 +40,54 @@ if(SessionValidator.validate(ses))
 	
 	if(levelOpen)
 	{
+		
 		logger.debug("level " + accessPage + " is open for play");
+		response.setHeader("X-XSS-Protection", "0");
+		String randomString = new String();
+		String csrfToken = new String();
+		boolean csrfCheck = false;
+		boolean newCsrfTokenNeeded = true;
+		boolean showResult = false;
+		String result = new String();
+		String htmlOutput = new String();
+		Cookie[] cookies = request.getCookies();
+
+			String sessionArray[] = {"Session1", "Session2", "Session4", "Session5", "Session6", "Session7", "Session8", "Session9", "Session10", "Session0"};
+			
+		boolean cookieFound = false;
+		boolean adminSesh = false;
+		boolean validSesh = false;
+		for (int i = 0; i < cookies.length; i++)
+		{
+		if(cookies[i].getName().equalsIgnoreCase("sessionCookie"))
+			{
+				cookieFound = true;
+				if(cookies[i].getValue().equalsIgnoreCase(sessionArray[9]))
+				{
+					adminSesh = true;
+				} else {
+					for(int j = 0; j < sessionArray.length; j++) {
+						if(cookies[i].getValue().equalsIgnoreCase(sessionArray[j]))
+							validSesh = true;
+					}
+				}
+				break;
+			}
+		}
+		if(!cookieFound)
+		{
+		Random r = new Random();
+		int random = r.nextInt(9);
+		Cookie cookie = new Cookie("sessionCookie", sessionArray[random]);
+		response.addCookie(cookie);}
+		if(adminSesh)
+		{
+			result = "<h2>Welcome Administrator</h2><p>The key for this challenge is: <b>577e4507d8cfeff13e3680a2c4c6ba6df94b506e94f4e9fb5498440ebab0259f</b></p>";
+		} else if (validSesh){
+		 result = "<h2>Welcome User</h2>You are authenciated as a user, and currently have an active session.";
+		} else {
+		 result = "<h2>Invalid Session Detected</h2>";
+		}
 		String answer = (String) request.getParameter("answer");
 		logger.debug("Answer: " + answer);
 		
@@ -53,7 +101,7 @@ if(SessionValidator.validate(ses))
 		
 		if(answer != null)
 		{
-			if(answer.compareToIgnoreCase("templateAnswer") == 0)
+			if(answer.compareToIgnoreCase("577e4507d8cfeff13e3680a2c4c6ba6df94b506e94f4e9fb5498440ebab0259f") == 0)
 			{
 				answerCorrect = true;
 			}
@@ -82,9 +130,10 @@ if(SessionValidator.validate(ses))
 	        class="w3-button w3-display-topright">&times;</span>
 	        <h2>About This Challenge</h2>
 	      </header>
-	      <div class="w3-container">
-	        <p>This is faction chat, this feature allows teams to talk to each other and solve challenges co-operatively</p>
-	      </div>
+	       <div class="w3-container">
+	       <p>Read all about Session Management on OWASP <form action="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html" target="_blank">
+    <input type="submit" value="GO TO OWASP Session Management Cheat Sheet" />
+</form></p></div>
 	      <footer class="w3-container w3-cyan">
 	        <p>Powered by OpenSource</p>
 	      </footer>
@@ -99,7 +148,7 @@ if(SessionValidator.validate(ses))
 	        <h2>Challenge Clue</h2>
 	      </header>
 	      <div class="w3-container">
-	        <p>This is your faction score breakdown.</p>
+	        <p>123 Sesame Street</p>
 	       </div>
 	      <footer class="w3-container w3-cyan">
 	        <p>Powered by OpenSource</p>
@@ -130,19 +179,13 @@ if(SessionValidator.validate(ses))
 		        if(!answerCorrect)
 		        {
 		       	%>
-			        <p>Some high level question facts</p>
+			        <p>Are session management assets like user credentials and session IDs properly protected? This session management challenge is vulnerable to session tampering due to weak account management functions responsible for generating session IDs. To complete this challenge you must hijack the administrators session.</p>
+			        
 			        
 			        
 			        <p>
-			        	<form action="#" method="get">
-							<!-- Here is where we ask the question, change nothing only the question. -->
-							 Actual Question Stuff 
-							
-							<p align=center> 
-							<input class="textbox" name="answer" id="answer" type="text" autocomplete="off" value="Answer">
-							</p>
-						    	<p align=center> <input type="submit" name="Submit" value="Submit" > </p>
-						</form> 
+			        	<form ACTION="#" method="GET"><em class="formLabel">Solution: </em>
+<input id="answer" name="answer" type='text' autocomplete="off"><input type="submit" value="Submit"></form>
 					</p>
 				<%
 		        }
@@ -156,13 +199,13 @@ if(SessionValidator.validate(ses))
 					if(bool)
 					{
 						%>
-						<p>You have been awarded points for this submission!</p>
+						<p>As you have already solved this, you have not been awarded points for this submission!</p>
 						<%
 					}
 					else
 					{
 						%>
-						<p>As you have already solved this, you have not been awarded points for this submission!</p>s
+						<p>You have been awarded points for this submission!</p>
 						<%
 					}
 		        }

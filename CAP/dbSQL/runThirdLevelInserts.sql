@@ -10,11 +10,11 @@ INSERT INTO public.levels (directory, name, score, originalscore, status, owaspc
 select toggleLevel('SQL Injection 1');
 select toggleLevel('SQL Injection Quotation');
 select toggleLevel('Verbose Error Message');
-select toggleLevel('A XSS');
+select toggleLevel('Weak Session IDs');
 
-select submitUserSolution('test1@test.com','b02dd5f6d4e966ddc4b93f399b3fe1a3');
-select submitUserSolution('test4@test.com','b02dd5f6d4e966ddc4b93f399b3fe1a3');
-select submitUserSolution('test7@test.com','b02dd5f6d4e966ddc4b93f399b3fe1a3');
+select submitUserSolution('test1@test.com','0479b89ea4973aee81116cac3a993ee5');
+select submitUserSolution('test4@test.com','0479b89ea4973aee81116cac3a993ee5');
+select submitUserSolution('test7@test.com','0479b89ea4973aee81116cac3a993ee5');
 select submitUserSolution('test2@test.com','bd6d9d317a0d584c7f0bd1388070c2b6');
 select submitUserSolution('test5@test.com','bd6d9d317a0d584c7f0bd1388070c2b6');
 select submitUserSolution('test8@test.com','bd6d9d317a0d584c7f0bd1388070c2b6');
