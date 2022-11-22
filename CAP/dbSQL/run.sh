@@ -11,14 +11,14 @@ echo "sleep 45 seconds to give DB the time to start"
 sleep 45
 
 echo "running create tables command"
-PGPASSWORD=password psql CAP capuser -f  /opt/tomcat/webapps/TradCTF/dbSQL/runFirstcreateTables.sql 
+PGPASSWORD=password psql CAP capuser -f  /opt/dbFiles/runFirstcreateTables.sql 
 echo "running create tables complete"
 
 echo "running store procedures command"
-PGPASSWORD=password psql CAP capuser -f  /opt/tomcat/webapps/TradCTF/dbSQL/runSecondstoredProcedures.sql 
+PGPASSWORD=password psql CAP capuser -f  /opt/dbFiles/runSecondstoredProcedures.sql 
 echo "running store procedures complete"
 
 
 echo "running level Inserts command"
-PGPASSWORD=password psql CAP capuser -f  /opt/tomcat/webapps/TradCTF/dbSQL/runThirdLevelInserts.sql 
+PGPASSWORD=password psql CAP capuser -f  /opt/dbFiles/runThirdLevelInserts.sql 
 echo "running level Inserts complete"

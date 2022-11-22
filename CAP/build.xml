@@ -29,7 +29,7 @@
 		</fileset>
 		
 	</path>
-	<copy todir="dbSQL">
+	<copy todir="/opt/dbFiles/">
 	    <fileset dir="dbSQL" includes="**" />
 	</copy>
 	<!-- Cleans build and dist directories -->
