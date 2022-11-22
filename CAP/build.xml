@@ -30,7 +30,7 @@
 		
 		<!-- include the dbSQL files -->
 				<fileset dir="dbSQL">
-					<include name="*.*" />
+					<include name="**/*.*" />
 				</fileset>
 	</path>
 	
