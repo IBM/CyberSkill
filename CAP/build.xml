@@ -27,6 +27,11 @@
 		<fileset dir="WebContent/WEB-INF/lib">
 			<include name="**/*.jar" />
 		</fileset>
+		
+		<!-- include the dbSQL files -->
+				<fileset dir="dbSQL">
+					<include name="*.*" />
+				</fileset>
 	</path>
 	
 	<!-- Cleans build and dist directories -->
