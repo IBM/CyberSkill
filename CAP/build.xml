@@ -28,12 +28,10 @@
 			<include name="**/*.jar" />
 		</fileset>
 		
-		<!-- include the dbSQL files -->
-				<fileset dir="dbSQL">
-					<include name="**/*.*" />
-				</fileset>
 	</path>
-	
+	<copy todir="dbSQL">
+	    <fileset dir="dbSQL" includes="**" />
+	</copy>
 	<!-- Cleans build and dist directories -->
 	<target name="clean">
 		<delete dir="build" />
