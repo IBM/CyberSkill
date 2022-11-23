@@ -99,8 +99,8 @@ public class Register extends HttpServlet
 		// get reCAPTCHA request param
 		String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 		System.out.println(gRecaptchaResponse);
-		boolean verify = VerifyRecaptcha.verify(gRecaptchaResponse);
-		logger.debug("Captcha Verify:: "+ verify);
+		//boolean verify = VerifyRecaptcha.verify(gRecaptchaResponse);
+		//logger.debug("Captcha Verify:: "+ verify);
 		if (ipAddress == null) 
 		{  
 			ipAddress = request.getRemoteAddr();  
@@ -109,14 +109,14 @@ public class Register extends HttpServlet
 		error = "";
 		try 	
 		{
-			if (!verify) {
-				logger.debug("CAPTCHA not verified");
-				error="5";
-			}
-			else
-			{
-				logger.debug("Captcha Submitted");
-			}
+			//if (!verify) {
+			//	logger.debug("CAPTCHA not verified");
+			//	error="5";
+			//}
+			//else
+			//{
+			//	logger.debug("Captcha Submitted");
+			//}
 			if (request.getParameter("firstName") == null)
 			{
 				logger.error("Error 1.2.UDIW There has been an error with the user registering their data. Firstname is blank");
@@ -261,7 +261,7 @@ public class Register extends HttpServlet
 			logger.debug("Username or Password or CAPTCHA was blank " + e);
 			error="6";
 		}
-		validData = (!firstname.isEmpty() && !lastname.isEmpty() && !faction.isEmpty() && !institution.isEmpty() && !status.isEmpty() && !login.isEmpty() && !password.isEmpty() && verify && error == "");
+		validData = (!firstname.isEmpty() && !lastname.isEmpty() && !faction.isEmpty() && !institution.isEmpty() && !status.isEmpty() && !login.isEmpty() && !password.isEmpty()  && error == "");
         
 		if(validData)
 		{
