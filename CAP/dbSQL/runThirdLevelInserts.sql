@@ -6,13 +6,16 @@ INSERT INTO public.levels (directory, name, score, originalscore, status, owaspc
 ('c58f56ee380a902acc2d71899683dc21','Broken Cryptography',65,65,'disabled','Cryptographic vulnerability','19'),
 ('a05e8206b7f83729cfae4b66436ed2a9','Use of Hard-Coded Creds',65,65,'disabled','Security Misconfiguration','17'),
 ('590df80f17969356918aa57b3cdffeb3','Verbose Error Message',65,65,'disabled','Error Handling','19'),
-('772e971ye1y9129yd9812yd8h1d981bd','Letter Soup',65,65,'disabled','Sensitive Data Exposure','23');
+('772e971ye1y9129yd9812yd8h1d981bd','Letter Soup',65,65,'disabled','Sensitive Data Exposure','23'),
+('c9fab9d35fe89e259e8e17b295639c39','Steganography 2',65,65,'enaled','Steganography','25');
 
 select toggleLevel('SQL Injection 1');
 select toggleLevel('SQL Injection Quotation');
 select toggleLevel('Verbose Error Message');
 select toggleLevel('Weak Session IDs');
 select toggleLevel('Letter Soup');
+select toggleLevel('Steganography 2');
+
 
 select submitUserSolution('test1@test.com','0479b89ea4973aee81116cac3a993ee5');
 select submitUserSolution('test4@test.com','0479b89ea4973aee81116cac3a993ee5');
