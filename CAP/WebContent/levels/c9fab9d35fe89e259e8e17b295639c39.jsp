@@ -39,6 +39,7 @@ if(SessionValidator.validate(ses))
 	
 	if(levelOpen)
 	{
+		/*Stego 2 challenge*/
 		logger.debug("level " + accessPage + " is open for play");
 		String answer = (String) request.getParameter("answer");
 		logger.debug("Answer: " + answer);
