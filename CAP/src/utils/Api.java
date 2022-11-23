@@ -1307,7 +1307,7 @@ public class Api
 	{
 		boolean result = false;
 		
-		logger.debug("submitValidSolution");
+		logger.debug("submitValidSolution(" + username + "," +accessPage+")");
 		
 		Database db = new Database();
 		Connection con = db.getConnection();
@@ -1322,7 +1322,11 @@ public class Api
 			ResultSet rs = preparedStatement.executeQuery();
          	while(rs.next())
          	{
-         		logger.debug("Result of submit_valid_solution: " + rs.getString("submitusersolution"));
+         		String temp = rs.getString("submitusersolution");
+         		if(temp.compareToIgnoreCase("t") == 0)
+         		{
+         			result = true;
+         		}
          	}
 		}
 		catch (SQLException e)
