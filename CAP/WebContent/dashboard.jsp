@@ -329,10 +329,10 @@ else
 	  <div class="w3-bar-block">
 	    <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
 	    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue" ><i class="fa fa-users fa-fw"></i>  Overview</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('id01').style.display='block'"><i class="fa fa-eye fa-fw"></i>  Faction Chat</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('id02').style.display='block'"><i class="fa fa-users fa-fw"></i>  Scoreboard</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('id03').style.display='block'"><i class="fa fa-bullseye fa-fw"></i>  Challenges</a>
-	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('id04').style.display='block'"><i class="fa fa-diamond fa-fw"></i>  Users</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="showMoodles('id01')"><i class="fa fa-eye fa-fw"></i>  Faction Chat</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="showMoodles('id02')"><i class="fa fa-users fa-fw"></i>  Scoreboard</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="showMoodles('id03')"><i class="fa fa-bullseye fa-fw"></i>  Challenges</a>
+	    <a href="#" class="w3-bar-item w3-button w3-padding" onclick="showMoodles('id04')"><i class="fa fa-diamond fa-fw"></i>  Users</a>
 	    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Settings</a><br><br>
 	  </div>
 	</nav>
@@ -585,7 +585,39 @@ else
 		
 		genenerateBarChart();
 	}
-	
+	function showMoodles(id)
+	{
+		console.log(id);
+		if(id == 'id01')
+		{
+			document.getElementById('id01').style.display='block';
+			document.getElementById('id02').style.display='none';
+			document.getElementById('id03').style.display='none';
+			document.getElementById('id04').style.display='none';
+		}
+		if(id == 'id02')
+		{
+			document.getElementById('id01').style.display='none';
+			document.getElementById('id02').style.display='block';
+			document.getElementById('id03').style.display='none';
+			document.getElementById('id04').style.display='none';
+		}
+		if(id == 'id03')
+		{
+			document.getElementById('id01').style.display='none';
+			document.getElementById('id02').style.display='none';
+			document.getElementById('id03').style.display='block';
+			document.getElementById('id04').style.display='none';
+		}
+		if(id == 'id04')
+		{
+			document.getElementById('id01').style.display='none';
+			document.getElementById('id02').style.display='none';
+			document.getElementById('id03').style.display='none';
+			document.getElementById('id04').style.display='block';
+		}
+		
+	}
 	
 	</script>
 	
