@@ -199,13 +199,14 @@ if(SessionValidator.validate(ses))
 					if(bool)
 					{
 						%>
-						<p>As you have already solved this, you have not been awarded points for this submission!</p>
+						<p>You have been awarded points for this submission!</p>
 						<%
 					}
 					else
 					{
 						%>
-						<p>You have been awarded points for this submission!</p>
+						
+						<p>As you have already solved this, you have not been awarded points for this submission!</p>
 						<%
 					}
 		        }
