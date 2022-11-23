@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" import="utils.*" errorPage="" %>
+<%//SQL Injection 1 %>
+
 <%@ page import="java.util.Properties"%>
 <%@ page import="org.slf4j.Logger"%>
 <%@ page import="org.slf4j.LoggerFactory"%>

@@ -89,7 +89,6 @@ if (request.getSession() != null)
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
-<script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 <body>
 
@@ -129,7 +128,7 @@ if (request.getSession() != null)
 					<input class="su-text-input" type="passWord" name="passWord" id="passWord" autocomplete="OFF" placeholder="Password"/>
 					<input class="su-text-input" type="password" name="passWordConfirm" id="passWordConfirm" autocomplete="OFF" placeholder="Confirm Password"/>
 					<br>
-   <div class="g-recaptcha" data-sitekey=""></div>
+   
 	 <input type="submit" name="submit" value="Sign up!"/>
 					<%
 						if(registererrors)
