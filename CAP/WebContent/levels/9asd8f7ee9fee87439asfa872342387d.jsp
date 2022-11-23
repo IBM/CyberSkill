@@ -138,7 +138,7 @@ if(SessionValidator.validate(ses))
 							<!-- Here is where we ask the question, change nothing only the question. -->
 							 You have been provided with a network packet capture, but can you determine the key in these covert communications? To help you on your way we have provided you with a python script. Have fun.
 							<p>
-			        			<em class="formLabel">Download the evidence kit.<a href="9asd8f7ee9fee87439asfa872342387dakhaf/contents.zip">Click to Download</a></em>
+			        			<em class="formLabel">Download the evidence kit.<a href="9asd8f7ee9fee87439asfa872342387d/contents.zip">Click to Download</a></em>
 							</p>
 							<p align=center> 
 							<input class="textbox" name="answer" id="answer" type="text" autocomplete="off" value="Answer">
