@@ -62,6 +62,7 @@ else
 	
 	<script src="js/GenerateScatterChart.js"></script>
 	<script src="js/GenerateBarChart.js"></script>
+	<script src="js/GenerateFactionBarChart.js"></script>
 	<script src="js/GenerateLineChart.js"></script>
 	
 	
@@ -239,9 +240,10 @@ else
 	      <header class="w3-container w3-blue"> 
 	        <span onclick="document.getElementById('id02').style.display='none'" 
 	        class="w3-button w3-display-topright">&times;</span>
-	        <h2>Scoreboard</h2>
+	        
+	        <h2><a onclick="showFactionChartByFaction()">Scoreboard</a> <a onclick="showFactionCharts()">[Faction compare]</a></h2>
 	      </header>
-	      <div class="w3-container">
+	      <div class="w3-container" id="ScoreData">
 	        <p>This is your faction score breakdown.</p>
 	        <p style="fill: steelblue;  align-content: center;"> <svg id="myFactionScore" style="width:600px; height:500px; display:block; align-content: center"></svg></p>
 	      </div>
@@ -537,6 +539,54 @@ else
 	  mySidebar.style.display = "none";
 	  overlayBg.style.display = "none";
 	}
+	
+	
+	// 
+	function showFactionCharts()
+	{
+		var container = document.getElementById('ScoreData');
+		container.replaceChildren();
+		
+		//<p>This is your faction score breakdown.</p>
+	    //<p style="fill: steelblue;  align-content: center;"> <svg id="myFactionScore" style="width:600px; height:500px; display:block; align-content: center"></svg></p>
+
+		
+		const p1 = document.createElement('p');
+		p1.innerHTML = 'This is the score of all factions';		
+		
+		const svg1 = document.createElement('svg');
+		svg1.setAttribute('id','myFactionScore');
+		svg1.setAttribute('style','width:600px; height:500px; display:block; fill: steelblue; align-content: center');
+		
+		
+		container.replaceChildren(p1, svg1);
+		
+		genenerateFactionBarChart();
+	}
+	
+	function showFactionChartByFaction()
+	{
+		var container = document.getElementById('ScoreData');
+		container.replaceChildren();
+		
+		//<p>This is your faction score breakdown.</p>
+	    //<p style="fill: steelblue;  align-content: center;"> <svg id="myFactionScore" style="width:600px; height:500px; display:block; align-content: center"></svg></p>
+
+		
+		const p1 = document.createElement('p');
+		p1.innerHTML = 'This is the score of your faction';		
+		
+		const svg1 = document.createElement('svg');
+		svg1.setAttribute('id','myFactionScore');
+		svg1.setAttribute('style','width:600px; height:500px; display:block; fill: steelblue; align-content: center');
+		
+		
+		container.replaceChildren(p1, svg1);
+		
+		genenerateBarChart();
+	}
+	
+	
 	</script>
 	
 	<script>
