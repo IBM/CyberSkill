@@ -1,9 +1,9 @@
 function genenerateBarChart()
 	{
 		// Set graph margins and dimensions
-		var margin = {top: 20, right: 20, bottom: 30, left: 40},
+		var margin = {top: 20, right: 20, bottom: 80, left: 40},
 		    width = 600 - margin.left - margin.right,
-		    height = 500 - margin.top - margin.bottom;
+		    height = 450 - margin.top - margin.bottom;
 
 		// Set ranges
 		var x = d3.scaleBand()
@@ -39,15 +39,23 @@ function genenerateBarChart()
 		      .data(data)
 		    .enter().append("rect")
 		      .attr("class", "bar")
+		      
 		      .attr("x", function(d) { return x(d.username); })
 		      .attr("width", x.bandwidth())
 		      .attr("y", function(d) { return y(d.sum); })
 		      .attr("height", function(d) { return height - y(d.sum); });
+		      
+		      
 
 		  // Add x axis
 		  svg.append("g")
 		      .attr("transform", "translate(0," + height + ")")
-		      .call(d3.axisBottom(x));
+		      .call(d3.axisBottom(x))
+		      .selectAll("text")  
+			    .style("text-anchor", "end")
+			    .attr("dx", "-.8em")
+			    .attr("dy", ".15em")
+			    .attr("transform", "rotate(-65)");
 
 		  // Add y axis
 		  svg.append("g")
