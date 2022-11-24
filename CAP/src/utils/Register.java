@@ -300,11 +300,12 @@ public class Register extends HttpServlet
 		}
 		if(!authenticated && error==null)
 		{
-			response.sendRedirect("registered.jsp");
+			response.sendRedirect("register.jsp?response=ok");
 		}
 		else 
 		{
-			String nextJSP = "index.jsp?registererror="+error;
+			
+			String nextJSP = "register.jsp?response="+error+"&firstname="+firstname+"&lastname="+lastname+"&institution="+institution+"&status="+status+"&faction="+faction+"&email="+login;
 			response.sendRedirect(nextJSP);
 		}
 	}

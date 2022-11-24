@@ -37,9 +37,9 @@ else
 
 }
 
-String registererror = request.getParameter("registererror");
+String registererror = request.getParameter("response");
 boolean registererrors = true;
-String registererrorCode = "A generic error has occured";
+String registererrorCode = "OK";
 if(registererror==null)
 {
 	registererrors = false;
@@ -74,8 +74,12 @@ if (request.getSession() != null)
 		response.sendRedirect("index.jsp");
 	}
 }
-
-
+String firstname=request.getParameter("firstname");
+String lastname=request.getParameter("lastname");
+String institution=request.getParameter("institution");
+String status=request.getParameter("status");
+String faction=request.getParameter("faction");
+String email=request.getParameter("email");
 %>
 
 <!DOCTYPE html>
@@ -115,16 +119,16 @@ if (request.getSession() != null)
 				
 				<form name="signupForm" method="POST" action="register">
 				
-					<input class="su-text-input" type="text" name="firstName" id="firstName" autocomplete="OFF" placeholder="First Name"/>
-					<input class="su-text-input" type="text" name="lastName" id="lastName" autocomplete="OFF" placeholder="Last Name"/>	
-					<input class="su-text-input" type="text" name="faction" id="faction" autocomplete="OFF" placeholder="Faction"/>
+					<input class="su-text-input" type="text" name="firstName" id="firstName" autocomplete="OFF" placeholder="<%if(firstname == null || firstname.compareToIgnoreCase("")==0){out.print("First Name");}else{out.print(firstname);}%>"/>
+					<input class="su-text-input" type="text" name="lastName" id="lastName" autocomplete="OFF" placeholder="<%if(lastname == null || lastname.compareToIgnoreCase("")==0){out.print("Last Name");}else{out.print(lastname);}%>"/>	
+					<input class="su-text-input" type="text" name="faction" id="faction" autocomplete="OFF" placeholder="<%if(faction == null || faction.compareToIgnoreCase("")==0){out.print("Faction");}else{out.print(faction);}%>"/>
 					<select id="status" name="status">
-			    <option selected=true disabled>Select current status</option>
+			    <option selected=true disabled><%if(status == null || status.compareToIgnoreCase("")==0){out.print("Select current status");}else{out.print(status);}%></option>
 			      <option value="student">Student</option>
 			      <option value="Professional">Professional</option>
 			    </select>	
-					<input class="su-text-input" type="text" name="institution" id="institution" autocomplete="OFF" placeholder="Institution / Organization"/>					
-					<input class="su-text-input" type="text" name="userAddress" id="userAddress" autocomplete="OFF" placeholder="Email Address"/>
+					<input class="su-text-input" type="text" name="institution" id="institution" autocomplete="OFF" placeholder="<%if(institution == null || institution.compareToIgnoreCase("")==0){out.print("Institution");}else{out.print(institution);}%>"/>					
+					<input class="su-text-input" type="text" name="userAddress" id="userAddress" autocomplete="OFF" placeholder="<%if(email == null || email.compareToIgnoreCase("")==0){out.print("Email");}else{out.print(email);}%>"/>
 					<input class="su-text-input" type="passWord" name="passWord" id="passWord" autocomplete="OFF" placeholder="Password"/>
 					<input class="su-text-input" type="password" name="passWordConfirm" id="passWordConfirm" autocomplete="OFF" placeholder="Confirm Password"/>
 					<br>
@@ -149,10 +153,38 @@ if (request.getSession() != null)
   </div>
 </div>
 
+	<div id="id01" class="w3-modal">
+	    <div class="w3-modal-content w3-animate-top w3-card-4">
+	      <header class="w3-container w3-red"> 
+	        <span onclick="document.getElementById('id01').style.display='none'" 
+	        class="w3-button w3-display-topright">&times;</span>
+	        <h2>Registration result</h2>
+	      </header>
+	      <div class="w3-container">
+	        <p>Registration Status: <%=registererrorCode%></p>
+	      </div>
+	      <footer class="w3-container w3-red">
+	        <p>Powered by OpenSource</p>
+	      </footer>
+	    </div>
+  	</div>
+
+
+
 </body>
+<!-- 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+-->
 </html>
-
-
+<%
+if(registererror != null)
+{
+	%>
+		<script>
+			document.getElementById('id01').style.display='block';
+		</script>
+	<%
+}
+%>
 
