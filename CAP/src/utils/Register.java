@@ -218,6 +218,7 @@ public class Register extends HttpServlet
 				if(!ptr.matcher(login).matches())
 				{
 					logger.error("Offense ID: 22  - Register Invalid email submissions. Possible Brute Force  - Register Abuse. Invalid e-mail address Submitter IP Address: " + ipAddress);
+					login = "Email";
 					error="12";
 				}
 				else

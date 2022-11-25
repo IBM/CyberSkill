@@ -119,16 +119,16 @@ String email=request.getParameter("email");
 				
 				<form name="signupForm" method="POST" action="register">
 				
-					<input class="su-text-input" type="text" name="firstName" id="firstName" autocomplete="OFF" placeholder="<%if(firstname == null || firstname.compareToIgnoreCase("")==0){out.print("First Name");}else{out.print(firstname);}%>"/>
-					<input class="su-text-input" type="text" name="lastName" id="lastName" autocomplete="OFF" placeholder="<%if(lastname == null || lastname.compareToIgnoreCase("")==0){out.print("Last Name");}else{out.print(lastname);}%>"/>	
-					<input class="su-text-input" type="text" name="faction" id="faction" autocomplete="OFF" placeholder="<%if(faction == null || faction.compareToIgnoreCase("")==0){out.print("Faction");}else{out.print(faction);}%>"/>
+					<input class="su-text-input" type="text" name="firstName" id="firstName" autocomplete="OFF" value="<%if(firstname == null || firstname.compareToIgnoreCase("")==0){out.print("First Name");}else{out.print(firstname);}%>"/>
+					<input class="su-text-input" type="text" name="lastName" id="lastName" autocomplete="OFF" value="<%if(lastname == null || lastname.compareToIgnoreCase("")==0){out.print("Last Name");}else{out.print(lastname);}%>"/>	
+					<input class="su-text-input" type="text" name="faction" id="faction" autocomplete="OFF" value="<%if(faction == null || faction.compareToIgnoreCase("")==0){out.print("Faction");}else{out.print(faction);}%>"/>
 					<select id="status" name="status">
-			    <option selected=true disabled><%if(status == null || status.compareToIgnoreCase("")==0){out.print("Select current status");}else{out.print(status);}%></option>
+			    <option selected=true value="<%if(status == null || status.compareToIgnoreCase("")==0){out.print("Select current status");}else{out.print(status);}%>"><%if(status == null || status.compareToIgnoreCase("")==0){out.print("Select current status");}else{out.print(status);}%></option>
 			      <option value="student">Student</option>
 			      <option value="Professional">Professional</option>
 			    </select>	
-					<input class="su-text-input" type="text" name="institution" id="institution" autocomplete="OFF" placeholder="<%if(institution == null || institution.compareToIgnoreCase("")==0){out.print("Institution");}else{out.print(institution);}%>"/>					
-					<input class="su-text-input" type="text" name="userAddress" id="userAddress" autocomplete="OFF" placeholder="<%if(email == null || email.compareToIgnoreCase("")==0){out.print("Email");}else{out.print(email);}%>"/>
+					<input class="su-text-input" type="text" name="institution" id="institution" autocomplete="OFF" value="<%if(institution == null || institution.compareToIgnoreCase("")==0){out.print("Institution");}else{out.print(institution);}%>"/>					
+					<input class="su-text-input" type="text" name="userAddress" id="userAddress" autocomplete="OFF" value="<%if(email == null || email.compareToIgnoreCase("")==0){out.print("Email");}else{out.print(email);}%>"/>
 					<input class="su-text-input" type="passWord" name="passWord" id="passWord" autocomplete="OFF" placeholder="Password"/>
 					<input class="su-text-input" type="password" name="passWordConfirm" id="passWordConfirm" autocomplete="OFF" placeholder="Confirm Password"/>
 					<br>
