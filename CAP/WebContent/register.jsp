@@ -158,7 +158,7 @@ String email=request.getParameter("email");
 	      <header class="w3-container w3-red"> 
 	        <span onclick="document.getElementById('id01').style.display='none'" 
 	        class="w3-button w3-display-topright">&times;</span>
-	        <h2>Registration result</h2>
+	        <h2>Registration Failure</h2>
 	      </header>
 	      <div class="w3-container">
 	        <p>Registration Status: <%=registererrorCode%></p>
@@ -169,7 +169,25 @@ String email=request.getParameter("email");
 	    </div>
   	</div>
 
-
+	<div id="id02" class="w3-modal">
+	    <div class="w3-modal-content w3-animate-top w3-card-4">
+	      <header class="w3-container w3-blue"> 
+	        <span onclick="document.getElementById('id02').style.display='none'" 
+	        class="w3-button w3-display-topright">&times;</span>
+	        
+	        <h2><a href="index.jsp">Registration Complete</a></h2>
+	      </header>
+	      <div class="w3-container" id="ScoreData">
+	      		<p></p>
+	      		<p>Registration Successful. Click <a href="index.jsp">here</a> to login!</p>
+	      		<p></p>
+	      		
+	      </div>
+	      <footer class="w3-container w3-blue">
+	        <p>Powered by OpenSource</p>
+	      </footer>
+	    </div>
+  	</div>
 
 </body>
 <!-- 
@@ -180,11 +198,25 @@ String email=request.getParameter("email");
 <%
 if(registererror != null)
 {
+	
+	if(registererrorCode.equalsIgnoreCase("OK"))
+	{
+		%>
+		<script>
+			document.getElementById('id02').style.display='block';
+			document.getElementById('id01').style.display='none';
+		</script>
+	<%
+	}
+	else
+	{
 	%>
 		<script>
 			document.getElementById('id01').style.display='block';
+			document.getElementById('id02').style.display='none';
 		</script>
 	<%
+	}
 }
 %>
 
