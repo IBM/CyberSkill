@@ -1,5 +1,11 @@
 # Who Wants To Be Cyber Aware
 
+
+## Prerequisites
+
+Install a [CouchDB](https://docs.couchdb.org/en/stable/install/index.html) local or a Cloudant DB in [IBM Cloud](https://cloud.ibm.com/registration)
+
+
 ## Development Instructions
 
 1.
