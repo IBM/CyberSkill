@@ -52,5 +52,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 ### Credits
 
-Credit to Lama Dev for his inspiring [tutorial] (https://www.youtube.com/watch?v=EPh_VbMxu4E) .
+Credit to Lama Dev for his inspiring [tutorial](https://www.youtube.com/watch?v=EPh_VbMxu4E) .
+
+Lama Dev Github located [HERE](https://github.com/safak)
 
