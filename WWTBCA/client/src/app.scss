@@ -1,0 +1,255 @@
+$feature-flags: (
+  grid-columns-16: true,
+);
+
+@import "carbon-components/scss/globals/scss/vendor/@carbon/type/scss/font-family.scss";
+@import "carbon-components/scss/globals/scss/vendor/@carbon/layout/scss/breakpoint.scss";
+@import "carbon-components/scss/globals/scss/typography.scss";
+@import "carbon-components/scss/globals/scss/vars.scss";
+@import "carbon-components/scss/globals/scss/vendor/@carbon/elements/scss/themes/theme-maps.scss";
+$carbon--theme: $carbon--theme--g100;
+@import "carbon-components/scss/globals/scss/styles.scss";
+@import "carbon-components/scss/globals/grid/grid";
+@import "@carbon/type/scss/type";
+@import "@carbon/type/scss/font-face/mono";
+@import "@carbon/type/scss/font-face/sans";
+@import "@carbon/charts/styles-g90.css";
+
+@include carbon--type-reset();
+@include carbon--font-face-mono();
+@include carbon--font-face-sans();
+
+@import "@carbon/type/scss/styles";
+
+@import "./components/Leaderboard/Leaderboard.scss";
+@import "./components/WinScreen/WinScreen.scss";
+@import "./components/Helpers/helpers.scss";
+
+.App {
+  height: 100vh;
+  display: flex;
+  background-color: #020230;
+  color: white;
+}
+
+.main {
+  width: 75%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #020230),
+    url("./assets/background.webp") center;
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  height: 50%;
+  position: relative;
+}
+
+.timer {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 5px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 700;
+  position: absolute;
+  bottom: 10px;
+  left: 80px;
+}
+.bottom {
+  height: 50%;
+}
+
+.quiz {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+.question {
+  width: 80%;
+  background: linear-gradient(#100241, black);
+  border: 2px solid white;
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  font-size: 20px;
+}
+.answers {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.answer {
+  width: 40%;
+  padding: 10px;
+  text-align: center;
+  background: linear-gradient(#0e0124, #22074d);
+  border: 1px solid white;
+  border-radius: 15px;
+  font-size: 20px;
+  font-weight: 300;
+  cursor: pointer;
+  margin: 0 10px 20px 10px;
+}
+.answer:hover,
+.answer.active {
+  background: mediumblue;
+}
+.answer.correct {
+  animation: correct 3s ease forwards;
+}
+
+.answers-loading:hover {
+  background: linear-gradient(#0e0124, #22074d) !important;
+}
+
+@keyframes correct {
+  0%,
+  22%,
+  42% {
+    background: mediumblue;
+  }
+  20%,
+  40%,
+  60% {
+    background: linear-gradient(#0e0124, #22074d);
+  }
+  63%,
+  100% {
+    background: green;
+  }
+}
+.answer.wrong {
+  animation: wrong 3s ease forwards;
+}
+@keyframes wrong {
+  0%,
+  22%,
+  42% {
+    background: mediumblue;
+  }
+  20%,
+  40%,
+  60% {
+    background: linear-gradient(#0e0124, #22074d);
+  }
+  63%,
+  100% {
+    background: crimson;
+  }
+}
+.steps {
+  width: 25%;
+  display: flex;
+  justify-content: space-between;
+  background-color: #070624;
+  flex-direction: column;
+
+  .steps-header {
+    padding: $spacing-06;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    order: 2;
+
+    h4 {
+      font-size: 1rem;
+    }
+
+    img {
+      display: inline-block;
+      width: 3rem;
+      margin-right: $spacing-03;
+    }
+  }
+}
+
+.cyberList {
+  list-style: none;
+  width: 100%;
+  padding: 10%;
+}
+
+.cyberListItem {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+.cyberListItem.active {
+  background-color: teal;
+}
+.cyberListItemNumber {
+  font-size: 18px;
+  font-weight: 100;
+  width: 30%;
+}
+
+.cyberListItemValue {
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.endText {
+  position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.start {
+  width: 250px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.startInput {
+  width: 100%;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.startInput:focus {
+  outline: none;
+}
+
+.startButton {
+  width: 100%;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+
+
+.unclickable {
+  transition: 333ms;
+  min-height: 1px;
+  opacity: 0.001;
+  cursor: default;
+}

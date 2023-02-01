@@ -1,0 +1,66 @@
+{
+  "name": "who_wants_to_be_cyber_aware",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@carbon/charts": "^0.45.1",
+    "@carbon/charts-react": "^0.45.1",
+    "@carbon/icons-react": "^10.35.0",
+    "@carbon/layout": "^10.27.0",
+    "@carbon/themes": "^10.38.0",
+    "@carbon/type": "^10.31.0",
+    "@ibm/plex": "^5.1.3",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "browserslist": "^4.16.6",
+    "carbon-components": "^10.39.0",
+    "carbon-components-react": "^7.39.0",
+    "carbon-icons": "^7.0.7",
+    "d3": "^7.0.1",
+    "node-sass": "^4.14.0",
+    "npm-force-resolutions": "0.0.10",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "use-sound": "^4.0.1",
+    "web-vitals": "^1.0.1"
+  },
+  "proxy": "http://localhost:8090",
+  "scripts": {
+    "preinstall": "npx npm-force-resolutions",
+    "start": "PORT=3005 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "resolutions": {
+    "css-what": "5.0.1",
+    "glob-parent": "5.1.2",
+    "browserslist": "4.16.6",
+    "trim-newlines": "3.0.1",
+    "yargs-parser": "13.1.2",
+    "ssri": "8.0.1",
+    "color-string": "^1.5.5",
+    "is-svg": "^4.2.2",
+    "tar": "6.1.2"
+  }
+}

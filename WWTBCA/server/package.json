@@ -1,0 +1,23 @@
+{
+  "name": "quad9_visualization-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cloudant/cloudant": "^4.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "express-http-context": "^1.2.4",
+    "morgan": "^1.10.0",
+    "uuid": "^8.3.2",
+    "winston": "^3.3.3"
+  }
+}

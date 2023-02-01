@@ -1,0 +1,10 @@
+FROM node as build
+WORKDIR /app
+EXPOSE 3005
+COPY package.json .
+RUN npm install
+COPY . .
+CMD ['npm', 'start']
+
+FROM nginx
+COPY --build /app/build /usr/share/nginx/html

@@ -1,0 +1,29 @@
+version: "3"
+services:
+  wwtbca_back:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8090:8090"
+    env_file:
+      - ./server/.env
+  wwtbca_front:
+    stdin_open: true
+    tty: true
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./client/src:/app/src
+    env_file:
+      - ./client/.env
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: "5g"
+
+

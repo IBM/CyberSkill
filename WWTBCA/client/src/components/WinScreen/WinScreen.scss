@@ -1,0 +1,12 @@
+.game-over {
+  .bx--modal-content,
+  .bx--modal-header {
+    padding-right: $spacing-05;
+  }
+  .bx--modal-content {
+    text-align: center;
+  }
+  .bx--modal-close {
+    display: none;
+  }
+}

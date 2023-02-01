@@ -1,0 +1,96 @@
+.helpers{
+    position: absolute;
+    top: $spacing-07;
+    right: calc(25% + #{$spacing-12});
+    display: flex;
+    flex-direction: row-reverse;
+    background: linear-gradient(#0e012483, #22074d93);
+    border-radius: 2ch;
+    padding: $spacing-03
+  }
+  
+  .helper {
+    height: 70px;
+    width: 70px;
+    border: 5px solid #403dc9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: $spacing-03;
+    background-color: rgb(31, 30, 30);
+    p {
+      font-weight: 700;
+    }
+  }
+  
+  .helper:hover {
+    cursor:pointer;
+  }
+  
+  
+
+  .helper-content {
+      display: none;
+  } 
+
+  .in-focus {
+    display: flex;
+  }
+  
+  .helper.used:hover{
+    cursor: default;
+  }
+
+  .helper-content {
+    position: absolute; // give children a width for this div to be width of children
+    padding: $spacing-07;
+    top: 15%;
+    left: 80px;
+    background: linear-gradient(#0e0124, #22074d);
+    box-shadow: 0 0 10px 10px rgba(153, 73, 218, 0.404);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 777ms;
+    
+  }
+
+  .expert {
+      img {
+        max-height: 70%;
+      }
+
+      .expert-ans {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-right: 50px;
+      }
+  }
+
+  .used {
+    background-color: #8c8888;
+    border-color: #706ec6;
+    cursor: default;
+    // p {
+    //   color: $text-02;
+    // }
+  }
+  .used::after {
+    content: "";
+    display: block;
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: $text-02;
+    mix-blend-mode: multiply;
+  }
+
+
+  .expert-img {
+    max-height: 45%;
+    margin-top: -6px;
+  }
