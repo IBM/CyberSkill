@@ -158,6 +158,19 @@ public class Api
 			logger.error("Unable to calculate the level - possible attack: " + e.toString());
 			result = null;
 		}
+		finally {
+                        try
+                        {
+                                if (con != null)
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+		}
 		return result;
 	}
 	/**********************************************/
@@ -251,6 +264,20 @@ public class Api
 			logger.error("Unable to connect to database: " + e.toString());
 			result = false;
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return result;
 
@@ -287,6 +314,20 @@ public class Api
 			logger.error("Unable to connect to database: " + e.toString());
 			result = false;
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return scores;
 	}
@@ -318,6 +359,20 @@ public class Api
 		{
 			logger.error("getAllScoresByDate: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return scoresByDate;
 	}
@@ -347,6 +402,20 @@ public class Api
 		{
 			logger.error("getAllScoresAggregatedByFaction: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return scoresByDate;
 	}
@@ -379,6 +448,20 @@ public class Api
 		{
 			logger.error("getAllScoresByUsername: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return scoresByDate;
 	}
@@ -411,6 +494,20 @@ public class Api
 		{
 			logger.error("getAllScoresByUsername: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return scoresByDate;
 	}
@@ -443,6 +540,20 @@ public class Api
 		{
 			logger.error("get_all_members_of_my_faction: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return factionMembers;
 	}
@@ -477,6 +588,20 @@ public class Api
 		{
 			logger.error("get_all_scores_in_a_faction_by_username: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return scoresByDate;
 	}
@@ -508,6 +633,20 @@ public class Api
 		{
 			logger.error("getAllScoresByFaction: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return scoresByDate;
 	}
@@ -538,6 +677,20 @@ public class Api
 		{
 			logger.error("getMorePlayerData: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return scoresByDate;
 	}
@@ -593,6 +746,20 @@ public class Api
 			logger.error("Unable to connect to database: " + e.toString());
 			result = false;
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return result;
 
@@ -640,6 +807,20 @@ public class Api
 		{
 			logger.error("Could not execute query: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		return modules;
 	}
 	
@@ -657,6 +838,19 @@ public class Api
 			logger.error("Could not toggle level " + levelName );
 			logger.error(e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
 	}
 	
 	/**
@@ -735,6 +929,20 @@ public class Api
 		{
 			logger.error("Could not execute query: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		return modules;
 	}
 
@@ -795,6 +1003,20 @@ public class Api
 			logger.error("getJsonScore Unexpected Failure: " + e.toString());
 			result = null;
 		}
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		//log.debug("*** END getJsonScore ***");
 		return result;
 	}
@@ -863,6 +1085,20 @@ public class Api
         } catch(Exception e) {
                 logger.error("Unable to connect to database: " + e.toString());
         }
+        finally {
+                try
+                {
+                        if (connection != null) 
+                        {
+                                connection.close();
+                        }
+                }
+                catch (SQLException sqle)
+                {
+                        logger.error(sqle.getMessage());
+                }
+        }       
+
         return playerList;
     }
     
@@ -1150,6 +1386,20 @@ public class Api
 		{
 	             logger.error("Unable to connect to database: " + e.toString());
 	     }
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		return json;
 	}
 
@@ -1211,6 +1461,20 @@ public class Api
 		{
 	             logger.error("Unable to connect to database: " + e.toString());
 	     }
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		return json;
 	}
 	
@@ -1239,6 +1503,20 @@ public class Api
 		{
 			logger.error("getAllFactions: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return factions;
 	}
@@ -1288,6 +1566,20 @@ public class Api
 		{
 			logger.error("Could not execute query: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		return modules;
 	}
 	/**
@@ -1333,6 +1625,20 @@ public class Api
 		{
 			logger.error("Could not execute query: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		
 		return result;
 	}
@@ -1382,6 +1688,20 @@ public class Api
 		{
 			logger.error("Could not execute query: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		return modules;
 	}
 	/*
@@ -1422,6 +1742,20 @@ public class Api
 		{
 	             logger.error("Unable to connect to database: " + e.toString());
 	     }
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		return json;
 	}
 	/*
@@ -1474,6 +1808,20 @@ public class Api
 		{
 	             logger.error("Unable to connect to database: " + e.toString());
 	     }
+                finally {
+                        try
+                        {
+                                if (con != null) 
+                                {
+                                        con.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 		return performanceObject;
 	}
 	
@@ -1507,6 +1855,20 @@ public class Api
 		{
 			logger.error("get_faction_member_by_solve_time: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return factionMembers;
 	}
@@ -1542,6 +1904,20 @@ public class Api
 		{
 			logger.error("get_faction_login_activity: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return factionMembers;
 	}
@@ -1575,6 +1951,20 @@ public class Api
 		{
 			logger.error("get_admin_comments: " + e.toString());
 		}
+                finally {
+                        try
+                        {
+                                if (connection != null) 
+                                {
+                                        connection.close();
+                                }
+                        }
+                        catch (SQLException sqle)
+                        {
+                                logger.error(sqle.getMessage());
+                        }
+                }       
+
 
 		return adminComments;
 	}

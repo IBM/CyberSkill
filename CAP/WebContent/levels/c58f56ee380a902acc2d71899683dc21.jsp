@@ -53,7 +53,7 @@ if(SessionValidator.validate(ses))
 		
 		if(answer != null)
 		{
-			if(answer.compareToIgnoreCase("templateAnswer") == 0)
+			if(answer.compareToIgnoreCase("the woods are lovely, dark and deep") == 0)
 			{
 				answerCorrect = true;
 			}
@@ -130,13 +130,14 @@ if(SessionValidator.validate(ses))
 		        if(!answerCorrect)
 		        {
 		       	%>
-			        <p>Some high level question facts</p>
+			        <p>Broken Cryptography</p>
 			        
 			        
 			        <p>
 			        	<form action="#" method="get">
 							<!-- Here is where we ask the question, change nothing only the question. -->
-							 Actual Question Stuff 
+                                                        <p class="levelText">This is a broken cryptography challenge. To complete this challenge feel free to use tool online tools. The goal is to de-obfuscate the following string. eW1qIGJ0dGl4IGZ3aiBxdGFqcWQsIGlmd3AgZnNpIGlqanU=  
+                                                        <br>This might take some people a while, some good advice can be found <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">here</a>.
 							
 							<p align=center> 
 							<input class="textbox" name="answer" id="answer" type="text" autocomplete="off" value="Answer">
