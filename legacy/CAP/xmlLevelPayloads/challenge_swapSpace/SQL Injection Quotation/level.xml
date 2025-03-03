@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<level>
+	-- Level info
+	<name>SQL Injection Quotation</name> -- this can be any (max size 30) alpha numeric string you like. 
+	<OWASPCategory>Injection</OWASPCategory> -- This is the group the challenge is with OWASP
+	<SANS25Category>1</SANS25Category> -- This is the group the challenge is with SANS25
+	<difficulty>easy</difficulty> -- this can be easy/novice/medium/hard/expert
+	
+	-- CAP Info
+	<boilerplate>sql_injection_3</boilerplate> -- This is the type of boiler plate the challenge will use
+	
+	--Level in Memory DB Information (if there is one. Leave Blank if not)
+	<tableSchemas>CREATE TABLE COMPANY (ID INT PRIMARY KEY NOT NULL, NAME TEXT NOT NULL,AGE INT NOT NULL,ADDRESS CHAR(50), SALARY REAL)</tableSchemas> -- this is VALID SQL that will create your table schema(s).
+	<inserts>INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (1, 'Wayland Dennis Dannel', 32, 'Tehran', 200.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (2, 'Josiah Ricky Outterridge', 25, 'Ankara', 100.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (3, 'Ted Leighton Belanger', 27, 'Mumbai', 600.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (4, 'Amias Patrick Hunt', 26, 'Hong Kong', 90.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (5, 'Kev Marvyn Patrickson', 43, 'Bangkok', 920.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (6, 'Kody Lemoine Yap', 33, 'Hanoi', 90.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (7, 'Quinn Tristram Irvin', 53, 'Mexico City', 902.42 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (8, 'Leyton Osborn Hall', 39, 'Surat', 500.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (9, 'Ripley Hadley Espenson', 26, 'Surat', 600 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (10, 'Chase Nat Washington', 25, 'Riyadh', 9030 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (11, 'Aldous Tristram Elliston', 21, 'Delhi', 920.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (12, 'Esmé Selwyn Lacey', 22, 'Bangkok', 90.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (13, 'Rod Deryck Benjaminson', 24, 'Mumbai', 90.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (14, 'Oz Tod Dane', 32, 'Karachi', 51.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (15, 'Lauren Seth Gibb', 29, 'Los Angeles', 67200.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (16, 'Ivor Raven Frye', 27, 'Chennai', 5312300.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (17, 'Isadore Quincy Landon', 27, 'Dhaka', 53140.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (18, 'Monty Chase Phillips', 28, 'Moscow', 56100.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (19, 'Wil Leyton Bunker', 39, 'Busan', 7910.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (20, 'Burt Laurie Alden', 54, 'Johannesburg', 970.00 );INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (21, 'Will Goodwin Elwyn', 34, 'Paris', 891.12);INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (22, 'Barrett Wynne Goffe', 33, 'Istanbul', 90.00 );</inserts> -- this is the initial insert statements into your table schemas that set up the level.
+	<selects>sql = "SELECT NAME, ADDRESS FROM COMPANY WHERE NAME=\"" + param + "\" ORDER BY NAME ASC;";</selects> -- this is the default select statement
+	<updates> </updates> -- this is the initial updates statements into your table schemas that set up the level.
+	<deletes> </deletes> -- this is the initial deletes statements into your table schemas that set up the level.
+	<filterPhrase >//No Filter </filterPhrase> -- This is a java code block that operates on a "param variable"
+	
+	-- In level Content
+	<solution>Surat</solution> -- this is the answer that the player must submit to solve the problem.
+	<description>Use SQL Injection to retreive all the data stored in the database table. The key to this challenge is the location of the user whos first name is Ripley	</description> -- This is a description of what this challenge relates to
+	<artifact></artifact> -- This is the name of the file in the artifact folder included in the overall level zip. Used for Offline Levels
+	<downloadDescription></downloadDescription> -- This is a description that preceeds a download link to the artifact file (If there is one)
+	
+	-- Clues
+	<clue1>Some of your input is being escaped...</clue1> -- This is the first clue (Alpha numeric 200 characters)
+	<clue2>The double quotes are the only thing being escaped</clue2> -- This is the second clue (Alpha numeric 200 characters)
+	<clue3>Backslashes are not escaped</clue3> -- This is the third clue (Alpha numeric 200 characters)
+	<cheatsheet><![CDATA[ Use the following query to find the full name of ripley;
+	
+	"or"1"="1 
+	
+	Then use the function with the full name of ripley to find their location]]></cheatsheet> --Complete Step by Step walk through to solve level
+	
+	-- Reporting entities
+	<what>Todo</what> -- What was this level about
+	<whatImage></whatImage> Image to accompany What Blurb if needed
+	<why></why> -- Why is the user learning about this in the first place
+	<whyImage></whyImage> Image to accompany What Blurb if needed
+	<how></how> -- How did they achieve the learning out come of this level
+	<howImage></howImage> Image to accompany What Blurb if needed
+	<summary></summary> -- What why and how summarized
+	<summaryImage></summaryImage> -- Image to accompany summary if needed
+	
+	-- Extra Reporting Entities
+	<reporting1></reporting1> -- Currently unused
+	<reporting2></reporting2> -- Currently unused
+	<reporting3></reporting3> -- Currently unused
+	<reporting4></reporting4> -- Currently unused
+	<reporting5></reporting5> -- Currently unused
+	<reporting6></reporting6> -- Currently unused
+	<reporting7></reporting7> -- Currently unused
+	<reporting8></reporting8> -- Currently unused
+	<reporting9></reporting9> -- Currently unused
+	<reporting10></reporting10> -- Currently unused
+</level>

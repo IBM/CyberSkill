@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<level>
+	-- Level info
+	<name>Use of Hard-Coded Creds</name> -- this can be any (max size 30) alpha numeric string you like. 
+	<OWASPCategory>Security Misconfiguration</OWASPCategory> -- This is the group the challenge is with OWASP
+	<SANS25Category>17</SANS25Category> -- This is the group the challenge is with SANS25
+	<difficulty>easy</difficulty> -- this can be easy/novice/medium/hard/expert
+	
+	-- CAP Info
+	<boilerplate>use_of_hard_coded_creds</boilerplate> -- This is the type of boiler plate the challenge will use
+	
+	--Level in Memory DB Information (if there is one. Leave Blank if not)
+	<tableSchemas></tableSchemas> -- this is VALID SQL that will create your table schema(s).
+	<inserts></inserts> -- this is the initial insert statements into your table schemas that set up the level.
+	<selects></selects> -- this is the default select statement
+	<updates> </updates> -- this is the initial updates statements into your table schemas that set up the level.
+	<deletes> </deletes> -- this is the initial deletes statements into your table schemas that set up the level.
+	<filterPhrase>param1 = param1.replaceAll("changeThis", "To This");</filterPhrase> -- This is a java code block that operates on a "param variable"
+	
+	-- In level Content
+	<solution>39F8AD24BA58094DAE474E312DBB1157E321AD30C0F958E0B4A8D5205B86662D</solution> -- this is the answer that the player must submit to solve the problem.
+	<description>The developers left some hard-coded credentials somewhere. You need to find them</description> -- This is a description of what this challenge relates to
+	<artifact>webapp.properties</artifact> -- This is the name of the file in the artifact folder included in the overall level zip. Used for Offline Levels
+	<downloadDescription></downloadDescription> -- This is a description that preceeds a download link to the artifact file (If there is one)
+	
+	-- Clues
+	<cheatsheet><![CDATA[ The developers of this level have left hard coded credentials lying around. These can usually be found in the webapp.properties file. To discover them you need to view the source of the page. On the page near "AnswerKey" there is an HTML comment which links to the properties file. Navigate to this to find the properties file containing the admin username and password.]]></cheatsheet>
+	<clue1>Use the force</clue1> -- This is the first clue (Alpha numeric 200 characters)
+	<clue2>Its as easy as a,b,c</clue2> -- This is the second clue (Alpha numeric 200 characters)
+	<clue3>Could this be magic</clue3> -- This is the third clue (Alpha numeric 200 characters)
+	
+	-- Reporting entities
+	<what></what> -- What was this level about
+	<whatImage></whatImage> Image to accompany What Blurb if needed
+	<why></why> -- Why is the user learning about this in the first place
+	<whyImage></whyImage> Image to accompany What Blurb if needed
+	<how></how> -- How did they achieve the learning out come of this level
+	<howImage></howImage> Image to accompany What Blurb if needed
+	<summary></summary> -- What why and how summarized
+	<summaryImage></summaryImage> -- Image to accompany summary if needed
+	-- Extra Reporting Entities
+	<reporting1></reporting1> -- Currently unused
+	<reporting2></reporting2> -- Currently unused
+	<reporting3></reporting3> -- Currently unused
+	<reporting4></reporting4> -- Currently unused
+	<reporting5></reporting5> -- Currently unused
+	<reporting6></reporting6> -- Currently unused
+	<reporting7></reporting7> -- Currently unused
+	<reporting8></reporting8> -- Currently unused
+	<reporting9></reporting9> -- Currently unused
+	<reporting10></reporting10> -- Currently unused
+</level>
