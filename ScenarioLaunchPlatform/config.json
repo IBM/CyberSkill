@@ -1,0 +1,24 @@
+{
+    "config.version": "1.00",
+    "server": {
+        "port": 80,
+        "host": "localhost"
+    },
+    "systemDatabaseController": {
+        "host": "127.0.0.1",
+        "port": 5432,
+        "database": "slp",
+        "user": "postgres",
+        "password": "postgres",
+        "maxConnections": 10
+    },
+    "collectorDatabaseController": {
+        "host": "0.0.0.0",
+        "port": 0,
+        "database": "*******",
+        "user": "*******",
+        "password": "*******",
+        "ssl": false,
+        "maxConnections": 0
+    }
+}

@@ -1,0 +1,201 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>public</groupId>
+  <artifactId>slp</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <properties>
+    <vertx.version>4.5.11</vertx.version>
+    <vertx.verticle>service.thejasonengine.com.WebVerticle</vertx.verticle>
+    <vertx-maven-plugin.version>1.0.13</vertx-maven-plugin.version>
+    <slf4j.version>1.7.5</slf4j.version>
+  </properties>
+
+  
+  
+  
+  
+  <dependencies>
+   <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.19</version>
+    </dependency>
+	<dependency>
+	 <groupId>com.ongres.scram</groupId>
+	 <artifactId>client</artifactId>
+	 <version>2.1</version>
+	</dependency>
+    <!-- Vert.x Core dependency -->
+    <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-core</artifactId>
+        <version>${vertx.version}</version> <!-- Use the appropriate version -->
+    </dependency>
+    <!-- Vert.x Kafka Connector (optional if you need persistent messaging queue) -->
+    <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-kafka-client</artifactId>
+        <version>${vertx.version}</version> <!-- Use the appropriate version -->
+    </dependency>
+    <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
+        <version>${vertx.version}</version>
+    </dependency>
+    <dependency>
+	    <groupId>io.vertx</groupId>
+	    <artifactId>vertx-web-client</artifactId>
+	    <version>${vertx.version}</version> <!-- Use the latest version -->
+  </dependency>
+    <dependency>
+    	<groupId>io.vertx</groupId>
+    	<artifactId>vertx-hazelcast</artifactId>
+    	<version>${vertx.version}</version>
+	</dependency>
+	<dependency>
+    	<groupId>org.apache.logging.log4j</groupId>
+    	<artifactId>log4j-api</artifactId>
+    	<version>2.13.0</version>
+  	</dependency>
+  	<dependency>
+	  <groupId>io.vertx</groupId>
+	  <artifactId>vertx-web-templ-freemarker</artifactId>
+	  <version>${vertx.version}</version>
+	</dependency>
+	 <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>2.3.31</version> <!-- Or the latest version -->
+    </dependency>
+  	<dependency>
+    	<groupId>org.apache.logging.log4j</groupId>
+    	<artifactId>log4j-core</artifactId>
+    	<version>2.13.0</version>
+  	</dependency>
+  	<dependency>
+    	<groupId>io.vertx</groupId>
+    	<artifactId>vertx-pg-client</artifactId>
+    	<version>${vertx.version}</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-text</artifactId>
+    <version>1.13.0</version>
+</dependency>
+
+<!-- Database pooling mananager for connected sources (not the system database pool)-->
+	<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-dbcp2</artifactId>
+    <version>2.9.0</version>
+	</dependency>
+	
+	<dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-jdbc-client</artifactId>
+      <version>${vertx.version}</version>
+    </dependency>
+    
+	<dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-config</artifactId>
+    <version>4.4.2</version>
+</dependency>
+<!-- EOF -->	
+
+	<dependency>
+	  <groupId>io.vertx</groupId>
+	  <artifactId>vertx-sql-client</artifactId>
+	  <version>${vertx.version}</version> <!-- Use the latest version -->
+	</dependency>
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>2.15.0</version> <!-- Use the latest version -->
+	</dependency>
+	<dependency>
+    	<groupId>com.fasterxml.jackson.datatype</groupId>
+    	<artifactId>jackson-datatype-jsr310</artifactId>
+    	<version>2.17.2</version>
+	</dependency>
+  	<dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-micrometer-metrics</artifactId>
+        <version>${vertx.version}</version> <!-- Use the appropriate version -->
+    </dependency>
+   <!-- https://mvnrepository.com/artifact/io.vertx/vertx-jwt -->
+	<dependency>
+	    <groupId>io.vertx</groupId>
+	    <artifactId>vertx-jwt</artifactId>
+	    <version>4.0.0-milestone4</version>
+	</dependency>
+
+    <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-auth-jwt</artifactId>
+        <version>${vertx.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-prometheus</artifactId>
+        <version>1.10.1</version> <!-- Use the appropriate Micrometer version -->
+    </dependency>
+    
+    
+    
+    <!-- Database Drivers -->
+	<dependency>
+	    <groupId>mysql</groupId>
+	    <artifactId>mysql-connector-java</artifactId>
+	    <version>8.0.33</version>
+	</dependency>
+	<dependency>
+	    <groupId>io.vertx</groupId>
+		<artifactId>vertx-mysql-client</artifactId>
+		<version>${vertx.version}</version>
+	</dependency>
+    
+</dependencies>
+
+<build>
+	  <resources>
+	  	<resource>
+	    	<directory>src/main/resources</directory>
+	 	</resource>
+		</resources>
+	    <plugins>
+	      <plugin>
+	        <artifactId>maven-compiler-plugin</artifactId>
+	        <version>3.7.0</version>
+	        <configuration>
+	          <source>1.8</source>
+	          <target>1.8</target>
+	        </configuration>
+	      </plugin>
+      
+    
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>vertx-maven-plugin</artifactId>
+        <version>${vertx-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>vmp</id>
+            <goals>
+              <goal>initialize</goal>
+              <goal>package</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <redeploy>true</redeploy>
+        </configuration>
+      </plugin>
+     
+      
+    </plugins>
+  </build>
+  
+</project>

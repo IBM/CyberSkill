@@ -1,0 +1,15 @@
+{
+  "help": [{
+    "Title": "Using System Variables",
+    "Subtitle": "Simple System Variables for Dynamic Queries",
+    "Subtext": "Below are examples of what you can use",
+    "Helptext": "<div class=\"row\">\n    <div class=\"w3-half\">\n         <label for=\"status\">Strings</label>\n    </div>\n    <div class=\"w3-half\">\n         {STRING}\n    </div>\n</div>\n<div class=\"row\">\n    Select * from tb_users where firstname = '{STRING}'; This will generate a random String between 6 and 8 characters in length.\n</div>\n\n<div class=\"row\">\n    <div class=\"w3-half\">\n         <label for=\"status\">Integers</label>\n    </div>\n    <div class=\"w3-half\">\n         {INT}\n    </div>\n</div>\n<div class=\"row\">\n    Select * from tb_users where id = {INT}; This will generate a random Integer between 1 and 51.\n</div>\n\n<div class=\"row\">\n    <div class=\"w3-half\">\n         <label for=\"status\">Iteration</label>\n    </div>\n    <div class=\"w3-half\">\n         {i}\n    </div>\n</div>\n<div class=\"row\">\n    Select * from tb_users where id = {i}; This will generate a number that is in line with the loop number.\n</div>"
+
+  },
+  {
+    "Title": "Using System Variables",
+    "Subtitle": "Subtitle",
+    "Subtext": "Below are examples of what you use for help",
+    "Helptext": "HTML Encoded STrings"
+  }]
+}
