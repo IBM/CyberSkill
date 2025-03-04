@@ -3,5 +3,5 @@
 </footer>
 
 <footer class="w3-container w3-theme-d5">
-  <p>Powered by theDemoTeam</p>
+  <p>Powered by banter</p>
 </footer>
