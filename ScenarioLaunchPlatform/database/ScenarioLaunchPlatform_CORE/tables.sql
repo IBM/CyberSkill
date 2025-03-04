@@ -202,7 +202,7 @@ ALTER SEQUENCE tb_query_id_seq RESTART WITH 1;
     INSERT INTO public.tb_query_types (id,query_type) 
     VALUES (DEFAULT, 'CRM_TABLES_SETUP');
     INSERT INTO public.tb_query_types (id,query_type) 
-    VALUES ('CRM_SETUP_DEMO_USERS');
+    VALUES (DEFAULT,'CRM_SETUP_DEMO_USERS');
 	
 	
 
