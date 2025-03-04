@@ -11,6 +11,7 @@ drop table if exists public.tb_tasks CASCADE;
 drop table if exists public.tb_query_types CASCADE;
 drop table if exists public.tb_version CASCADE;
 drop table if exists public.tb_stories CASCADE;
+drop table if exists public.tb_guardiumData CASCADE;
 
 
 drop FUNCTION if exists function_login(TEXT, TEXT);
