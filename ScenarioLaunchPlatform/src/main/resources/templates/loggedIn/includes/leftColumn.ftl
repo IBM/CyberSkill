@@ -57,21 +57,32 @@
       
       <!-- Alert Box -->
       <div class="w3-card w3-round w3-white w3-padding-16 w3-center">
-        <p>Suggestion box</p>
+        <p><a href="https://github.com/IBM/CyberSkill/issues/new" target="_blank">Suggestion box</a></p>
       </div>
       <br>
       
       <div class="w3-card w3-round w3-white w3-padding-32 w3-center">
-        <p><i class="fa fa-bug w3-xxlarge"></i></p>
+        <p><a href="https://github.com/IBM/CyberSkill/issues/new" target="_blank"><i class="fa fa-bug w3-xxlarge"></i></a></p>
       </div>
       
       
  <script>
+ 
+ 
+    
+
+    function openNewWindow() 
+    {
+      window.open('', '_blank');
+    }
+    
+ 
+ 
+ 
     $(document).ready(function() 
   	{
   		getQueryTypes();
-  	
-  	
+  		
   	});
     function getQueryTypes()
 		{
