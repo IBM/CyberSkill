@@ -113,7 +113,7 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> getOSTaskByTaskId;
 	public Handler<RoutingContext> updateOSTaskByTaskId;
 	public Handler<RoutingContext> deleteOSTaskByTaskId;
-	
+	public Handler<RoutingContext> getDatabaseVersion;
 	public Handler<RoutingContext> addStory;
 	public Handler<RoutingContext> getAllStories;
 	public Handler<RoutingContext> runStoryById;
@@ -146,6 +146,9 @@ public class SetupPostHandlers
 		setDatabaseConnections = SetupPostHandlers.this::handleSetDatabaseConnections;
 		runDatabaseQueryByDatasourceMap = SetupPostHandlers.this::handleRunDatabaseQueryByDatasourceMap;
 		runDatabaseQueryByDatasourceMapAndQueryId = SetupPostHandlers.this::handleRunDatabaseQueryByDatasourceMapAndQueryId;
+		
+		getDatabaseVersion  = SetupPostHandlers.this::handleGetDatabaseVersion;
+		
 		getValidatedDatabaseConnections = SetupPostHandlers.this::handleGetValidatedDatabaseConnections;
 		addScheduleJob = SetupPostHandlers.this::handleAddScheduleJob;
 		getScheduleJobs = SetupPostHandlers.this::handleGetScheduleJobs;
@@ -2638,6 +2641,79 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
     		LOGGER.error("Unable to run query: " + e.toString());
     	}
 		return JsonResponse;
+    }
+    
+    private void handleGetDatabaseVersion(RoutingContext routingContext) 
+    {
+    	
+    	LOGGER.info("Inside SetupPostHandlers.handleGetDatabaseVersion");  
+        HttpServerResponse response = routingContext.response();
+        
+    	try 
+        {
+    		response.putHeader("content-type", "application/json");
+            Ram ram = new Ram();
+            Pool pool = ram.getPostGresSystemPool();
+            HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+        	
+        	LOGGER.debug("Successfully initialized the datasource");
+            if (pool == null) 
+            {
+                database.thejasonengine.com.DatabaseController dbController = new database.thejasonengine.com.DatabaseController(routingContext.vertx());
+                LOGGER.debug("Have set the DB Controller");
+            } 
+            else 
+            {
+                LOGGER.debug("Pool already set");
+            }
+
+            pool = ram.getPostGresSystemPool();
+            pool.getConnection(fu -> 
+            {
+                if (fu.succeeded()) 
+                {
+                    LOGGER.debug("Successfully got connection to master system database");
+                    SqlClient systemConnection = fu.result();
+
+                    String query = "SELECT * FROM public.tb_version";
+
+                    systemConnection.preparedQuery(query)
+                        .execute(res -> 
+                        {
+                            if (res.succeeded()) 
+                            {
+                            	RowSet<Row> queryrows = res.result();
+                                for (Row row : queryrows) 
+                                {
+                                    JsonObject jo_row = row.toJson();
+                                    LOGGER.debug("Row data: " + jo_row);
+                                    response.send(jo_row.encodePrettily());
+                                }
+                                LOGGER.debug("Query run successfully");
+                            } 
+                            else 
+                            {
+                                LOGGER.error("Query failed: " + res.cause());
+                            }
+                        });
+
+                    systemConnection.close();
+                } 
+                else 
+                {
+                    LOGGER.error("Unable to get connection to master system database");
+                }
+            });
+        } 
+        catch (Exception e) 
+        {
+            LOGGER.error("Unable to load data sources: " + e.toString());
+            JsonObject jo = new JsonObject();
+            jo.put("Error", "Failed to initialize data sources");
+            response.send(jo.encodePrettily());
+        }
+    	
+    	
     }
     /****************************************************************/
     /*SAMPLE PAYLOAD

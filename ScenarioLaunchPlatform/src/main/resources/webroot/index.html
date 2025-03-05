@@ -109,6 +109,20 @@ function ReadBuildDetails()
       .catch(error => {
         console.error('Error loading JSON file:', error);
       });
+    $.ajax({
+        type: "GET",
+        url: "/api/getDatabaseVersion",
+        contentType: 'application/json;charset=UTF-8',
+        data: JSON.stringify({'JWT':''}),
+        success: function (data) 
+        {
+            console.log(data);
+            document.getElementById('patchVersion').innerHTML = "Patch " + data.version;
+            
+        }
+        
+ 	});
+    
 }	
 </script>	
 	

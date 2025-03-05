@@ -493,6 +493,8 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 
 	  	 router.get("/getSwagger").handler(BodyHandler.create()).handler(setupPostHandlers.getSwagger);
 	  	 
+	  	 router.get("/api/getDatabaseVersion").handler(BodyHandler.create()).handler(setupPostHandlers.getDatabaseVersion);
+	  	 
 	  	 
 	  	 router.route("/swagger/*").handler(StaticHandler.create("webroot/swagger-ui"));
 
