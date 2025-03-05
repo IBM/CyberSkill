@@ -16,6 +16,17 @@
   
   
   <dependencies>
+  <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web-openapi</artifactId>
+        <version>${vertx.version}</version>
+    </dependency>
+  <!-- Swagger Parser -->
+    <dependency>
+        <groupId>io.swagger.parser.v3</groupId>
+        <artifactId>swagger-parser</artifactId>
+        <version>2.1.17</version>
+    </dependency>
    <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>

@@ -118,6 +118,8 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> getAllStories;
 	public Handler<RoutingContext> runStoryById;
 	public Handler<RoutingContext> deleteStoryById;
+	
+	public Handler<RoutingContext> getSwagger;
 		
 	public SetupPostHandlers(Vertx vertx)
     {
@@ -167,6 +169,15 @@ public class SetupPostHandlers
 		getAllStories = SetupPostHandlers.this::handleGetAllStories;
 		runStoryById = SetupPostHandlers.this::handleRunStoryById;
 		deleteStoryById = SetupPostHandlers.this::handleDeleteStoryById;
+		
+		
+		getSwagger = SetupPostHandlers.this::handleGetSwagger;
+	}
+	/***********************************************************************/
+	private void handleGetSwagger(RoutingContext routingContext)
+	{
+		LOGGER.info("insdie handleGetSwagger");
+		SwaggerSourceHandler.handleGetSwagger(routingContext);
 	}
 	/***********************************************************************/
 	private void handleGetMonitorGuardiumSourcesForCron(RoutingContext routingContext)

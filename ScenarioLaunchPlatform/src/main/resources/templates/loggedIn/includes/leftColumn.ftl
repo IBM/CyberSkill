@@ -27,7 +27,7 @@
           </div>
           <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-bolt fa-fw w3-margin-right"></i> API Access</button>
           <div id="Demo2" class="w3-hide w3-container">
-            <p>Some other text..</p>
+           <a href="/swagger-ui/index.html" target="_blank"><i class="fa fa-link" aria-hidden="true"></i>Swagger</a>  
           </div>
           <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-book fa-fw w3-margin-right"></i> Documentation</button>
           <div id="Demo3" class="w3-hide w3-container">

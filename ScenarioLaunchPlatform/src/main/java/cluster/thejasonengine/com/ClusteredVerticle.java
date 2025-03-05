@@ -57,6 +57,7 @@ import database.thejasonengine.com.AgentDatabaseController;
 import io.vertx.ext.web.common.template.TemplateEngine;
 import io.vertx.ext.web.handler.FormLoginHandler;
 import io.vertx.ext.web.handler.TemplateHandler;
+import io.vertx.ext.web.openapi.RouterBuilder;
 import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
 
 
@@ -399,6 +400,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 		
 		LOGGER.debug("Started the ClusteredVerticle Router");
 		
+		
 		JsonObject configs = ram.getSystemConfig();
 		LOGGER.debug("System configuration: " + configs.encodePrettily());
 		
@@ -487,6 +489,14 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 router.post("/api/monitor/getMonitorGuardiumSourceMessageStatById").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSourceMessageStatById);
 	  	 router.post("/api/monitor/getMonitorGuardiumDataByMessageIdHash").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumDataByMessageIdHash);
 	  	 router.post("/api/monitor/getMonitorGuardiumDataByMessageIdHashAndInternalId").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumDataByMessageIdHashAndInternalId);
+	  	 
+	  	 
+	  	 router.get("/getSwagger").handler(BodyHandler.create()).handler(setupPostHandlers.getSwagger);
+	  	 
+	  	 
+	  	 router.route("/swagger/*").handler(StaticHandler.create("webroot/swagger-ui"));
+
+	  	 
 	  	
 	  	 /*******************************************************************************/
 	  	 /*These are APIs for OS specific scheduled tasks*/
@@ -572,7 +582,10 @@ public class ClusteredVerticle extends AbstractVerticle {
     		                .putHeader("content-type", "application/json")
     		                .end("{\"message\":\"Hello post request!\"}");
     		        });
+    	
+    	
     }
+    
     /*****************************************************************************/
  // Handle the login logic
     private void handleLogin(RoutingContext context) {
