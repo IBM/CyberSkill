@@ -29,7 +29,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
   </div>
 
   <div class="container" style="background-color:#f1f1f1; font-size: x-small">
-	Build:0000X? Patch:0000X?
+	<div class="buildVersion" id="buildVersion">Build:0000X?</div> <div class="patchVersion" id="patchVersion">Patch:0000X?</div> 
   </div>
 </div>
 
@@ -37,6 +37,8 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 
 
 <script>
+window.onload = ReadBuildDetails;
+
 /*************************************************************/
 function Register(var_username, var_password, var_password_match)
 {
@@ -86,7 +88,42 @@ function login(var_username, var_password)
         
  	});
 }	
-
+/*************************************************************/
+function ReadBuildDetails()
+{
+	// Fetch the JSON file from a relative path
+    fetch('build.json') // The relative path to the JSON file
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parse the JSON data
+      })
+      .then(data => {
+        // Output the parsed JSON data
+        //const jsonData = JSON.stringify(data, null, 2);
+        //const jsonPayload = JSON.parse(data);
+        console.log("Build.json: " + data.BUILD_VERSION);
+        document.getElementById('buildVersion').innerHTML = "Build V1." + data.BUILD_VERSION;
+      })
+      .catch(error => {
+        console.error('Error loading JSON file:', error);
+      });
+    $.ajax({
+        type: "GET",
+        url: "/api/getDatabaseVersion",
+        contentType: 'application/json;charset=UTF-8',
+        data: JSON.stringify({'JWT':''}),
+        success: function (data) 
+        {
+            console.log(data);
+            document.getElementById('patchVersion').innerHTML = "Patch " + data.version;
+            
+        }
+        
+ 	});
+    
+}	
 </script>	
 	
 	
