@@ -89,17 +89,16 @@ function getConnectionById()
 </head>
 <body class="w3-theme-l5">
 
-<#include "includes/navbar.ftl">
+<div id="navbar"></div>
 
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
   <!-- The Grid -->
   <div class="w3-row">
     <!-- Left Column -->
-    <#include "includes/leftColumn.ftl">
+    <div id="leftColumn"></div>
     
     <!-- End Left Column -->
-    </div>
     
     <!-- Middle Column -->
     <div class="w3-col m9">
@@ -556,7 +555,7 @@ function getConnectionById()
 <br>
 
 <!-- Footer -->
-<#include "includes/footer.ftl">
+<div id="footer"></div>
  
 <script>
 
@@ -1007,7 +1006,111 @@ function deleteQueryTypesByID()
 		}
 	/*****************************************************/
  </script>
+<script>
+ $(document).ready(function() 
+ {
+ 	 $.ajax({
+	       url: '/loggedIn/includes/navbar.ftl',  // The URL where the FreeMarker template is rendered
+	       method: 'GET',
+	       success: function(response) 
+	       {
+	          console.log("Updating Navbar");
+	          $('#navbar').html(response);
+	       },
+	       error: function(err) 
+	       {
+	           console.error('Error loading template:', err);
+	       }
+	    });
+	 $.ajax({
+	       url: '/loggedIn/includes/leftColumn2.ftl',  // The URL where the FreeMarker template is rendered
+	       method: 'GET',
+	       success: function(response) 
+	       {
+	          console.log("Updating leftColumn");
+	          $('#leftColumn').html(response);
+	       },
+	       error: function(err) 
+	       {
+	           console.error('Error loading template:', err);
+	       }
+	    });
+	 
+	 $.ajax({
+	       url: '/loggedIn/includes/footer.ftl',  // The URL where the FreeMarker template is rendered
+	       method: 'GET',
+	       success: function(response) 
+	       {
+	          console.log("Updating Footer");
+	          $('#footer').html(response);
+	       },
+	       error: function(err) 
+	       {
+	           console.error('Error loading template:', err);
+	       }
+	    });
+});
+</script>
 
+
+<script>
+
+	function openNewWindow() 
+	{
+		window.open('', '_blank');
+	}
+    $(document).ready(function() 
+  	{
+  		getQueryTypes();
+  	});
+    function getQueryTypes()
+	{
+		const var_jwt = '${tokenObject.jwt}';
+		const jsonData = JSON.stringify({
+		jwt:var_jwt,
+	});
+	
+	console.log(jsonData);
+		  
+		  
+	$.ajax({
+		url: '/api/getQueryTypes', 
+		type: 'POST',
+		data: jsonData,
+		contentType: 'application/json; charset=utf-8', // Set content type to JSON
+		success: function(response) 
+		{
+			const queryTypes = document.getElementById('queryTypes');
+		    queryTypes.innerHTML = "";
+		    console.log(response);
+		             	
+		    if (Array.isArray(response)) 
+		    {
+      			$.each(response, function(index, item) 
+				{
+					console.log(index, item);  
+					const span = document.createElement('span');
+					span.textContent = item.query_type;
+					span.classList.add('w3-tag');
+					span.classList.add('w3-small');
+					span.classList.add('w3-theme-d'+index);
+							
+					span.onclick = function() 
+					{
+                		console.log("Redirecting for: "+ item.query_type);
+                		window.location.href='databases.ftl?lookup='+ item.query_type;
+            		};
+					queryTypes.appendChild(span);
+				});
+			}             	
+		 },
+		 error: function(xhr, status, error) 
+		 {
+		 	$('#response').text('Error: ' + error);
+		 }
+	});
+}
+</script>
 
 </body>
 </html> 
