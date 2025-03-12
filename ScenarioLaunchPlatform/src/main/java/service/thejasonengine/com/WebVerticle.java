@@ -12,14 +12,17 @@ package service.thejasonengine.com;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.hazelcast.config.Config;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.spi.cluster.ClusterManager;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,14 +57,22 @@ public class WebVerticle extends AbstractVerticle {
 		LOGGER.warn("This is a WebVerticle 'WARN' TEST MESSAGE");
 		LOGGER.error("This is an WebVerticle 'ERROR' TEST MESSAGE");
 		
-    	
-	
+		
+		Config hazelcastConfig = new Config();
+		
+		/*
+		hazelcastConfig.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);  // Disable multicast for cluster discovery
+		hazelcastConfig.getNetworkConfig().getJoin().getTcpIpConfig()
+		    .addMember("192.168.1.2")  // Replace with the IP address of another node in the cluster
+		    .setEnabled(true);
+		 */
+		ClusterManager clusterManager = new HazelcastClusterManager(hazelcastConfig);
 		
 		
-    	//ClusterSetup.createHazelcastCluster(vertx);
+		//ClusterSetup.createHazelcastCluster(vertx);
+    	//HazelcastClusterManager clusterManager = new HazelcastClusterManager();
     	
-    	HazelcastClusterManager clusterManager = new HazelcastClusterManager();
-		VertxOptions options = new VertxOptions().setClusterManager(clusterManager)
+    	VertxOptions options = new VertxOptions().setClusterManager(clusterManager)
 			.setMetricsOptions(new MicrometerMetricsOptions()
             .setEnabled(true)  // Enable metrics
             .setMicrometerRegistry(BackendRegistries.getDefaultNow())); // Use default registry

@@ -19,6 +19,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import router.thejasonengine.com.PluginHandler;
 
+
 public class SubscriberVerticle extends AbstractVerticle 
 {	private static final Logger LOGGER = LogManager.getLogger(SubscriberVerticle.class);
 	
@@ -44,6 +45,7 @@ public class SubscriberVerticle extends AbstractVerticle
             // Here you can process the message, e.g., adding to a queue, etc.
         });
         
+
      // Listening to the queue address for incoming messages
         eventBus.consumer("plugin.queue", message -> {
             LOGGER.debug("Received message plugin.queue: " + message.body());
@@ -64,5 +66,13 @@ public class SubscriberVerticle extends AbstractVerticle
         });
         
         
+
+        eventBus.consumer("extensionService.queue", message-> {
+        	
+        	JsonObject extensionServiceMessage = (JsonObject) message.body();
+            LOGGER.debug("Received message extensionService.queue: " + extensionServiceMessage.encodePrettily());
+            // Here you can process the message, e.g., adding to a queue, etc.
+        });
+
     }
 }
