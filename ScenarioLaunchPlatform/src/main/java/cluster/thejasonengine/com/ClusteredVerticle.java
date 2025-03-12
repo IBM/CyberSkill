@@ -114,25 +114,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 		LOGGER.debug("Started the ClusteredVerticle Event Bus");
 		/*Created a vertx context*/
 		Context context = vertx.getOrCreateContext();
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	  	
-	  	
-	  	
-	  	
-	  	
-	  	
-	  	
+	
 		AU = new AuthUtils();
 		jwt = AU.createJWTToken(context);
 		
@@ -178,7 +160,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 		
 		//router.get("/dynamic/*").handler(templateHandler);
 		/*********************************************************************************/
-		router.getWithRegex(".+\\.ftl")
+		router.getWithRegex("^/loggedIn(/.+)?/.+\\.ftl$")
 		 .handler(ctx -> 
 				 {
 					 
@@ -216,10 +198,6 @@ public class ClusteredVerticle extends AbstractVerticle {
 					    				JsonObject hold = (JsonObject) JSON_JWT.getValue("payload");
 					    				
 					    				LOGGER.info("Username: " + hold.getString("username"));
-					    				
-					    				
-					    				
-					    				
 					    				
 					    				tokenObject.put("username", hold.getString("username"));
 					    				tokenObject.put("authlevel", hold.getString("authlevel"));
@@ -385,12 +363,12 @@ public class ClusteredVerticle extends AbstractVerticle {
     		    		{
     		    			LOGGER.error("Did not find a cookie name JWT when calling the (loggedIn/*) webpage: " + ctx.normalizedPath());
     		    			//ctx.response().end("NO JWT TOKEN");
-    		    			ctx.response().sendFile("webroot/index.htm"); //drop starting slash
+    		    			ctx.response().sendFile("webroot/index.html"); //drop starting slash
     		    		}
     		    	}).failureHandler(frc-> 
     		    	{
     		  		  	//frc.response().setStatusCode( 400 ).end("Sorry! Not today");
-    		    		frc.redirect("../index.htm");
+    		    		frc.redirect("../index.html");
     		    		
     		    	});;
         
@@ -402,6 +380,9 @@ public class ClusteredVerticle extends AbstractVerticle {
 		
 		ram.setRouter(router);
 
+		
+		
+		
 		
 		
 		
@@ -492,12 +473,12 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	
 	  	 
 	  	 /*********************************************************************************/
-	  	 router.post("/api/monitor/guardium").handler(BodyHandler.create()).handler(setupPostHandlers.monitorGuardium);
-	  	 router.post("/api/monitor/getMonitorGuardiumSourcesForCron").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSourcesForCron);
-	  	 router.post("/api/monitor/getMonitorGuardiumSources").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSources);
-	  	 router.post("/api/monitor/getMonitorGuardiumSourceMessageStatById").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSourceMessageStatById);
-	  	 router.post("/api/monitor/getMonitorGuardiumDataByMessageIdHash").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumDataByMessageIdHash);
-	  	 router.post("/api/monitor/getMonitorGuardiumDataByMessageIdHashAndInternalId").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumDataByMessageIdHashAndInternalId);
+	  	 //router.post("/api/monitor/guardium").handler(BodyHandler.create()).handler(setupPostHandlers.monitorGuardium);
+	  	 //router.post("/api/monitor/getMonitorGuardiumSourcesForCron").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSourcesForCron);
+	  	 //router.post("/api/monitor/getMonitorGuardiumSources").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSources);
+	  	 //router.post("/api/monitor/getMonitorGuardiumSourceMessageStatById").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSourceMessageStatById);
+	  	 //router.post("/api/monitor/getMonitorGuardiumDataByMessageIdHash").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumDataByMessageIdHash);
+	  	 //router.post("/api/monitor/getMonitorGuardiumDataByMessageIdHashAndInternalId").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumDataByMessageIdHashAndInternalId);
 	  	 
 	  	 
 	  	 router.get("/getSwagger").handler(BodyHandler.create()).handler(setupPostHandlers.getSwagger);

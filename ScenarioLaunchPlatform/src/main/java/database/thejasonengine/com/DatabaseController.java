@@ -38,7 +38,7 @@ public class DatabaseController
 		
 		LOGGER.debug("Setting up Database Controller");
 		SystemDatabaseController(vertx); 
-		CollectorDatabaseController(vertx);
+		//CollectorDatabaseController(vertx);
 	}
 	
 	
@@ -90,48 +90,4 @@ public class DatabaseController
         LOGGER.info("JDBC Pool SET");
         
     }
-	/*************************************************************************************/
-	public void CollectorDatabaseController(Vertx vertx) 
-	{
-		Ram ram = new Ram();
-		JsonObject configs = ram.getSystemConfig();
-	
-		MySQLConnectOptions connectOptions = new MySQLConnectOptions()
-				.setHost(configs.getJsonObject("collectorDatabaseController").getString("host"))
-				.setPort(configs.getJsonObject("collectorDatabaseController").getInteger("port"))
-				.setDatabase(configs.getJsonObject("collectorDatabaseController").getString("database"))
-				.setUser(configs.getJsonObject("collectorDatabaseController").getString("user"))
-				.setPassword(configs.getJsonObject("collectorDatabaseController").getString("password"))
-			    .setSsl(false);
-
-        PoolOptions poolOptions = new PoolOptions().setMaxSize(configs.getJsonObject("systemDatabaseController").getInteger("maxConnections")); // Max pool size
-        LOGGER.debug("Set pool options");
-        MySQLPool pool = MySQLPool.pool(vertx, connectOptions, poolOptions);
-        try
-        {
-        	pool.getConnection(ar ->
-        	{
-        		if(ar.succeeded())
-        		{
-        			LOGGER.debug("--- POOL TEST COMPLETE, GUARDIUM COLLECTOR CONNECTION AVAILABLE ---");
-        		}
-        		else
-        		{
-        			LOGGER.error("--- POOL TEST FAILURE, GUARDIUM COLLECTOR CONNECTION UNAVAILABLE (Service not available on OPENSOURCE edition, so this is expected) ---");
-        		}
-        	});
-        }
-        catch(Exception e)
-        {
-        	LOGGER.error("Unable to get connection to pool :" + e.toString());
-        }
-        
-        LOGGER.debug("Guardium Collector Pool Created");
-        
-      
-        ram.setMySQLGuardiumCollectorPool(pool);
-        
-        LOGGER.info("JDBC Pool SET");
-    
-	}
 }
