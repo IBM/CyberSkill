@@ -376,6 +376,8 @@ public class ClusteredVerticle extends AbstractVerticle {
         
 		setRoutes(router);
 		
+		router.route().handler(this::handleNotFound); 
+		
 		/*Now add the router to memory - for extension with plugins*/
 		
 		ram.setRouter(router);
@@ -436,7 +438,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 /*********************************************************************************/
     		
     		router.route("/*").handler(StaticHandler.create().setCachingEnabled(false).setWebRoot("webroot"));   
-    		router.route().handler(this::handleNotFound); 
+    		
     	
     	
     	
