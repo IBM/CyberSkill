@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Before proceeding, ensure you have the following installed:
+Before proceeding, ensure you have the following installed and have extracted the contents of the tar file:
 
 - PostgreSQL (version 12 or higher recommended)
 - Java Runtime Environment (JRE) 11 or higher
