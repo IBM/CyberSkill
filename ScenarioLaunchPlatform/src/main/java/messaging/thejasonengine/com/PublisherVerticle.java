@@ -48,6 +48,18 @@ public class PublisherVerticle extends AbstractVerticle {
         Counter query_queue_counter = prometheusRegistry.counter("query.queue", "type", "counter");
         query_queue_counter.increment();
         
+        
+        JsonObject extensionService = new JsonObject()
+        	      .put("name", "John Doe")
+        	      .put("age", 30)
+        	      .put("city", "New York");
+        
+        eventBus.send("extensionService.queue", extensionService);
+        LOGGER.debug("Message sent to query.queue: " + extensionService.encodePrettily());
+        
+        Counter extensionService_counter = prometheusRegistry.counter("extensionService.queue", "type", "counter");
+        extensionService_counter.increment();
+        
         // Simulating a producer that sends messages to a queue
         /*vertx.setPeriodic(1000, id -> {
             JsonObject message = new JsonObject().put("message", "Hello from Publisher");

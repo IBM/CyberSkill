@@ -22,6 +22,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.shareddata.LocalMap;
 import io.vertx.core.shareddata.SharedData;
+import io.vertx.ext.web.Router;
 import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.Pool;
 
@@ -34,6 +35,7 @@ public class Ram extends AbstractVerticle
 	private static Pool pool;
 	private static MySQLPool mySQLPool;
 	private static JsonObject systemConfig;
+	private static Router router;
 	
 	/*******************************************************************************/
 	public Ram()
@@ -64,6 +66,16 @@ public class Ram extends AbstractVerticle
 	{
 		Ram.dataSourceMap = dataSourceMap;
 		LOGGER.info("Have set the RAM dataSourceMap");
+	}
+	/*********************************************************************/
+	public Router getRouter()
+	{
+		return Ram.router;
+	}
+	public void setRouter(Router router)
+	{
+		Ram.router = router;
+		LOGGER.info("Have set the RAM router");
 	}
 	/*********************************************************************/
 	public JsonObject getSystemConfig()
