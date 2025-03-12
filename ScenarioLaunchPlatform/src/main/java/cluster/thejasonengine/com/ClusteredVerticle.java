@@ -77,7 +77,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	private SetupPostHandlers setupPostHandlers;
 	private AgentDatabaseController agentDatabaseController;
 	private static Pool pool;
-	
+	private FreeMarkerTemplateEngine engine;
 	
 	@Override
     public void start()
@@ -154,7 +154,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 		
 		 
         /*********************************************************************************/
-        FreeMarkerTemplateEngine engine = FreeMarkerTemplateEngine.create(vertx);
+        engine = FreeMarkerTemplateEngine.create(vertx);
 		TemplateHandler templateHandler = TemplateHandler.create((TemplateEngine) engine);
 		/*Set Template*/
 		
@@ -434,7 +434,11 @@ public class ClusteredVerticle extends AbstractVerticle {
     	 /*********************************************************************************/
 	  	 /*This sets up a static HTML route			   */
 	  	 /*********************************************************************************/
-    	 router.route("/*").handler(StaticHandler.create().setCachingEnabled(false).setWebRoot("webroot"));   
+    		
+    		router.route("/*").handler(StaticHandler.create().setCachingEnabled(false).setWebRoot("webroot"));   
+    		router.route().handler(this::handleNotFound); 
+    	
+    	
     	
 	     /*********************************************************************************/
 	  	 /*This will log a user in {"result":"ok", "reason": "ok"}     				   */
@@ -579,6 +583,20 @@ public class ClusteredVerticle extends AbstractVerticle {
     }
     
     /*****************************************************************************/
+    // Default 404 Error Handler
+    private void handleNotFound(RoutingContext context) 
+    {
+       LOGGER.error("errorMessage - Oops! The page you are looking for does not exist.");
+        
+        engine.render(context.data(), "templates/loggedIn/error.ftl", res -> {
+            if (res.succeeded()) {
+                context.response().putHeader("Content-Type", "text/html").end(res.result());
+            } else {
+                context.fail(res.cause());
+            }
+        });
+    }
+	/*****************************************************************************/
  // Handle the login logic
     private void handleLogin(RoutingContext context) {
         // Get the username and password from the request body

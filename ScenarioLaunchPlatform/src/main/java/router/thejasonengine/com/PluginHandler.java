@@ -33,12 +33,12 @@ import memory.thejasonengine.com.Ram;
 public class PluginHandler {
 	
 	private static final Logger LOGGER = LogManager.getLogger(PluginHandler.class);
-	
+	private FreeMarkerTemplateEngine engine;
 	
 	
 	public void createNewPluginRoute(Vertx vertx, JsonObject plugin)
 	{
-		FreeMarkerTemplateEngine engine = FreeMarkerTemplateEngine.create(vertx);
+		engine = FreeMarkerTemplateEngine.create(vertx);
 		TemplateHandler templateHandler = TemplateHandler.create((TemplateEngine) engine);
 		
 		WebClient client = WebClient.create(vertx);
@@ -192,10 +192,9 @@ public class PluginHandler {
 			    		}
 				 });
 		
-		
+				
 	}
 	
-	/*****************************************************************************/
     private boolean verifyCookie(Cookie cookie)
     {
   	  	/*
