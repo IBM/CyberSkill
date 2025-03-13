@@ -58,6 +58,8 @@ function getConnectionById()
 					$('#edit_db_jdbcClassName').val(item.db_jdbcclassname);
 					$('#edit_db_userIcon').val(item.db_usericon);
 					$('#edit_db_databaseIcon').val(item.db_databaseicon);
+					$('#edit_db_alias').val(item.db_alias);
+					$('#edit_db_access').val(item.db_access);
 				
 	            	
 	            	
@@ -113,9 +115,8 @@ function getConnectionById()
 				  <thead>
 				    <tr>
 				      <th>Connection id</th>
-				      <th>jdbc</th>
-				      <th>username</th>
-				      <th>database</th>
+				      <th>Alias</th>
+				      <th>Access</th>
 				    </tr>
 				  </thead>
 				  <tbody>
@@ -253,6 +254,22 @@ function getConnectionById()
 				      </div>
 				      <div class="col-75">
 				        <input type="text" id="new_db_databaseIcon" name="db_databaseIcon" placeholder="db_databaseIcon..">
+				      </div>
+				    </div>
+				      <div class="row">
+				      <div class="col-25">
+				        <label for="db_alias">db_alias</label>
+				      </div>
+				      <div class="col-75">
+				        <input type="text" id="new_db_alias" name="db_alias" placeholder="db_alias..">
+				      </div>
+				    </div>
+				    <div class="row">
+				      <div class="col-25">
+				        <label for="db_access">db_access</label>
+				      </div>
+				      <div class="col-75">
+				        <input type="text" id="new_db_access" name="db_access" placeholder="db_access..">
 				      </div>
 				    </div>
 				    <div class="row">
@@ -412,6 +429,22 @@ function getConnectionById()
 				      </div>
 				      <div class="col-75">
 				        <input type="text" id="edit_db_databaseIcon" name="db_databaseIcon" placeholder="db_databaseIcon..">
+				      </div>
+				    </div>
+				    <div class="row">
+				      <div class="col-25">
+				        <label for="db_alias">db_alias</label>
+				      </div>
+				      <div class="col-75">
+				        <input type="text" id="edit_db_alias" name="db_alias" placeholder="db_alias..">
+				      </div>
+				    </div>
+				    <div class="row">
+				      <div class="col-25">
+				        <label for="db_access">db_access</label>
+				      </div>
+				      <div class="col-75">
+				        <input type="text" id="edit_db_access" name="db_access" placeholder="db_access..">
 				      </div>
 				    </div>
 				    <div class="row">
@@ -579,7 +612,7 @@ function getConnectionById()
         	db_version ="10";
         	db_password ="guardium";
         	db_port = "3306";
-        	db_database = "salesDB";
+        	db_database = "crm";
         	db_url = "127.0.0.1";
         }
         if(choice === "org.postgresql.Driver")
@@ -589,7 +622,7 @@ function getConnectionById()
         	db_version ="14";
         	db_password ="guardium";
         	db_port = "5432";
-        	db_database = "medical";
+        	db_database = "crm";
         	db_url = "127.0.0.1";
         }
         if(choice === "com.ibm.db2.jcc.DB2Driver")
@@ -689,6 +722,8 @@ function addNewConnection()
 	const var_new_db_jdbcClassName = $('#new_db_jdbcClassName').val();
 	const var_new_db_userIcon = $('#new_db_userIcon').val();
 	const var_new_db_databaseIcon = $('#new_db_databaseIcon').val();
+	const var_new_db_alias = $('#new_db_alias').val();
+	const var_new_db_access = $('#new_db_access').val();
 	const var_jwt = '${tokenObject.jwt}';
   
   	const jsonData = JSON.stringify({
@@ -703,7 +738,9 @@ function addNewConnection()
           db_url: var_new_db_url,
           db_jdbcClassName: var_new_db_jdbcClassName,
           db_userIcon: var_new_db_userIcon,
-          db_databaseIcon: var_new_db_databaseIcon
+          db_databaseIcon: var_new_db_databaseIcon,
+          db_alias: var_new_db_alias,
+          db_access: var_new_db_access
         });
   
   console.log(jsonData);
@@ -743,6 +780,8 @@ function updateConnection()
 	const var_new_db_jdbcClassName = $('#edit_db_jdbcClassName').val();
 	const var_new_db_userIcon = $('#edit_db_userIcon').val();
 	const var_new_db_databaseIcon = $('#edit_db_databaseIcon').val();
+	const var_new_db_alias = $('#edit_db_alias').val();
+	const var_new_db_access = $('#edit_db_access').val();
 	const var_jwt = '${tokenObject.jwt}';
 	const var_id = $('#editConnections').val();
   
@@ -759,6 +798,8 @@ function updateConnection()
           db_jdbcClassName: var_new_db_jdbcClassName,
           db_userIcon: var_new_db_userIcon,
           db_databaseIcon: var_new_db_databaseIcon,
+          db_alias: var_new_db_alias,
+          db_access: var_new_db_access,
           id: var_id
         });
   
@@ -951,7 +992,7 @@ function deleteQueryTypesByID()
              	response.forEach((item) => 
              	{
 	            	
-  					connectionsTable.row.add([item.connection, item.connection, item.connection, item.connection]);
+  					connectionsTable.row.add([item.connection, item.alias, item.access]);
   					
 	            });
 	            connectionsTable.draw();

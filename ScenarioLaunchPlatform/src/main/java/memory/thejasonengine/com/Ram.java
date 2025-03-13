@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.shareddata.LocalMap;
 import io.vertx.core.shareddata.SharedData;
@@ -36,6 +37,8 @@ public class Ram extends AbstractVerticle
 	private static MySQLPool mySQLPool;
 	private static JsonObject systemConfig;
 	private static Router router;
+	private static JsonObject userAlias_Access;
+	private static HashMap<String, JsonArray> validatedConnections;
 	
 	/*******************************************************************************/
 	public Ram()
@@ -86,6 +89,26 @@ public class Ram extends AbstractVerticle
 	{
 		Ram.systemConfig = systemConfig;
 		LOGGER.info("Have set the RAM systemConfig");
+	}
+	/*********************************************************************/
+	public JsonObject getUserAlias_Access()
+	{
+		return Ram.userAlias_Access;
+	}
+	public void setUserAlias_Access(JsonObject userAlias_Access)
+	{
+		Ram.userAlias_Access = userAlias_Access;
+		LOGGER.info("Have set the RAM user alias and access");
+	}
+	/*********************************************************************/
+	public HashMap<String, JsonArray> getValidatedConnections()
+	{
+		return Ram.validatedConnections;
+	}
+	public void setValidatedConnections(HashMap<String, JsonArray> validatedConnections)
+	{
+		Ram.validatedConnections = validatedConnections;
+		LOGGER.info("Have set the RAM validatedConnections");
 	}
 	/*********************************************************************/
 	public Pool getPostGresSystemPool()

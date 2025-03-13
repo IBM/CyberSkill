@@ -1839,6 +1839,9 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        	Ram ram = new Ram();
 					HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
 					
+					HashMap<String, JsonArray> validatedConnections = ram.getValidatedConnections();
+					// Retrieve the user alias access object
+					
 					try
 					{
 						LOGGER.debug("Ram.DatasourceMap size: " + dataSourceMap.size());
@@ -1849,17 +1852,42 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 					}
 					
 					JsonArray ja = new JsonArray();
-					for (Map.Entry<String, BasicDataSource> set :dataSourceMap.entrySet()) 
+					
+					for (Map.Entry<String, JsonArray> set :validatedConnections.entrySet()) 
 					{
-						LOGGER.debug(set.getKey() + " = "+ set.getValue());
+						LOGGER.debug(set.getKey() + " = "+ set.getValue().encodePrettily());
+						JsonArray innerJa = set.getValue();
 						
+						LOGGER.debug("Innerja to string : "+ innerJa.encodePrettily());
+			            // Retrieve alias and access info from userAliasAccess if available
+						JsonObject hold = innerJa.getJsonObject(0);
 						JsonObject jo = new JsonObject();
 						jo.put("connection", set.getKey());
+						jo.put("alias", hold.getValue("alias"));
+						jo.put("access", hold.getValue("access"));
 				    	ja.add(jo);
 				    	
 				    	LOGGER.info("Successfully added json object to array");
 					
 					}
+					/*for (Map.Entry<String, BasicDataSource> set :dataSourceMap.entrySet()) 
+					{
+						LOGGER.debug(set.getKey() + " = "+ set.getValue());
+						
+
+			            // Retrieve alias and access info from userAliasAccess if available
+			            String alias = userAliasAccess.getString("alias");
+			            String access = userAliasAccess.getString("access");
+						JsonObject jo = new JsonObject();
+						jo.put("connection", set.getKey());
+						//jo.put("alias", alias);
+						//jo.put("access", access);
+				    	ja.add(jo);
+				    	
+				    	LOGGER.info("Successfully added json object to array");
+					
+					}*/
+					
 					response = routingContext.response();
 					response.send(ja.encodePrettily());
 		        }
@@ -2284,6 +2312,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				String db_jdbcClassName = JSONpayload.getString("db_jdbcClassName");
 				String db_userIcon = JSONpayload.getString("db_userIcon");
 				String db_databaseIcon = JSONpayload.getString("db_databaseIcon");
+				String db_alias = JSONpayload.getString("db_alias");
+				String db_access = JSONpayload.getString("db_access");
 				String id = JSONpayload.getString("id");
 				
 				
@@ -2301,6 +2331,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				LOGGER.debug("db_jdbcClassName recieved: " + db_jdbcClassName);
 				LOGGER.debug("db_userIcon recieved: " + db_userIcon);
 				LOGGER.debug("db_databaseIcon recieved: " + db_databaseIcon);
+				LOGGER.debug("db_alias recieved: " + db_alias);
+				LOGGER.debug("db_access recieved: " + db_access);
 				LOGGER.debug("id recieved: " + id);
 				
 				LOGGER.info("Accessible Level is : " + authlevel);
@@ -2320,8 +2352,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("UPDATE public.tb_databaseConnections SET status = $1, db_connection_id = $2, db_type = $3, db_version = $4, db_username = $5, db_password = $6, db_port = $7, db_database = $8, db_url = $9, db_jdbcClassName = $10, db_userIcon = $11, db_databaseIcon = $12 where id = $13")
-			                        .execute(Tuple.of(status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon, Integer.parseInt(id)),
+			                connection.preparedQuery("UPDATE public.tb_databaseConnections SET status = $1, db_connection_id = $2, db_type = $3, db_version = $4, db_username = $5, db_password = $6, db_port = $7, db_database = $8, db_url = $9, db_jdbcClassName = $10, db_userIcon = $11, db_databaseIcon = $12 , db_alias = $13, db_access = $14 where id = $15")
+			                        .execute(Tuple.of(status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon,db_alias,db_access, Integer.parseInt(id)),
 			                        res -> {
 			                            if (res.succeeded()) 
 			                            {
@@ -2436,6 +2468,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				String db_jdbcClassName = JSONpayload.getString("db_jdbcClassName");
 				String db_userIcon = JSONpayload.getString("db_userIcon");
 				String db_databaseIcon = JSONpayload.getString("db_databaseIcon");
+				String db_alias = JSONpayload.getString("db_alias");
+				String db_access = JSONpayload.getString("db_access");
 				
 				
 				String db_connection_id = db_type+"_"+db_url+"_"+db_database+"_"+db_username;
@@ -2452,6 +2486,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				LOGGER.debug("db_jdbcClassName recieved: " + db_jdbcClassName);
 				LOGGER.debug("db_userIcon recieved: " + db_userIcon);
 				LOGGER.debug("db_databaseIcon recieved: " + db_databaseIcon);
+				LOGGER.debug("db_alias recieved: " + db_alias);
+				LOGGER.debug("db_access recieved: " + db_access);
 				
 				
 				LOGGER.info("Accessible Level is : " + authlevel);
@@ -2471,8 +2507,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("Insert into public.tb_databaseConnections(status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)")
-			                        .execute(Tuple.of(status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon),
+			                connection.preparedQuery("Insert into public.tb_databaseConnections(status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon,db_alias,db_access) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)")
+			                        .execute(Tuple.of(status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon,db_alias,db_access),
 			                        res -> {
 			                            if (res.succeeded()) 
 			                            {

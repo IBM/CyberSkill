@@ -35,9 +35,17 @@ public class DatabasePoolManager
     {
         Ram ram = new Ram();
         HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+        HashMap<String, JsonArray> validatedConnections = ram.getValidatedConnections();
+     // Modify the userAlias_Access
+        JsonObject newAlias_Access = new JsonObject();
+        
         if(dataSourceMap == null)
         {
         	dataSourceMap = new HashMap<String, BasicDataSource>();
+        }
+        if(validatedConnections == null)
+        {
+        	validatedConnections = new HashMap<String, JsonArray>();
         }
         try
 		{
@@ -76,7 +84,23 @@ public class DatabasePoolManager
 		    		DataSource.getConnection();
 		    		
 		    		LOGGER.debug("Connection successul adding the connection the the datasource map");
-		    		dataSourceMap.put(dpName, DataSource);
+		    		String alias = jo.getString("db_alias");
+		    		String access = jo.getString("db_access");
+		    		LOGGER.debug("Connection ID" + dpName + " Alias: " + alias + " Access: " + access);
+		    		JsonArray jaa = new JsonArray();
+		    		
+		    		JsonObject details = new JsonObject();
+		    		details.put("alias", alias);
+		    		
+		    		details.put("access", access);
+		    	
+		    		//details.put("connection", dpName);
+		    		
+		    		jaa.add(details);
+		    		validatedConnections.put(dpName, jaa);
+		    		dataSourceMap.put(dpName, DataSource);		
+		    		//ram.setUserAlias_Access(newAlias_Access);
+		    		
 			        LOGGER.debug("Database pool created  "+ dpName +"  and added to the dataSourceMap");
 		    	}
 		    	catch(Exception e)
@@ -88,7 +112,9 @@ public class DatabasePoolManager
 			}
 			LOGGER.debug("All Database Pool Objects created");
 			ram.setDBPM(dataSourceMap);
+			ram.setValidatedConnections(validatedConnections);
 			context.put("ValidatedConnectionData", dataSourceMap);
+			context.put("ValidatedConnections", validatedConnections);
 			LOGGER.debug("All Database Pool Objects added to Ram/Context dataSourceMap ");
 		}
         catch(Exception e)
@@ -103,6 +129,8 @@ public class DatabasePoolManager
     {
 		Ram ram = new Ram();
 		HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+		 // Modify the userAlias_Access
+        JsonObject newAlias_Access = new JsonObject();
 		if(dataSourceMap == null)
 		{
 			LOGGER.debug("datasource map has not been initialized");
