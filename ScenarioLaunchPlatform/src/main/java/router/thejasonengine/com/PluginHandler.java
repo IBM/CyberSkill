@@ -52,6 +52,8 @@ public class PluginHandler {
 		String host = "127.0.0.1";
 		String pluginName = "insights";
 		
+		
+		
 		LOGGER.debug("Request to create new plugin route with details: " + plugin.encodePrettily());
 		LOGGER.debug("Creating heartbeat endpoint for plugin");
 		router.get("/api/plugin/insights").handler(ctx -> {
@@ -61,8 +63,15 @@ public class PluginHandler {
 		        	  LOGGER.debug("Successfully sent request");
 		              response.body().onSuccess(body -> 
 		              {
-		            	  LOGGER.debug("request: " + body);
+		            	  //LOGGER.debug("request: " + body);
 		            	  
+		            	  Map<String, JsonObject> pluginDataMap = ctx.get("pluginData");
+		            	  if(pluginDataMap == null)
+		            	  {
+		            		  pluginDataMap = new HashMap<>();
+		            	  }
+		            	  pluginDataMap.put(plugin.getString("name") , plugin);
+		            	  ctx.put("pluginData", pluginDataMap);
 		                  ctx.response().setStatusCode(response.statusCode()).end(body);
 		              });
 		          })
