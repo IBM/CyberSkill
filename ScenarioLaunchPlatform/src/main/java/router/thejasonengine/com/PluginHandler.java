@@ -16,6 +16,7 @@ import com.hazelcast.shaded.org.json.JSONObject;
 
 import io.micrometer.core.ipc.http.HttpSender.Request;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.Cookie;
 import io.vertx.core.http.HttpClient;
@@ -52,6 +53,17 @@ public class PluginHandler {
 		String host = "127.0.0.1";
 		String pluginName = "insights";
 		
+		Context context = vertx.getOrCreateContext();
+		Map<String, JsonObject> pluginDataMap = context.get("pluginData");
+  	  	if(pluginDataMap == null)
+  	  	{
+  		  pluginDataMap = new HashMap<>();
+  	  	}
+  	  	pluginDataMap.put(plugin.getString("pluginName") , plugin.getJsonObject("pluginDetails"));
+  	  	context.put("pluginData", pluginDataMap);
+  	  
+  	  	LOGGER.debug("Adding :" + plugin.getString("pluginName") + " to the plugin context service");
+		
 		
 		
 		LOGGER.debug("Request to create new plugin route with details: " + plugin.encodePrettily());
@@ -65,13 +77,8 @@ public class PluginHandler {
 		              {
 		            	  //LOGGER.debug("request: " + body);
 		            	  
-		            	  Map<String, JsonObject> pluginDataMap = ctx.get("pluginData");
-		            	  if(pluginDataMap == null)
-		            	  {
-		            		  pluginDataMap = new HashMap<>();
-		            	  }
-		            	  pluginDataMap.put(plugin.getString("name") , plugin);
-		            	  ctx.put("pluginData", pluginDataMap);
+		            	  
+		            	  
 		                  ctx.response().setStatusCode(response.statusCode()).end(body);
 		              });
 		          })

@@ -14,8 +14,10 @@
   
   <#if pluginData?has_content>
 	<#list pluginData?keys as key>
-		                <a href="${pluginData[key].url}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="${key}"><i class="fa fa-dot-circle-o"></i></a>
+		<a href="${pluginData[key].url}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="${key}"><i class="fa fa-dot-circle-o"></i></a>
 	</#list>
+  <#else>
+        [No Active Plugins]
   </#if>
   
  
