@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS public.tb_version
 (
     version character varying(100)
 );
-insert into public.tb_version(version) VALUES('v01.0002');
+insert into public.tb_version(version) VALUES('v01.0004');
 
 
 
@@ -135,7 +135,10 @@ INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type
 INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon) VALUES (37, 'mysql_127.0.0.1_crm_JASON', 'active', 'mysql', '10', 'JASON', 'ChangeMe!', '3306', 'crm', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', '', '');
 INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon) VALUES (39, 'mysql_127.0.0.1_crm_POLLY', 'active', 'mysql', '10', 'POLLY', 'ChangeMe!', '3306', 'crm', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', '', '');
 INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon) VALUES (44, 'mysql_127.0.0.1_crm_LIHER', 'active', 'mysql', '10', 'LIHER', 'ChangeMe!', '3306', 'crm', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', '', '');
+/************************************************************************************/
 
+
+INSERT INTO public.tb_stories (id, runtime, story) VALUES (1, NULL, '{"name": "DBA Stored Proceedure Nightmare", "story": [{"query_id": 27, "datasource": "mysql_127.0.0.1_crm_polly", "pause_in_seconds": 8000}, {"query_id": 28, "datasource": "mysql_127.0.0.1_crm_jason", "pause_in_seconds": 4000}, {"query_id": 29, "datasource": "mysql_127.0.0.1_crm_liher", "pause_in_seconds": 4000}, {"query_id": 28, "datasource": "mysql_127.0.0.1_crm_john", "pause_in_seconds": 4000}], "author": "jason", "handbook": "/handbooks/DdaStoredProceedureNightmare.pdf", "outcomes": "Understand how governence can be provided", "description": "This simple story involves the removal and recreation of a critical stored proceedure with malicious intent. Activities such as this are hard to discover for humans, but straight forward for GDP"}');
 
 
 /************************************************************************************/
