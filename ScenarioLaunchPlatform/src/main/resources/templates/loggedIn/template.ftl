@@ -173,6 +173,38 @@ function openNav() {
 		contentType: 'application/json; charset=utf-8', // Set content type to JSON
 		success: function(response) 
 		{
+			const plugins = document.getElementById('plugins');
+		    plugins.innerHTML = "";
+		    console.log(response);
+		             	
+		    if (Array.isArray(response)) 
+		    {
+      			$.each(response, function(index, item) 
+				{
+					console.log(index, item);  
+					const span = document.createElement('span');
+					span.textContent = item.query_type;
+					span.classList.add('w3-tag');
+					span.classList.add('w3-small');
+					span.classList.add('w3-theme-d'+index);
+					plugins.appendChild(span);
+				});
+			}             	
+		 },
+		 error: function(xhr, status, error) 
+		 {
+		 	$('#response').text('Error: ' + error);
+		 }
+	});
+	
+	
+	$.ajax({
+		url: '/api/getAvailablePlugins', 
+		type: 'POST',
+		data: jsonData,
+		contentType: 'application/json; charset=utf-8', // Set content type to JSON
+		success: function(response) 
+		{
 			const queryTypes = document.getElementById('queryTypes');
 		    queryTypes.innerHTML = "";
 		    console.log(response);
@@ -202,6 +234,9 @@ function openNav() {
 		 	$('#response').text('Error: ' + error);
 		 }
 	});
+	
+	
+	
 }
 </script>
 

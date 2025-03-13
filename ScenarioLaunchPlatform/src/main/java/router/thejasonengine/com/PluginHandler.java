@@ -21,6 +21,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.Cookie;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jwt.JWT;
 import io.vertx.ext.web.Router;
@@ -35,6 +37,42 @@ public class PluginHandler {
 	
 	private static final Logger LOGGER = LogManager.getLogger(PluginHandler.class);
 	private FreeMarkerTemplateEngine engine;
+	private Map<String, JsonObject> pluginDataMap;
+	
+	
+	
+	public static void handleGetAvailablePlugins(RoutingContext routingContext)
+	{
+		HttpServerResponse response = routingContext.response();
+		Ram ram = new Ram();
+		
+		JsonArray ja = new JsonArray();
+		
+		HashMap<String, JsonObject> plugins = ram.getPlugins();
+		if(plugins == null)
+        {
+			LOGGER.debug("Plugins are null");
+			plugins = new HashMap<String, JsonObject>();
+			JsonObject jo = new JsonObject();
+	    	ja.add(jo);
+        }
+		else
+		{
+			
+			for (Map.Entry<String, JsonObject> set :plugins.entrySet()) 
+			{
+				LOGGER.debug(set.getKey() + " = "+ set.getValue().encodePrettily());
+				JsonObject jo = set.getValue();
+				ja.add(jo);
+			}
+			
+			LOGGER.debug("Available plugins: " + ja.encodePrettily());
+		    	
+		}
+		response.putHeader("content-type", "application/json");
+		response.send(ja.encodePrettily());	
+	}
+	
 	
 	
 	public void createNewPluginRoute(Vertx vertx, JsonObject plugin)
@@ -53,16 +91,19 @@ public class PluginHandler {
 		String host = "127.0.0.1";
 		String pluginName = "insights";
 		
-		Context context = vertx.getOrCreateContext();
-		Map<String, JsonObject> pluginDataMap = context.get("pluginData");
-  	  	if(pluginDataMap == null)
-  	  	{
-  		  pluginDataMap = new HashMap<>();
-  	  	}
-  	  	pluginDataMap.put(plugin.getString("pluginName") , plugin.getJsonObject("pluginDetails"));
-  	  	context.put("pluginData", pluginDataMap);
-  	  
-  	  	LOGGER.debug("Adding :" + plugin.getString("pluginName") + " to the plugin context service");
+		
+		HashMap<String, JsonObject> plugins = ram.getPlugins();
+		if(plugins == null)
+        {
+			LOGGER.debug("Plugins are null");
+			plugins = new HashMap<String, JsonObject>();
+        }
+		
+		plugins.put(plugin.getString("pluginName") , plugin.getJsonObject("pluginDetails"));
+		
+		ram.setPlugins(plugins);
+		
+		LOGGER.debug("Adding :" + plugin.getString("pluginName") + " to the plugin context service");
 		
 		
 		
@@ -76,10 +117,7 @@ public class PluginHandler {
 		              response.body().onSuccess(body -> 
 		              {
 		            	  //LOGGER.debug("request: " + body);
-		            	  
-		            	  
-		            	  
-		                  ctx.response().setStatusCode(response.statusCode()).end(body);
+		            	  ctx.response().setStatusCode(response.statusCode()).end(body);
 		              });
 		          })
 		          .onFailure(err ->{

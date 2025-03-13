@@ -40,6 +40,8 @@ public class Ram extends AbstractVerticle
 	private static JsonObject userAlias_Access;
 	private static HashMap<String, JsonArray> validatedConnections;
 	
+	private static HashMap<String, JsonObject> plugins;
+	
 	/*******************************************************************************/
 	public Ram()
 	{
@@ -99,6 +101,16 @@ public class Ram extends AbstractVerticle
 	{
 		Ram.userAlias_Access = userAlias_Access;
 		LOGGER.info("Have set the RAM user alias and access");
+	}
+	/*********************************************************************/
+	public HashMap<String, JsonObject> getPlugins()
+	{
+		return Ram.plugins;
+	}
+	public void setPlugins(HashMap<String, JsonObject> plugins)
+	{
+		Ram.plugins = plugins;
+		LOGGER.info("Have set the RAM plugins");
 	}
 	/*********************************************************************/
 	public HashMap<String, JsonArray> getValidatedConnections()

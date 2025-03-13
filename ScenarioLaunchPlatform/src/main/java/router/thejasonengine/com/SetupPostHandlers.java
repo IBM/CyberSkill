@@ -118,6 +118,7 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> getAllStories;
 	public Handler<RoutingContext> runStoryById;
 	public Handler<RoutingContext> deleteStoryById;
+	public Handler<RoutingContext> getAvailablePlugins;
 	
 	public Handler<RoutingContext> getSwagger;
 		
@@ -175,12 +176,20 @@ public class SetupPostHandlers
 		
 		
 		getSwagger = SetupPostHandlers.this::handleGetSwagger;
+		
+		getAvailablePlugins = SetupPostHandlers.this::handleGetAvailablePlugins;
 	}
 	/***********************************************************************/
 	private void handleGetSwagger(RoutingContext routingContext)
 	{
 		LOGGER.info("insdie handleGetSwagger");
 		SwaggerSourceHandler.handleGetSwagger(routingContext);
+	}
+	/***********************************************************************/
+	private void handleGetAvailablePlugins(RoutingContext routingContext)
+	{
+		LOGGER.info("insdie handleGetAvailablePlugins");
+		PluginHandler.handleGetAvailablePlugins(routingContext);
 	}
 	/***********************************************************************/
 	private void handleGetMonitorGuardiumSourcesForCron(RoutingContext routingContext)

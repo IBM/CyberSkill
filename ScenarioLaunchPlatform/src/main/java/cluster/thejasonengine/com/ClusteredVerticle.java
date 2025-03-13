@@ -476,6 +476,9 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 router.post("/api/getAllStories").handler(BodyHandler.create()).handler(setupPostHandlers.getAllStories);
 	  	 router.post("/api/runStoryById").handler(BodyHandler.create()).handler(setupPostHandlers.runStoryById);
 	  	 router.post("/api/deleteStoryById").handler(BodyHandler.create()).handler(setupPostHandlers.deleteStoryById);
+	  	 
+	  	 
+	  	 router.post("/api/getAvailablePlugins").handler(BodyHandler.create()).handler(setupPostHandlers.getAvailablePlugins);
 	  	
 	  	 
 	  	 /*********************************************************************************/
