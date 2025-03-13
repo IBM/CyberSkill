@@ -53,9 +53,7 @@ public class PluginHandler {
         {
 			LOGGER.debug("Plugins are null");
 			plugins = new HashMap<String, JsonObject>();
-			JsonObject jo = new JsonObject();
-	    	ja.add(jo);
-        }
+	    }
 		else
 		{
 			

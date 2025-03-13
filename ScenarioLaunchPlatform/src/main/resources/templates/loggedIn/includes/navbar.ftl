@@ -47,42 +47,44 @@
 		type: 'POST',
 		data: jsonData,
 		contentType: 'application/json; charset=utf-8', // Set content type to JSON
+		dataType: 'json',
 		success: function(response) 
 		{
 			const plugins = document.getElementById('plugins');
 		    plugins.innerHTML = "";
 		    console.log(response);
 		             	
-		    if (Array.isArray(response)) 
+		    if (Array.isArray(response) && response.length > 0) 
 		    {
 		    	console.log("Have detected an array in the response");
       			
-      			$.each(response, function(index, item) 
-				{
-					console.log(index, item.name);  
-					const span = document.createElement('span');
-					// Create a new anchor element
-					let link = document.createElement("a");
-					link.href = item.url;
-					link.classList.add("w3-bar-item");
-					link.classList.add("w3-button");
-					link.classList.add("w3-hide-small");
-					link.classList.add("w3-padding-large");
-					link.classList.add("w3-hover-white");
-					
-					link.target = "_blank"; // Opens in a new tab
-					
-					
-					let icon = document.createElement("i");
-					icon.className = "fa fa-dot-circle-o"; 
-					link.prepend(icon);
-					
-					
-					
-					
-					span.appendChild(link);
-					plugins.appendChild(span);
-				});
+      				$.each(response, function(index, item) 
+					{
+						console.log(index, item.name);  
+						const span = document.createElement('span');
+						// Create a new anchor element
+						let link = document.createElement("a");
+						link.href = item.url;
+						link.classList.add("w3-bar-item");
+						link.classList.add("w3-button");
+						link.classList.add("w3-hide-small");
+						link.classList.add("w3-padding-large");
+						link.classList.add("w3-hover-white");
+						
+						link.target = "_blank"; // Opens in a new tab
+						
+						
+						let icon = document.createElement("i");
+						icon.className = "fa fa-dot-circle-o"; 
+						link.prepend(icon);
+						
+						
+						
+						
+						span.appendChild(link);
+						plugins.appendChild(span);
+					});
+				
 			}             	
 		 },
 		 error: function(xhr, status, error) 

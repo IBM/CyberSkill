@@ -376,7 +376,7 @@ public class ClusteredVerticle extends AbstractVerticle {
         
 		setRoutes(router);
 		
-		router.route().handler(this::handleNotFound); 
+		//router.route().handler(this::handleNotFound); 
 		
 		/*Now add the router to memory - for extension with plugins*/
 		
