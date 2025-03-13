@@ -9,8 +9,15 @@
   <a href="/loggedIn/scheduler.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Scheduler"><i class="fa fa-clock-o"></i></a>
   <a href="/loggedIn/ostask.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="OS Task"><i class="fa fa-tasks"></i></a>
   <!-- <a href="experimental.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Experimental"><i class="fa fa-flask"></i></a> -->
-  <a href="/plugin/guardium.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Insights"><i class="fa fa-dot-circle-o"></i></a>
+  <!-- <a href="/plugin/guardium.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Insights"><i class="fa fa-dot-circle-o"></i></a> -->
   <a href="/loggedIn/storyBuilder.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Story"><i class="fa fa-book"></i></a>
+  
+  <#if pluginData?has_content>
+	<#list pluginData?keys as key>
+		                <a href="${pluginData[key].url}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="${key}"><i class="fa fa-dot-circle-o"></i></a>
+	</#list>
+  </#if>
+  
  
   <div class="w3-dropdown-hover w3-hide-small">
     <button class="w3-button w3-padding-large" title="Notifications"><i class="fa fa-bell"></i><span class="w3-badge w3-right w3-small w3-green">1</span></button>     
