@@ -124,7 +124,7 @@ function buildStory(data)
 		<div class="w3-container w3-card w3-white w3-round w3-margin"><br>
 		  <!-- The icon that toggles the help section -->
 		  <i class="fa fa-plus" onclick="toggleStoryId(1)" style="color: gray; transition: color 0.3s ease;" 
-		     onmouseover="this.style.color='red'" onmouseout="this.style.color='gray'"></i><h3>Story: </h3><h4>TITLE</h4>
+		     onmouseover="this.style.color='red'" onmouseout="this.style.color='gray'"></i><strong> Story:</strong> TITLE
 		     
 		     
 		  <span class="w3-right w3-opacity"><button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="runStoryById(STORY_ID);"><i class="fa fa-rocket"></i>  Run</button></span>
@@ -135,15 +135,19 @@ function buildStory(data)
 	
 		<div class="story1" id="story1" style="display: none;">
     <div class="row">
-        <h3><strong>Title:</strong> OUTCOMES</h3>
+        <strong>Outcome:</strong> OUTCOMES
     </div>
     <div class="row">
-        <h3><strong>Creator:</strong> AUTHOR</h3>
+        <strong>Creator:</strong><i>AUTHOR</i>
     </div>
     <div class="container">
       
-            <h3><strong>Summary:</strong></h3> <h4>DESCRIPTION</h4>
+           <strong>Summary:</strong> DESCRIPTION
+           	<div id="storyVideo">
+           	<a href="VIDEOURL" target="_blank"><i class="fa fa-film"></i></a>
+    		</div>
     </div>
+    
 </div>
 		<!-- END OF STORY CARD -->
 		`;
@@ -188,6 +192,7 @@ function buildStory(data)
 	     		tempStoryCardHtml = tempStoryCardHtml.replace(/OUTCOMES/g, value.outcomes);     			    		
 	    		tempStoryCardHtml = tempStoryCardHtml.replace(/AUTHOR/g, value.author);
 	    		tempStoryCardHtml = tempStoryCardHtml.replace(/DESCRIPTION/g, value.description);
+	    		tempStoryCardHtml = tempStoryCardHtml.replace(/VIDEOURL/g, value.video);
 	    		
 	    		
 	    		let chapters = value.story;
