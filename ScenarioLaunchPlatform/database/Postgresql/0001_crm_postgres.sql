@@ -222,7 +222,7 @@ BEGIN
 	REPLICATION
 	BYPASSRLS
 	CONNECTION LIMIT -1
-	PASSWORD 'ChangeMe!1';
+	PASSWORD 'Password1!';
     END IF;
 
     -- Check and create user2
@@ -234,7 +234,7 @@ BEGIN
 	REPLICATION
 	BYPASSRLS
 	CONNECTION LIMIT -1
-	PASSWORD 'ChangeMe!1';
+	PASSWORD 'Password1!';
     END IF;
 
     -- Check and create user3
@@ -247,7 +247,7 @@ BEGIN
 	REPLICATION
 	BYPASSRLS
 	CONNECTION LIMIT -1
-	PASSWORD 'ChangeMe!1';
+	PASSWORD 'Password1!';
     END IF;
 
     -- Check and create user4
@@ -260,7 +260,7 @@ BEGIN
 	REPLICATION
 	BYPASSRLS
 	CONNECTION LIMIT -1
-	PASSWORD 'ChangeMe!1';
+	PASSWORD 'Password1!';
     END IF;
 END $$
 
