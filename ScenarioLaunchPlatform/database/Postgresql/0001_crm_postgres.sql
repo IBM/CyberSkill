@@ -210,7 +210,7 @@ BEGIN
             i, NULL, 'Assigned', 'Medium', NULL, NULL, NULL, NULL, NULL, NULL);
   END LOOP;
 END $$;
-/*
+
 DO $$
 BEGIN
     -- Check and create user1
@@ -222,7 +222,7 @@ BEGIN
 	REPLICATION
 	BYPASSRLS
 	CONNECTION LIMIT -1
-	PASSWORD 'password';
+	PASSWORD 'ChangeMe!1';
     END IF;
 
     -- Check and create user2
@@ -234,7 +234,7 @@ BEGIN
 	REPLICATION
 	BYPASSRLS
 	CONNECTION LIMIT -1
-	PASSWORD 'password';
+	PASSWORD 'ChangeMe!1';
     END IF;
 
     -- Check and create user3
@@ -247,7 +247,7 @@ BEGIN
 	REPLICATION
 	BYPASSRLS
 	CONNECTION LIMIT -1
-	PASSWORD 'password';
+	PASSWORD 'ChangeMe!1';
     END IF;
 
     -- Check and create user4
@@ -260,7 +260,7 @@ BEGIN
 	REPLICATION
 	BYPASSRLS
 	CONNECTION LIMIT -1
-	PASSWORD 'password';
+	PASSWORD 'ChangeMe!1';
     END IF;
 END $$
-*/
+
