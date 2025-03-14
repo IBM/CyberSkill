@@ -1,4 +1,13 @@
-# README
+# Latest README
+
+This folder contains the latest version of the application
+
+## 📥 Latest Release Contains
+
+✔️ Jar file.  
+✔️ SQL Files.  
+✔️ Config file.  
+✔️ Readme file.  
 
 ## Prerequisites
 

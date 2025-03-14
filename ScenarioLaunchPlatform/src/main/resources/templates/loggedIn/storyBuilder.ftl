@@ -12,7 +12,14 @@
 <link rel='stylesheet' href='css/fonts.css'>
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adds spacing between h3 and h4 */
+}
 </style>
+
 </head>
 <body class="w3-theme-l5">
 
@@ -117,7 +124,7 @@ function buildStory(data)
 		<div class="w3-container w3-card w3-white w3-round w3-margin"><br>
 		  <!-- The icon that toggles the help section -->
 		  <i class="fa fa-plus" onclick="toggleStoryId(1)" style="color: gray; transition: color 0.3s ease;" 
-		     onmouseover="this.style.color='red'" onmouseout="this.style.color='gray'"></i>TITLE 
+		     onmouseover="this.style.color='red'" onmouseout="this.style.color='gray'"></i><h3>Story: </h3><h4>TITLE</h4>
 		     
 		     
 		  <span class="w3-right w3-opacity"><button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="runStoryById(STORY_ID);"><i class="fa fa-rocket"></i>  Run</button></span>
@@ -125,14 +132,19 @@ function buildStory(data)
 		  <hr class="w3-clear">
 		
 		  <!-- Hidden story content, initially hidden with style display: none -->
-		  <div class="story1" id="story1" style="display: none;">
-		    <h2>OUTCOMES</h2>
-		    <p>AUTHOR</p>
-		    <div class="container">
-		      DESCRIPTION
-		    </div>
-		  </div>
-		</div>
+	
+		<div class="story1" id="story1" style="display: none;">
+    <div class="row">
+        <h3><strong>Title:</strong> OUTCOMES</h3>
+    </div>
+    <div class="row">
+        <h3><strong>Creator:</strong> AUTHOR</h3>
+    </div>
+    <div class="container">
+      
+            <h3><strong>Summary:</strong></h3> <h4>DESCRIPTION</h4>
+    </div>
+</div>
 		<!-- END OF STORY CARD -->
 		`;
 	
@@ -215,6 +227,48 @@ fetchJSONData();
 function runStoryById(id)
 {
 	console.log("Story id to execute: " + id);
+	const storyID = id;
+	const jwtToken = '${tokenObject.jwt}';
+   	const jsonData = JSON.stringify({
+          jwt: jwtToken,
+          id: storyID,
+        });
+	
+	$.ajax({
+          url: '/api/runStoryById', 
+          type: 'POST',
+          data: jsonData,
+          contentType: false, // Let jQuery handle it automatically
+    	processData: false, // Do not convert data to a query string
+          success: function(response) 
+          {
+          if (response.length > 0) {
+            let storyData = response[0]; // Extract first object from the array
+
+            // Extract values
+            let storyName = storyData.story.name;
+            let author = storyData.story.author;
+            let description = storyData.story.description;
+            let outcomes = storyData.story.outcomes;
+            let handbook = storyData.story.handbook;
+            let queries = storyData.story.story; // Array of queries
+
+            console.log("📌 Story Name:", storyName);
+            console.log("📌 Author:", author);
+            console.log("📌 Description:", description);
+            console.log("📌 Outcomes:", outcomes);
+            console.log("📌 Handbook:", handbook);
+            console.log("📌 Queries:", queries); // Logs full array of queries
+
+        }
+            console.log("Response Body:", JSON.stringify(response, null, 2));
+             
+          },
+          error: function(xhr, status, error) 
+          {
+            $('#response').text('Error: ' + error);
+          }
+        });
 }
 
 function getConnections()
