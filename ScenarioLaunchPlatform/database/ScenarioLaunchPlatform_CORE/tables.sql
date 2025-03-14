@@ -11,7 +11,6 @@ drop table if exists public.tb_tasks CASCADE;
 drop table if exists public.tb_query_types CASCADE;
 drop table if exists public.tb_version CASCADE;
 drop table if exists public.tb_stories CASCADE;
-drop table if exists public.tb_guardiumData CASCADE;
 
 
 drop FUNCTION if exists function_login(TEXT, TEXT);
@@ -58,15 +57,6 @@ RAISE NOTICE 'Created tb_user';
 insert into public.tb_user(firstname, surname, email, username, password, active, authlevel) VALUES('user_firstname', 'user_surname', 'user_email', 'username', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'active', 1);
 
 
-CREATE TABLE IF NOT EXISTS public.tb_guardiumData
-(
-	id serial NOT NULL,
-	runTime timestamp,
-	runData JSONB,
-	PRIMARY KEY (id)
-);
-
-RAISE NOTICE 'Created tb_guardiumData';
 
 
 
