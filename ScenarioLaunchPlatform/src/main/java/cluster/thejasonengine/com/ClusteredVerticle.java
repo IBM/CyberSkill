@@ -49,6 +49,7 @@ import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.sqlclient.Pool;
 import memory.thejasonengine.com.Ram;
+import messaging.thejasonengine.com.Websocket;
 import router.thejasonengine.com.SetupPostHandlers;
 import session.thejasonengine.com.SetupSession;
 import utils.thejasonengine.com.ConfigLoader;
@@ -532,35 +533,43 @@ public class ClusteredVerticle extends AbstractVerticle {
     	// Define the WebSocket route
         router.get("/websocket").handler(ctx -> {
             // Upgrade the HTTP request to a WebSocket
-            ctx.request().toWebSocket(socket -> {
-                if (socket.succeeded()) {
-                    // Handle WebSocket connection
-                    LOGGER.debug("New WebSocket connection: " + socket.result().remoteAddress());
-
-                    // Get the WebSocket instance
-                    ServerWebSocket webSocket = socket.result();
-
-                    // When a message is received from the client
-                    webSocket.handler(buffer -> {
-                        String message = buffer.toString();
-                        LOGGER.debug("Received message: " + message);
-
-                        // Echo the message back to the client
-                        webSocket.writeTextMessage("Echo: " + message);
-                    });
-
-                    // Handle WebSocket close
-                    webSocket.closeHandler(v -> {
-                    	LOGGER.debug("WebSocket closed");
-                    });
-
-                    // Handle WebSocket error
-                    webSocket.exceptionHandler(err -> {
-                    	LOGGER.debug("WebSocket error: " + err.getMessage());
-                    });
-                } else {
-                	LOGGER.error("Failed to create WebSocket: " + socket.cause());
-                }
+            ctx.request().toWebSocket(socket -> 
+            	{
+            		if (socket.succeeded()) 
+            		{
+	                    // Handle WebSocket connection
+	                    LOGGER.debug("New WebSocket connection: " + socket.result().remoteAddress());
+	
+	                    // Get the WebSocket instance
+	                    ServerWebSocket webSocket = socket.result();
+	                    Websocket ws = new Websocket();
+	                    
+	                    ws.addNewSocket(webSocket);
+	
+	                    // When a message is received from the client
+	                    webSocket.handler(buffer -> 
+	                    {
+	                        String message = buffer.toString();
+	                        LOGGER.debug("Received message: " + message);
+	                        // Echo the message back to the client
+	                        webSocket.writeTextMessage("Echo: " + message);
+	                    });
+	
+	                    // Handle WebSocket close
+	                    webSocket.closeHandler(v -> {
+	                    	LOGGER.debug("WebSocket closed");
+	                    	ws.removeSocket(webSocket);
+	                    });
+	
+	                    // Handle WebSocket error
+	                    webSocket.exceptionHandler(err -> {
+	                    	LOGGER.debug("WebSocket error: " + err.getMessage());
+	                    });
+	                } 
+            		else 
+            		{
+            			LOGGER.error("Failed to create WebSocket: " + socket.cause());
+            		}
             });
         });
         
