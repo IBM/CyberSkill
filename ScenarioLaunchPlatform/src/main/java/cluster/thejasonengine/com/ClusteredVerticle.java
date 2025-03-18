@@ -546,7 +546,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	                    ServerWebSocket webSocket = socket.result();
 	                    Websocket ws = new Websocket();
 	                    
-	                    ws.addNewSocket(webSocket);
+	                    ws.addNewSocket(webSocket,username);
 	
 	                    // When a message is received from the client
 	                    webSocket.handler(buffer -> 
