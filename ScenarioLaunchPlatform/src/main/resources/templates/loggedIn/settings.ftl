@@ -598,57 +598,33 @@ function getConnectionById()
         let choice = this.value;
         
         let db_type ="";
-        let db_version ="";
-        let db_password ="";
-        let db_port = "";
-        let db_database = "";
-        let db_url = "";
+       
         
         
         if(choice === "com.mysql.cj.jdbc.Driver")
         {
         	console.log("Loading mysql defaults");
         	db_type = "mysql"
-        	db_version ="10";
-        	db_password ="guardium";
-        	db_port = "3306";
-        	db_database = "crm";
-        	db_url = "127.0.0.1";
+        	
         }
         if(choice === "org.postgresql.Driver")
         {
         	console.log("Loading postgres defaults");
         	db_type ="postgresql";
-        	db_version ="14";
-        	db_password ="guardium";
-        	db_port = "5432";
-        	db_database = "crm";
-        	db_url = "127.0.0.1";
+        	
         }
         if(choice === "com.ibm.db2.jcc.DB2Driver")
         {
         	console.log("Loading db2 defaults");
         	db_type ="db2";
-        	db_version ="9";
-        	db_password ="guardium";
-        	db_port = "50000";
-        	db_database = "gosales";
-        	db_url = "127.0.0.1";
+        	
         }
         
         const elemnet_db_type = document.getElementById('new_db_type');
-        const elemnet_db_version = document.getElementById('new_db_version');
-        const elemnet_db_password = document.getElementById('new_db_password');
-        const elemnet_db_port = document.getElementById('new_db_port');
-        const elemnet_db_database = document.getElementById('new_db_database');
-        const elemnet_db_url = document.getElementById('new_db_url');
+       
         
         elemnet_db_type.value = db_type;
-        elemnet_db_version.value = db_version;
-        elemnet_db_password.value = db_password;
-        elemnet_db_port.value = db_port;
-        elemnet_db_database.value = db_database;
-        elemnet_db_url.value = db_url;
+        
         
         
     });
