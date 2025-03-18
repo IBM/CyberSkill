@@ -531,14 +531,16 @@ public class ClusteredVerticle extends AbstractVerticle {
     	
     	/***************************************************************************************/
     	// Define the WebSocket route
-        router.get("/websocket").handler(ctx -> {
+        router.get("/websocket/story/:username").handler(ctx -> {
             // Upgrade the HTTP request to a WebSocket
             ctx.request().toWebSocket(socket -> 
             	{
             		if (socket.succeeded()) 
             		{
 	                    // Handle WebSocket connection
-	                    LOGGER.debug("New WebSocket connection: " + socket.result().remoteAddress());
+            			String username = ctx.pathParam("username");
+            			LOGGER.debug("New WebSocket connection: " + socket.result().remoteAddress() + " username: " + username);
+	                    
 	
 	                    // Get the WebSocket instance
 	                    ServerWebSocket webSocket = socket.result();
