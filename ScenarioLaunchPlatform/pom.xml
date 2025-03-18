@@ -70,6 +70,11 @@
     	<version>2.13.0</version>
   	</dependency>
   	<dependency>
+	    <groupId>com.ibm.db2.jcc</groupId>
+	    <artifactId>db2jcc</artifactId>
+	    <version>db2jcc4</version>
+	</dependency>
+  	<dependency>
 	  <groupId>io.vertx</groupId>
 	  <artifactId>vertx-web-templ-freemarker</artifactId>
 	  <version>${vertx.version}</version>
