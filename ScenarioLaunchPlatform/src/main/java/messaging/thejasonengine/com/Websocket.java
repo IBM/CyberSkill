@@ -110,6 +110,7 @@ public class Websocket {
         	StorySocket ss = iterator.next();
             if (ss.getUsername().equals(username)) 
             {
+            	LOGGER.debug("Sending message to: " + username);
             	ss.getWebsocket().writeTextMessage(message);
             }
         }
