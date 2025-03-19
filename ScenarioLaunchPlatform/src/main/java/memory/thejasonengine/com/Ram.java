@@ -9,6 +9,7 @@
 
 package memory.thejasonengine.com;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,6 +27,7 @@ import io.vertx.core.shareddata.SharedData;
 import io.vertx.ext.web.Router;
 import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.Pool;
+import messaging.thejasonengine.com.Websocket.StorySocket;
 
 public class Ram extends AbstractVerticle 
 {
@@ -39,6 +41,7 @@ public class Ram extends AbstractVerticle
 	private static Router router;
 	private static JsonObject userAlias_Access;
 	private static HashMap<String, JsonArray> validatedConnections;
+	private static ArrayList<StorySocket> StorySocketList;
 	
 	private static HashMap<String, JsonObject> plugins;
 	
@@ -61,6 +64,16 @@ public class Ram extends AbstractVerticle
 	{
 		ramSharedMap = Ram.ramSharedMap;
 		LOGGER.info("Have set the RAM ramSharedMap");
+	}
+	/*********************************************************************/
+	public ArrayList<StorySocket> getStorySocketList()
+	{
+		return Ram.StorySocketList;
+	}
+	public void setStorySocketList(ArrayList<StorySocket> StorySocketList)
+	{
+		Ram.StorySocketList = StorySocketList;
+		LOGGER.info("Have set the RAM StorySocketList");
 	}
 	/*********************************************************************/
 	public HashMap<String, BasicDataSource> getDBPM()

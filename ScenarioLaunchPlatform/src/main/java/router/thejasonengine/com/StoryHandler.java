@@ -27,6 +27,7 @@ import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Tuple;
 import memory.thejasonengine.com.Ram;
+import messaging.thejasonengine.com.Websocket;
 import story.thejasonengine.com.RunStoryVerticle;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
@@ -182,7 +183,8 @@ public class StoryHandler
 				LOGGER.info("Payload: " + payload );
 				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
 				int id = JSONpayload.getInteger("id");
-				
+				String username = payload.getString("username");
+				String message = "message";
 				LOGGER.debug("Story id: " + id);
 				
 				Map<String,Object> map = new HashMap<String, Object>();
@@ -210,6 +212,11 @@ public class StoryHandler
             		{
             			if (ar3.succeeded()) 
                         {
+            				Websocket ws = new Websocket();
+            				ws.sendMessageToClient(username, message);
+            				
+            				
+            				
             				SqlConnection connection = ar3.result();
 			                JsonArray ja = new JsonArray();
 			                
