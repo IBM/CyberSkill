@@ -18,6 +18,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.client.WebClient;
+import messaging.thejasonengine.com.Websocket;
 
 public class RunStoryVerticle extends AbstractVerticle 
 {
@@ -103,14 +104,19 @@ public class RunStoryVerticle extends AbstractVerticle
 	    payload.put("query_id", query_id);
 	    payload.put("jwt", jwt);        
 	   
+	    LOGGER.debug("Sending story flow progress to connected ws clients");
+    	Websocket ws = new Websocket();
+    	ws.sendMessageToClient("username", joChapter.encodePrettily());  
+        
 	    
 	    webClient.post(serverPort, serverIP, "/api/runDatabaseQueryByDatasourceMapAndQueryId")
           .sendJson(payload)
-          .onSuccess(res -> {
-            System.out.println("Response: " + res.bodyAsJsonObject());
+          .onSuccess(res -> 
+          {
+        	LOGGER.debug("Response: " + res.bodyAsJsonObject());
           })
           .onFailure(err -> {
-            System.err.println("Request failed: " + err.getMessage());
+            LOGGER.error("Request failed: " + err.getMessage());
           });
 	    
 	    

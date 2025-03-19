@@ -212,8 +212,7 @@ public class StoryHandler
             		{
             			if (ar3.succeeded()) 
                         {
-            				Websocket ws = new Websocket();
-            				ws.sendMessageToClient(username, message);
+            				
             				
             				
             				
