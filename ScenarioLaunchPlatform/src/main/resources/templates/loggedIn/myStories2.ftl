@@ -45,20 +45,20 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 </head>
 <body class="w3-theme-l5">
 
-
+<#include "includes/navbar.ftl">
 
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
   <!-- The Grid -->
   <div class="w3-row">
     <!-- Left Column -->
-    
+    <div id="leftColumn"><#include "includes/leftColumn.ftl"></div>
     
     <!-- End Left Column -->
     </div>
     
     <!-- Middle Column -->
-    <div class=""w3-col s12 w3-container">
+    <div class="w3-col m9">
     
       <div class="w3-row-padding">
         <div class="w3-col m12">
@@ -96,6 +96,8 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 </div>
 <br>
 
+<!-- Footer -->
+<#include "includes/footer.ftl">
     
 <script>
 // Accordion
