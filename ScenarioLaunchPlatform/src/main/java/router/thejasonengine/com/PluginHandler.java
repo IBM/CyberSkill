@@ -85,9 +85,14 @@ public class PluginHandler {
 		
 		Router router = ram.getRouter();
 		
-		Integer Port = 81;
-		String host = "127.0.0.1";
-		String pluginName = "insights";
+		LOGGER.debug("Requested an instance of a plugin to load: " + plugin.encodePrettily());
+		
+		
+		JsonObject pluginDetails = plugin.getJsonObject("pluginDetails");
+		
+		Integer port = pluginDetails.getInteger("port");
+		String host = pluginDetails.getString("host");
+		String pluginName = pluginDetails.getString("name");
 		
 		
 		HashMap<String, JsonObject> plugins = ram.getPlugins();
@@ -107,8 +112,8 @@ public class PluginHandler {
 		
 		LOGGER.debug("Request to create new plugin route with details: " + plugin.encodePrettily());
 		LOGGER.debug("Creating heartbeat endpoint for plugin");
-		router.get("/api/plugin/insights").handler(ctx -> {
-			httpClient.request(ctx.request().method(), 81, "127.0.0.1", ctx.request().uri())
+		router.get("/api/plugin/"+ pluginName).handler(ctx -> {
+			httpClient.request(ctx.request().method(), port, host, ctx.request().uri())
 		          .compose(req -> req.send())
 		          .onSuccess(response -> {
 		        	  LOGGER.debug("Successfully sent request");
@@ -123,9 +128,9 @@ public class PluginHandler {
 		          ctx.fail(500);});
 		});
 		LOGGER.debug("Creating endpoints for plugin");
-		router.post("/api/plugin/insights/*").handler(ctx -> {
+		router.post("/api/plugin/"+ pluginName +"/*").handler(ctx -> {
 		    ctx.request().bodyHandler(body -> {
-				client.request(HttpMethod.POST, 81, "127.0.0.1", ctx.request().uri())
+				client.request(HttpMethod.POST, port, host, ctx.request().uri())
 	                    .putHeader("content-type", "application/json")
 	                    .sendBuffer(body, response -> {
 	                        if (response.succeeded()) 
@@ -143,10 +148,7 @@ public class PluginHandler {
 			
 		});
 			
-		
-		
-		
-		router.getWithRegex("^/plugin(/.+)?/.+\\.ftl$")
+		router.getWithRegex("^/plugin/"+pluginName+"(/.+)?/.+\\.ftl$")
 		 .handler(ctx -> 
 				 {
 					 
@@ -209,7 +211,7 @@ public class PluginHandler {
 					    			 ctx.put("tokenObject", tokenObject);
 					    			 
 					    			 
-					    			 httpClient.request(ctx.request().method(), 81, "127.0.0.1", ctx.request().uri())
+					    			 httpClient.request(ctx.request().method(), port, host, ctx.request().uri())
 					   				          .compose(req -> req.send())
 					   				          .onSuccess(response -> {
 					   				        	  LOGGER.debug("Successfully sent request");

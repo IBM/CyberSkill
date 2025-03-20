@@ -75,7 +75,7 @@
 						
 						
 						let icon = document.createElement("i");
-						icon.className = "fa fa-dot-circle-o"; 
+						icon.className = item.icon; 
 						link.prepend(icon);
 						
 						
