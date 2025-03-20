@@ -122,7 +122,75 @@ function openNav() {
 }
 
 
+</script>
 
+<script>
+	var queryString = window.location.search;
+	var urlParams = new URLSearchParams(queryString);
+	var storyID = urlParams.get('storyID'); 
+	console.log("storyID: "+ storyID);
+	
+	runStoryById(storyID);
+	
+	function runStoryById(id)
+	{
+		const storyID = +id;
+		
+		console.log("Story id to execute: " + id);
+	
+		const jwtToken = '${tokenObject.jwt}';
+	   	const jsonData = JSON.stringify({
+	          jwt: jwtToken,
+	          id: storyID,
+	        });
+	    
+	    setTimeout(() => 
+	    {    
+		
+			$.ajax({
+		          url: '/api/runStoryById', 
+		          type: 'POST',
+		          data: jsonData,
+		          contentType: false, // Let jQuery handle it automatically
+		    	processData: false, // Do not convert data to a query string
+		          success: function(response) 
+		          {
+		          if (response.length > 0) {
+		            let storyData = response[0]; // Extract first object from the array
+		
+		            // Extract values
+		            let storyName = storyData.story.name;
+		            let author = storyData.story.author;
+		            let description = storyData.story.description;
+		            let outcomes = storyData.story.outcomes;
+		            let handbook = storyData.story.handbook;
+		            let queries = storyData.story.story; // Array of queries
+		
+		            console.log("📌 Story Name:", storyName);
+		            console.log("📌 Author:", author);
+		            console.log("📌 Description:", description);
+		            console.log("📌 Outcomes:", outcomes);
+		            console.log("📌 Handbook:", handbook);
+		            console.log("📌 Queries:", queries); // Logs full array of queries
+		
+		        }
+		            console.log("Response Body:", JSON.stringify(response, null, 2));
+		             
+		          },
+		          error: function(xhr, status, error) 
+		          {
+		            $('#response').text('Error: ' + error);
+		          }
+		        });
+	   	}, 2000);
+	}
+
+</script>
+
+
+
+
+<script>
  
  
  $.ajax({

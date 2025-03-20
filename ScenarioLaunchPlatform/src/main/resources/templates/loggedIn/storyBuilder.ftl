@@ -228,7 +228,7 @@ function fetchJSONData()
 
 fetchJSONData();  
 
-function openMyStories() {
+function openMyStories(storyID) {
     const width = window.innerWidth / 2; // 50% of current window width
     const height = window.innerHeight / 2; // 50% of current window height
     const left = window.screenX + (window.innerWidth - width) / 2; // Center horizontally
@@ -237,7 +237,7 @@ function openMyStories() {
 	const features = "width=" + width + ",height=" + height + ",top=" + top + ",left=" + left;
 	
     const newWindow = window.open(
-        "myStories.ftl", // Change URL as needed
+        "myStories.ftl"+"?storyID="+storyID, // Change URL as needed
         "_blank",
         features
     );
@@ -253,59 +253,8 @@ function openMyStories() {
 
 function runStoryById(id)
 {
-	
-	openMyStories();
-	
-	
-	console.log("Story id to execute: " + id);
 	const storyID = id;
-	const jwtToken = '${tokenObject.jwt}';
-   	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          id: storyID,
-        });
-        
-    
-        
-    setTimeout(() => 
-    {    
-	
-		$.ajax({
-	          url: '/api/runStoryById', 
-	          type: 'POST',
-	          data: jsonData,
-	          contentType: false, // Let jQuery handle it automatically
-	    	processData: false, // Do not convert data to a query string
-	          success: function(response) 
-	          {
-	          if (response.length > 0) {
-	            let storyData = response[0]; // Extract first object from the array
-	
-	            // Extract values
-	            let storyName = storyData.story.name;
-	            let author = storyData.story.author;
-	            let description = storyData.story.description;
-	            let outcomes = storyData.story.outcomes;
-	            let handbook = storyData.story.handbook;
-	            let queries = storyData.story.story; // Array of queries
-	
-	            console.log("📌 Story Name:", storyName);
-	            console.log("📌 Author:", author);
-	            console.log("📌 Description:", description);
-	            console.log("📌 Outcomes:", outcomes);
-	            console.log("📌 Handbook:", handbook);
-	            console.log("📌 Queries:", queries); // Logs full array of queries
-	
-	        }
-	            console.log("Response Body:", JSON.stringify(response, null, 2));
-	             
-	          },
-	          error: function(xhr, status, error) 
-	          {
-	            $('#response').text('Error: ' + error);
-	          }
-	        });
-   	}, 2000);
+	openMyStories(storyID);
 }
 
 function getConnections()
