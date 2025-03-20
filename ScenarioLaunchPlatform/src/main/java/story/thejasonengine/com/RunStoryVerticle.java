@@ -108,6 +108,7 @@ public class RunStoryVerticle extends AbstractVerticle
     	Websocket ws = new Websocket();
     	ws.sendMessageToClient("username", joChapter.encodePrettily());  
         
+    	LOGGER.debug("Running story payload: " + payload.encodePrettily());
 	    
 	    webClient.post(serverPort, serverIP, "/api/runDatabaseQueryByDatasourceMapAndQueryId")
           .sendJson(payload)
