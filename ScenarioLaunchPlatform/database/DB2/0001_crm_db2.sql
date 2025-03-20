@@ -1,4 +1,4 @@
-
+--#SET TERMINATOR @
 DROP TABLE crm.tbl_crm_accounts_status;
 DROP TABLE crm.tbl_crm_accounts;
 DROP TABLE crm.tbl_calls;
