@@ -2797,6 +2797,9 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                 String datasource = JSONpayload.getString("datasource");
                 Integer queryId = JSONpayload.getInteger("queryId");
                 
+                LOGGER.debug("Datasource:" + datasource + " queryID:" + queryId);
+                
+                
                 JsonObject override = null;
                 
                 if(JSONpayload.containsKey("override"))
@@ -2868,6 +2871,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                     SqlClient systemConnection = fu.result();
 
                                     String query = "SELECT * FROM public.tb_query WHERE id = $1";
+                                    
+                                   LOGGER.debug("SELECT * FROM public.tb_query WHERE id = " + queryId);
 
                                     systemConnection.preparedQuery(query)
                                         .execute(Tuple.of(queryId), res -> 
@@ -2931,6 +2936,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                 
                                 			                if (sql.trim().toUpperCase().startsWith("SELECT")) 
                                 			                {
+                                			                	LOGGER.debug("We have detected an Select");
                                 			                	try 
                                 			                	{
     	                            			                	
@@ -2948,13 +2954,28 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                		}
                                 			                		else
                                 			                		{
-	                                			                		Connection connection = BDS.getConnection();
-	    	                            			                	JsonObject jo = executeSelect(connection, sql);
-	    	                            			                	jo.put("loopIndex", loopIndex);
-	    	                            			                	JsonResponse.add(jo);
-	    	                            					            
-	    	                            					           
-	    	                            					            connection.close();
+                                			                			LOGGER.debug("Attempting to retrieve database connection for select");
+                                			                			try
+                                			                			{
+                                			                				if(BDS == null)
+                                			                				{
+                                			                					LOGGER.debug("BDS is null - recreating");
+                                			                					BDS = dataSourceMap.get(datasource);
+                                			                				}
+                                			                				
+                                			                				Connection connection = BDS.getConnection();
+                                			                				LOGGER.debug("Have retrieved database connection for select");
+                                			                				String result = executeSelect(connection, sql).encodePrettily();
+    	    	                            			                	LOGGER.debug("SELECT RESULT: " + result);
+    	                                			                		JsonObject jo = new JsonObject(result);
+    	    	                            			                	jo.put("loopIndex", loopIndex);
+    	    	                            			                	JsonResponse.add(jo);
+    	    	                            					            connection.close();
+                                			                			}
+                                			                			catch(Exception e)
+                                			                			{
+                                			                				LOGGER.error("Unable to get connection: " + e.toString());
+                                			                			}
                                 			                		}
                                 			                	}
                                 			                	catch(Exception error)
@@ -2970,6 +2991,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                }
                                 							else 
                                 							{
+                                								LOGGER.debug("We have detected an update");
                                 								try 
                                 			                	{
                                 									if(sql.indexOf("{bruteforce}") == 0)
@@ -2988,12 +3010,30 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                		}
                                 			                		else
                                 			                		{
-	                                									Connection connection = BDS.getConnection();
-	    	                            								JsonObject jo = executeUpdate(connection, sql);
-	    	                            								jo.put("loopIndex", loopIndex);
-	    	                            								JsonResponse.add(jo);
-	    	                            								
-	    	                            								connection.close();
+                                			                			
+                                			                			LOGGER.debug("Attempting to retrieve database connection for update");
+                                			                			try
+                                			                			{
+                                			                				if(BDS == null)
+                                			                				{
+                                			                					LOGGER.debug("BDS is null - recreating");
+                                			                					BDS = dataSourceMap.get(datasource);
+                                			                				}
+                                			                				
+                                			                				Connection connection = BDS.getConnection();
+                                			                				
+                                			                				LOGGER.debug("Have retrieved database connection for select");
+                                			                				String result = executeUpdate(connection, sql).encodePrettily();
+    	    	                            			                	LOGGER.debug("SELECT RESULT: " + result);
+    	                                			                		JsonObject jo = new JsonObject(result);
+    	    	                            			                	jo.put("loopIndex", loopIndex);
+    	    	                            			                	JsonResponse.add(jo);
+    	    	                            					            connection.close();
+                                			                			}
+                                			                			catch(Exception e)
+                                			                			{
+                                			                				LOGGER.error("Unable to get connection: " + e.toString());
+                                			                			}
                                 			                		}
                                 			                	}
                                 								catch(Exception error)

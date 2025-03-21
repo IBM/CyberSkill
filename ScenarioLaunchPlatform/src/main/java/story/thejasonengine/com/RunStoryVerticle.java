@@ -101,8 +101,9 @@ public class RunStoryVerticle extends AbstractVerticle
 	    
 	    
 	    JsonObject payload = new JsonObject().put("datasource", datasource);
-	    payload.put("query_id", query_id);
-	    payload.put("jwt", jwt);        
+	    payload.put("queryId", query_id);
+	    payload.put("jwt", jwt);    
+	    payload.put("datasource", datasource);
 	   
 	    LOGGER.debug("Sending story flow progress to connected ws clients");
     	Websocket ws = new Websocket();
