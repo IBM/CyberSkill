@@ -108,18 +108,24 @@ public class RunStoryVerticle extends AbstractVerticle
     	Websocket ws = new Websocket();
     	ws.sendMessageToClient("username", joChapter.encodePrettily());  
         
-    	LOGGER.debug("Running story payload: " + payload.encodePrettily());
+    	LOGGER.debug("Running chapter payload: " + payload.encodePrettily());
 	    
+    	LOGGER.debug("Chapter serverPort: " + serverPort);
+    	LOGGER.debug("Chapter serverIP: " + serverIP);
+    	
 	    webClient.post(serverPort, serverIP, "/api/runDatabaseQueryByDatasourceMapAndQueryId")
           .sendJson(payload)
           .onSuccess(res -> 
           {
-        	LOGGER.debug("Response: " + res.bodyAsJsonObject());
+        	LOGGER.debug("Response from chapter webclient: " + res.bodyAsJsonObject());
           })
           .onFailure(err -> {
-            LOGGER.error("Request failed: " + err.getMessage());
+            LOGGER.error("Chapter webclient request failed: " + err.getMessage());
+          }).
+          onComplete(comp -> {
+        	  LOGGER.debug("Chapter webclient request complete: " + comp.succeeded());
           });
-	    
+	    LOGGER.debug("Chapter called successfully");
 	    
         /*EOF Chapter activities*/
         vertx.setTimer(pause_in_seconds, id -> 
