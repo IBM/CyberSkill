@@ -224,6 +224,7 @@ BEGIN
 	CONNECTION LIMIT -1
 	PASSWORD 'Password1!';
     END IF;
+    ALTER ROLE john LOGIN PASSWORD 'Password1!';
 
     -- Check and create user2
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'jason') THEN
@@ -236,6 +237,7 @@ BEGIN
 	CONNECTION LIMIT -1
 	PASSWORD 'Password1!';
     END IF;
+    ALTER ROLE jason LOGIN PASSWORD 'Password1!';
 
     -- Check and create user3
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'polly') THEN
@@ -249,6 +251,7 @@ BEGIN
 	CONNECTION LIMIT -1
 	PASSWORD 'Password1!';
     END IF;
+    ALTER ROLE polly LOGIN PASSWORD 'Password1!';
 
     -- Check and create user4
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'liher') THEN
@@ -262,5 +265,6 @@ BEGIN
 	CONNECTION LIMIT -1
 	PASSWORD 'Password1!';
     END IF;
+    ALTER ROLE liher LOGIN PASSWORD 'Password1!';
 END $$
 
