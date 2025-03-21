@@ -2938,7 +2938,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                		{
                                 			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
                                 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
-                                										BF.BruteForceConnectionErrors(datasource);
+                                			                			LoopRun.add(BF.BruteForceConnectionErrors(datasource));
                                 			                		}
                                 			                		else
                                 			                		{
@@ -2970,7 +2970,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                		{
                                 										LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
                                 										BruteForceDBConnections BF = new BruteForceDBConnections();
-                                										BF.BruteForceConnectionErrors(datasource);
+                                										LoopRun.add(BF.BruteForceConnectionErrors(datasource));
                                 										
                                 										
                                 			                		}
@@ -3218,7 +3218,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                		{
 			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
-										BF.BruteForceConnectionErrors(datasource);
+			                			LoopRun.add(BF.BruteForceConnectionErrors(datasource));
 			                		}
 			                		else
 			                		{
@@ -3240,7 +3240,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                		{
 			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
-										BF.BruteForceConnectionErrors(datasource);
+			                			LoopRun.add(BF.BruteForceConnectionErrors(datasource));
+										
 			                		}
 			                		else
 			                		{

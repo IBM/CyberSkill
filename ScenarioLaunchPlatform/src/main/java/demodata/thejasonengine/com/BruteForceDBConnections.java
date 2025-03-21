@@ -4,14 +4,16 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertx.core.json.JsonObject;
+
 public class BruteForceDBConnections {
 	
 	private static final Logger LOGGER = LogManager.getLogger(BruteForceDBConnections.class);
 	
-	public void BruteForceConnectionErrors(String datasource)
+	public JsonObject BruteForceConnectionErrors(String datasource)
 	{
 		LOGGER.debug("Inside BruteForceConnectionErrors with datasource: " + datasource);
-		
+		JsonObject response = new JsonObject();
 		String[] parts = datasource.split("_");
 
         if (parts.length >= 3) { // Ensure there are enough parts to avoid ArrayIndexOutOfBoundsException
@@ -57,17 +59,19 @@ public class BruteForceDBConnections {
 	    	{
 	    		LOGGER.debug("Testing brute force datasource connection");
 	    		DataSource.getConnection();
+	    		response.put("result", "connection success");
 	    	}
 	    	catch(Exception e)
 	    	{
 	    		LOGGER.error("brute force datasource connection did not connect - this is expected behaviour");
+	    		response.put("result", "connection failure");
 	    	}
         } 
         else 
         {
         	LOGGER.debug("The string doesn't contain enough parts:" + datasource);
         }
-	
+        return response;
 	}
 
 }
