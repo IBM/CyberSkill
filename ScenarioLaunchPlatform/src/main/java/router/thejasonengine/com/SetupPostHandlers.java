@@ -2938,7 +2938,13 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                		{
                                 			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
                                 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
-                                			                			LoopRun.add(BF.BruteForceConnectionErrors(datasource));
+                                			                			JsonArray ja_hold = new JsonArray();
+                                			                			ja_hold.add(BF.BruteForceConnectionErrors(datasource));
+                                			                			JsonObject jo = new JsonObject();
+                                			                			jo.put("Result",ja_hold );
+                                			                			jo.put("loopIndex", loopIndex);
+                                			                			jo.put("SQL", "Create bad connection");
+                                			                			JsonResponse.add(jo);
                                 			                		}
                                 			                		else
                                 			                		{
@@ -2970,7 +2976,13 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                		{
                                 										LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
                                 										BruteForceDBConnections BF = new BruteForceDBConnections();
-                                										LoopRun.add(BF.BruteForceConnectionErrors(datasource));
+                                										JsonArray ja_hold = new JsonArray();
+                                										ja_hold.add(BF.BruteForceConnectionErrors(datasource));
+                                			                			JsonObject jo = new JsonObject();
+                                			                			jo.put("Result",ja_hold );
+                                			                			jo.put("loopIndex", loopIndex);
+                                			                			jo.put("SQL", "Create bad connection");
+                                			                			JsonResponse.add(jo);
                                 										
                                 										
                                 			                		}
@@ -3218,7 +3230,13 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                		{
 			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
-			                			LoopRun.add(BF.BruteForceConnectionErrors(datasource));
+			                			JsonArray ja_hold = new JsonArray();
+			                			ja_hold.add(BF.BruteForceConnectionErrors(datasource));
+			                			JsonObject jo = new JsonObject();
+			                			jo.put("Result",ja_hold );
+			                			jo.put("loopIndex", loopIndex);
+			                			jo.put("SQL", "Create bad connection");
+			                			JsonResponse.add(jo);
 			                		}
 			                		else
 			                		{
@@ -3240,7 +3258,13 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                		{
 			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
-			                			LoopRun.add(BF.BruteForceConnectionErrors(datasource));
+			                			JsonArray ja_hold = new JsonArray();
+			                			ja_hold.add(BF.BruteForceConnectionErrors(datasource));
+			                			JsonObject jo = new JsonObject();
+			                			jo.put("Result",ja_hold );
+			                			jo.put("loopIndex", loopIndex);
+			                			jo.put("SQL", "Create bad connection");
+			                			JsonResponse.add(jo);
 										
 			                		}
 			                		else
