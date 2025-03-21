@@ -1,0 +1,73 @@
+package demodata.thejasonengine.com;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class BruteForceDBConnections {
+	
+	private static final Logger LOGGER = LogManager.getLogger(BruteForceDBConnections.class);
+	
+	public void BruteForceConnectionErrors(String datasource)
+	{
+		LOGGER.debug("Inside BruteForceConnectionErrors with datasource: " + datasource);
+		
+		String[] parts = datasource.split("_");
+
+        if (parts.length >= 3) { // Ensure there are enough parts to avoid ArrayIndexOutOfBoundsException
+            String databaseType = parts[0];
+            String host = parts[1];
+            String database = parts[2];
+            String user = parts[3];
+
+            LOGGER.debug("databaseType: " + databaseType);
+            LOGGER.debug("host: " + host);
+            LOGGER.debug("database: " + database);
+            LOGGER.debug("user: " + user);
+            String db_jdbcclassname = "";
+            
+            BasicDataSource DataSource = new BasicDataSource();
+	        if (databaseType.equalsIgnoreCase("mysql"))
+	        {
+	        	LOGGER.debug("Setting Datasource URL for mysql -  setting useSSL=False");
+	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"3306"+"/"+database+"?allowPublicKeyRetrieval=true&useSSL=false");
+	        	db_jdbcclassname = "com.mysql.cj.jdbc.Driver";
+	        }
+	        else if(databaseType.equalsIgnoreCase("postgresql"))
+	        {
+	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"5432"+"/"+database);
+	        	db_jdbcclassname = "org.postgresql.Driver";
+	        }
+	        else if(databaseType.equalsIgnoreCase("db2"))
+	        {
+	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"5000"+"/"+database);
+	        	db_jdbcclassname = "com.ibm.db2.jcc.DB2Driver";
+	        }
+	        
+	    	DataSource.setUsername(user);
+	    	DataSource.setPassword("randomPassword");
+	    	DataSource.setDriverClassName(db_jdbcclassname);
+	    	DataSource.setInitialSize(5);
+	    	DataSource.setMaxTotal(10);
+	    	DataSource.setMinIdle(2);
+	    	DataSource.setMaxIdle(5);
+	    	DataSource.setMaxWaitMillis(10000);
+	    	
+	    	try
+	    	{
+	    		LOGGER.debug("Testing brute force datasource connection");
+	    		DataSource.getConnection();
+	    	}
+	    	catch(Exception e)
+	    	{
+	    		LOGGER.error("brute force datasource connection did not connect - this is expected behaviour");
+	    	}
+        } 
+        else 
+        {
+        	LOGGER.debug("The string doesn't contain enough parts:" + datasource);
+        }
+	
+	}
+
+}

@@ -44,6 +44,7 @@ import com.hazelcast.shaded.org.json.JSONObject;
 
 import authentication.thejasonengine.com.AuthUtils;
 import database.thejasonengine.com.DatabaseController;
+import demodata.thejasonengine.com.BruteForceDBConnections;
 import demodata.thejasonengine.com.DatabasePoolManager;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
@@ -2932,13 +2933,23 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                {
                                 			                	try 
                                 			                	{
-    	                            			                	Connection connection = BDS.getConnection();
-    	                            			                	JsonObject jo = executeSelect(connection, sql);
-    	                            			                	jo.put("loopIndex", loopIndex);
-    	                            			                	JsonResponse.add(jo);
-    	                            					            
-    	                            					           
-    	                            					            connection.close();
+    	                            			                	
+                                			                		if(sql.indexOf("{bruteforce}") == 0)
+                                			                		{
+                                			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
+                                			                			BruteForceDBConnections BF = new BruteForceDBConnections();
+                                										BF.BruteForceConnectionErrors(datasource);
+                                			                		}
+                                			                		else
+                                			                		{
+	                                			                		Connection connection = BDS.getConnection();
+	    	                            			                	JsonObject jo = executeSelect(connection, sql);
+	    	                            			                	jo.put("loopIndex", loopIndex);
+	    	                            			                	JsonResponse.add(jo);
+	    	                            					            
+	    	                            					           
+	    	                            					            connection.close();
+                                			                		}
                                 			                	}
                                 			                	catch(Exception error)
                                 			                	{
@@ -2955,12 +2966,23 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 							{
                                 								try 
                                 			                	{
-    	                            								Connection connection = BDS.getConnection();
-    	                            								JsonObject jo = executeUpdate(connection, sql);
-    	                            								jo.put("loopIndex", loopIndex);
-    	                            								JsonResponse.add(jo);
-    	                            								
-    	                            								connection.close();
+                                									if(sql.indexOf("{bruteforce}") == 0)
+                                			                		{
+                                										LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
+                                										BruteForceDBConnections BF = new BruteForceDBConnections();
+                                										BF.BruteForceConnectionErrors(datasource);
+                                										
+                                										
+                                			                		}
+                                			                		else
+                                			                		{
+	                                									Connection connection = BDS.getConnection();
+	    	                            								JsonObject jo = executeUpdate(connection, sql);
+	    	                            								jo.put("loopIndex", loopIndex);
+	    	                            								JsonResponse.add(jo);
+	    	                            								
+	    	                            								connection.close();
+                                			                		}
                                 			                	}
                                 								catch(Exception error)
                                 			                	{
@@ -3191,11 +3213,22 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				             
 				                if (sql.trim().toUpperCase().startsWith("SELECT")) 
 				                {
-				                	Connection connection = BDS.getConnection();
-				                	JsonObject jo = executeSelect(connection, sql);
-				                	jo.put("loopIndex", loopIndex);
-				                	JsonResponse.add(jo);
-						            connection.close();
+				                	
+				                	if(sql.indexOf("{bruteforce}") == 0)
+			                		{
+			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
+			                			BruteForceDBConnections BF = new BruteForceDBConnections();
+										BF.BruteForceConnectionErrors(datasource);
+			                		}
+			                		else
+			                		{
+					                	
+					                	Connection connection = BDS.getConnection();
+					                	JsonObject jo = executeSelect(connection, sql);
+					                	jo.put("loopIndex", loopIndex);
+					                	JsonResponse.add(jo);
+							            connection.close();
+			                		}
 						        }
 				                else if(sql.trim().toUpperCase().startsWith("--"))
     			                {
@@ -3203,11 +3236,20 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
     			                }
 								else 
 								{
-									Connection connection = BDS.getConnection();
-									JsonObject jo = executeUpdate(connection, sql);
-									jo.put("loopIndex", loopIndex);
-									JsonResponse.add(jo);
-									connection.close();
+									if(sql.indexOf("{bruteforce}") == 0)
+			                		{
+			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
+			                			BruteForceDBConnections BF = new BruteForceDBConnections();
+										BF.BruteForceConnectionErrors(datasource);
+			                		}
+			                		else
+			                		{
+										Connection connection = BDS.getConnection();
+										JsonObject jo = executeUpdate(connection, sql);
+										jo.put("loopIndex", loopIndex);
+										JsonResponse.add(jo);
+										connection.close();
+			                		}
 								}
 				             }
                         	//response.send(JsonResponse.encodePrettily());
