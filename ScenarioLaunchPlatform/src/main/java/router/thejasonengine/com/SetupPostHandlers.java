@@ -3027,7 +3027,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                				
                                 			                				Connection connection = BDS.getConnection();
                                 			                				
-                                			                				LOGGER.debug("Have retrieved database connection for select");
+                                			                				LOGGER.debug("Have retrieved database connection for update");
                                 			                				String result = executeUpdate(connection, sql).encodePrettily();
     	    	                            			                	LOGGER.debug("NON SELECT RESULT: " + result);
     	                                			                		JsonObject jo = new JsonObject(result);
