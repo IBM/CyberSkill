@@ -2969,7 +2969,12 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
     	    	                            			                	LOGGER.debug("SELECT RESULT: " + result);
     	                                			                		JsonObject jo = new JsonObject(result);
     	    	                            			                	jo.put("loopIndex", loopIndex);
+    	    	                            			                	
+    	    	                            			                	LOGGER.debug("result jo now: " + jo.encodePrettily());
+    	    	                            			                	
     	    	                            			                	JsonResponse.add(jo);
+    	    	                            			                	
+    	    	                            			                	LOGGER.debug("result ja now: " + JsonResponse.encodePrettily());
     	    	                            					            connection.close();
                                 			                			}
                                 			                			catch(Exception e)
@@ -3024,10 +3029,14 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                				
                                 			                				LOGGER.debug("Have retrieved database connection for select");
                                 			                				String result = executeUpdate(connection, sql).encodePrettily();
-    	    	                            			                	LOGGER.debug("SELECT RESULT: " + result);
+    	    	                            			                	LOGGER.debug("NON SELECT RESULT: " + result);
     	                                			                		JsonObject jo = new JsonObject(result);
     	    	                            			                	jo.put("loopIndex", loopIndex);
+    	    	                            			                	
+    	    	                            			                	LOGGER.debug("result jo now: " + jo.encodePrettily());
+    	    	                            			                	
     	    	                            			                	JsonResponse.add(jo);
+    	    	                            			                	LOGGER.debug("result ja now: " + JsonResponse.encodePrettily());
     	    	                            					            connection.close();
                                 			                			}
                                 			                			catch(Exception e)

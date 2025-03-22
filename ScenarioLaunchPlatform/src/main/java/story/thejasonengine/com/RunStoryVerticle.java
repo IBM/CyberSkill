@@ -118,7 +118,7 @@ public class RunStoryVerticle extends AbstractVerticle
           .sendJson(payload)
           .onSuccess(res -> 
           {
-        	LOGGER.debug("Response from chapter webclient: " + res.bodyAsJsonObject());
+        	LOGGER.debug("Response from chapter webclient: " + res.bodyAsJsonArray());
           })
           .onFailure(err -> {
             LOGGER.error("Chapter webclient request failed: " + err.getMessage());
