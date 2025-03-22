@@ -58,13 +58,29 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
     </div>
     
     <!-- Middle Column -->
+    
+    <!-- Modal structure -->
+    <div id="myModal" class="w3-modal">
+        <div class="w3-modal-content">
+            <header class="w3-container w3-blue-grey">
+                <span onclick="closeModal()" class="w3-button w3-display-topright">&times;</span>
+                <h2>Chapter query details </h2>
+            </header>
+            <div class="w3-container">
+                <p id="modalContent">Loading...</p> <!-- This will be populated via AJAX -->
+            </div>
+        </div>
+    </div>
+    
+    
+    
     <div class=""w3-col s12 w3-container">
     
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">My Stories</h6>
+              <h6 class="w3-opacity"><div id="StoryTitle"><div></h6>
               <!-- -->
               <!-- -->
             </div>
@@ -146,7 +162,10 @@ function openNav() {
 	    
 	    setTimeout(() => 
 	    {    
-		
+			let StoryTitle = document.getElementById("StoryTitle");
+			
+			
+			
 			$.ajax({
 		          url: '/api/runStoryById', 
 		          type: 'POST',
@@ -172,6 +191,9 @@ function openNav() {
 		            console.log("📌 Outcomes:", outcomes);
 		            console.log("📌 Handbook:", handbook);
 		            console.log("📌 Queries:", queries); // Logs full array of queries
+		            
+		            
+		            StoryTitle.innerHTML = storyName;
 		
 		        }
 		            console.log("Response Body:", JSON.stringify(response, null, 2));
@@ -262,7 +284,7 @@ const wsUrl = protocol+ "//" + window.location.host + relativeUrl;
 			            <td>Database: DATABASE<br>
 			            	DBTYPE<br>
 			            	HOSTNAME<br>
-			            	Query: QUERYID
+			            	<button class="w3-button w3-blue-grey" onclick="openModal(QUERYID)">Query</button>
 			            </td>
 			        </tr>
 			    </table>
@@ -334,6 +356,50 @@ socket.addEventListener("close", () => {
 });
 
 </script>
+
+
+<script>
+        // Function to open the modal
+        function openModal(queryId) 
+        {
+            document.getElementById('myModal').style.display = 'block';
+            console.log("queryId: " + queryId);
+            fetchQueryData(queryId);  // Make the AJAX request to fetch data
+        }
+
+        // Function to close the modal
+        function closeModal() 
+        {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        function fetchQueryData(varqueryId) 
+        {
+        	const queryId = +varqueryId;
+        	const jwtToken = '${tokenObject.jwt}';
+	   		const jsonData = JSON.stringify({
+	          jwt: jwtToken,
+	          query_id: queryId,
+	        });
+        
+            $.ajax({
+            	  url: '/api/getDatabaseQueryByQueryId', 
+		          type: 'POST',
+		          data: jsonData,
+		          contentType: false, 
+		    	  processData: false,
+		          success: function(response) 
+		          {
+                    // Populate the modal with the response data
+                    $('#modalContent').html('<strong>Query:</strong> ' + response[0].query_string);
+	              },
+	              error: function() 
+	              {
+	                    $('#modalContent').html('<strong>Error loading data</strong>');
+	              }
+            });
+        }
+    </script>
 
 
 </body>
