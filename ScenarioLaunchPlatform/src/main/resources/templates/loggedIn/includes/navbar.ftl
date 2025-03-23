@@ -6,7 +6,7 @@
   <a href="/loggedIn/settings.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Settings"><i class="fa fa-cogs"></i></a>
   <a href="/loggedIn/user.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="User"><i class="fa fa-user"></i></a>
   <a href="/loggedIn/databases.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Access"><i class="fa fa-database"></i></a>
-  <a href="/loggedIn/scheduler.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Scheduler"><i class="fa fa-clock-o"></i></a>
+  <!-- <a href="/loggedIn/scheduler.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Scheduler"><i class="fa fa-clock-o"></i></a>-->
   <a href="/loggedIn/ostask.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="OS Task"><i class="fa fa-tasks"></i></a>
   <!-- <a href="experimental.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Experimental"><i class="fa fa-flask"></i></a> -->
   <!-- <a href="/plugin/guardium.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Insights"><i class="fa fa-dot-circle-o"></i></a> -->
