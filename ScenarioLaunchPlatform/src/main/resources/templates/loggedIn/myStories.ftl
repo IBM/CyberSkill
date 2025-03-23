@@ -193,7 +193,7 @@ function openNav() {
 		            console.log("📌 Queries:", queries); // Logs full array of queries
 		            
 		            
-		            StoryTitle.innerHTML = storyName;
+		            StoryTitle.innerHTML = storyName + " [ " +storyData.story.story.length + " chapters ]" ;
 		
 		        }
 		            console.log("Response Body:", JSON.stringify(response, null, 2));
@@ -273,7 +273,7 @@ const wsUrl = protocol+ "//" + window.location.host + relativeUrl;
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">My Stories</h6>
+              <h6 class="w3-opacity">Chapter</h6>
               <!-- -->
 	             <table>
 			        <tr>
@@ -307,7 +307,7 @@ const socket = new WebSocket(wsUrl);
 // Connection opened
 socket.addEventListener("open", () => {
     console.log("Connected to WebSocket server");
-    socket.send("Hello, Server!"); // Send a message to the server
+    //socket.send("Hello, Server!"); // Send a message to the server
 });
 
 // Listen for messages
