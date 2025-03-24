@@ -3341,23 +3341,27 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                		if(matcher.find())
 			                		{
 			                			String username = matcher.group(1);
+			                			JsonArray ja_hold = new JsonArray();
+			                			JsonObject jo = new JsonObject();
+			                			
+			                			
 			                			if(username == null)
 			                			{
 			                				LOGGER.debug("No additional username over ride passed in");
+			                				jo.put("SQL", "Create brute force connection");
 			                			}
 			                			else
 			                			{
 			                				LOGGER.debug("Additional username over ride passed in");  
 			                				datasource = datasource.replaceAll("_(?!.*_).*", "_"+username);
+			                				jo.put("SQL", "Create brute force connection: " + username);
 			                			}
 			                            LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
-			                			JsonArray ja_hold = new JsonArray();
+			                			
 			                			ja_hold.add(BF.BruteForceConnectionErrors(datasource));
-			                			JsonObject jo = new JsonObject();
 			                			jo.put("Result",ja_hold );
 			                			jo.put("loopIndex", loopIndex);
-			                			jo.put("SQL", "Create bad connection");
 			                			JsonResponse.add(jo);
 										
 			                		}
