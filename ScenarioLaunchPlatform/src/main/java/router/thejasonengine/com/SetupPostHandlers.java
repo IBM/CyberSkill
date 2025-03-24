@@ -33,6 +33,9 @@ import java.util.Random;
 
 import io.vertx.core.MultiMap;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import io.vertx.ext.web.FileUpload;
@@ -2939,9 +2942,19 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                	LOGGER.debug("We have detected an Select");
                                 			                	try 
                                 			                	{
-    	                            			                	
-                                			                		if(sql.indexOf("{bruteforce}") == 0)
+                                			                		
+                                			                		
+                                			                		String regex = "\\{bruteforce(?::([^}]+))?\\}";
+
+                                			                        Pattern pattern = Pattern.compile(regex);
+                                			                        Matcher matcher = pattern.matcher(sql);
+
+                                			                           	                            			                	
+                                			                		if(matcher.find())
                                 			                		{
+                                			                			String username = matcher.group(1);
+                                			                            LOGGER.debug("username found for brute force: " + username);
+                                			                            
                                 			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
                                 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
                                 			                			JsonArray ja_hold = new JsonArray();
@@ -2999,8 +3012,16 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 								LOGGER.debug("We have detected an update");
                                 								try 
                                 			                	{
-                                									if(sql.indexOf("{bruteforce}") == 0)
+                                									String regex = "\\{bruteforce(?::([^}]+))?\\}";
+
+                                			                        Pattern pattern = Pattern.compile(regex);
+                                			                        Matcher matcher = pattern.matcher(sql);
+
+                                			                           	                            			                	
+                                			                		if(matcher.find())
                                 			                		{
+                                			                			String username = matcher.group(1);
+                                			                            LOGGER.debug("username found for brute force: " + username);
                                 										LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
                                 										BruteForceDBConnections BF = new BruteForceDBConnections();
                                 										JsonArray ja_hold = new JsonArray();
@@ -3275,8 +3296,16 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				                if (sql.trim().toUpperCase().startsWith("SELECT")) 
 				                {
 				                	
-				                	if(sql.indexOf("{bruteforce}") == 0)
+				                	String regex = "\\{bruteforce(?::([^}]+))?\\}";
+
+			                        Pattern pattern = Pattern.compile(regex);
+			                        Matcher matcher = pattern.matcher(sql);
+
+			                           	                            			                	
+			                		if(matcher.find())
 			                		{
+			                			String username = matcher.group(1);
+			                            LOGGER.debug("username found for brute force: " + username);
 			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
 			                			JsonArray ja_hold = new JsonArray();
@@ -3303,9 +3332,25 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
     			                }
 								else 
 								{
-									if(sql.indexOf("{bruteforce}") == 0)
+									String regex = "\\{bruteforce(?::([^}]+))?\\}";
+
+			                        Pattern pattern = Pattern.compile(regex);
+			                        Matcher matcher = pattern.matcher(sql);
+
+			                           	                            			                	
+			                		if(matcher.find())
 			                		{
-			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
+			                			String username = matcher.group(1);
+			                			if(username == null)
+			                			{
+			                				LOGGER.debug("No additional username over ride passed in");
+			                			}
+			                			else
+			                			{
+			                				LOGGER.debug("Additional username over ride passed in");  
+			                				datasource = datasource.replaceAll("_(?!.*_).*", "_"+username);
+			                			}
+			                            LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
 			                			BruteForceDBConnections BF = new BruteForceDBConnections();
 			                			JsonArray ja_hold = new JsonArray();
 			                			ja_hold.add(BF.BruteForceConnectionErrors(datasource));

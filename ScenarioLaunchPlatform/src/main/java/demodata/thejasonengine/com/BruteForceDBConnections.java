@@ -63,7 +63,7 @@ public class BruteForceDBConnections {
 	    	}
 	    	catch(Exception e)
 	    	{
-	    		LOGGER.error("brute force datasource connection did not connect - this is expected behaviour");
+	    		LOGGER.error("brute force datasource connection did not connect - this is expected behaviour: " + e.getLocalizedMessage());
 	    		response.put("result", "connection failure");
 	    	}
         } 
