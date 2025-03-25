@@ -453,7 +453,7 @@ function getConnectionById()
 				        
 				      </div>
 				     <div class="col-75">
-				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align"  onclick="updateConnection();"><i class="fa fa-floppy-o"></i>  Save</button>
+				        <!-- <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align"  onclick="updateConnection();"><i class="fa fa-floppy-o"></i>  Save</button> -->
 				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align"  onclick="deleteConnection();"><i class="fa fa-trash-o"></i>  delete</button> 
 				     
 				     </div>	
@@ -478,17 +478,17 @@ function getConnectionById()
     
 			
 			<div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <i class="fa fa-pencil" onclick="toggleEditDiv()" style="color: gray; transition: color 0.3s ease;" 
+        <i class="fa fa-eye" onclick="toggleEditDiv()" style="color: gray; transition: color 0.3s ease;" 
    onmouseover="this.style.color='red'" 
-   onmouseout="this.style.color='gray'"></i> Edit Connection
+   onmouseout="this.style.color='gray'"></i> View Connection
         <span class="w3-right w3-opacity" id="editConnectionCounter"></span>
         <br>
 	        <hr class="w3-clear">
         <div class ="EditConnection" id="EditConnection" style="display: none;"> 
 	        
 				        
-				<h2>Edit connection</h2>
-				<p>Edit an existing connection to be able to execute SQL against that connection.</p>
+				<h2>View connection</h2>
+				<p>View an existing connection to confirm settings to execute SQL against that connection.</p>
 				
 				<div class="container">
 				    <div class="row">
@@ -497,7 +497,7 @@ function getConnectionById()
 				    </div>
 				    
 				     <div class="col-75">
-				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="getConnectionById();"><i class="fa fa-pencil"></i>  EDIT</button> 
+				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="getConnectionById();"><i class="fa fa-eye"></i>  View</button> 
 				      </div>	
 				    </div>
 				</div>
