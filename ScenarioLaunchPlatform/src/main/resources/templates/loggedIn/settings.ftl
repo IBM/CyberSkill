@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="css/datatables.min.css">
 <link rel='stylesheet' href='css/fonts.css'>
 
+
 <script src="js/jquery.min.js"></script>
 <script src="js/datatables.js"></script>
 
@@ -148,7 +149,7 @@ function getConnectionById()
 				<div id="addConnectionResponseModal" class="w3-modal">
 				    <div class="w3-modal-content">
 				      <div class="w3-container">
-				        <span onclick="document.getElementById('addConnectionResponseModal').style.display='none';getConnections()" class="w3-button w3-display-topright">&times;</span>
+				        <span onclick="document.getElementById('addConnectionResponseModal').style.display='none';toggleDiv(); getConnections()" class="w3-button w3-display-topright">&times;</span>
 				        <p id="addConnectionResponse"></p>
 				        
 				      </div>
@@ -663,6 +664,17 @@ function openNav() {
                 div.style.display = 'block'; // Show the div
             } else {
                 div.style.display = 'none'; // Hide the div
+                $('#new_status').val('');
+				$('#new_db_version').val('');
+				$('#new_db_username').val('');
+				$('#new_db_password').val('');
+				$('#new_db_database').val('');
+				$('#new_db_port').val('');
+				$('#new_db_url').val('');
+				$('#new_db_userIcon').val('');
+				$('#new_db_databaseIcon').val('');
+				$('#new_db_alias').val('');
+				$('#new_db_access').val('');
             }
         }
          function toggleEditDiv() {
