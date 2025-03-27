@@ -79,7 +79,7 @@ public class RunStoryVerticle extends AbstractVerticle
 	private Future<Void> executeStory(JsonArray jaStory) 
 	{
 	    Future<Void> chain = Future.succeededFuture();
-
+	    
 	    
 	    for (int i = 0; i < jaStory.size(); i++) 
 	    {
@@ -125,7 +125,7 @@ public class RunStoryVerticle extends AbstractVerticle
           .sendJson(payload)
           .onSuccess(res -> 
           {
-        	LOGGER.debug("Response from chapter webclient: " + res.bodyAsJsonArray());
+        	LOGGER.debug("Response from chapter webclient: " + res.bodyAsString());
           })
           .onFailure(err -> {
             LOGGER.error("Chapter webclient request failed: " + err.getMessage());
