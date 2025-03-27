@@ -35,8 +35,13 @@ public class RunStoryVerticle extends AbstractVerticle
 		
 		webClient = WebClient.create(vertx);
 		
+		LOGGER.debug("Starting the RunStoryVerticle");
+		
 		JsonObject config = config();
         
+		LOGGER.debug("Recieved config:");
+		LOGGER.debug(config.encodePrettily());
+		
         int id = config.getInteger("id");
         String runtime = config.getString("runtime");
         
