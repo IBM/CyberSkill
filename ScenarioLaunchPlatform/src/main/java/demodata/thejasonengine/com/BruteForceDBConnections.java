@@ -42,7 +42,7 @@ public class BruteForceDBConnections {
 	        }
 	        else if(databaseType.equalsIgnoreCase("db2"))
 	        {
-	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"5000"+"/"+database);
+	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"50000"+"/"+database);
 	        	db_jdbcclassname = "com.ibm.db2.jcc.DB2Driver";
 	        }
 	        
