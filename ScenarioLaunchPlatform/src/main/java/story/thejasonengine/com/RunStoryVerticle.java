@@ -115,6 +115,8 @@ public class RunStoryVerticle extends AbstractVerticle
     	LOGGER.debug("Chapter serverIP: " + serverIP);
     	
 	    webClient.post(serverPort, serverIP, "/api/runDatabaseQueryByDatasourceMapAndQueryId")
+	    	.putHeader("Content-Type", "application/json")
+	    	.putHeader("Accept", "application/json")
           .sendJson(payload)
           .onSuccess(res -> 
           {
