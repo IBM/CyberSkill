@@ -122,11 +122,12 @@ public class RunStoryVerticle extends AbstractVerticle
 	    webClient.post(serverPort, serverIP, "/api/runDatabaseQueryByDatasourceMapAndQueryId")
 	    	.putHeader("Content-Type", "application/json")
 	    	.putHeader("Accept", "application/json")
-          .sendJson(payload)
+          .sendJsonObject(payload)
           .onSuccess(res -> 
           {
         	LOGGER.debug("Response from chapter webclient: " + res.bodyAsString());
-          })
+          }
+          )
           .onFailure(err -> {
             LOGGER.error("Chapter webclient request failed: " + err.getMessage());
           }).
