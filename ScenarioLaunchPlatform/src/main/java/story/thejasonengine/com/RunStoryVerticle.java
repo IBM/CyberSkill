@@ -15,9 +15,12 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.net.ProxyOptions;
+import io.vertx.core.net.ProxyType;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 import messaging.thejasonengine.com.Websocket;
 
 public class RunStoryVerticle extends AbstractVerticle 
@@ -33,7 +36,7 @@ public class RunStoryVerticle extends AbstractVerticle
 	{
 		
 		
-		webClient = WebClient.create(vertx);
+		
 		
 		LOGGER.debug("Starting the RunStoryVerticle");
 		
@@ -48,6 +51,16 @@ public class RunStoryVerticle extends AbstractVerticle
         serverIP = config.getString("serverIP");
         serverPort = config.getInteger("serverPort");
         jwt = config.getString("jwt");
+        
+        
+        WebClientOptions options = new WebClientOptions()
+	            .setProxyOptions(new ProxyOptions()
+	                .setType(ProxyType.HTTP) 
+	                .setHost(serverIP)    
+	                .setPort(serverPort));
+		
+		
+		webClient = WebClient.create(vertx, options);
         
 		
         LOGGER.debug("Story execution serverIP: " + serverIP);
