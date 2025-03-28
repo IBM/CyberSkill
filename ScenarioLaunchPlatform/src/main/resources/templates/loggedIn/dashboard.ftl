@@ -193,8 +193,66 @@ function openNav() {
 		 }
 	});
 }
+
+
+
+
+
+
 </script>
 
+<script>
+window.onload = function() {
+  getConnections();
+};
 
+
+
+function getConnections()
+{
+  	const jwtToken = '${tokenObject.jwt}';
+   	const jsonData = JSON.stringify({
+          jwt: jwtToken,
+        });
+  
+  
+	$.ajax({
+          url: '/api/getDatabaseConnections', 
+          type: 'POST',
+          data: jsonData,
+          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+          success: function(response) 
+          {
+             	
+	          $.ajax({
+	          url: '/api/getValidatedDatabaseConnections', 
+	          type: 'POST',
+	          data: jsonData,
+	          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+	          success: function(response) 
+	          {
+	             	response.forEach((item) => 
+	             	{
+		            	
+		            	console.log("found valid connection in db: "+item.connection);
+	  				});
+		      },
+	          error: function(xhr, status, error) 
+	          {
+	            console.log('Error: ' + error);
+	          }
+	        });
+             	
+             	
+	      },
+          error: function(xhr, status, error) 
+          {
+            console.log('Error: ' + error);
+          }
+        });
+        
+        
+  }
+</script>
 </body>
 </html> 
