@@ -132,6 +132,13 @@ public class RunStoryVerticle extends AbstractVerticle
     	LOGGER.debug("Chapter serverPort: " + serverPort);
     	LOGGER.debug("Chapter serverIP: " + serverIP);
     	
+    	if(serverIP.contains("0:0:0:0:0:0:0:1"))
+    	{
+    		LOGGER.debug("have detected an IP6 address 0:0:0:0:0:0:0:1 converting it to IP4 127.0.0.1");
+    		serverIP = "127.0.0.1";
+    	}
+    	
+    	
 	    webClient.post(serverPort, serverIP, "/api/runDatabaseQueryByDatasourceMapAndQueryId")
 	    	.putHeader("Content-Type", "application/json")
 	    	.putHeader("Accept", "application/json")
