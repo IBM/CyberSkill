@@ -51,6 +51,7 @@ import io.vertx.sqlclient.Pool;
 import memory.thejasonengine.com.Ram;
 import messaging.thejasonengine.com.Websocket;
 import router.thejasonengine.com.SetupPostHandlers;
+import router.thejasonengine.com.UpgradeHandler;
 import session.thejasonengine.com.SetupSession;
 import utils.thejasonengine.com.ConfigLoader;
 import database.thejasonengine.com.AgentDatabaseController;
@@ -77,6 +78,8 @@ public class ClusteredVerticle extends AbstractVerticle {
 	private SetupSession setupSession;
 	private SetupPostHandlers setupPostHandlers;
 	private AgentDatabaseController agentDatabaseController;
+	
+	private UpgradeHandler upgradeHandler;
 	private static Pool pool;
 	private FreeMarkerTemplateEngine engine;
 	
@@ -126,6 +129,10 @@ public class ClusteredVerticle extends AbstractVerticle {
 		
 		agentDatabaseController = new AgentDatabaseController(vertx);
 		LOGGER.info("Set up Agent based Controller");
+		
+		
+		upgradeHandler = new UpgradeHandler(vertx);
+		LOGGER.info("Set Handlers Setup");
 		
 		Router router = Router.router(vertx);
 		
@@ -480,8 +487,13 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 
 	  	 
 	  	 router.post("/api/getAvailablePlugins").handler(BodyHandler.create()).handler(setupPostHandlers.getAvailablePlugins);
-	  	
 	  	 
+	  	
+	  	/*********************************************************************************/
+	  	 
+	  	router.post("/api/checkForUpgrade").handler(BodyHandler.create()).handler(upgradeHandler.checkForUpgrade);
+	  	
+	  	
 	  	 /*********************************************************************************/
 	  	 //router.post("/api/monitor/guardium").handler(BodyHandler.create()).handler(setupPostHandlers.monitorGuardium);
 	  	 //router.post("/api/monitor/getMonitorGuardiumSourcesForCron").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSourcesForCron);
