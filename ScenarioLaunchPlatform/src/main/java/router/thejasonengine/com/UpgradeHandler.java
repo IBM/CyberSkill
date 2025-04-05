@@ -228,7 +228,7 @@ public class UpgradeHandler
 	private static void executeSqlStatements(Pool pool, String[] statements, int index) 
 	{
 		LOGGER.debug("Number of statements to run: " + statements.length);
-		for (index = 0; index < statements.length; index++) 
+		if(index < statements.length) 
         {
             String statement = statements[index].trim();
             if (!statement.isEmpty()) 
@@ -254,9 +254,12 @@ public class UpgradeHandler
             	executeSqlStatements(pool, statements, index);
             }
         }
-        // All SQL statements executed
-        LOGGER.debug("All SQL statements executed.");
-        pool.close(); // Close the pool
+		else
+		{
+	        // All SQL statements executed
+	        LOGGER.debug("All SQL statements executed.");
+	        pool.close(); // Close the pool
+		}
         
     }
 }
