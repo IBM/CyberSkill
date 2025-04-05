@@ -211,7 +211,7 @@ public class UpgradeHandler
 		
 		
 		
-		JsonObject jo = new JsonObject("{\"response\":\"No upgrade available\"}");
+		JsonObject jo = new JsonObject("{\"response\":\"Upgrade completed successfully\"}");
     	ja.add(jo);
     	response.send(ja.encodePrettily());	
 	
