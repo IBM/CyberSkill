@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import database.thejasonengine.com.DatabaseController;
+import file.thejasonengine.com.Read;
 import io.vertx.core.Context;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
@@ -199,12 +200,10 @@ public class UpgradeHandler
 		HttpServerResponse response = routingContext.response();
 		JsonArray ja = new JsonArray();
 		
+		Read read = new Read();
+		String schema = Read.getDatabaseSchemaInfo(String.valueOf(currentSchemaVersion));
 		
-		
-		
-		
-		
-		
+		LOGGER.debug("Scheama updates to run: " + schema);
 		
 		
 		

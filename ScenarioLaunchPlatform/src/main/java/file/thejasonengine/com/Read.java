@@ -53,8 +53,9 @@ public class Read {
 		try
 		 {
 			 Path jarPath = Paths.get(Read.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
-	         Path filePath = jarPath.resolve(currentSchemaVersion + "_toLatest.sql"); // Replace with the actual filename
-	         
+			 LOGGER.debug("Location of SLP: " + jarPath);
+			 Path filePath = jarPath.resolve(currentSchemaVersion + "_toLatest.sql"); // Replace with the actual filename
+	         LOGGER.debug("Location of schema to execute: " + filePath);
 	         if (Files.exists(filePath)) 
 	         {
 	        	 List<String> lines = Files.readAllLines(filePath);
