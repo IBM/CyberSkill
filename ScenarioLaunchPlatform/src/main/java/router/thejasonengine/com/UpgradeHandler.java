@@ -125,6 +125,7 @@ public class UpgradeHandler
                         		if(result > 0)
                         		{
                         			LOGGER.debug("Required is greater than current - perform an upgrade");
+                        			upgradeToLatest(routingContext, currentSchemaVersion);
                         		}
                         		else if(result < 0)
                         		{
@@ -183,6 +184,29 @@ public class UpgradeHandler
 		Context context = routingContext.vertx().getOrCreateContext();
 		HttpServerResponse response = routingContext.response();
 		JsonArray ja = new JsonArray();
+		
+		JsonObject jo = new JsonObject("{\"response\":\"No upgrade available\"}");
+    	ja.add(jo);
+    	response.send(ja.encodePrettily());	
+	
+	}
+	/******************************************************************************************/
+	public void upgradeToLatest(RoutingContext routingContext, double currentSchemaVersion)
+	{
+		LOGGER.debug("Upgrading schema to latest from: " + String.valueOf(currentSchemaVersion));
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		HttpServerResponse response = routingContext.response();
+		JsonArray ja = new JsonArray();
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		JsonObject jo = new JsonObject("{\"response\":\"No upgrade available\"}");
     	ja.add(jo);
