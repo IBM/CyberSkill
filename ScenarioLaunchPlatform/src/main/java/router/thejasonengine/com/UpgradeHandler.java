@@ -83,7 +83,7 @@ public class UpgradeHandler
             pool = ram.getPostGresSystemPool();
             pool.getConnection(fu -> 
             {
-            	JsonObject jo = new JsonObject("{\"response\":\"error: unable to check for upgrade\"}");
+            	
                 if (fu.succeeded()) 
                 {
                     LOGGER.debug("Successfully got connection to master system database");
@@ -130,11 +130,15 @@ public class UpgradeHandler
                         		}
                         		else if(result < 0)
                         		{
-                        			LOGGER.debug("Required schema is less than current schema - this really should not happen");	
+                        			JsonObject jo = new JsonObject("{\"response\":\"error: unable to check for upgrade\"}");
+                        			LOGGER.debug("Required schema is less than current schema - this really should not happen");
+                        			response.send(jo.encodePrettily());
                         		}
                         		else
                         		{
+                        			JsonObject jo = new JsonObject("{\"response\":\"error: unable to check for upgrade\"}");
                         			LOGGER.debug("No update required as the required and current are the same");
+                        			response.send(jo.encodePrettily());
                         		}
                             } 
                             else 
@@ -146,12 +150,12 @@ public class UpgradeHandler
                         });
 
                     systemConnection.close();
-                    response.send(jo.encodePrettily());
+                   
                 } 
                 else 
                 {
                     LOGGER.error("Unable to get connection to master system database");
-                    jo = new JsonObject("{\"response\":\"error: Unable to get connection to master system database\"}");
+                    JsonObject jo = new JsonObject("{\"response\":\"error: Unable to get connection to master system database\"}");
                     response.send(jo.encodePrettily());
                 }
             });
