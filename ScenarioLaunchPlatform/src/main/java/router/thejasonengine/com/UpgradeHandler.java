@@ -230,7 +230,7 @@ public class UpgradeHandler
 		LOGGER.debug("Number of statements to run: " + statements.length);
 		for (index = 0; index < statements.length; index++) 
         {
-            String statement = statements[i].trim();
+            String statement = statements[index].trim();
             if (!statement.isEmpty()) 
             {
             	pool.query(statement).execute(res -> 
