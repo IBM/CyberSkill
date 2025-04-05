@@ -228,8 +228,7 @@ public class UpgradeHandler
 	private static void executeSqlStatements(Pool pool, String[] statements, int index) 
 	{
 		LOGGER.debug("Number of statements to run: " + statements.length);
-		int i = 0;
-        for (i = 0; i < statements.length; i++) 
+		for (index = 0; index < statements.length; index++) 
         {
             String statement = statements[i].trim();
             if (!statement.isEmpty()) 
@@ -246,13 +245,13 @@ public class UpgradeHandler
                         res.cause().printStackTrace();
                     }
                 });
-                i = i+1;
-                executeSqlStatements(pool, statements, i);
+                index = index+1;
+                executeSqlStatements(pool, statements, index);
             }
             else
             {
-            	i = i+1;
-            	executeSqlStatements(pool, statements, i);
+            	index = index+1;
+            	executeSqlStatements(pool, statements, index);
             }
         }
         // All SQL statements executed
