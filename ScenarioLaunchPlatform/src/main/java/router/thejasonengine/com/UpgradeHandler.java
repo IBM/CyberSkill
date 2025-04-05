@@ -25,6 +25,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.mysqlclient.MySQLPool;
+import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.Pool;
 import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.RowSet;
@@ -209,11 +210,54 @@ public class UpgradeHandler
 		
 		LOGGER.debug("Scheama updates to run: " + schema);
 		
-		
+		updateSchema(schema);
 		
 		JsonObject jo = new JsonObject("{\"response\":\"Upgrade completed successfully\"}");
     	ja.add(jo);
     	response.send(ja.encodePrettily());	
 	
 	}
+	/******************************************************************************************/
+	private void updateSchema(String schema)
+	{
+		String[] statements = schema.split(";");
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
+		executeSqlStatements(pool, statements, 0);
+	}
+	private static void executeSqlStatements(Pool pool, String[] statements, int index) 
+	{
+		LOGGER.debug("Number of statements to run: " + statements.length);
+		int i = 0;
+        for (i = 0; i < statements.length; i++) 
+        {
+            String statement = statements[i].trim();
+            if (!statement.isEmpty()) 
+            {
+            	pool.query(statement).execute(res -> 
+                {
+                    if (res.succeeded()) 
+                    {
+                        LOGGER.debug("Executed: " + statement);
+                    }
+                    else 
+                    {
+                    	LOGGER.debug("Error executing: " + statement);
+                        res.cause().printStackTrace();
+                    }
+                });
+                i = i+1;
+                executeSqlStatements(pool, statements, i);
+            }
+            else
+            {
+            	i = i+1;
+            	executeSqlStatements(pool, statements, i);
+            }
+        }
+        // All SQL statements executed
+        LOGGER.debug("All SQL statements executed.");
+        pool.close(); // Close the pool
+        
+    }
 }
