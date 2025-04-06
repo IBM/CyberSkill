@@ -8,6 +8,11 @@
 
 package router.thejasonengine.com;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,6 +87,7 @@ public class UpgradeHandler
             }
 
             pool = ram.getPostGresSystemPool();
+            
             pool.getConnection(fu -> 
             {
             	
@@ -233,19 +239,31 @@ public class UpgradeHandler
             String statement = statements[index].trim();
             if (!statement.isEmpty()) 
             {
-            	pool.query(statement).execute(res -> 
+            	
+            	pool.getConnection(fu -> 
                 {
-                    if (res.succeeded()) 
-                    {
-                        LOGGER.debug("Executed: " + statement);
-                    }
+                	LOGGER.debug("Successfully got connection to master system database");
+                    SqlClient systemConnection = fu.result();
+                    
+                    String query = statement;
+
+                    if (query.trim().toUpperCase().startsWith("SELECT")) 
+	                {
+                    	LOGGER.debug("We have detected an select");
+                    	executeSelect(systemConnection, query);
+	                }
+                    else if(query.trim().toUpperCase().startsWith("--"))
+	                {
+                    	LOGGER.debug("We have detected a comment");
+	                }
                     else 
-                    {
-                    	LOGGER.debug("Error executing: " + statement);
-                        res.cause().printStackTrace();
-                    }
+					{
+						LOGGER.debug("We have detected an update");
+						executeUpdate(systemConnection, query);
+						
+					}
                 });
-                index = index+1;
+            	index = index+1;
                 executeSqlStatements(pool, statements, index);
             }
             else
@@ -258,8 +276,44 @@ public class UpgradeHandler
 		{
 	        // All SQL statements executed
 	        LOGGER.debug("All SQL statements executed.");
-	        pool.close(); // Close the pool
+	        
 		}
         
+    }
+	/*************************************************************/
+	private static void executeUpdate(SqlClient connection, String sql)
+    {
+    	try
+    	{
+    		connection.preparedQuery(sql)
+            .execute(res -> 
+            {
+            	LOGGER.debug("Executed update: " + res);
+            	connection.close();
+            });
+    	
+    	}
+    	catch(Exception e)
+    	{
+    		LOGGER.error("Unable to run query: " + e.toString());
+    	}
+    }
+    /******************************************************************************************/
+    private static void executeSelect(SqlClient connection, String sql)
+    {
+    	try
+    	{
+    		connection.preparedQuery(sql)
+            .execute(res -> 
+            {
+            	LOGGER.debug("Executed update: " + res);
+            	connection.close();
+            });
+    	
+    	}
+    	catch(Exception e)
+    	{
+    		LOGGER.error("Unable to run query: " + e.toString());
+    	}
     }
 }
