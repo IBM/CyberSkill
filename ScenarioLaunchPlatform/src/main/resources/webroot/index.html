@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="css/styles.css">
 <link rel='stylesheet' href='css/fonts.css'>
 <script src="js/jquery.min.js"></script>
+<link rel="stylesheet" href="css/font-awesome.min.css">
 
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
@@ -30,6 +31,13 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 
   <div class="container" style="background-color:#f1f1f1; font-size: x-small">
 	<div class="buildVersion" id="buildVersion">Build:0000X?</div> <div class="patchVersion" id="patchVersion">Patch:0000X?</div> 
+	
+	
+	<a href="#" onclick="checkForUpdate()" class="icon-link">
+        <i class="fa fa-refresh"></i>
+        Check for update
+    </a>
+	
   </div>
 </div>
 
@@ -124,6 +132,25 @@ function ReadBuildDetails()
  	});
     
 }	
+
+function checkForUpdate()
+{
+	$.ajax({
+        type: "POST",
+        url: "/api/checkForUpgrade",
+        contentType: 'application/json;charset=UTF-8',
+        data: JSON.stringify({'JWT':''}),
+        success: function (data) 
+        {
+            console.log(data);
+            document.getElementById('patchVersion').innerHTML = "Patch " + data.version;
+            
+        }
+        
+ 	});
+	
+	
+}
 </script>	
 	
 	
