@@ -6,6 +6,7 @@ A tool for the people, built by the people. Scenario Launch Platform is an inter
 
 
 ## 🚀 Features  
+- ✅ **Plugin Architecture** – Develope your own **Plugins's** that can run inside the SLP framework for increased scalability and personalization.  
 - ✅ **Multi-Database Support** – Connect to **PostgreSQL, MySQLr**, and more to come.  
 - ✅ **Security Use Cases** – Simulate **different security use cases** and view findings in Guardium.  
 - ✅ **Use case storage** – Store **security use cases** in the database to create a personalized library   
