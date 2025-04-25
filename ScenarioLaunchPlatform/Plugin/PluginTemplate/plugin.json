@@ -1,0 +1,11 @@
+{
+    "pluginVersion": "1.00",
+    "pluginName": "loadrunner",
+    "pluginDetails": {
+    	"name":"loadrunner",
+    	"host":"127.0.0.1",
+        "url": "/plugin/loadrunner/loadrunner.ftl",
+        "icon": "fa fa-ambulance",
+        "port": 82
+    }
+}

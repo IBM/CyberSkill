@@ -1,0 +1,55 @@
+package router.thejasonengine.com;
+
+
+/*  Notification [Common Notification]
+*
+*	Author(s): Jason Flood/John Clarke
+*  	Licence: Apache 2
+*  
+*   
+*/
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import database.thejasonengine.com.DatabaseController;
+import io.vertx.core.Context;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.mysqlclient.MySQLPool;
+import io.vertx.sqlclient.Pool;
+import io.vertx.sqlclient.Row;
+import io.vertx.sqlclient.RowSet;
+import io.vertx.sqlclient.SqlConnection;
+import io.vertx.sqlclient.Tuple;
+import memory.thejasonengine.com.Ram;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Vertx;
+
+public class LoadRunnerHandler 
+{
+	private static final Logger LOGGER = LogManager.getLogger(LoadRunnerHandler.class);
+	
+	/******************************************************************************************/
+	public static void handleRunLoadRunner(RoutingContext routingContext)
+	{
+		LOGGER.info("insdie LoadRunnerHandler");
+		Context context = routingContext.vertx().getOrCreateContext();
+		HttpServerResponse response = routingContext.response();
+		JsonArray ja = new JsonArray();
+		
+		JsonObject jo = new JsonObject("{\"response\":\"ok \"}");
+    	ja.add(jo);
+    	response.send(ja.encodePrettily());	
+	
+	}
+	/******************************************************************************************/
+	
+}
