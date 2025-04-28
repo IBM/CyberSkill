@@ -178,6 +178,7 @@ function getConnectionById()
 				          <option value="mysql">mysql</option>
 				          <option value="postgresql">postgresql</option>
 				          <option value="db2">db2</option>
+				          <option value="sqlserver">sqlserver</option>
 				        </select>
 				      </div>
 				    </div>
@@ -238,6 +239,7 @@ function getConnectionById()
 				          <option value="com.ibm.db2.jcc.DB2Driver">db2</option>
 				          <option value="com.mysql.cj.jdbc.Driver">mysql</option>
 				          <option value="org.postgresql.Driver">postgresql</option>
+				          <option value="com.microsoft.sqlserver.jdbc.SQLServerDriver">sqlserver</option>
 				        </select>
 				      </div>
 				    </div>
@@ -353,6 +355,7 @@ function getConnectionById()
 				          <option value="mysql">mysql</option>
 				          <option value="postgresql">postgresql</option>
 				          <option value="db2">db2</option>
+				          <option value="sqlserver">sqlserver</option>
 				        </select>
 				      </div>
 				    </div>
@@ -413,6 +416,7 @@ function getConnectionById()
 				          <option value="com.ibm.db2.jcc.DB2Driver">db2</option>
 				          <option value="com.mysql.cj.jdbc.Driver">mysql</option>
 				          <option value="org.postgresql.Driver">postgresql</option>
+				          <option value="com.microsoft.sqlserver.jdbc.SQLServerDriver">sqlserver</option>
 				        </select>
 				      </div>
 				    </div>
@@ -620,7 +624,12 @@ function getConnectionById()
         	db_type ="db2";
         	
         }
-        
+        if(choice === "com.microsoft.sqlserver.jdbc.SQLServerDriver")
+        {
+        	console.log("Loading sqlserver defaults");
+        	db_type ="sqlserver";
+        	
+        }
         const elemnet_db_type = document.getElementById('new_db_type');
        
         

@@ -74,6 +74,12 @@
 	    <artifactId>db2jcc</artifactId>
 	    <version>db2jcc4</version>
 	</dependency>
+	<dependency>
+	    <groupId>com.microsoft.sqlserver</groupId>
+	    <artifactId>mssql-jdbc</artifactId>
+	    <version>12.6.1.jre11</version> <!-- or match your JDK version -->
+  	</dependency>
+	
   	<dependency>
 	  <groupId>io.vertx</groupId>
 	  <artifactId>vertx-web-templ-freemarker</artifactId>
