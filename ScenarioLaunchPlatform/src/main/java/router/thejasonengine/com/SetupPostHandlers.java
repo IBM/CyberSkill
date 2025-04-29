@@ -4994,7 +4994,18 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
         return sb.toString();
 	}
 }
-	
+
+
+class asyncWrapper<T> 
+{
+	  // asyncWrapper<String> message = new asyncWrapper<>("Initial");
+	  // message.value = "Updated value";
+	  T value;
+	  asyncWrapper(T value) 
+	  { 
+		  this.value = value; 
+	  }
+}
 	
 	
 
