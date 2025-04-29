@@ -31,6 +31,9 @@ public class DatabasePoolManager
 
 	private static final Logger LOGGER = LogManager.getLogger(DatabasePoolManager.class);
 	
+	private static final String MSSQL_ENCRYPT = "encrypt=true";
+	private static final String MSSQL_CERT = "trustServerCertificate=true";
+	
 	public DatabasePoolManager(Context context) 
     {
         Ram ram = new Ram();
@@ -61,6 +64,16 @@ public class DatabasePoolManager
 		        {
 		        	LOGGER.debug("Setting Datasource URL for mysql -  setting useSSL=False");
 		        	DataSource.setUrl("jdbc:"+jo.getString("db_type")+"://"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database")+"?allowPublicKeyRetrieval=true&useSSL=false");
+		        }
+		        else if (jo.getString("db_type").equalsIgnoreCase("sqlserver"))
+		        {
+		        	LOGGER.debug("Setting Datasource URL for sqlserver -  setting correct format");
+		        	//jdbc:sqlserver://localhost:1433;encrypt=true;databaseName=AdventureWorks;integratedSecurity=true;
+		        	///encrypt=true;databaseName=AdventureWorks;integratedSecurity=true;
+		        	String connectionString= "jdbc:"+jo.getString("db_type")+"://"+jo.getString("db_url")+":"+jo.getString("db_port")+";databaseName="+jo.getString("db_database")+";"+MSSQL_ENCRYPT+";"+MSSQL_CERT+";user="+jo.getString("db_username")+";password="+jo.getString("db_password")+";";
+		       
+		        	LOGGER.debug("SQLSERVER:" + connectionString);
+		        	DataSource.setUrl(connectionString);
 		        }
 		        else
 		        {
@@ -148,6 +161,17 @@ public class DatabasePoolManager
         		LOGGER.debug("Setting Datasource URL for mysql -  setting useSSL=False");
         		DataSource.setUrl("jdbc:"+jo.getString("db_type")+"://"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database")+"?allowPublicKeyRetrieval=true&useSSL=false");
 	        }
+        	 else if (jo.getString("db_type").equalsIgnoreCase("sqlserver"))
+		        {
+		        	LOGGER.debug("Setting Datasource URL for sqlserver -  setting correct format");
+		        	//jdbc:sqlserver://localhost:1433;encrypt=true;databaseName=AdventureWorks;integratedSecurity=true;
+		        	///encrypt=true;databaseName=AdventureWorks;integratedSecurity=true
+		        	String connectionString= "jdbc:"+jo.getString("db_type")+"://"+jo.getString("db_url")+":"+jo.getString("db_port")+";databaseName="+jo.getString("db_database")+";"+MSSQL_ENCRYPT+";"+MSSQL_CERT+";user="+jo.getString("db_username")+";password="+jo.getString("db_password")+";";
+				       
+		        	//String connectionString = "jdbc:sqlserver://localhost;encrypt=true;user=sa;password=Guardium123!;";
+		        	LOGGER.debug("SQLSERVER:" + connectionString);
+		        	DataSource.setUrl(connectionString);
+		        }
 	        else
 	        {
 	        	DataSource.setUrl("jdbc:"+jo.getString("db_type")+"://"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database"));
