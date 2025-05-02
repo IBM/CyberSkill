@@ -262,7 +262,7 @@ public class SetupPostHandlers
 			                SqlConnection connection = ar.result();
 			                JsonArray ja = new JsonArray();
 			                connection.preparedQuery("INSERT INTO public.tb_myvars  (username, data) VALUES ($1, $2) ON CONFLICT (username) DO UPDATE SET data = EXCLUDED.data;")
-			                		.execute(Tuple.of(map.get("username"), map.get(mySystemVariables)),
+			                		.execute(Tuple.of(map.get("username"), mySystemVariables),
 			                        res -> {
 			                            if (res.succeeded()) 
 			                            {
