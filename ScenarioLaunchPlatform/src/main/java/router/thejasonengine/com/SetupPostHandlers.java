@@ -88,6 +88,8 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> webLogin;
 	public Handler<RoutingContext> addDatabaseQuery;
 	public Handler<RoutingContext> getDatabaseQueryByDbType;
+	public Handler<RoutingContext> getMySystemVariables;
+	public Handler<RoutingContext> setMySystemVariables;
 	public Handler<RoutingContext> getDatabaseQueryByQueryId;
 	public Handler<RoutingContext> getDatabaseQuery; 
 	public Handler<RoutingContext> getDatabaseConnections;
@@ -125,7 +127,10 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> getAvailablePlugins;
 	
 	public Handler<RoutingContext> getSwagger;
-		
+	
+
+	
+	
 	public SetupPostHandlers(Vertx vertx)
     {
 		simpleTest = SetupPostHandlers.this::handleSimpleTest;
@@ -182,6 +187,152 @@ public class SetupPostHandlers
 		getSwagger = SetupPostHandlers.this::handleGetSwagger;
 		
 		getAvailablePlugins = SetupPostHandlers.this::handleGetAvailablePlugins;
+		
+		getMySystemVariables = SetupPostHandlers.this::handleGetMySystemVariables;
+		setMySystemVariables = SetupPostHandlers.this::handleSetMySystemVariables;
+		
+	}
+	/***********************************************************************/
+	private void handleGetMySystemVariables(RoutingContext routingContext)
+	{
+	
+	
+	
+	
+	}
+	/***********************************************************************/
+	private void handleSetMySystemVariables(RoutingContext routingContext)
+	{
+		LOGGER.info("Inside SetupPostHandlers.handleSetMySystemVariables");  
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		
+		if (pool == null)
+		{
+			LOGGER.debug("database pool is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleSetMySystemVariables required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+				
+				String mySystemVariables = JSONpayload.getString("mySystemVariables");
+				
+				LOGGER.debug("mySystemVariables recieved: " + mySystemVariables);
+				
+				
+				//The map is passed to the SQL query
+				Map<String,Object> map = new HashMap<String, Object>();
+				
+				
+				map.put("mySystemVariables", JSONpayload.getValue("mySystemVariables"));
+				
+				LOGGER.info("Accessible Level is : " + authlevel);
+		        LOGGER.info("username: " + map.get("username"));
+		        
+		        if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+					
+					pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                // Execute a SELECT query
+			                //INSERT INTO public.tb_myvars  (username, data) VALUES ('username1', '{"my_var1": 2, "my_var2": "simpleString1"}'::jsonb) ON CONFLICT (username) DO UPDATE SET data = EXCLUDED.data;
+
+			                connection.preparedQuery("INSERT INTO public.tb_myvars(username, data) VALUES($1);")
+			                        .execute(Tuple.of(map.get("query_type")),
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                // Process the query result
+			                                
+			                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully added query type\"}");
+	                                    	ja.add(jo);
+	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
+			                                
+			                                /*rows.forEach(row -> {
+			                                    // Print out each row
+			                                    LOGGER.info("Row: " + row.toJson());
+			                                    try
+			                                    {
+			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
+			                                    	ja.add(jo);
+			                                    	LOGGER.info("Successfully added json object to array");
+			                                    }
+			                                    catch(Exception e)
+			                                    {
+			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
+			                                    }
+			                                    
+			                                });*/
+			                                response.send(ja.encodePrettily());
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	LOGGER.error("error: " + res.cause() );
+			                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause()+"}");
+	                                    	ja.add(jo);
+	                                    	response.send(ja.encodePrettily());
+			                                //res.cause().printStackTrace();
+			                            }
+			                            // Close the connection
+			                            //response.end();
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			                //
+			            	JsonArray ja = new JsonArray();
+			                LOGGER.error("error: " + ar.cause() );
+                        	JsonObject jo = new JsonObject("{\"response\":\"error \" "+ ar.cause().getMessage().replaceAll("\"", "") +"}");
+                        	ja.add(jo);
+                        	response.send(ja.encodePrettily());
+			            }
+			            
+			        });
+		        }
+		        else
+		        {
+		        	JsonArray ja = new JsonArray();
+		        	JsonObject jo = new JsonObject();
+		        	jo.put("Error", "Issufficent authentication level to run API");
+		        	ja.add(jo);
+		        	response.send(ja.encodePrettily());
+		        }
+		        
+		        
+			}
+		}
+	
+	
+	
 	}
 	/***********************************************************************/
 	private void handleGetSwagger(RoutingContext routingContext)
