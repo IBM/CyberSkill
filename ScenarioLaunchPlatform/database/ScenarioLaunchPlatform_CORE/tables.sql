@@ -11,7 +11,7 @@ drop table if exists public.tb_tasks CASCADE;
 drop table if exists public.tb_query_types CASCADE;
 drop table if exists public.tb_version CASCADE;
 drop table if exists public.tb_stories CASCADE;
-
+drop table if exists public.tb_myvars CASCADE;
 
 
 
@@ -27,7 +27,7 @@ insert into public.tb_version(version) VALUES('v01.0007');
 -- 1.0007 changes --
 CREATE TABLE public.tb_myvars 
 (
-	id SERIAL PRIMARY KEY, username VARCHAR(255), data JSONB
+	id SERIAL PRIMARY KEY, username VARCHAR(255) unique, data JSONB
 );
 
 INSERT INTO public.tb_myvars (username, data) VALUES ('admin','{"my_var1": 1, "my_var2": "simpleString1"}');

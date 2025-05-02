@@ -235,19 +235,19 @@ public class SetupPostHandlers
 				LOGGER.info("Payload: " + payload );
 				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
 				
-				String mySystemVariables = JSONpayload.getString("mySystemVariables");
+				JsonObject mySystemVariables = JSONpayload.getJsonObject("mySystemVariables");
 				
-				LOGGER.debug("mySystemVariables recieved: " + mySystemVariables);
+				LOGGER.debug("mySystemVariables recieved: " + mySystemVariables.encodePrettily());
 				
-				
-				//The map is passed to the SQL query
 				Map<String,Object> map = new HashMap<String, Object>();
 				
+				map.put("username", payload.getValue("username"));
 				
-				map.put("mySystemVariables", JSONpayload.getValue("mySystemVariables"));
+				map.put("mySystemVariables", mySystemVariables);
 				
 				LOGGER.info("Accessible Level is : " + authlevel);
 		        LOGGER.info("username: " + map.get("username"));
+		        LOGGER.info("mySystemVariables: " + map.get("mySystemVariables"));
 		        
 		        if(authlevel >= 1)
 		        {
@@ -261,61 +261,34 @@ public class SetupPostHandlers
 			            {
 			                SqlConnection connection = ar.result();
 			                JsonArray ja = new JsonArray();
-			                
-			                // Execute a SELECT query
-			                //INSERT INTO public.tb_myvars  (username, data) VALUES ('username1', '{"my_var1": 2, "my_var2": "simpleString1"}'::jsonb) ON CONFLICT (username) DO UPDATE SET data = EXCLUDED.data;
-
-			                connection.preparedQuery("INSERT INTO public.tb_myvars(username, data) VALUES($1);")
-			                        .execute(Tuple.of(map.get("query_type")),
+			                connection.preparedQuery("INSERT INTO public.tb_myvars  (username, data) VALUES ($1, $2) ON CONFLICT (username) DO UPDATE SET data = EXCLUDED.data;")
+			                		.execute(Tuple.of(map.get("username"), map.get(mySystemVariables)),
 			                        res -> {
 			                            if (res.succeeded()) 
 			                            {
-			                                // Process the query result
-			                                
-			                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully added query type\"}");
+			                                JsonObject jo = new JsonObject("{\"response\":\"Successfully added query type\"}");
 	                                    	ja.add(jo);
 	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
-			                                
-			                                /*rows.forEach(row -> {
-			                                    // Print out each row
-			                                    LOGGER.info("Row: " + row.toJson());
-			                                    try
-			                                    {
-			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
-			                                    	ja.add(jo);
-			                                    	LOGGER.info("Successfully added json object to array");
-			                                    }
-			                                    catch(Exception e)
-			                                    {
-			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
-			                                    }
-			                                    
-			                                });*/
 			                                response.send(ja.encodePrettily());
 			                            } 
 			                            else 
 			                            {
-			                                // Handle query failure
-			                            	LOGGER.error("error: " + res.cause() );
+			                                LOGGER.error("error: " + res.cause() );
 			                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause()+"}");
 	                                    	ja.add(jo);
 	                                    	response.send(ja.encodePrettily());
-			                                //res.cause().printStackTrace();
 			                            }
-			                            // Close the connection
-			                            //response.end();
 			                            connection.close();
 			                        });
-			            } else {
-			                // Handle connection failure
-			                //
-			            	JsonArray ja = new JsonArray();
+			            } 
+			            else 
+			            {
+			                JsonArray ja = new JsonArray();
 			                LOGGER.error("error: " + ar.cause() );
                         	JsonObject jo = new JsonObject("{\"response\":\"error \" "+ ar.cause().getMessage().replaceAll("\"", "") +"}");
                         	ja.add(jo);
                         	response.send(ja.encodePrettily());
 			            }
-			            
 			        });
 		        }
 		        else
@@ -326,13 +299,8 @@ public class SetupPostHandlers
 		        	ja.add(jo);
 		        	response.send(ja.encodePrettily());
 		        }
-		        
-		        
-			}
+		    }
 		}
-	
-	
-	
 	}
 	/***********************************************************************/
 	private void handleGetSwagger(RoutingContext routingContext)
