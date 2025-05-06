@@ -466,6 +466,8 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 router.post("/api/deleteDatabaseQueryByQueryId").handler(BodyHandler.create()).handler(setupPostHandlers.deleteDatabaseQueryByQueryId);
 	  	 router.post("/api/updateDatabaseQueryByQueryId").handler(BodyHandler.create()).handler(setupPostHandlers.updateDatabaseQueryByQueryId);
 	  	 router.post("/api/getDatabaseConnections").handler(BodyHandler.create()).handler(setupPostHandlers.getDatabaseConnections);
+	  	 router.post("/api/getRefreshedDatabaseConnections").handler(BodyHandler.create()).handler(setupPostHandlers.getRefreshedDatabaseConnections);
+	  	
 	  	 router.post("/api/getQueryTypes").handler(BodyHandler.create()).handler(setupPostHandlers.getQueryTypes);
 	  	 router.post("/api/addQueryTypes").handler(BodyHandler.create()).handler(setupPostHandlers.addQueryTypes);
 	  	 router.post("/api/deleteQueryTypesByID").handler(BodyHandler.create()).handler(setupPostHandlers.deleteQueryTypesByID);

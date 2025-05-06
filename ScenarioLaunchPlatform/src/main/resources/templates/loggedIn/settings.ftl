@@ -76,6 +76,49 @@ function getConnectionById()
           
         });
   }
+  
+  
+function refreshConnections()
+{
+  	const jwtToken = '${tokenObject.jwt}';
+   	const jsonData = JSON.stringify({
+          jwt: jwtToken,
+        });
+  $.ajax({
+          url: '/api/getRefreshedDatabaseConnections', 
+          type: 'POST',
+          data: jsonData,
+          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+          success: function(response) 
+          {
+             	response.forEach((item) => 
+             	{
+	            	console.log(item.id);
+	            	
+	            	$('#edit_status').val(item.status);
+					$('#edit_db_type').val(item.db_type);
+					$('#edit_db_version').val(item.db_version);
+					$('#edit_db_username').val(item.db_username);
+					$('#edit_db_password').val(item.db_password);
+					$('#edit_db_port').val(item.db_port);
+					$('#edit_db_database').val(item.db_database);
+					$('#edit_db_url').val(item.db_url);
+					$('#edit_db_jdbcClassName').val(item.db_jdbcclassname);
+					$('#edit_db_userIcon').val(item.db_usericon);
+					$('#edit_db_databaseIcon').val(item.db_databaseicon);
+					$('#edit_db_alias').val(item.db_alias);
+					$('#edit_db_access').val(item.db_access);
+				});
+	      },
+          error: function(xhr, status, error) 
+          {
+            $('#response').text('Error: ' + error);
+          }
+          
+        });
+  }
+  
+  
 </script>
 
 
@@ -110,7 +153,7 @@ function getConnectionById()
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Available active database connections</h6>
+              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();"></i> Refresh available active database connections</h6>
               
 	              <table id="connectionsTable" class="display" style="width:100%">
 				  <thead>

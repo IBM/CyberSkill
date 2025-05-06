@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.io.File;
@@ -102,6 +103,7 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> deleteDatabaseQueryByQueryId;
 	public Handler<RoutingContext> updateDatabaseQueryByQueryId;
 	public Handler<RoutingContext> getValidatedDatabaseConnections;
+	public Handler<RoutingContext> getRefreshedDatabaseConnections;
 	public Handler<RoutingContext> getQueryTypes;
 	public Handler<RoutingContext> deleteQueryTypesByID;
 	public Handler<RoutingContext> addQueryTypes;
@@ -150,6 +152,7 @@ public class SetupPostHandlers
 		deleteQueryTypesByID = SetupPostHandlers.this::handleDeleteQueryTypesByID;
 		addQueryTypes = SetupPostHandlers.this::handleAddQueryTypes;
 		getDatabaseConnections = SetupPostHandlers.this::handleGetDatabaseConnections;
+		getRefreshedDatabaseConnections =SetupPostHandlers.this::handleGetRefreshedDatabaseConnections;
 		getDatabaseConnectionsById = SetupPostHandlers.this::handleGetDatabaseConnectionsByID;
 		deleteDatabaseConnectionsById = SetupPostHandlers.this::handleDeleteDatabaseConnectionsByID;
 		updateDatabaseConnectionById = SetupPostHandlers.this::handleUpdateDatabaseConnectionById;
@@ -2130,6 +2133,150 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	        	response.send(ja.encodePrettily());
 	        }
 		}
+	}
+	/****************************************************************/
+	private void handleGetRefreshedDatabaseConnections(RoutingContext routingContext) 
+	{
+		LOGGER.info("Inside SetupPostHandlers.handleGetRefreshedDatabaseConnections"); 
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		
+		if (pool == null)
+		{
+			LOGGER.debug("pull is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleGetDatabaseConnections required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+				
+				LOGGER.info("Accessible Level is : " + authlevel);
+		       
+				if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response.putHeader("content-type", "application/json");
+		        	
+		        	
+		        	 /*
+		        	 * First this to do is to close all the existing pools
+		        	 */
+                    Ram ram = new Ram();
+                    HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+                    
+                    if(dataSourceMap != null)
+                    {
+	                    LOGGER.debug("Number of existing database pool connections: " + dataSourceMap.size());
+	                    
+	                    Collection<BasicDataSource> datasources = dataSourceMap.values();
+	                    for (BasicDataSource datasource : datasources) 
+	                    {
+	                        try
+	                        {
+	                        	datasource.close();
+	                        	LOGGER.debug("Successfully closed a database connection");
+	                        }
+	                        catch(Exception e)
+	                        {
+	                        	LOGGER.error("Unable to close a database connection: " + e);
+	                        }
+	                    }
+                    }
+			       pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                // Execute a SELECT query
+			                
+			                connection.preparedQuery("Select * from public.tb_databaseConnections")
+			                        .execute(
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                // Process the query result
+			                                RowSet<Row> rows = res.result();
+			                                rows.forEach(row -> {
+			                                    // Print out each row
+			                                    LOGGER.info("Row: " + row.toJson());
+			                                    try
+			                                    {
+			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
+			                                    	ja.add(jo);
+			                                    	LOGGER.info("Successfully added json object to array");
+			                                    }
+			                                    catch(Exception e)
+			                                    {
+			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
+			                                    }
+			                                    
+			                                });
+			                                
+			                                LOGGER.debug("adding database connection details to context");
+			                                context.put("ConnectionData", ja);
+			                                LOGGER.debug("added database connection details to context");
+			                                
+			                                
+			                                response.send(ja.encodePrettily());
+			                                
+			                                /* Create the database connection pool for all the test databases */
+			                                
+			                               
+			                                
+			                                DatabasePoolManager DPM = new DatabasePoolManager(context);
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	LOGGER.error("error: " + res.cause() );
+			                            	response.send(res.cause().getMessage());
+			                                //res.cause().printStackTrace();
+			                            }
+			                            // Close the connection
+			                            //response.end();
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			                ar.cause().printStackTrace();
+			                response.send(ar.cause().getMessage());
+			            }
+			            
+			        });
+		        }
+		        else
+		        {
+		        	JsonArray ja = new JsonArray();
+		        	JsonObject jo = new JsonObject();
+		        	jo.put("Error", "Issufficent authentication level to run API");
+		        	ja.add(jo);
+		        	response.send(ja.encodePrettily());
+		        }
+		        
+		        
+			}
+		}
+		
 	}
 	/****************************************************************/
 	private void handleGetDatabaseConnections(RoutingContext routingContext) 
