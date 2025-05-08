@@ -1,4 +1,4 @@
-
+-- 1.0008 changes --
 TRUNCATE TABLE public.tb_databaseconnections;
 
 ALTER SEQUENCE tb_databaseconnections_id_seq RESTART WITH 1;
