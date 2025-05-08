@@ -3,7 +3,7 @@
     "server": {
         "port": 80,
         "host": "localhost",
-        "schema":"1.0007"
+        "schema":"1.0008"
     },
     "systemDatabaseController": {
         "host": "127.0.0.1",
