@@ -54,7 +54,10 @@ public class Read {
 		 {
 			 Path jarPath = Paths.get(Read.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
 			 LOGGER.debug("Location of SLP: " + jarPath);
-			 Path filePath = jarPath.resolve(currentSchemaVersion + "_toLatest.sql"); // Replace with the actual filename
+			 Path patchesPath = jarPath.resolve("patches");
+			 LOGGER.debug("Location of Patches: " + patchesPath);
+
+			 Path filePath = jarPath.resolve("patches").resolve(currentSchemaVersion + "_toLatest.sql"); // Replace with the actual filename
 	         LOGGER.debug("Location of schema to execute: " + filePath);
 	         if (Files.exists(filePath)) 
 	         {
