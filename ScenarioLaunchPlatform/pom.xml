@@ -80,6 +80,12 @@
 	    <version>12.6.1.jre11</version> <!-- or match your JDK version -->
   	</dependency>
 	
+ <dependency>
+    <groupId>com.oracle.ojdbc</groupId>
+    <artifactId>ojdbc10</artifactId>
+    <version>19.3.0.0</version>
+</dependency>
+
   	<dependency>
 	  <groupId>io.vertx</groupId>
 	  <artifactId>vertx-web-templ-freemarker</artifactId>
