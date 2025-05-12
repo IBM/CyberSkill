@@ -222,6 +222,7 @@ function refreshConnections()
 				          <option value="postgresql">postgresql</option>
 				          <option value="db2">db2</option>
 				          <option value="sqlserver">sqlserver</option>
+				            <option value="oracle">oracle</option>
 				        </select>
 				      </div>
 				    </div>
@@ -283,6 +284,7 @@ function refreshConnections()
 				          <option value="com.mysql.cj.jdbc.Driver">mysql</option>
 				          <option value="org.postgresql.Driver">postgresql</option>
 				          <option value="com.microsoft.sqlserver.jdbc.SQLServerDriver">sqlserver</option>
+				           <option value="oracle.jdbc.driver.OracleDriver">oracle</option>
 				        </select>
 				      </div>
 				    </div>
@@ -399,6 +401,7 @@ function refreshConnections()
 				          <option value="postgresql">postgresql</option>
 				          <option value="db2">db2</option>
 				          <option value="sqlserver">sqlserver</option>
+				           <option value="oracle">oracle</option>
 				        </select>
 				      </div>
 				    </div>
@@ -460,6 +463,7 @@ function refreshConnections()
 				          <option value="com.mysql.cj.jdbc.Driver">mysql</option>
 				          <option value="org.postgresql.Driver">postgresql</option>
 				          <option value="com.microsoft.sqlserver.jdbc.SQLServerDriver">sqlserver</option>
+				          <option value="oracle.jdbc.driver.OracleDriver">oracle</option>
 				        </select>
 				      </div>
 				    </div>
@@ -671,6 +675,12 @@ function refreshConnections()
         {
         	console.log("Loading sqlserver defaults");
         	db_type ="sqlserver";
+        	
+        }
+        if(choice === "oracle.jdbc.driver.OracleDriver")
+        {
+        	console.log("Loading oracle defaults");
+        	db_type ="oracle";
         	
         }
         const elemnet_db_type = document.getElementById('new_db_type');

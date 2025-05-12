@@ -75,6 +75,15 @@ public class DatabasePoolManager
 		        	LOGGER.debug("SQLSERVER:" + connectionString);
 		        	DataSource.setUrl(connectionString);
 		        }
+		        else if (jo.getString("db_type").equalsIgnoreCase("oracle"))
+		        {
+		        	LOGGER.debug("Setting Datasource URL for oracle -  setting correct format");
+		        	//jdbc:oracle:thin:@//<host>:<port>/<service_name> 
+		        	String connectionString= "jdbc:"+jo.getString("db_type")+":thin:@//"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database")+";";
+		       
+		        	LOGGER.debug("ORACLE:" + connectionString);
+		        	DataSource.setUrl(connectionString);
+		        }
 		        else
 		        {
 		        	DataSource.setUrl("jdbc:"+jo.getString("db_type")+"://"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database"));
@@ -170,6 +179,15 @@ public class DatabasePoolManager
 				       
 		        	//String connectionString = "jdbc:sqlserver://localhost;encrypt=true;user=sa;password=Guardium123!;";
 		        	LOGGER.debug("SQLSERVER:" + connectionString);
+		        	DataSource.setUrl(connectionString);
+		        }
+        	 else if (jo.getString("db_type").equalsIgnoreCase("oracle"))
+		        {
+		        	LOGGER.debug("Setting Datasource URL for oracle -  setting correct format");
+		        	//jdbc:oracle:thin:@//<host>:<port>/<service_name> 
+		        	String connectionString= "jdbc:"+jo.getString("db_type")+":thin:@//"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database")+";";
+		       
+		        	LOGGER.debug("ORACLE:" + connectionString);
 		        	DataSource.setUrl(connectionString);
 		        }
 	        else
