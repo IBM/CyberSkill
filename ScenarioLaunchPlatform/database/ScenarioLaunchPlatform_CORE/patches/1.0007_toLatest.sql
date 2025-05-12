@@ -24,3 +24,5 @@ INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type
 
 ALTER SEQUENCE tb_databaseconnections_id_seq RESTART WITH 500;
 ALTER SEQUENCE tb_stories_id_seq RESTART WITH 500;
+
+UPDATE public.tb_version SET version = 'v01.0008';
