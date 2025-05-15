@@ -40,6 +40,7 @@ public class Ram extends AbstractVerticle
 	private static JsonObject systemConfig;
 	private static Router router;
 	private static JsonObject userAlias_Access;
+	private static JsonObject systemVariable;
 	private static HashMap<String, JsonArray> validatedConnections;
 	private static ArrayList<StorySocket> StorySocketList;
 	
@@ -94,6 +95,16 @@ public class Ram extends AbstractVerticle
 	{
 		Ram.router = router;
 		LOGGER.info("Have set the RAM router");
+	}
+	/*********************************************************************/
+	public JsonObject getSystemVariable()
+	{
+		return Ram.systemVariable;
+	}
+	public void setSystemVariable(JsonObject systemVariable)
+	{
+		Ram.systemVariable = systemVariable;
+		LOGGER.info("Have set the RAM systemVariable");
 	}
 	/*********************************************************************/
 	public JsonObject getSystemConfig()

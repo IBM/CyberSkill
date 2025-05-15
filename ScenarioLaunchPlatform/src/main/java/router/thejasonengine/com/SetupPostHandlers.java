@@ -261,6 +261,10 @@ public class SetupPostHandlers
 					                                    {
 					                                    	JsonObject jo = new JsonObject(row.toJson().encode());
 					                                    	ja.add(jo);
+					                                    	Ram ram = new Ram();
+					                                    	
+					                                    	ram.setSystemVariable(jo);
+					                                    	LOGGER.info("Successfully added SystemVariable to ram: " + jo.encodePrettily());
 					                                    	LOGGER.info("Successfully added json object to array");
 					                                    }
 					                                    catch(Exception e)
@@ -268,6 +272,7 @@ public class SetupPostHandlers
 					                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
 					                                    }
 					                                    
+				                                    	
 					                                });
 					                                response.send(ja.encodePrettily());
 					                            } 
@@ -369,6 +374,8 @@ public class SetupPostHandlers
 			                                JsonObject jo = new JsonObject("{\"response\":\"Successfully added system variables\"}");
 	                                    	ja.add(jo);
 	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
+	                                    	Ram ram = new Ram();
+	                                    	ram.setSystemVariable(mySystemVariables);
 			                                response.send(ja.encodePrettily());
 			                            } 
 			                            else 
