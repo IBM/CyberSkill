@@ -3281,7 +3281,20 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			             {
                                 			                 String sql = tokenizer.nextToken();
                                 			                 LOGGER.debug("Query[DatasourceMap]: " + loopIndex + " identified: " + sql );
-                                			                
+                                			                while(sql.contains("{SYSTEMVARIABLE}"))
+                              				                {
+                              				                	
+                              				                	LOGGER.debug("Found a system variable string");
+                              				                	
+                              				                	JsonObject jo = ram.getSystemVariable();
+                              				                	LOGGER.debug("My system variable: " + jo.encodePrettily());
+                              				                	
+                              				                	String swap = jo.getString("mydatavariable");
+                              				                	LOGGER.debug("Swap: " + swap); 
+                              				                	
+                              				                	sql = sql.replaceFirst("\\{SYSTEMVARIABLE\\}", swap);
+                              				                	LOGGER.debug("query updated to: " + sql);
+                              				                }
                                 			                while(sql.contains("{STRING}"))
                              				                {
                              				                	
@@ -3633,7 +3646,20 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
     			             {
     			                 String sql = tokenizer.nextToken();
 				                 LOGGER.debug("Query[DatasourceMap]: " + loopIndex + " identified: " + sql );
-				                 
+				                while(sql.contains("{SYSTEMVARIABLE}"))
+   				                {
+   				                	
+   				                	LOGGER.debug("Found a system variable string");
+   				                	
+   				                	JsonObject jo = ram.getSystemVariable();
+   				                	LOGGER.debug("My system variable: " + jo.encodePrettily());
+   				                	
+   				                	String swap = jo.getString("mydatavariable");
+   				                	LOGGER.debug("Swap: " + swap); 
+   				                	
+   				                	sql = sql.replaceFirst("\\{SYSTEMVARIABLE\\}", swap);
+   				                	LOGGER.debug("query updated to: " + sql);
+   				                } 
 				                while(sql.contains("{STRING}"))
 				                {
 				                	
