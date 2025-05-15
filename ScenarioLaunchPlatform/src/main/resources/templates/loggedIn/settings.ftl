@@ -620,7 +620,48 @@ function refreshConnections()
 		      </div>
 		      		
       		<! -- EOF CARD -->
+     
       
+      <! -- BOF CARD -->
+      		
+		      <div class="w3-row-padding">
+		        <div class="w3-col m12">
+		          <div class="w3-card w3-round w3-white">
+		            <div class="w3-container w3-padding">
+		              <i class="fa fa-pencil" onclick="toggleSystemVariableDiv()" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='red'" onmouseout="this.style.color='gray'"></i> Edit System Variables
+        				<span class="w3-right w3-opacity" id="editSystemVariables"></span>
+        				<br>
+	        			<hr class="w3-clear">
+		              <!-- -->
+		              <div class ="EditSystemVariables" id="EditSystemVariables" style="display: none;"> 
+		             		<div class="row">
+						      <div class="col-25">
+						        <label for="system_variablese">System Variables</label>
+						      </div>
+						      <div class="col-75">
+						      
+						      <textarea id="system_variables" name="system_variables" rows="4" cols="50">
+										{}
+							  </textarea>
+						        
+						      </div>
+						   	</div>
+						   	<div class="row">
+						      <div class="col-25">
+						        
+						      </div>
+						      <div class="col-75">
+						        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="setMySystemVariables();"><i class="fa fa-plus"></i>  Update</button>
+						      </div>
+						   	</div>
+						  </div>
+		             <!-- -->
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		      		
+      		<! -- EOF CARD -->
       		
       
       
@@ -755,6 +796,15 @@ function openNav() {
                 div.style.display = 'none'; // Hide the div
             }
         }
+        function toggleSystemVariableDiv() {
+            const div = document.getElementById('EditSystemVariables');
+            if (div.style.display === 'none' || div.style.display === '') {
+                div.style.display = 'block'; // Show the div
+            } else {
+                div.style.display = 'none'; // Hide the div
+            }
+        }
+        
     </script>
 
 
@@ -1057,7 +1107,72 @@ function deleteQueryTypesByID()
         
         
   }
+  /*****************************************************/
   
+   $(document).ready(function() 
+  	{
+  		getMySystemVariables();
+  	});
+  	function getMySystemVariables()
+	{
+		const var_jwt = '${tokenObject.jwt}';
+		const jsonData = JSON.stringify({
+		  		  jwt:var_jwt,
+		  		});
+		console.log(jsonData);
+		$.ajax({
+		          url: '/api/getMySystemVariables', 
+		          type: 'POST',
+		          data: jsonData,
+		          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+		          success: function(response) 
+		          {
+		             	console.log(response[0].data);
+		             	const jsonString = JSON.stringify(response[0].data, null, 2);
+		             	const textarea = document.getElementById('system_variables');
+  						textarea.value = jsonString;
+		             	
+		          },
+		          error: function(xhr, status, error) 
+		          {
+		            $('#response').text('Error: ' + error);
+		          }
+		        });
+  
+  
+  	}
+  	function setMySystemVariables()
+	{
+		const var_jwt = '${tokenObject.jwt}';
+		const textarea = document.getElementById('system_variables');
+  		const var_mySystemVariables = JSON.parse(textarea.value);
+		
+		console.log("var_mySystemVariables:" +var_mySystemVariables);				
+		
+	  	const jsonData = JSON.stringify({
+  		  jwt:var_jwt,
+  	      mySystemVariables:var_mySystemVariables
+        });
+  
+  
+  		console.log(jsonData);
+  
+  
+		$.ajax({
+	          url: '/api/setMySystemVariables', 
+	          type: 'POST',
+	          data: jsonData,
+	          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+	          success: function(response) 
+	          {
+	             	console.log(response);
+	          },
+	          error: function(xhr, status, error) 
+	          {
+	            $('#response').text('Error: ' + error);
+	          }
+	        });
+	}
   /*****************************************************/
   $(document).ready(function() 
   	{
