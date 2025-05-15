@@ -3289,7 +3289,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                               				                	JsonObject jo = ram.getSystemVariable();
                               				                	LOGGER.debug("My system variable: " + jo.encodePrettily());
                               				                	
-                              				                	String swap = jo.getString("mydatavariable");
+                              				                	String swap = jo.getJsonObject("data").getString("mydatavariable");
                               				                	LOGGER.debug("Swap: " + swap); 
                               				                	
                               				                	sql = sql.replaceFirst("\\{SYSTEMVARIABLE\\}", swap);
@@ -3654,7 +3654,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
    				                	JsonObject jo = ram.getSystemVariable();
    				                	LOGGER.debug("My system variable: " + jo.encodePrettily());
    				                	
-   				                	String swap = jo.getString("mydatavariable");
+   				                	String swap = jo.getJsonObject("data").getString("mydatavariable");
    				                	LOGGER.debug("Swap: " + swap); 
    				                	
    				                	sql = sql.replaceFirst("\\{SYSTEMVARIABLE\\}", swap);
