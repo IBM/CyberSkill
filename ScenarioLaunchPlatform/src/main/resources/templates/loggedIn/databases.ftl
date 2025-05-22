@@ -310,7 +310,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 			  
 			   <div class="row">
 	        		  <div class="col-25">
-				         Datasource 
+				         Datasource  <input type="text" id="dropdownInput" placeholder="Filter..." style="width: 120px;" maxlength="10" size="15" onchange="filterDropdown()"> 
 				      </div>
 				      <div class="col-75">
 				        <select id="validatedConnections" name="dropdown">
@@ -1298,51 +1298,89 @@ function getDatabaseQueryByQueryId(varId)
     function getQueryTypes()
 	{
 		const var_jwt = '${tokenObject.jwt}';
-		const jsonData = JSON.stringify({
-		jwt:var_jwt,
-	});
+		const jsonData = JSON.stringify({jwt:var_jwt });
 	
-	console.log(jsonData);
+		console.log(jsonData);
 		  
 		  
-	$.ajax({
-		url: '/api/getQueryTypes', 
-		type: 'POST',
-		data: jsonData,
-		contentType: 'application/json; charset=utf-8', // Set content type to JSON
-		success: function(response) 
-		{
-			const queryTypes = document.getElementById('queryTypes');
-		    queryTypes.innerHTML = "";
-		    console.log(response);
-		             	
-		    if (Array.isArray(response)) 
-		    {
-      			$.each(response, function(index, item) 
-				{
-					console.log(index, item);  
-					const span = document.createElement('span');
-					span.textContent = item.query_type;
-					span.classList.add('w3-tag');
-					span.classList.add('w3-small');
-					span.classList.add('w3-theme-d'+index);
-							
-					span.onclick = function() 
+		$.ajax({
+			url: '/api/getQueryTypes', 
+			type: 'POST',
+			data: jsonData,
+			contentType: 'application/json; charset=utf-8', // Set content type to JSON
+			success: function(response) 
+			{
+				const queryTypes = document.getElementById('queryTypes');
+			    queryTypes.innerHTML = "";
+			    console.log(response);
+			             	
+			    if (Array.isArray(response)) 
+			    {
+	      			$.each(response, function(index, item) 
 					{
-                		console.log("Redirecting for: "+ item.query_type);
-                		window.location.href='databases.ftl?lookup='+ item.query_type;
-            		};
-					queryTypes.appendChild(span);
-				});
-			}             	
-		 },
-		 error: function(xhr, status, error) 
-		 {
-		 	$('#response').text('Error: ' + error);
-		 }
-	});
-}
-</script>
+						console.log(index, item);  
+						const span = document.createElement('span');
+						span.textContent = item.query_type;
+						span.classList.add('w3-tag');
+						span.classList.add('w3-small');
+						span.classList.add('w3-theme-d'+index);
+								
+						span.onclick = function() 
+						{
+	                		console.log("Redirecting for: "+ item.query_type);
+	                		window.location.href='databases.ftl?lookup='+ item.query_type;
+	            		};
+						queryTypes.appendChild(span);
+					});
+				}             	
+			 },
+			 error: function(xhr, status, error) 
+			 {
+			 	$('#response').text('Error: ' + error);
+			 }
+		});
+	}
+	let originalOptions = [];
+	$(document).ready(function() 
+  	{
+  		const dropdown = document.getElementById('validatedConnections');
+  		originalOptions = Array.from(dropdown.options).map(option => option.text);
+  	});
+ 
 
+function filterDropdown() 
+{
+    const filterText  = document.getElementById('dropdownInput').value.toLowerCase();
+    const dropdown = document.getElementById('validatedConnections');
+	
+ 	console.log("Ready to filter: " + originalOptions);
+   // Clear existing options
+    dropdown.innerHTML = '';
+
+    // Filter and re-add
+    const matches = originalOptions.filter(item =>
+      item.toLowerCase().includes(filterText)
+    );
+
+    if (matches.length > 0) 
+    {
+      matches.forEach(text => 
+      {
+        const option = document.createElement('option');
+        option.text = text;
+        dropdown.appendChild(option);
+        console.log("found match:" + text);
+      });
+    } else 
+    {
+      const noMatch = document.createElement('option');
+      noMatch.text = 'No matches';
+      noMatch.disabled = true;
+      dropdown.appendChild(noMatch);
+      console.log("No match");
+    }
+  }
+  
+</script>
 </body>
 </html> 
