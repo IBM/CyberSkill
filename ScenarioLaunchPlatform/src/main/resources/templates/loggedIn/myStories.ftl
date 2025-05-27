@@ -277,13 +277,12 @@ const wsUrl = protocol+ "//" + window.location.host + relativeUrl;
               <!-- -->
 	             <table>
 			        <tr>
-			            <th rowspan="2"> <img src="/w3images/AVATAR.png" alt="Avatar" class="avatar"></th>
+			            <th rowspan="2" style="text-align: center; vertical-align: middle;"> <img src="/w3images/AVATAR.png" alt="Avatar" class="avatar"><br>CHARACTER</th>
 			            <th>Details</th>
 			        </tr>
 			        <tr>
-			            <td>Database: DATABASE<br>
-			            	DBTYPE<br>
-			            	HOSTNAME<br>
+			            <td> Database: DATABASE , type: DBTYPE , hostname: HOSTNAME<br>
+			                 Chapter: CHAPTER <br>
 			            	<button class="w3-button w3-blue-grey" onclick="openModal(QUERYID)">Query</button>
 			            </td>
 			        </tr>
@@ -336,6 +335,7 @@ socket.addEventListener("message", (event) => {
 	var StoryChapter = document.getElementById("StoryChaptersCompleted");
 	
 	tempStoryChapterCard = tempStoryChapterCard.replace(/AVATAR/g, user);
+	tempStoryChapterCard = tempStoryChapterCard.replace(/CHARACTER/g, user);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/DATABASE/g, db);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/DBTYPE/g, dbType);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/HOSTNAME/g, hostname);
