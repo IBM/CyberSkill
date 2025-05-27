@@ -318,6 +318,8 @@ socket.addEventListener("message", (event) => {
     console.log("parsedMessageObject.query_id: ",  parsedMessageObject.query_id);
     console.log("parsedMessageObject.datasource: ",  parsedMessageObject.datasource);
     
+   
+    
     const parts = parsedMessageObject.datasource.split("_");
     
     let dbType = parts[0];
@@ -327,6 +329,11 @@ socket.addEventListener("message", (event) => {
     
     console.log("user: " + user);
     
+    let chapter = parsedMessageObject.chapter;
+    if(chapter == null)
+    {
+    	chapter = user + " does something";
+    }
     
     console.log("parsedMessageObject.pause_in_seconds: ",  parsedMessageObject.pause_in_seconds);
     
@@ -339,6 +346,7 @@ socket.addEventListener("message", (event) => {
 	tempStoryChapterCard = tempStoryChapterCard.replace(/DATABASE/g, db);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/DBTYPE/g, dbType);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/HOSTNAME/g, hostname);
+	tempStoryChapterCard = tempStoryChapterCard.replace(/CHAPTER/g, chapter);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/QUERYID/g, parsedMessageObject.query_id);
 	
 	StoryChapter.insertAdjacentHTML("beforeend", tempStoryChapterCard);
