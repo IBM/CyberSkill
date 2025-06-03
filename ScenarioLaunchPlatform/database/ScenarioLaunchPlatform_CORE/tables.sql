@@ -63,8 +63,8 @@ CREATE TABLE IF NOT EXISTS public.tb_user
 
 RAISE NOTICE 'Created tb_user';
 
-insert into public.tb_user(firstname, surname, email, username, password, active, authlevel) VALUES('user_firstname', 'user_surname', 'user_email', 'username', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'active', 1);
-
+-- insert into public.tb_user(firstname, surname, email, username, password, active, authlevel) VALUES('user_firstname', 'user_surname', 'user_email', 'username', '440b8ca73a2dfeadd6849cfb848ad669656590d24d7eb7a50e3dda092e7d4e47', 'active', 1);
+insert into public.tb_user(firstname, surname, email, username, password, active, authlevel) VALUES('admin_firstname', 'admin_surname', 'admin_email', 'admin', 'aca1a1c6a87b983c3346f44ba66936000a462f99ac5201c4c5f958046e61a79b', 'active', 1);
 
 
 
