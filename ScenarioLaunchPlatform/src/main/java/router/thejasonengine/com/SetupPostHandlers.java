@@ -2216,7 +2216,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("Select * from public.tb_databaseConnections")
+			                connection.preparedQuery("Select * from public.tb_databaseConnections where status='active'")
 			                        .execute(
 			                        res -> {
 			                            if (res.succeeded()) 
