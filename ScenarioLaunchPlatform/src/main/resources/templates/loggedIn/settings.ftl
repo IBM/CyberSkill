@@ -116,6 +116,7 @@ function refreshConnections()
 					$('#edit_db_access').val(item.db_access);
 				});
 				document.getElementById('refreshConnections').style.color = 'green';
+				getConnections();
 	      },
           error: function(xhr, status, error) 
           {
