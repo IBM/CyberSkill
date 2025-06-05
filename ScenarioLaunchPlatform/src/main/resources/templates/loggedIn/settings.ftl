@@ -80,6 +80,12 @@ function getConnectionById()
   
 function refreshConnections()
 {
+  	
+  	
+  	
+  	document.getElementById('refreshConnections').style.color = 'blue';
+  	
+  	
   	const jwtToken = '${tokenObject.jwt}';
    	const jsonData = JSON.stringify({
           jwt: jwtToken,
@@ -109,10 +115,12 @@ function refreshConnections()
 					$('#edit_db_alias').val(item.db_alias);
 					$('#edit_db_access').val(item.db_access);
 				});
+				document.getElementById('refreshConnections').style.color = 'green';
 	      },
           error: function(xhr, status, error) 
           {
             $('#response').text('Error: ' + error);
+            document.getElementById('refreshConnections').style.color = 'red';
           }
           
         });
@@ -153,7 +161,7 @@ function refreshConnections()
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();"></i> Refresh available active database connections</h6>
+              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='purple'" onmouseout="this.style.color='gray'"></i> Refresh available active database connections</h6>
               
 	              <table id="connectionsTable" class="display" style="width:100%">
 				  <thead>
