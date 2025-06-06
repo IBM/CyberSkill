@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public.tb_version
 (
     version character varying(100)
 );
-insert into public.tb_version(version) VALUES('v01.0008');
+insert into public.tb_version(version) VALUES('v01.0009');
 
 -- 1.0007 changes --
 CREATE TABLE public.tb_myvars 
