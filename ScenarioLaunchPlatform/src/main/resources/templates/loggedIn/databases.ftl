@@ -316,7 +316,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 				        <select id="validatedConnections" name="dropdown">
 	            			<#if ValidatedConnectionData?has_content>
 					            <#list ValidatedConnectionData?keys as key>
-					                <option value="${key}">${key}</option>
+					                <option value="${key}">${key} [${ValidatedConnectionData[key].status}]</option>
 					            </#list>
 				            <#else>
 			                	<option value="">No options available</option>
