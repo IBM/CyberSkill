@@ -23,6 +23,7 @@ import com.hazelcast.shaded.org.json.JSONObject;
 
 import authentication.thejasonengine.com.AuthUtils;
 import database.thejasonengine.com.DatabaseController;
+import demodata.thejasonengine.com.DatabasePoolPOJO;
 import file.thejasonengine.com.Read;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
@@ -212,7 +213,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 					    				tokenObject.put("jwt", tokenObjectString);
 					    			 
 					    				Map<String, String> memoryMap = ram.getRamSharedMap();
-					    				HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+					    				HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
 					    				
 					    				JSONObject jsonObject = new JSONObject(memoryMap);
 					    				LOGGER.debug("Retrieved the ram memory object: " + memoryMap.get("jwt"));

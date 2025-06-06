@@ -50,6 +50,7 @@ import authentication.thejasonengine.com.AuthUtils;
 import database.thejasonengine.com.DatabaseController;
 import demodata.thejasonengine.com.BruteForceDBConnections;
 import demodata.thejasonengine.com.DatabasePoolManager;
+import demodata.thejasonengine.com.DatabasePoolPOJO;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Handler;
@@ -2076,7 +2077,9 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        	response
 			        .putHeader("content-type", "application/json");
 		        	Ram ram = new Ram();
-					HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+		        	
+		        	
+					HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
 					
 					HashMap<String, JsonArray> validatedConnections = ram.getValidatedConnections();
 					// Retrieve the user alias access object
@@ -2104,7 +2107,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 						jo.put("connection", set.getKey());
 						jo.put("alias", hold.getValue("alias"));
 						jo.put("access", hold.getValue("access"));
-				    	ja.add(jo);
+						ja.add(jo);
 				    	
 				    	LOGGER.info("Successfully added json object to array");
 					
@@ -2187,18 +2190,21 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        	 * First this to do is to close all the existing pools
 		        	 */
                     Ram ram = new Ram();
-                    HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+                    
+                   
+                    HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
+                    
                     
                     if(dataSourceMap != null)
                     {
 	                    LOGGER.debug("Number of existing database pool connections: " + dataSourceMap.size());
 	                    
-	                    Collection<BasicDataSource> datasources = dataSourceMap.values();
-	                    for (BasicDataSource datasource : datasources) 
+	                    Collection<DatabasePoolPOJO> databasePoolPojos = dataSourceMap.values();
+	                    for (DatabasePoolPOJO databasePoolPojo : databasePoolPojos) 
 	                    {
 	                        try
 	                        {
-	                        	datasource.close();
+	                        	databasePoolPojo.getBDS().close();
 	                        	LOGGER.debug("Successfully closed a database connection");
 	                        }
 	                        catch(Exception e)
@@ -3073,7 +3079,6 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
     		response.putHeader("content-type", "application/json");
             Ram ram = new Ram();
             Pool pool = ram.getPostGresSystemPool();
-            HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
         	
         	LOGGER.debug("Successfully initialized the datasource");
             if (pool == null) 
@@ -3222,7 +3227,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                         try 
                         {
                             Pool pool = ram.getPostGresSystemPool();
-                            HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+                            HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
     			        	
     			        	LOGGER.debug("Successfully initialized the datasource");
                             if (pool == null) 
@@ -3272,7 +3277,11 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                                     LOGGER.debug("QUERY LOOP IS : " + queryLoop);
                                                     
                                                     StringTokenizer tokenizer = new StringTokenizer(sqlParameter, "\r\n");
-                                                    BasicDataSource BDS = dataSourceMap.get(datasource);
+                                                    DatabasePoolPOJO databasePoolPojo = new DatabasePoolPOJO();
+                                                    
+                                                    databasePoolPojo =  dataSourceMap.get(datasource);
+                                                    BasicDataSource BDS = databasePoolPojo.getBDS();
+                                                    
                                                     JSONObject joLoop;
                                                     JsonArray JsonResponse = new JsonArray();
                                                     for (int loopIndex = 0; loopIndex < queryLoop; loopIndex++) 
@@ -3356,7 +3365,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                				if(BDS == null)
                                 			                				{
                                 			                					LOGGER.debug("BDS is null - recreating");
-                                			                					BDS = dataSourceMap.get(datasource);
+                                			                					databasePoolPojo = dataSourceMap.get(datasource);
+                                			                					BDS = databasePoolPojo.getBDS();
                                 			                				}
                                 			                				
                                 			                				Connection connection = BDS.getConnection();
@@ -3426,7 +3436,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                				if(BDS == null)
                                 			                				{
                                 			                					LOGGER.debug("BDS is null - recreating");
-                                			                					BDS = dataSourceMap.get(datasource);
+                                			                					databasePoolPojo = dataSourceMap.get(datasource);
+                                			                					BDS = databasePoolPojo.getBDS();
                                 			                				}
                                 			                				
                                 			                				Connection connection = BDS.getConnection();
@@ -3632,9 +3643,11 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        	BasicDataSource BDS = null;
 		        	try
 		        	{
-		        		HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
-			        	BDS = dataSourceMap.get(datasource);
-			        	LOGGER.debug("Successfully initialized the datasource");
+		        		HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
+		        		
+		        		DatabasePoolPOJO databasePoolPojo = dataSourceMap.get(datasource);
+    					BDS = databasePoolPojo.getBDS();
+		        		LOGGER.debug("Successfully initialized the datasource");
 			        	
 			        	
 			        	

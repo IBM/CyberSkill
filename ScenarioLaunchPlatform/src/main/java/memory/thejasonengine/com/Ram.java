@@ -18,6 +18,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import demodata.thejasonengine.com.DatabasePoolPOJO;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
@@ -34,7 +35,7 @@ public class Ram extends AbstractVerticle
 	
 	private static final Logger LOGGER = LogManager.getLogger(Ram.class);
 	private static LocalMap<String, String> ramSharedMap;
-	private static HashMap<String, BasicDataSource> dataSourceMap;
+	private static HashMap<String, DatabasePoolPOJO> dataSourceMap;
 	private static Pool pool;
 	private static MySQLPool mySQLPool;
 	private static JsonObject systemConfig;
@@ -77,11 +78,11 @@ public class Ram extends AbstractVerticle
 		LOGGER.info("Have set the RAM StorySocketList");
 	}
 	/*********************************************************************/
-	public HashMap<String, BasicDataSource> getDBPM()
+	public HashMap<String, DatabasePoolPOJO> getDBPM()
 	{
 		return Ram.dataSourceMap;
 	}
-	public void setDBPM(HashMap<String, BasicDataSource> dataSourceMap)
+	public void setDBPM(HashMap<String, DatabasePoolPOJO> dataSourceMap)
 	{
 		Ram.dataSourceMap = dataSourceMap;
 		LOGGER.info("Have set the RAM dataSourceMap");

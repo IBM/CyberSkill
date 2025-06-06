@@ -37,14 +37,14 @@ public class DatabasePoolManager
 	public DatabasePoolManager(Context context) 
     {
         Ram ram = new Ram();
-        HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+        HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
         HashMap<String, JsonArray> validatedConnections = ram.getValidatedConnections();
      // Modify the userAlias_Access
         JsonObject newAlias_Access = new JsonObject();
         
         if(dataSourceMap == null)
         {
-        	dataSourceMap = new HashMap<String, BasicDataSource>();
+        	dataSourceMap = new HashMap<String, DatabasePoolPOJO>();
         }
         if(validatedConnections == null)
         {
@@ -113,20 +113,47 @@ public class DatabasePoolManager
 		    		
 		    		JsonObject details = new JsonObject();
 		    		details.put("alias", alias);
-		    		
+		    		details.put("status", "active");
 		    		details.put("access", access);
 		    	
 		    		//details.put("connection", dpName);
 		    		
 		    		jaa.add(details);
 		    		validatedConnections.put(dpName, jaa);
-		    		dataSourceMap.put(dpName, DataSource);		
+		    		
+		    		DatabasePoolPOJO databasePoolpojo = new DatabasePoolPOJO();
+		    		databasePoolpojo.setBDS(DataSource);
+		    		databasePoolpojo.setStatus("active");
+		    		dataSourceMap.put(dpName, databasePoolpojo);		
 		    		//ram.setUserAlias_Access(newAlias_Access);
+		    		
+		    		
+		    		
 		    		
 			        LOGGER.debug("Database pool created  "+ dpName +"  and added to the dataSourceMap");
 		    	}
 		    	catch(Exception e)
 		    	{
+		    		
+		    		/*
+		    		DatabasePoolPOJO databasePoolpojo = new DatabasePoolPOJO();
+		    		databasePoolpojo.setBDS(DataSource);
+		    		databasePoolpojo.setStatus("inactive");
+		    		dataSourceMap.put(dpName, databasePoolpojo);		
+		    		
+		    		
+		    		
+		    		String alias = jo.getString("db_alias");
+		    		String access = jo.getString("db_access");
+		    		LOGGER.debug("Inactive connection ID" + dpName + " Alias: " + alias + " Access: " + access);
+		    		JsonArray jaa = new JsonArray();
+		    		JsonObject details = new JsonObject();
+		    		details.put("alias", alias);
+		    		details.put("status", "inactive");
+		    		details.put("access", access);
+		    		validatedConnections.put(dpName, jaa);
+		    		*/
+		    		
 		    		LOGGER.error("Unable to add Datasource because of connection issue: " + e.toString());
 		    	}
 		    	
@@ -150,7 +177,7 @@ public class DatabasePoolManager
 	public DatabasePoolManager(JsonArray ja) 
     {
 		Ram ram = new Ram();
-		HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+		HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
 		 // Modify the userAlias_Access
         JsonObject newAlias_Access = new JsonObject();
 		if(dataSourceMap == null)
@@ -204,7 +231,12 @@ public class DatabasePoolManager
 	    	DataSource.setMaxWaitMillis(10000);
     	
 	    	String dpName = jo.getString("db_type")+"_"+jo.getString("db_url")+"_"+jo.getString("db_database")+"_"+jo.getString("db_username"); 	
-	    	dataSourceMap.put(dpName, DataSource);
+	    	
+	    	DatabasePoolPOJO databasePoolpojo = new DatabasePoolPOJO();
+	    	databasePoolpojo.setBDS(DataSource);
+	    	databasePoolpojo.setStatus("active");
+    		dataSourceMap.put(dpName, databasePoolpojo);	
+	    	
 	    	ram.setDBPM(dataSourceMap);
 	    	//dataSourceMap = ram.getDBPM();
 	    	LOGGER.debug("Number of datasource elements: "+dataSourceMap.size());
@@ -215,13 +247,15 @@ public class DatabasePoolManager
  	public Connection getConnectionFromPool(String dpName) throws SQLException 
     {
 		Ram ram = new Ram();
-		HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+		HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
 		if(dataSourceMap == null)
 		{
 			LOGGER.debug("datasource map has not been initialized");
 			dataSourceMap = new HashMap<>();
 		}
-		BasicDataSource dataSource = dataSourceMap.get(dpName);
+		DatabasePoolPOJO databasePoolPojo = dataSourceMap.get(dpName);
+		BasicDataSource dataSource = databasePoolPojo.getBDS();
+		//BasicDataSource dataSource = dataSourceMap.get(dpName);
         if (dataSource != null) 
         {
             return dataSource.getConnection();
@@ -232,18 +266,18 @@ public class DatabasePoolManager
     public void closeAllPools() throws SQLException 
     {
     	Ram ram = new Ram();
-		Map<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+		Map<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
     	if(dataSourceMap == null)
     	{
     		LOGGER.debug("dataSourceMap is null");
     	}
     	else
     	{
-			for (BasicDataSource dataSource : dataSourceMap.values()) 
+			for (DatabasePoolPOJO databasePoolPojo : dataSourceMap.values()) 
 	        {
-	            if (dataSource != null) 
+	            if (databasePoolPojo.getBDS() != null) 
 	            {
-	                dataSource.close();
+	            	databasePoolPojo.getBDS().close();
 	            }
 	        }
     	}
@@ -265,7 +299,7 @@ public class DatabasePoolManager
             LOGGER.debug("dpName/id:" + dpName + " type:" + jo.getString("type"));
             try 
             {
-            	HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+            	HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
         		if(dataSourceMap == null)
         		{
         			LOGGER.debug("datasource map has not been initialized");
@@ -282,8 +316,14 @@ public class DatabasePoolManager
         				{
         				    try 
         				    {
-        				    	Connection dbpConnection = dataSourceMap.get(dpName).getConnection();
-                	            LOGGER.debug("added a connection to the pool: " + dpName);
+        				    	DatabasePoolPOJO databasePoolPojo = new DatabasePoolPOJO();
+        				    	
+        				    	//Connection dbpConnection = dataSourceMap.get(dpName).getConnection();
+        				    	databasePoolPojo = dataSourceMap.get(dpName);
+        				    	Connection dbpConnection = databasePoolPojo.getBDS().getConnection();
+        				    	
+        				    	
+        				    	LOGGER.debug("added a connection to the pool: " + dpName);
         				    }
         				    catch(Exception e)
         				    {
