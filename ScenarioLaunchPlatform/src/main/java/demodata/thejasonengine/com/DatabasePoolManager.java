@@ -134,8 +134,10 @@ public class DatabasePoolManager
 		    	}
 		    	catch(Exception e)
 		    	{
+		    		String alias = jo.getString("db_alias");
+		    		String access = jo.getString("db_access");
 		    		
-		    		/*
+		    		LOGGER.error("Unable to add Datasource: " + dpName +" because of connection issue: " + e.toString() + ", setting its SLP status to inactive!");
 		    		DatabasePoolPOJO databasePoolpojo = new DatabasePoolPOJO();
 		    		databasePoolpojo.setBDS(DataSource);
 		    		databasePoolpojo.setStatus("inactive");
@@ -143,18 +145,20 @@ public class DatabasePoolManager
 		    		
 		    		
 		    		
-		    		String alias = jo.getString("db_alias");
-		    		String access = jo.getString("db_access");
-		    		LOGGER.debug("Inactive connection ID" + dpName + " Alias: " + alias + " Access: " + access);
+		    		
+		    		LOGGER.debug("Inactive connection ID: " + dpName + " Alias: " + alias + " Access: " + access);
 		    		JsonArray jaa = new JsonArray();
 		    		JsonObject details = new JsonObject();
 		    		details.put("alias", alias);
 		    		details.put("status", "inactive");
 		    		details.put("access", access);
-		    		validatedConnections.put(dpName, jaa);
-		    		*/
 		    		
-		    		LOGGER.error("Unable to add Datasource because of connection issue: " + e.toString());
+		    		jaa.add(details);
+		    		
+		    		validatedConnections.put(dpName, jaa);
+		    		
+		    		LOGGER.debug("SLP dataSource count: " + dataSourceMap.size() + ", SLP validated connection count: " + validatedConnections.size());
+		    		
 		    	}
 		    	
 		    	
@@ -168,7 +172,7 @@ public class DatabasePoolManager
 		}
         catch(Exception e)
         {
-        	LOGGER.error("Unable to load connects from connections file: " + e.toString());
+        	LOGGER.error("**** Unable to load connects from connections file: " + e.toString() + " ****");
         }
     	
     }
@@ -239,7 +243,7 @@ public class DatabasePoolManager
 	    	
 	    	ram.setDBPM(dataSourceMap);
 	    	//dataSourceMap = ram.getDBPM();
-	    	LOGGER.debug("Number of datasource elements: "+dataSourceMap.size());
+	    	LOGGER.debug("----> Number of datasource elements: "+dataSourceMap.size());
 	    	LOGGER.debug("Database pool created  "+ dpName +"  and added to the dataSourceMap");
 		}
     	

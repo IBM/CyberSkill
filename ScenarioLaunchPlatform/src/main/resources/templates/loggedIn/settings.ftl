@@ -170,6 +170,7 @@ function refreshConnections()
 				      <th>Connection id</th>
 				      <th>Alias</th>
 				      <th>Access</th>
+				      <th>Status</th>
 				    </tr>
 				  </thead>
 				  <tbody>
@@ -1101,7 +1102,7 @@ function deleteQueryTypesByID()
              	response.forEach((item) => 
              	{
 	            	
-  					connectionsTable.row.add([item.connection, item.alias, item.access]);
+  					connectionsTable.row.add([item.connection, item.alias, item.access, item.status]);
   					
 	            });
 	            connectionsTable.draw();

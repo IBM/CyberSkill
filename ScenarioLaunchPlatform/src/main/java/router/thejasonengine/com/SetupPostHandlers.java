@@ -2079,14 +2079,14 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        	Ram ram = new Ram();
 		        	
 		        	
-					HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
+					//HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
 					
 					HashMap<String, JsonArray> validatedConnections = ram.getValidatedConnections();
 					// Retrieve the user alias access object
 					
 					try
 					{
-						LOGGER.debug("Ram.DatasourceMap size: " + dataSourceMap.size());
+						LOGGER.debug("Ram.DatasourceMap size: " + validatedConnections.size());
 					}
 					catch(Exception e)
 					{
@@ -2107,6 +2107,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 						jo.put("connection", set.getKey());
 						jo.put("alias", hold.getValue("alias"));
 						jo.put("access", hold.getValue("access"));
+						jo.put("status", hold.getValue("status"));
 						ja.add(jo);
 				    	
 				    	LOGGER.info("Successfully added json object to array");
@@ -2212,6 +2213,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	                        	LOGGER.error("Unable to close a database connection: " + e);
 	                        }
 	                    }
+	                    LOGGER.debug("*************** Successfully closed all existing database connections ********************");
                     }
 			       pool.getConnection(ar -> 
 					{
