@@ -478,7 +478,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 router.post("/api/updateDatabaseConnectionsById").handler(BodyHandler.create()).handler(setupPostHandlers.updateDatabaseConnectionById);
 	  	 router.post("/api/setDatabaseConnections").handler(BodyHandler.create()).handler(setupPostHandlers.setDatabaseConnections);
 	  	 router.post("/api/getValidatedDatabaseConnections").handler(BodyHandler.create()).handler(setupPostHandlers.getValidatedDatabaseConnections);
-	  	 
+	  	 router.post("/api/toggleDatabaseConnectionStatusByDbConnectionID").handler(BodyHandler.create()).handler(setupPostHandlers.toggleDatabaseConnectionStatusByID);
 	  	 /************************ Schedule Jobs ******************************************/
 	  	 router.post("/api/getScheduleJobs").handler(BodyHandler.create()).handler(setupPostHandlers.getScheduleJobs);
 	  	 router.post("/api/addScheduleJob").handler(BodyHandler.create()).handler(setupPostHandlers.addScheduleJob);

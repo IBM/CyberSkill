@@ -182,6 +182,7 @@ public class DatabasePoolManager
     {
 		Ram ram = new Ram();
 		HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
+		
 		 // Modify the userAlias_Access
         JsonObject newAlias_Access = new JsonObject();
 		if(dataSourceMap == null)
@@ -192,6 +193,8 @@ public class DatabasePoolManager
 		
         for (int i = 0; i < ja.size(); i ++)
 		{
+        	LOGGER.debug("**************** dataSourceMap size:" + dataSourceMap.size() + " ********************");
+        	
         	BasicDataSource DataSource = new BasicDataSource();
         	JsonObject jo = ja.getJsonObject(i);
         	LOGGER.debug("Creating Database pool for: jdbc:"+jo.getString("db_type")+"://"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database")+ " using: " + jo.getString("db_username"));

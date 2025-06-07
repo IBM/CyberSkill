@@ -103,6 +103,7 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> runDatabaseQueryByDatasourceMapAndQueryId;
 	public Handler<RoutingContext> deleteDatabaseQueryByQueryId;
 	public Handler<RoutingContext> updateDatabaseQueryByQueryId;
+	public Handler<RoutingContext> toggleDatabaseConnectionStatusByID;
 	public Handler<RoutingContext> getValidatedDatabaseConnections;
 	public Handler<RoutingContext> getAllDatabaseConnections;
 	public Handler<RoutingContext> getRefreshedDatabaseConnections;
@@ -149,6 +150,9 @@ public class SetupPostHandlers
 		getDatabaseQueryByQueryId = SetupPostHandlers.this::handleGetDatabaseQueryByQueryId;
 		deleteDatabaseQueryByQueryId = SetupPostHandlers.this::handleDeleteDatabaseQueryByQueryId;
 		updateDatabaseQueryByQueryId = SetupPostHandlers.this::handleUpdateDatabaseQueryByQueryId;
+		
+		toggleDatabaseConnectionStatusByID = SetupPostHandlers.this::handleToggleDatabaseConnectionStatusByID;
+		
 		getDatabaseQuery = SetupPostHandlers.this::handleGetDatabaseQuery;
 		getQueryTypes = SetupPostHandlers.this::handleGetQueryTypes;
 		deleteQueryTypesByID = SetupPostHandlers.this::handleDeleteQueryTypesByID;
@@ -2216,6 +2220,11 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	                        }
 	                    }
 	                    LOGGER.debug("*************** Successfully closed all existing database connections ********************");
+	                    LOGGER.debug("*************** Removing all known database connections from RAM *********************");
+	                    ram.setDBPM(null);
+	                    ram.setValidatedConnections(null);
+	                    LOGGER.debug("*************** database connections removed successfully *********************");
+	                    
                     }
 			       pool.getConnection(ar -> 
 					{
@@ -2250,7 +2259,9 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                                });
 			                                
 			                                LOGGER.debug("adding database connection details to context");
-			                                context.put("ConnectionData", ja);
+			                                context.put("ConnectionData", ja); 
+			                                
+			                                
 			                                LOGGER.debug("added database connection details to context");
 			                                
 			                                
@@ -2485,7 +2496,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                                    {
 			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
 			                                    	ja.add(jo);
-			                                    	LOGGER.info("Successfully added json object to array");
+			                                    	LOGGER.info("Successfully added json object to array: " + jo.encodePrettily());
 			                                    }
 			                                    catch(Exception e)
 			                                    {
@@ -2539,6 +2550,105 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		}
 	}
 	/****************************************************************/
+	private void handleToggleDatabaseConnectionStatusByID(RoutingContext routingContext) 
+	{
+		
+		LOGGER.info("Inside SetupPostHandlers.handleToggleDatabaseConnectionStatusByID");  
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		
+		if (pool == null)
+		{
+			LOGGER.debug("pool is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleToggleDatabaseConnectionStatusByID required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+				
+				String db_connection_id = JSONpayload.getString("db_connection_id"); 
+				LOGGER.info("db_connection_id: " + db_connection_id);
+				
+				
+				LOGGER.info("Accessible Level is : " + authlevel);
+		       
+				if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+					
+		        	pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                
+			                connection.preparedQuery("UPDATE public.tb_databaseConnections SET status = CASE WHEN status = 'active' THEN 'inactive' ELSE 'active' END WHERE db_connection_id = $1;")
+			                        .execute(Tuple.of(db_connection_id),
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                // Process the query result
+			                                RowSet<Row> rows = res.result();
+			                                LOGGER.info("Successfully toggled connection: " + db_connection_id);
+			                                
+			                                response.send(ja.encodePrettily());
+			                                 
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	LOGGER.error("error toggling connection: " +db_connection_id+ " due to: " + res.cause() );
+			                            	response.send(res.cause().getMessage());
+			                                //res.cause().printStackTrace();
+			                            }
+			                            // Close the connection
+			                            //response.end();
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			                ar.cause().printStackTrace();
+			                response.send(ar.cause().getMessage());
+			            }
+			            
+			        });
+		        }
+		        else
+		        {
+		        	JsonArray ja = new JsonArray();
+		        	JsonObject jo = new JsonObject();
+		        	jo.put("Error", "Issufficent authentication level to run API");
+		        	ja.add(jo);
+		        	response.send(ja.encodePrettily());
+		        }
+		        
+		        
+			}
+		}
+	}
 	/****************************************************************/
 	private void handleGetDatabaseConnectionsByID(RoutingContext routingContext) 
 	{
