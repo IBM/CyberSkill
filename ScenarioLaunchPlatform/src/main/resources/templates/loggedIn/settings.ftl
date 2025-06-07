@@ -541,15 +541,15 @@ function refreshConnections()
 			<div class="w3-container w3-card w3-white w3-round w3-margin"><br>
         <i class="fa fa-eye" onclick="toggleEditDiv()" style="color: gray; transition: color 0.3s ease;" 
    onmouseover="this.style.color='red'" 
-   onmouseout="this.style.color='gray'"></i> View Connection
+   onmouseout="this.style.color='gray'"></i> Manage Connection
         <span class="w3-right w3-opacity" id="editConnectionCounter"></span>
         <br>
 	        <hr class="w3-clear">
         <div class ="EditConnection" id="EditConnection" style="display: none;"> 
 	        
 				        
-				<h2>View connection</h2>
-				<p>View an existing connection to confirm settings to execute SQL against that connection.</p>
+				<h2>Manage connection</h2>
+				<p>View an existing connection to confirm settings. Useful if you are having problems executing SQL against that connection. Or Toggle database pool connections on or off. SLP attempts to connect to all connections that are set to active, it is wise to limit the connections to only those that are needed.</p>
 				
 				<div class="container">
 				    <div class="row">
@@ -558,7 +558,9 @@ function refreshConnections()
 				    </div>
 				    
 				     <div class="col-75">
-				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="getConnectionById();"><i class="fa fa-eye"></i>  View</button> 
+				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="getConnectionById();"><i class="fa fa-eye"></i>  View</button>
+				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="toggleConnectionStatus();"><i class="fa fa-arrows-h"></i>  Toggle</button> 
+				        
 				      </div>	
 				    </div>
 				</div>
@@ -633,8 +635,7 @@ function refreshConnections()
      
       
       <! -- BOF CARD -->
-      		
-		      <div class="w3-row-padding">
+      		<div class="w3-container"><br>
 		        <div class="w3-col m12">
 		          <div class="w3-card w3-round w3-white">
 		            <div class="w3-container w3-padding">
@@ -934,7 +935,39 @@ function updateConnection()
 
 }
 
+function toggleConnectionStatus()
+{
+	
+	const var_id =  $('#editConnections').val();
+	const var_jwt = '${tokenObject.jwt}';
+  
+  	const jsonData = JSON.stringify({
+  		  jwt:var_jwt,
+  		  id:var_id
+  		});
+  
+  console.log(jsonData);
+  
+  
+	$.ajax({
+          url: '/api/toggleConnectionStatus', 
+          type: 'POST',
+          data: jsonData,
+          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+          success: function(response) 
+          {
+             	console.log(response);
+             	document.getElementById('updateResponse').innerHTML = response[0].response;
+             	
+             	
+          },
+          error: function(xhr, status, error) 
+          {
+            $('#response').text('Error: ' + error);
+          }
+        });
 
+}
 function deleteConnection()
 {
 	
