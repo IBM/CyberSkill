@@ -113,7 +113,7 @@ public class DatabasePoolManager
 		    		
 		    		JsonObject details = new JsonObject();
 		    		details.put("alias", alias);
-		    		details.put("status", "active");
+		    		details.put("status", "connected");
 		    		details.put("access", access);
 		    	
 		    		//details.put("connection", dpName);
@@ -123,7 +123,7 @@ public class DatabasePoolManager
 		    		
 		    		DatabasePoolPOJO databasePoolpojo = new DatabasePoolPOJO();
 		    		databasePoolpojo.setBDS(DataSource);
-		    		databasePoolpojo.setStatus("active");
+		    		databasePoolpojo.setStatus("connected");
 		    		dataSourceMap.put(dpName, databasePoolpojo);		
 		    		//ram.setUserAlias_Access(newAlias_Access);
 		    		
@@ -140,7 +140,7 @@ public class DatabasePoolManager
 		    		LOGGER.error("Unable to add Datasource: " + dpName +" because of connection issue: " + e.toString() + ", setting its SLP status to inactive!");
 		    		DatabasePoolPOJO databasePoolpojo = new DatabasePoolPOJO();
 		    		databasePoolpojo.setBDS(DataSource);
-		    		databasePoolpojo.setStatus("inactive");
+		    		databasePoolpojo.setStatus("disconnected");
 		    		dataSourceMap.put(dpName, databasePoolpojo);		
 		    		
 		    		
@@ -150,7 +150,7 @@ public class DatabasePoolManager
 		    		JsonArray jaa = new JsonArray();
 		    		JsonObject details = new JsonObject();
 		    		details.put("alias", alias);
-		    		details.put("status", "inactive");
+		    		details.put("status", "disconnected");
 		    		details.put("access", access);
 		    		
 		    		jaa.add(details);
@@ -238,7 +238,7 @@ public class DatabasePoolManager
 	    	
 	    	DatabasePoolPOJO databasePoolpojo = new DatabasePoolPOJO();
 	    	databasePoolpojo.setBDS(DataSource);
-	    	databasePoolpojo.setStatus("active");
+	    	databasePoolpojo.setStatus("connected");
     		dataSourceMap.put(dpName, databasePoolpojo);	
 	    	
 	    	ram.setDBPM(dataSourceMap);
