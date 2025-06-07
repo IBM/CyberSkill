@@ -79,7 +79,7 @@ public class DatabasePoolManager
 		        {
 		        	LOGGER.debug("Setting Datasource URL for oracle -  setting correct format");
 		        	//jdbc:oracle:thin:@//<host>:<port>/<service_name> 
-		        	String connectionString= "jdbc:"+jo.getString("db_type")+":thin:@//"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database")+";";
+		        	String connectionString= "jdbc:"+jo.getString("db_type")+":thin:@//"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database")+"";
 		       
 		        	LOGGER.debug("ORACLE:" + connectionString);
 		        	DataSource.setUrl(connectionString);
