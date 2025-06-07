@@ -80,6 +80,12 @@ function getConnectionById()
   
 function refreshConnections()
 {
+  	
+  	
+  	
+  	document.getElementById('refreshConnections').style.color = 'blue';
+  	
+  	
   	const jwtToken = '${tokenObject.jwt}';
    	const jsonData = JSON.stringify({
           jwt: jwtToken,
@@ -109,10 +115,13 @@ function refreshConnections()
 					$('#edit_db_alias').val(item.db_alias);
 					$('#edit_db_access').val(item.db_access);
 				});
+				document.getElementById('refreshConnections').style.color = 'green';
+				getConnections();
 	      },
           error: function(xhr, status, error) 
           {
             $('#response').text('Error: ' + error);
+            document.getElementById('refreshConnections').style.color = 'red';
           }
           
         });
@@ -153,7 +162,7 @@ function refreshConnections()
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();"></i> Refresh available active database connections</h6>
+              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='purple'" onmouseout="this.style.color='gray'"></i> kill all active database connections (read how this works)</h6>
               
 	              <table id="connectionsTable" class="display" style="width:100%">
 				  <thead>
@@ -161,6 +170,7 @@ function refreshConnections()
 				      <th>Connection id</th>
 				      <th>Alias</th>
 				      <th>Access</th>
+				      <th>Status</th>
 				    </tr>
 				  </thead>
 				  <tbody>
@@ -531,15 +541,15 @@ function refreshConnections()
 			<div class="w3-container w3-card w3-white w3-round w3-margin"><br>
         <i class="fa fa-eye" onclick="toggleEditDiv()" style="color: gray; transition: color 0.3s ease;" 
    onmouseover="this.style.color='red'" 
-   onmouseout="this.style.color='gray'"></i> View Connection
+   onmouseout="this.style.color='gray'"></i> Manage Connection
         <span class="w3-right w3-opacity" id="editConnectionCounter"></span>
         <br>
 	        <hr class="w3-clear">
         <div class ="EditConnection" id="EditConnection" style="display: none;"> 
 	        
 				        
-				<h2>View connection</h2>
-				<p>View an existing connection to confirm settings to execute SQL against that connection.</p>
+				<h2>Manage connection</h2>
+				<p>View an existing connection to confirm settings. Useful if you are having problems executing SQL against that connection. Or Toggle database pool connections on or off. SLP attempts to connect to all connections that are set to active, it is wise to limit the connections to only those that are needed.</p>
 				
 				<div class="container">
 				    <div class="row">
@@ -548,7 +558,9 @@ function refreshConnections()
 				    </div>
 				    
 				     <div class="col-75">
-				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="getConnectionById();"><i class="fa fa-eye"></i>  View</button> 
+				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="getConnectionById();"><i class="fa fa-eye"></i>  View</button>
+				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="toggleConnectionStatus();"><i class="fa fa-arrows-h"></i>  Toggle</button> 
+				        
 				      </div>	
 				    </div>
 				</div>
@@ -620,7 +632,47 @@ function refreshConnections()
 		      </div>
 		      		
       		<! -- EOF CARD -->
+     
       
+      <! -- BOF CARD -->
+      		<div class="w3-container"><br>
+		        <div class="w3-col m12">
+		          <div class="w3-card w3-round w3-white">
+		            <div class="w3-container w3-padding">
+		              <i class="fa fa-pencil" onclick="toggleSystemVariableDiv()" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='red'" onmouseout="this.style.color='gray'"></i> Edit System Variables
+        				<span class="w3-right w3-opacity" id="editSystemVariables"></span>
+        				<br>
+	        			<hr class="w3-clear">
+		              <!-- -->
+		              <div class ="EditSystemVariables" id="EditSystemVariables" style="display: none;"> 
+		             		<div class="row">
+						      <div class="col-25">
+						        <label for="system_variablese">System Variables</label>
+						      </div>
+						      <div class="col-75">
+						      
+						      <textarea id="system_variables" name="system_variables" rows="4" cols="50">
+										{}
+							  </textarea>
+						        
+						      </div>
+						   	</div>
+						   	<div class="row">
+						      <div class="col-25">
+						        
+						      </div>
+						      <div class="col-75">
+						        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="setMySystemVariables();"><i class="fa fa-plus"></i>  Update</button>
+						      </div>
+						   	</div>
+						  </div>
+		             <!-- -->
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		      		
+      		<! -- EOF CARD -->
       		
       
       
@@ -755,6 +807,15 @@ function openNav() {
                 div.style.display = 'none'; // Hide the div
             }
         }
+        function toggleSystemVariableDiv() {
+            const div = document.getElementById('EditSystemVariables');
+            if (div.style.display === 'none' || div.style.display === '') {
+                div.style.display = 'block'; // Show the div
+            } else {
+                div.style.display = 'none'; // Hide the div
+            }
+        }
+        
     </script>
 
 
@@ -874,7 +935,39 @@ function updateConnection()
 
 }
 
+function toggleConnectionStatus()
+{
+	
+	const var_id =  $('#editConnections').val();
+	const var_jwt = '${tokenObject.jwt}';
+  
+  	const jsonData = JSON.stringify({
+  		  jwt:var_jwt,
+  		  id:var_id
+  		});
+  
+  console.log(jsonData);
+  
+  
+	$.ajax({
+          url: '/api/toggleConnectionStatus', 
+          type: 'POST',
+          data: jsonData,
+          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+          success: function(response) 
+          {
+             	console.log(response);
+             	document.getElementById('updateResponse').innerHTML = response[0].response;
+             	
+             	
+          },
+          error: function(xhr, status, error) 
+          {
+            $('#response').text('Error: ' + error);
+          }
+        });
 
+}
 function deleteConnection()
 {
 	
@@ -1042,7 +1135,7 @@ function deleteQueryTypesByID()
              	response.forEach((item) => 
              	{
 	            	
-  					connectionsTable.row.add([item.connection, item.alias, item.access]);
+  					connectionsTable.row.add([item.connection, item.alias, item.access, item.status]);
   					
 	            });
 	            connectionsTable.draw();
@@ -1057,7 +1150,72 @@ function deleteQueryTypesByID()
         
         
   }
+  /*****************************************************/
   
+   $(document).ready(function() 
+  	{
+  		getMySystemVariables();
+  	});
+  	function getMySystemVariables()
+	{
+		const var_jwt = '${tokenObject.jwt}';
+		const jsonData = JSON.stringify({
+		  		  jwt:var_jwt,
+		  		});
+		console.log(jsonData);
+		$.ajax({
+		          url: '/api/getMySystemVariables', 
+		          type: 'POST',
+		          data: jsonData,
+		          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+		          success: function(response) 
+		          {
+		             	console.log(response[0].data);
+		             	const jsonString = JSON.stringify(response[0].data, null, 2);
+		             	const textarea = document.getElementById('system_variables');
+  						textarea.value = jsonString;
+		             	
+		          },
+		          error: function(xhr, status, error) 
+		          {
+		            $('#response').text('Error: ' + error);
+		          }
+		        });
+  
+  
+  	}
+  	function setMySystemVariables()
+	{
+		const var_jwt = '${tokenObject.jwt}';
+		const textarea = document.getElementById('system_variables');
+  		const var_mySystemVariables = JSON.parse(textarea.value);
+		
+		console.log("var_mySystemVariables:" +var_mySystemVariables);				
+		
+	  	const jsonData = JSON.stringify({
+  		  jwt:var_jwt,
+  	      mySystemVariables:var_mySystemVariables
+        });
+  
+  
+  		console.log(jsonData);
+  
+  
+		$.ajax({
+	          url: '/api/setMySystemVariables', 
+	          type: 'POST',
+	          data: jsonData,
+	          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+	          success: function(response) 
+	          {
+	             	console.log(response);
+	          },
+	          error: function(xhr, status, error) 
+	          {
+	            $('#response').text('Error: ' + error);
+	          }
+	        });
+	}
   /*****************************************************/
   $(document).ready(function() 
   	{

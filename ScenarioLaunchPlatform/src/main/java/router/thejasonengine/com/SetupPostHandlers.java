@@ -50,6 +50,7 @@ import authentication.thejasonengine.com.AuthUtils;
 import database.thejasonengine.com.DatabaseController;
 import demodata.thejasonengine.com.BruteForceDBConnections;
 import demodata.thejasonengine.com.DatabasePoolManager;
+import demodata.thejasonengine.com.DatabasePoolPOJO;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Handler;
@@ -103,6 +104,7 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> deleteDatabaseQueryByQueryId;
 	public Handler<RoutingContext> updateDatabaseQueryByQueryId;
 	public Handler<RoutingContext> getValidatedDatabaseConnections;
+	public Handler<RoutingContext> getAllDatabaseConnections;
 	public Handler<RoutingContext> getRefreshedDatabaseConnections;
 	public Handler<RoutingContext> getQueryTypes;
 	public Handler<RoutingContext> deleteQueryTypesByID;
@@ -152,6 +154,7 @@ public class SetupPostHandlers
 		deleteQueryTypesByID = SetupPostHandlers.this::handleDeleteQueryTypesByID;
 		addQueryTypes = SetupPostHandlers.this::handleAddQueryTypes;
 		getDatabaseConnections = SetupPostHandlers.this::handleGetDatabaseConnections;
+		getAllDatabaseConnections = SetupPostHandlers.this::handleGetAllDatabaseConnections;
 		getRefreshedDatabaseConnections =SetupPostHandlers.this::handleGetRefreshedDatabaseConnections;
 		getDatabaseConnectionsById = SetupPostHandlers.this::handleGetDatabaseConnectionsByID;
 		deleteDatabaseConnectionsById = SetupPostHandlers.this::handleDeleteDatabaseConnectionsByID;
@@ -261,6 +264,10 @@ public class SetupPostHandlers
 					                                    {
 					                                    	JsonObject jo = new JsonObject(row.toJson().encode());
 					                                    	ja.add(jo);
+					                                    	Ram ram = new Ram();
+					                                    	
+					                                    	ram.setSystemVariable(jo);
+					                                    	LOGGER.info("Successfully added SystemVariable to ram: " + jo.encodePrettily());
 					                                    	LOGGER.info("Successfully added json object to array");
 					                                    }
 					                                    catch(Exception e)
@@ -268,6 +275,7 @@ public class SetupPostHandlers
 					                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
 					                                    }
 					                                    
+				                                    	
 					                                });
 					                                response.send(ja.encodePrettily());
 					                            } 
@@ -369,6 +377,8 @@ public class SetupPostHandlers
 			                                JsonObject jo = new JsonObject("{\"response\":\"Successfully added system variables\"}");
 	                                    	ja.add(jo);
 	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
+	                                    	Ram ram = new Ram();
+	                                    	ram.setSystemVariable(mySystemVariables);
 			                                response.send(ja.encodePrettily());
 			                            } 
 			                            else 
@@ -2069,14 +2079,16 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        	response
 			        .putHeader("content-type", "application/json");
 		        	Ram ram = new Ram();
-					HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+		        	
+		        	
+					//HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
 					
 					HashMap<String, JsonArray> validatedConnections = ram.getValidatedConnections();
 					// Retrieve the user alias access object
 					
 					try
 					{
-						LOGGER.debug("Ram.DatasourceMap size: " + dataSourceMap.size());
+						LOGGER.debug("Ram.DatasourceMap size: " + validatedConnections.size());
 					}
 					catch(Exception e)
 					{
@@ -2097,7 +2109,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 						jo.put("connection", set.getKey());
 						jo.put("alias", hold.getValue("alias"));
 						jo.put("access", hold.getValue("access"));
-				    	ja.add(jo);
+						jo.put("status", hold.getValue("status"));
+						ja.add(jo);
 				    	
 				    	LOGGER.info("Successfully added json object to array");
 					
@@ -2154,7 +2167,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		
 		if (JSONpayload.getString("jwt") == null) 
 	    {
-	    	LOGGER.info("handleGetDatabaseConnections required fields not detected (jwt)");
+	    	LOGGER.info("handleGetRefreshedDatabaseConnections required fields not detected (jwt)");
 	    	routingContext.fail(400);
 	    } 
 		else
@@ -2180,18 +2193,21 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        	 * First this to do is to close all the existing pools
 		        	 */
                     Ram ram = new Ram();
-                    HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+                    
+                   
+                    HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
+                    
                     
                     if(dataSourceMap != null)
                     {
 	                    LOGGER.debug("Number of existing database pool connections: " + dataSourceMap.size());
 	                    
-	                    Collection<BasicDataSource> datasources = dataSourceMap.values();
-	                    for (BasicDataSource datasource : datasources) 
+	                    Collection<DatabasePoolPOJO> databasePoolPojos = dataSourceMap.values();
+	                    for (DatabasePoolPOJO databasePoolPojo : databasePoolPojos) 
 	                    {
 	                        try
 	                        {
-	                        	datasource.close();
+	                        	databasePoolPojo.getBDS().close();
 	                        	LOGGER.debug("Successfully closed a database connection");
 	                        }
 	                        catch(Exception e)
@@ -2199,6 +2215,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	                        	LOGGER.error("Unable to close a database connection: " + e);
 	                        }
 	                    }
+	                    LOGGER.debug("*************** Successfully closed all existing database connections ********************");
                     }
 			       pool.getConnection(ar -> 
 					{
@@ -2209,7 +2226,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("Select * from public.tb_databaseConnections")
+			                connection.preparedQuery("Select * from public.tb_databaseConnections where status='active'")
 			                        .execute(
 			                        res -> {
 			                            if (res.succeeded()) 
@@ -2279,6 +2296,129 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		
 	}
 	/****************************************************************/
+	private void handleGetAllDatabaseConnections(RoutingContext routingContext) 
+	{
+		
+		LOGGER.info("Inside SetupPostHandlers.handleGetAllDatabaseConnections");  
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		
+		if (pool == null)
+		{
+			LOGGER.debug("pull is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleGetAllDatabaseConnections required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+				
+				LOGGER.info("Accessible Level is : " + authlevel);
+		       
+				if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+					
+		        	pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                // Execute a SELECT query
+			                
+			                connection.preparedQuery("Select * from public.tb_databaseConnections")
+			                        .execute(
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                // Process the query result
+			                                RowSet<Row> rows = res.result();
+			                                rows.forEach(row -> {
+			                                    // Print out each row
+			                                    LOGGER.info("Row: " + row.toJson());
+			                                    try
+			                                    {
+			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
+			                                    	ja.add(jo);
+			                                    	LOGGER.info("Successfully added json object to array");
+			                                    }
+			                                    catch(Exception e)
+			                                    {
+			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
+			                                    }
+			                                    
+			                                });
+			                                
+			                                LOGGER.debug("adding database connection details to context");
+			                                context.put("ConnectionData", ja);
+			                                LOGGER.debug("added database connection details to context");
+			                                
+			                                
+			                                response.send(ja.encodePrettily());
+			                                
+			                                /* Create the database connection pool for all the test databases */
+			                                
+			                                DatabasePoolManager DPM = new DatabasePoolManager(context);
+			                                
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	LOGGER.error("error: " + res.cause() );
+			                            	response.send(res.cause().getMessage());
+			                                //res.cause().printStackTrace();
+			                            }
+			                            // Close the connection
+			                            //response.end();
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			                ar.cause().printStackTrace();
+			                response.send(ar.cause().getMessage());
+			            }
+			            
+			        });
+		        }
+		        else
+		        {
+		        	JsonArray ja = new JsonArray();
+		        	JsonObject jo = new JsonObject();
+		        	jo.put("Error", "Issufficent authentication level to run API");
+		        	ja.add(jo);
+		        	response.send(ja.encodePrettily());
+		        }
+		        
+		        
+			}
+		}
+	}
+	/****************************************************************/
+	
+	
+	/****************************************************************/
 	private void handleGetDatabaseConnections(RoutingContext routingContext) 
 	{
 		
@@ -2331,7 +2471,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("Select * from public.tb_databaseConnections")
+			                connection.preparedQuery("Select * from public.tb_databaseConnections where status='active'")
 			                        .execute(
 			                        res -> {
 			                            if (res.succeeded()) 
@@ -3066,7 +3206,6 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
     		response.putHeader("content-type", "application/json");
             Ram ram = new Ram();
             Pool pool = ram.getPostGresSystemPool();
-            HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
         	
         	LOGGER.debug("Successfully initialized the datasource");
             if (pool == null) 
@@ -3215,7 +3354,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                         try 
                         {
                             Pool pool = ram.getPostGresSystemPool();
-                            HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+                            HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
     			        	
     			        	LOGGER.debug("Successfully initialized the datasource");
                             if (pool == null) 
@@ -3265,7 +3404,11 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                                     LOGGER.debug("QUERY LOOP IS : " + queryLoop);
                                                     
                                                     StringTokenizer tokenizer = new StringTokenizer(sqlParameter, "\r\n");
-                                                    BasicDataSource BDS = dataSourceMap.get(datasource);
+                                                    DatabasePoolPOJO databasePoolPojo = new DatabasePoolPOJO();
+                                                    
+                                                    databasePoolPojo =  dataSourceMap.get(datasource);
+                                                    BasicDataSource BDS = databasePoolPojo.getBDS();
+                                                    
                                                     JSONObject joLoop;
                                                     JsonArray JsonResponse = new JsonArray();
                                                     for (int loopIndex = 0; loopIndex < queryLoop; loopIndex++) 
@@ -3274,7 +3417,20 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			             {
                                 			                 String sql = tokenizer.nextToken();
                                 			                 LOGGER.debug("Query[DatasourceMap]: " + loopIndex + " identified: " + sql );
-                                			                
+                                			                while(sql.contains("{SYSTEMVARIABLE}"))
+                              				                {
+                              				                	
+                              				                	LOGGER.debug("Found a system variable string");
+                              				                	
+                              				                	JsonObject jo = ram.getSystemVariable();
+                              				                	LOGGER.debug("My system variable: " + jo.encodePrettily());
+                              				                	
+                              				                	String swap = jo.getJsonObject("data").getString("mydatavariable");
+                              				                	LOGGER.debug("Swap: " + swap); 
+                              				                	
+                              				                	sql = sql.replaceFirst("\\{SYSTEMVARIABLE\\}", swap);
+                              				                	LOGGER.debug("query updated to: " + sql);
+                              				                }
                                 			                while(sql.contains("{STRING}"))
                              				                {
                              				                	
@@ -3336,7 +3492,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                				if(BDS == null)
                                 			                				{
                                 			                					LOGGER.debug("BDS is null - recreating");
-                                			                					BDS = dataSourceMap.get(datasource);
+                                			                					databasePoolPojo = dataSourceMap.get(datasource);
+                                			                					BDS = databasePoolPojo.getBDS();
                                 			                				}
                                 			                				
                                 			                				Connection connection = BDS.getConnection();
@@ -3406,7 +3563,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 			                				if(BDS == null)
                                 			                				{
                                 			                					LOGGER.debug("BDS is null - recreating");
-                                			                					BDS = dataSourceMap.get(datasource);
+                                			                					databasePoolPojo = dataSourceMap.get(datasource);
+                                			                					BDS = databasePoolPojo.getBDS();
                                 			                				}
                                 			                				
                                 			                				Connection connection = BDS.getConnection();
@@ -3612,9 +3770,11 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        	BasicDataSource BDS = null;
 		        	try
 		        	{
-		        		HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
-			        	BDS = dataSourceMap.get(datasource);
-			        	LOGGER.debug("Successfully initialized the datasource");
+		        		HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
+		        		
+		        		DatabasePoolPOJO databasePoolPojo = dataSourceMap.get(datasource);
+    					BDS = databasePoolPojo.getBDS();
+		        		LOGGER.debug("Successfully initialized the datasource");
 			        	
 			        	
 			        	
@@ -3626,7 +3786,20 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
     			             {
     			                 String sql = tokenizer.nextToken();
 				                 LOGGER.debug("Query[DatasourceMap]: " + loopIndex + " identified: " + sql );
-				                 
+				                while(sql.contains("{SYSTEMVARIABLE}"))
+   				                {
+   				                	
+   				                	LOGGER.debug("Found a system variable string");
+   				                	
+   				                	JsonObject jo = ram.getSystemVariable();
+   				                	LOGGER.debug("My system variable: " + jo.encodePrettily());
+   				                	
+   				                	String swap = jo.getJsonObject("data").getString("mydatavariable");
+   				                	LOGGER.debug("Swap: " + swap); 
+   				                	
+   				                	sql = sql.replaceFirst("\\{SYSTEMVARIABLE\\}", swap);
+   				                	LOGGER.debug("query updated to: " + sql);
+   				                } 
 				                while(sql.contains("{STRING}"))
 				                {
 				                	

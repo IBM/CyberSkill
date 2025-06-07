@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import database.thejasonengine.com.DatabaseController;
+import demodata.thejasonengine.com.DatabasePoolPOJO;
 import file.thejasonengine.com.Read;
 import io.vertx.core.Context;
 import io.vertx.core.http.HttpServerResponse;
@@ -73,7 +74,7 @@ public class UpgradeHandler
     		response.putHeader("content-type", "application/json");
             Ram ram = new Ram();
             Pool pool = ram.getPostGresSystemPool();
-            HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+            HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
         	
         	LOGGER.debug("Successfully initialized the datasource");
             if (pool == null) 

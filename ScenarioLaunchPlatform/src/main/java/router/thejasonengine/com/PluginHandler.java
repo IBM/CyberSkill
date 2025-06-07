@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.hazelcast.shaded.org.json.JSONObject;
 
+import demodata.thejasonengine.com.DatabasePoolPOJO;
 import io.micrometer.core.ipc.http.HttpSender.Request;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
@@ -190,7 +191,7 @@ public class PluginHandler {
 					    				tokenObject.put("jwt", tokenObjectString);
 					    			 
 					    				Map<String, String> memoryMap = ram.getRamSharedMap();
-					    				HashMap<String, BasicDataSource> dataSourceMap = ram.getDBPM();
+					    				HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
 					    				
 					    				JSONObject jsonObject = new JSONObject(memoryMap);
 					    				LOGGER.debug("Retrieved the ram memory object: " + memoryMap.get("jwt"));

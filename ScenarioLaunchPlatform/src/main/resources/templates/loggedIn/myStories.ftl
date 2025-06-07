@@ -277,13 +277,12 @@ const wsUrl = protocol+ "//" + window.location.host + relativeUrl;
               <!-- -->
 	             <table>
 			        <tr>
-			            <th rowspan="2"> <img src="/w3images/AVATAR.png" alt="Avatar" class="avatar"></th>
+			            <th rowspan="2" style="text-align: center; vertical-align: middle;"> <img src="/w3images/AVATAR.png" alt="Avatar" class="avatar"><br>CHARACTER</th>
 			            <th>Details</th>
 			        </tr>
 			        <tr>
-			            <td>Database: DATABASE<br>
-			            	DBTYPE<br>
-			            	HOSTNAME<br>
+			            <td> Database: DATABASE , type: DBTYPE , hostname: HOSTNAME<br>
+			                 Chapter: CHAPTER <br>
 			            	<button class="w3-button w3-blue-grey" onclick="openModal(QUERYID)">Query</button>
 			            </td>
 			        </tr>
@@ -319,6 +318,8 @@ socket.addEventListener("message", (event) => {
     console.log("parsedMessageObject.query_id: ",  parsedMessageObject.query_id);
     console.log("parsedMessageObject.datasource: ",  parsedMessageObject.datasource);
     
+   
+    
     const parts = parsedMessageObject.datasource.split("_");
     
     let dbType = parts[0];
@@ -328,6 +329,11 @@ socket.addEventListener("message", (event) => {
     
     console.log("user: " + user);
     
+    let chapter = parsedMessageObject.chapter;
+    if(chapter == null)
+    {
+    	chapter = user + " does something";
+    }
     
     console.log("parsedMessageObject.pause_in_seconds: ",  parsedMessageObject.pause_in_seconds);
     
@@ -336,9 +342,11 @@ socket.addEventListener("message", (event) => {
 	var StoryChapter = document.getElementById("StoryChaptersCompleted");
 	
 	tempStoryChapterCard = tempStoryChapterCard.replace(/AVATAR/g, user);
+	tempStoryChapterCard = tempStoryChapterCard.replace(/CHARACTER/g, user);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/DATABASE/g, db);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/DBTYPE/g, dbType);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/HOSTNAME/g, hostname);
+	tempStoryChapterCard = tempStoryChapterCard.replace(/CHAPTER/g, chapter);
 	tempStoryChapterCard = tempStoryChapterCard.replace(/QUERYID/g, parsedMessageObject.query_id);
 	
 	StoryChapter.insertAdjacentHTML("beforeend", tempStoryChapterCard);

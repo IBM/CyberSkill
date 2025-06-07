@@ -204,6 +204,7 @@ function openNav() {
 <script>
 window.onload = function() {
   getConnections();
+  getMySystemVariables();
 };
 
 
@@ -253,6 +254,33 @@ function getConnections()
         
         
   }
+  function getMySystemVariables()
+{
+  	const jwtToken = '${tokenObject.jwt}';
+   	const jsonData = JSON.stringify({
+          jwt: jwtToken,
+        });
+  
+  
+	$.ajax({
+          url: '/api/getMySystemVariables', 
+          type: 'POST',
+          data: jsonData,
+          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+          success: function(response) 
+          {
+              	console.log("Successfully retrieved system variables")
+              	console.log(response);
+	      },
+          error: function(xhr, status, error) 
+          {
+            console.log('Error: ' + error);
+          }
+        });
+        
+        
+  }
+
 </script>
 </body>
 </html> 
