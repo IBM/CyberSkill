@@ -162,7 +162,11 @@ function refreshConnections()
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='purple'" onmouseout="this.style.color='gray'"></i> kill all active database connections (read how this works)</h6>
+              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='purple'" onmouseout="this.style.color='gray'"></i> kill all active database connections 
+              <div class="tooltip">
+  						Read how this works.
+  						<span class="tooltiptext">This process will destroy all current database connections, and will perform a database lookup to see what connections are set to active. It will then create new connections from this updated list. This is different to verifying connections, which uses the in memory objects to recreate the connections. A brief warning - depending on the speed of the database, rapidly calling this function, can attempt to create connections before the previous connections have fully closed, potentially meaning the database will refuse new connections. In such a case - just wait a minute and try again. Let the database chill baby! </span>
+				</div></h6>
               
 	              <table id="connectionsTable" class="display" style="width:100%">
 				  <thead>
