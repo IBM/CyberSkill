@@ -2383,7 +2383,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                                });
 			                                
 			                                LOGGER.debug("adding database connection details to context");
-			                                context.put("ConnectionData", ja);
+			                                //context.put("ConnectionData", ja);
 			                                LOGGER.debug("added database connection details to context");
 			                                
 			                                
@@ -2585,8 +2585,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				LOGGER.info("Payload: " + payload );
 				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
 				
-				String db_connection_id = JSONpayload.getString("db_connection_id"); 
-				LOGGER.info("db_connection_id: " + db_connection_id);
+				String id = JSONpayload.getString("id"); 
+				LOGGER.info("id: " + id);
 				
 				
 				LOGGER.info("Accessible Level is : " + authlevel);
@@ -2605,14 +2605,14 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                JsonArray ja = new JsonArray();
 			                
 			                
-			                connection.preparedQuery("UPDATE public.tb_databaseConnections SET status = CASE WHEN status = 'active' THEN 'inactive' ELSE 'active' END WHERE db_connection_id = $1;")
-			                        .execute(Tuple.of(db_connection_id),
+			                connection.preparedQuery("UPDATE public.tb_databaseConnections SET status = CASE WHEN status = 'active' THEN 'inactive' ELSE 'active' END WHERE id = $1;")
+			                        .execute(Tuple.of(Integer.parseInt(id)),
 			                        res -> {
 			                            if (res.succeeded()) 
 			                            {
 			                                // Process the query result
 			                                RowSet<Row> rows = res.result();
-			                                LOGGER.info("Successfully toggled connection: " + db_connection_id);
+			                                LOGGER.info("Successfully toggled connection: " + id);
 			                                
 			                                response.send(ja.encodePrettily());
 			                                 
@@ -2620,7 +2620,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                            else 
 			                            {
 			                                // Handle query failure
-			                            	LOGGER.error("error toggling connection: " +db_connection_id+ " due to: " + res.cause() );
+			                            	LOGGER.error("error toggling connection: " +id+ " due to: " + res.cause() );
 			                            	response.send(res.cause().getMessage());
 			                                //res.cause().printStackTrace();
 			                            }

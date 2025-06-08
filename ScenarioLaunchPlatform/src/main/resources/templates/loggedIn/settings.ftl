@@ -950,16 +950,13 @@ function toggleConnectionStatus()
   
   
 	$.ajax({
-          url: '/api/toggleConnectionStatus', 
+          url: '/api/toggleDatabaseConnectionStatusByID', 
           type: 'POST',
           data: jsonData,
           contentType: 'application/json; charset=utf-8', // Set content type to JSON
           success: function(response) 
           {
              	console.log(response);
-             	document.getElementById('updateResponse').innerHTML = response[0].response;
-             	
-             	
           },
           error: function(xhr, status, error) 
           {
@@ -990,9 +987,6 @@ function deleteConnection()
           success: function(response) 
           {
              	console.log(response);
-             	document.getElementById('updateResponse').innerHTML = response[0].response;
-             	
-             	
           },
           error: function(xhr, status, error) 
           {
@@ -1079,28 +1073,20 @@ function deleteQueryTypesByID()
   function getConnections()
   {
   	const jwtToken = '${tokenObject.jwt}';
-   	const select_editConnections = document.getElementById("editConnections");
-   	const var_editConnectionCounter = document.getElementById("editConnectionCounter");
    	
-   	const connectionsTable = $('#connectionsTable').DataTable();
-   	
-    $('#editConnections').empty();
-   	
+    
   	const jsonData = JSON.stringify({
           jwt: jwtToken,
         });
   
-  
-	$.ajax({
-          url: '/api/getDatabaseConnections', 
+  	$.ajax({
+          url: '/api/getAllDatabaseConnections', 
           type: 'POST',
           data: jsonData,
           contentType: 'application/json; charset=utf-8', // Set content type to JSON
           success: function(response) 
           {
              	var i = 0;
-             	//connectionsTable.clear();
-             	
              	response.forEach((item) => 
              	{
 	            	var option = document.createElement("option");
@@ -1109,11 +1095,8 @@ function deleteQueryTypesByID()
   					select_editConnections.add(option);
   					i = i+1;
   					
-  					//connectionsTable.row.add([item.db_connection_id, item.db_jdbcclassname, item.db_username, item.db_database]);
-  					
 	            });
 	            var_editConnectionCounter.textContent = i + " connections";
-            	//connectionsTable.draw();
            		
           },
           error: function(xhr, status, error) 
@@ -1121,8 +1104,15 @@ function deleteQueryTypesByID()
             $('#response').text('Error: ' + error);
           }
         });
-        
-        $.ajax({
+  
+ 	 const select_editConnections = document.getElementById("editConnections");
+   	 const var_editConnectionCounter = document.getElementById("editConnectionCounter");
+   
+   
+   	const connectionsTable = $('#connectionsTable').DataTable();
+   	
+   
+    $.ajax({
           url: '/api/getValidatedDatabaseConnections', 
           type: 'POST',
           data: jsonData,
