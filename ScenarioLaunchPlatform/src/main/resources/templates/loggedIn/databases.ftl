@@ -294,7 +294,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 			<div id="id_edit_modal" class="w3-modal">
 			 <div class="w3-modal-content w3-card-4 w3-animate-zoom custom-modal">
 			  <header class="w3-container w3-blue-grey"> 
-			   <span onclick="closeDatabaseQuery();getSqlStatements()" class="w3-buttonw3-blue-grey w3-xlarge w3-display-topright">&times;</span>
+			   <span onclick="closeDatabaseQuery();" class="w3-buttonw3-blue-grey w3-xlarge w3-display-topright">&times;</span>
 			   <h2>SQL Data</h2>
 			  </header>
 			
