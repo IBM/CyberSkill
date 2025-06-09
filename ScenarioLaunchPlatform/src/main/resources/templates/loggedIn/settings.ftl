@@ -206,7 +206,7 @@ function refreshConnections()
 				<div id="addConnectionResponseModal" class="w3-modal">
 				    <div class="w3-modal-content">
 				      <div class="w3-container">
-				        <span onclick="document.getElementById('addConnectionResponseModal').style.display='none';toggleDiv(); getConnections()" class="w3-button w3-display-topright">&times;</span>
+				        <span onclick="document.getElementById('addConnectionResponseModal').style.display='none';toggleDiv();" class="w3-button w3-display-topright">&times;</span>
 				        <p id="addConnectionResponse"></p>
 				        
 				      </div>
@@ -370,7 +370,7 @@ function refreshConnections()
 			  
 			  <div class="w3-container w3-blue-grey w3-padding">
 			   <button class="w3-button w3-right w3-white w3-border" 
-			   onclick="document.getElementById('id_edit_modal').style.display='none';getConnections();">Close</button>
+			   onclick="document.getElementById('id_edit_modal').style.display='none';">Close</button>
 			  </div>
 			 </div>
 			</div>
@@ -384,7 +384,7 @@ function refreshConnections()
 			<div id="id_edit_modal" class="w3-modal">
 			 <div class="w3-modal-content w3-card-4 w3-animate-zoom custom-modal">
 			  <header class="w3-container w3-blue-grey"> 
-			   <span onclick="document.getElementById('id_edit_modal').style.display='none';getConnections()" class="w3-buttonw3-blue-grey w3-xlarge w3-display-topright">&times;</span>
+			   <span onclick="document.getElementById('id_edit_modal').style.display='none';" class="w3-buttonw3-blue-grey w3-xlarge w3-display-topright">&times;</span>
 			   <h2>Edit Connection</h2>
 			  </header>
 			
