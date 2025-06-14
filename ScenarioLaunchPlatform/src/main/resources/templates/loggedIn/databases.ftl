@@ -1180,63 +1180,7 @@ function getDatabaseQueryByQueryId(varId)
         });
 }
 </script>
-<script>
-    $(document).ready(function() 
-  	{
-  		getQueryTypesInDatabase();
-  	});
-    function getQueryTypesInDatabase()
-		{
-			
-			
-			const var_jwt = '${tokenObject.jwt}';
-		  
-		  	const jsonData = JSON.stringify({
-		  		  jwt:var_jwt,
-		  		});
-		  
-		  	console.log(jsonData);
-		  
-		  
-			$.ajax({
-		          url: '/api/getQueryTypes', 
-		          type: 'POST',
-		          data: jsonData,
-		          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-		          success: function(response) 
-		          {
-		             	const queryTypes = document.getElementById('queryTypes');
-		             	console.log(response);
-		             	
-		             	if (Array.isArray(response)) 
-		             	{
-			             	 var sqlStatementToEdit = $('#sqlStatementToEditType')
-			             	 var sqlStatementType = $('#addSqlStatementType')
-			             	 
-			             	 $('#sqlStatementToEditType').empty();
-			             	 $('#addSqlStatementType').empty();
-			             	 
-	      				      $.each(response, function(index, item) 
-						      {
-						        sqlStatementToEdit.append(new Option(item.query_type, item.query_type));
-						        sqlStatementType.append(new Option(item.query_type, item.query_type));
-						        
-						        console.log("Added new element to SQL to Edit");
-						      });
-						      
-						}             	
-		             	
-		             	
-            
-		          },
-		          error: function(xhr, status, error) 
-		          {
-		            $('#response').text('Error: ' + error);
-		          }
-		        });
-		
-		}
-      </script>
+
 
 <script>
  $(document).ready(function() 
@@ -1261,6 +1205,7 @@ function getDatabaseQueryByQueryId(varId)
 	       {
 	          console.log("Updating leftColumn");
 	          $('#leftColumn').html(response);
+	          getQueryTypes();
 	       },
 	       error: function(err) 
 	       {
@@ -1291,10 +1236,7 @@ function getDatabaseQueryByQueryId(varId)
 	{
 		window.open('', '_blank');
 	}
-    $(document).ready(function() 
-  	{
-  		getQueryTypes();
-  	});
+    
     function getQueryTypes()
 	{
 		const var_jwt = '${tokenObject.jwt}';

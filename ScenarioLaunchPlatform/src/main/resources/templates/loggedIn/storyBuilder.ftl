@@ -321,6 +321,7 @@ function getConnections()
 	       {
 	          console.log("Updating leftColumn");
 	          $('#leftColumn').html(response);
+	          getQueryTypes();
 	       },
 	       error: function(err) 
 	       {
@@ -351,10 +352,7 @@ function getConnections()
 	{
 		window.open('', '_blank');
 	}
-    $(document).ready(function() 
-  	{
-  		getQueryTypes();
-  	});
+    
     function getQueryTypes()
 	{
 		const var_jwt = '${tokenObject.jwt}';

@@ -1211,43 +1211,7 @@ function deleteQueryTypesByID()
 	        });
 	}
   /*****************************************************/
-  $(document).ready(function() 
-  	{
-  		getQueryTypesInSettings();
-  	});
-    function getQueryTypesInSettings()
-	{
-		const var_jwt = '${tokenObject.jwt}';
-		const jsonData = JSON.stringify({
-		  		  jwt:var_jwt,
-		  		});
-		console.log(jsonData);
-		$.ajax({
-		          url: '/api/getQueryTypes', 
-		          type: 'POST',
-		          data: jsonData,
-		          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-		          success: function(response) 
-		          {
-		             	console.log(response);
-		             	
-		             	if (Array.isArray(response)) 
-		             	{
-			             	 var queryTypeSelect = $('#query_type_select')
-			             	 $('#query_type_select').empty();
-			             	 $.each(response, function(index, item) 
-						     {
-						        queryTypeSelect.append(new Option(item.query_type, item.id));
-						     });
-						}             	
-		          },
-		          error: function(xhr, status, error) 
-		          {
-		            $('#response').text('Error: ' + error);
-		          }
-		        });
-		}
-	/*****************************************************/
+  
  </script>
 <script>
  $(document).ready(function() 
@@ -1272,6 +1236,7 @@ function deleteQueryTypesByID()
 	       {
 	          console.log("Updating leftColumn");
 	          $('#leftColumn').html(response);
+	          getQueryTypes();
 	       },
 	       error: function(err) 
 	       {
@@ -1302,18 +1267,13 @@ function deleteQueryTypesByID()
 	{
 		window.open('', '_blank');
 	}
-    $(document).ready(function() 
-  	{
-  		getQueryTypes();
-  	});
+    
     function getQueryTypes()
 	{
 		const var_jwt = '${tokenObject.jwt}';
-		const jsonData = JSON.stringify({
-		jwt:var_jwt,
-	});
+		const jsonData = JSON.stringify({jwt:var_jwt});
 	
-	console.log(jsonData);
+		console.log(jsonData);
 		  
 		  
 	$.ajax({
