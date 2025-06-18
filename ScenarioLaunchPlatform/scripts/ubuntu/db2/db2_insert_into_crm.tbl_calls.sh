@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# db2_insert_into_crm.tbl_product.sh <datasource> — POST a SQL query to the datasource API
-# Example: ./db2_insert_into_crm.tbl_product.sh db2_localhost_crm_polly
+# db2_insert_into_crm.tbl_calls.sh <datasource> — POST a SQL query to the datasource API
+# Example: ./db2_insert_into_crm.tbl_calls.sh db2_localhost_crm_polly
 
 set -euo pipefail
 
@@ -21,7 +21,7 @@ PAYLOAD=$(cat <<EOF
   "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZmlyc3RuYW1lIjoiamFzb24iLCJzdXJuYW1lIjoiZmxvb2QiLCJlbWFpbCI6Imphc29uLmZsb29kQGVtYWlsLmNvbSIsInVzZXJuYW1lIjoibXl1c2VybmFtZSIsImFjdGl2ZSI6IjEiLCJhdXRobGV2ZWwiOjEsImlhdCI6MTczMzkxMzU1NywiZXhwIjoxNzMzOTEzNjE3fQ.mvDvSanNTCvN5puizSme7URjPbhWOkRfW3ZioUWz174",
   "datasource": "${DATASOURCE}",
   "query_loop": 1,
-  "sql": "INSERT INTO crm.tbl_product (id,name,description,price,quantity) VALUES ('P-{STRING}', 'Product Description {STRING}', ' {STRING}',{INT}.{INT},{INT});"
+  "sql": "INSERT INTO crm.tbl_calls (id,name,date_entered,date_modified,created_by, modified_user_id,assigned_user_id,duration_hours,duration_minutes, date_start,date_end,status,direction,parent_id,parent_type) VALUES ('{STRING}-auto-auto-{STRING}','Intro Call', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '{STRING}-auto-auto-{STRING}', '{STRING}-auto-auto-{STRING}',  '{STRING}-auto-auto-{STRING}', 0, {INT}, '2025-06-18 10:00','2025-06-18 10:30', 'Held', 'Outbound', '{STRING}-auto-auto-{STRING}','Accounts');"
   }
 EOF
 )
