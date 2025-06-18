@@ -51,7 +51,6 @@ CREATE TABLE crm.tbl_crm_accounts (
     campaign_id CHAR(36),
     status INTEGER NOT NULL
 );
-ALTER TABLE crm.tbl_crm_accounts FOREIGN KEY (status) REFERENCES crm.tbl_crm_accounts_status(id) ON UPDATE NO ACTION ON DELETE CASCADE;
 
 -- Create tbl_calls
 CREATE TABLE crm.tbl_calls (
@@ -102,8 +101,6 @@ CREATE TABLE crm.tbl_marketing_campaign (
     campaign_date TIMESTAMP NOT NULL
 );
 
-ALTER TABLE crm.tbl_marketing_campaign FOREIGN KEY (email_id) REFERENCES crm.tbl_email_lists(id) ON UPDATE NO ACTION ON DELETE CASCADE;
-ALTER TABLE crm.tbl_marketing_campaign FOREIGN KEY (template_id) REFERENCES crm.tbl_marketing_template(id) ON UPDATE NO ACTION ON DELETE CASCADE;
 
 
 -- Create tbl_bugs
