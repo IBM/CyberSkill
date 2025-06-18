@@ -31,7 +31,6 @@ EOF
 ###############################################################################
 {
   echo "=== $(date '+%Y-%m-%d %H:%M:%S') ==="
-  echo "ID=$ID, NAME=$NAME"
   curl --silent --show-error --location --request POST \
        'http://127.0.0.1:80/api/runDatabaseQueryByDatasourceMap' \
        --header 'Content-Type: application/json' \
