@@ -51,6 +51,7 @@ import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.sqlclient.Pool;
 import memory.thejasonengine.com.Ram;
 import messaging.thejasonengine.com.Websocket;
+import router.thejasonengine.com.FileUploadHandler;
 import router.thejasonengine.com.SetupPostHandlers;
 import router.thejasonengine.com.UpgradeHandler;
 import session.thejasonengine.com.SetupSession;
@@ -78,6 +79,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	private AuthUtils AU;
 	private SetupSession setupSession;
 	private SetupPostHandlers setupPostHandlers;
+	private FileUploadHandler fileUploadHandler;
 	private AgentDatabaseController agentDatabaseController;
 	
 	private UpgradeHandler upgradeHandler;
@@ -500,7 +502,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 
 	  	router.post("/api/checkForUpgrade").handler(BodyHandler.create()).handler(upgradeHandler.checkForUpgrade);
 	  	
-	  	
+	  	//router.post("/api/uploadFileToServer").handler(BodyHandler.create().setUploadsDirectory("tempUploads").setDeleteUploadedFilesOnEnd(false)).handler(fileUploadHandler.uploadFileToServer);
 	  	 /*********************************************************************************/
 	  	 //router.post("/api/monitor/guardium").handler(BodyHandler.create()).handler(setupPostHandlers.monitorGuardium);
 	  	 //router.post("/api/monitor/getMonitorGuardiumSourcesForCron").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSourcesForCron);
