@@ -1,4 +1,4 @@
---#SET TERMINATOR @
+
 DROP TABLE crm.tbl_crm_accounts_status;
 DROP TABLE crm.tbl_crm_accounts;
 DROP TABLE crm.tbl_calls;
@@ -178,6 +178,7 @@ GRANT SELECT, INSERT, UPDATE ON TABLE crm.tbl_product TO john;
 --GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA crm TO JASON;
 --GRANT EXECUTE ON ALL PROCEDURES IN SCHEMA crm TO JASON;
 
+--#SET TERMINATOR @
 CREATE OR REPLACE PROCEDURE PopulateTables()
 LANGUAGE SQL
 BEGIN
@@ -352,4 +353,6 @@ BEGIN
         SET i = i + 1;
     END WHILE;
 
-END
+END @
+
+CALL PopulateTables();
