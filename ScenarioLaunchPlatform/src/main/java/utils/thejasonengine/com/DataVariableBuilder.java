@@ -74,9 +74,7 @@ public class DataVariableBuilder
             "Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia"
         };
     
-    private static final String[] PHONE_FORMATS = { "US","UK","AU","IE","DE","FR","IN","BR","CA","ZA" };
-    private static final String[] POSTCODE_FORMATS = { "US","CA","UK","DE","FR","AU","NL","NZ","IE","IN" };
-
+    
 
     // Prevent instantiation
     private DataVariableBuilder() {}
