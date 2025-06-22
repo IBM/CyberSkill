@@ -532,6 +532,18 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 //router.post("/api/updateOSTasksById").handler(BodyHandler.create()).handler(setupPostHandlers.updateOSTaskByTaskId);
 	  	 router.post("/api/deleteOSTasksByTaskId").handler(BodyHandler.create()).handler(setupPostHandlers.deleteOSTaskByTaskId);
 	  	 
+	  	 
+	  	 
+	  	 /********************************************************************************/
+	  	 /*These APIs are for the Content packs*/
+	  	 /********************************************************************************/
+	  	router.post("/api/addContentPack").handler(BodyHandler.create()).handler(setupPostHandlers.addPack);
+	  	 router.post("/api/getContentPacks").handler(BodyHandler.create()).handler(setupPostHandlers.getPacks);
+	  	 router.post("/api/getPackByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.getPackByPackId);
+	  	 router.post("/api/updatePackByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.updatePackByPackId);
+	  	// router.post("/api/deletePacksByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.deletePackByPackId);
+	  	 
+	  	 
 	  	/*********************************************************************************/
 	  	/*These are the controller APIs for the various databases we want to drive     				     */
 	  	/*********************************************************************************/

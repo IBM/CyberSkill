@@ -16,6 +16,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.io.*;
+import java.nio.file.*;
+import java.util.zip.*;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,6 +48,9 @@ public class OSDetectorAndTaskControl {
             } else if ("Delete".equalsIgnoreCase(action)) {
                 deleteScheduleTask(taskName, osType);
                 return "Delete task " + osType;
+            } else if ("Deploy".equalsIgnoreCase(action)) {
+                // Use the unified deployment method
+                return deployContentPack(taskName, filePath);
             } else {
                 LOGGER.error("Unknown action: " + action);
                 return "Unknown action";
@@ -54,6 +61,28 @@ public class OSDetectorAndTaskControl {
         }
     }
 
+ // Unified deployment method that auto-detects OS
+    public static String deployContentPack(String zipFilePath, String outputDir) {
+        String osName = System.getProperty("os.name").toLowerCase();
+        try {
+            if (osName.contains("win")) {
+                unzipAndRunMainScriptWindows(zipFilePath, outputDir);
+                return "Deployed pack successfully on Windows";
+            } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+                unzipAndRunMainScriptLinux(zipFilePath, outputDir);
+                return "Deployed pack successfully on Linux/Unix";
+            } else if (osName.contains("mac")) {
+                unzipAndRunMainScriptLinux(zipFilePath, outputDir);
+                return "Deployed pack successfully on macOS";
+            } else {
+                return "Unsupported OS: " + osName;
+            }
+        } catch (Exception e) {
+            LOGGER.error("Deployment failed: " + e.getMessage(), e);
+            return "Deployment failed: " + e.getMessage();
+        }
+    }
+    // Existing scheduling methods remain unchanged
     private static void scheduleTask(String filePath, String schedule, String taskName, String osType) throws Exception {
         if ("Windows".equals(osType)) {
             scheduleWindowsTask(filePath, schedule, taskName);
@@ -130,11 +159,11 @@ public class OSDetectorAndTaskControl {
         String content = String.join("\n", lines) + "\n";
         Files.write(Paths.get(tempFile), content.getBytes());
         try (BufferedReader br = new BufferedReader(new FileReader(tempFile))) {
-        	   String line;
-        	   while ((line = br.readLine()) != null) {
-        	       LOGGER.debug("Lines of file" + line);
-        	   }
-        	}
+            String line;
+            while ((line = br.readLine()) != null) {
+                LOGGER.debug("Lines of file" + line);
+            }
+        }
         executeCommand(Arrays.asList("crontab", tempFile));
         Files.deleteIfExists(Paths.get(tempFile));
     }
@@ -169,5 +198,212 @@ public class OSDetectorAndTaskControl {
                 LOGGER.error("Error reading stream: " + e.getMessage(), e);
             }
         }).start();
+    }
+
+    // Deployment methods
+    public static void unzipAndRunMainScriptLinux(String zipFilePath, String outputDir) throws IOException {
+        LOGGER.info("Starting Linux unzip operation for: " + zipFilePath);
+        
+        // Create output directory with proper permissions
+        Path outputPath = Paths.get(outputDir);
+        if (!Files.exists(outputPath)) {
+            Files.createDirectories(outputPath);
+            setLinuxPermissions(outputPath, "755");
+        }
+
+        // Unzip the file
+        try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+            ZipEntry entry;
+            while ((entry = zipIn.getNextEntry()) != null) {
+                Path filePath = outputPath.resolve(entry.getName()).normalize();
+                
+                // Security check: prevent zip slip vulnerability
+                if (!filePath.startsWith(outputPath)) {
+                    throw new IOException("Malicious zip entry: " + entry.getName());
+                }
+                
+                if (entry.isDirectory()) {
+                    Files.createDirectories(filePath);
+                } else {
+                    Files.createDirectories(filePath.getParent());
+                    try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = zipIn.read(buffer)) != -1) {
+                            fos.write(buffer, 0, bytesRead);
+                        }
+                    }
+                    
+                    // Set executable permission for script files
+                    if (filePath.toString().endsWith(".sh")) {
+                        setLinuxPermissions(filePath, "755");
+                    }
+                }
+                zipIn.closeEntry();
+            }
+        }
+        LOGGER.info("Unzip completed to: " + outputDir);
+
+        // Find the main script
+        Path mainScript = findMainScript(outputPath);
+        if (mainScript == null) {
+            throw new FileNotFoundException("No main script found in extracted files");
+        }
+
+        LOGGER.info("Found main script: " + mainScript);
+        executeLinuxScript(mainScript.toString(), outputDir);
+    }
+
+    public static void unzipAndRunMainScriptWindows(String zipFilePath, String outputDir) throws IOException {
+        LOGGER.info("Starting Windows unzip operation for: " + zipFilePath);
+        
+        // Create output directory if it doesn't exist
+        Path outputPath = Paths.get(outputDir);
+        if (!Files.exists(outputPath)) {
+            Files.createDirectories(outputPath);
+        }
+
+        // Unzip the file
+        try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+            ZipEntry entry;
+            while ((entry = zipIn.getNextEntry()) != null) {
+                Path filePath = outputPath.resolve(entry.getName()).normalize();
+                
+                // Security check: prevent zip slip vulnerability
+                if (!filePath.startsWith(outputPath)) {
+                    throw new IOException("Malicious zip entry: " + entry.getName());
+                }
+                
+                if (entry.isDirectory()) {
+                    Files.createDirectories(filePath);
+                } else {
+                    Files.createDirectories(filePath.getParent());
+                    try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = zipIn.read(buffer)) != -1) {
+                            fos.write(buffer, 0, bytesRead);
+                        }
+                    }
+                }
+                zipIn.closeEntry();
+            }
+        }
+        LOGGER.info("Unzip completed to: " + outputDir);
+
+        // Find the main batch file
+        Path mainBatch = findMainBatch(outputPath);
+        if (mainBatch == null) {
+            throw new FileNotFoundException("No main batch file found in extracted files");
+        }
+
+        LOGGER.info("Found main batch file: " + mainBatch);
+        executeWindowsBatch(mainBatch.toString(), outputDir);
+    }
+
+    private static Path findMainScript(Path directory) throws IOException {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+            for (Path file : stream) {
+                if (Files.isRegularFile(file)) {
+                    String filename = file.getFileName().toString().toLowerCase();
+                    if (filename.endsWith(".sh") && filename.contains("main")) {
+                        return file;
+                    }
+                }
+            }
+        }
+        
+        // If not found in root, search recursively
+        return Files.walk(directory)
+            .filter(Files::isRegularFile)
+            .filter(file -> {
+                String filename = file.getFileName().toString().toLowerCase();
+                return filename.endsWith(".sh") && filename.contains("main");
+            })
+            .findFirst()
+            .orElse(null);
+    }
+
+    private static Path findMainBatch(Path directory) throws IOException {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+            for (Path file : stream) {
+                if (Files.isRegularFile(file)) {
+                    String filename = file.getFileName().toString().toLowerCase();
+                    if (filename.endsWith(".bat") && filename.contains("main")) {
+                        return file;
+                    }
+                }
+            }
+        }
+        
+        // If not found in root, search recursively
+        return Files.walk(directory)
+            .filter(Files::isRegularFile)
+            .filter(file -> {
+                String filename = file.getFileName().toString().toLowerCase();
+                return filename.endsWith(".bat") && filename.contains("main");
+            })
+            .findFirst()
+            .orElse(null);
+    }
+
+    private static void setLinuxPermissions(Path path, String permissions) throws IOException {
+        List<String> command = Arrays.asList("chmod", permissions, path.toString());
+        executeCommand(command);
+        LOGGER.info("Set permissions " + permissions + " for: " + path);
+    }
+
+    private static void executeLinuxScript(String scriptPath, String workingDir) {
+        List<String> command = new ArrayList<>();
+        command.add("/bin/bash");
+        command.add(scriptPath);
+
+        executeCommandWithWorkingDir(command, workingDir);
+    }
+
+    private static void executeWindowsBatch(String batchPath, String workingDir) {
+        List<String> command = new ArrayList<>();
+        command.add("cmd.exe");
+        command.add("/c");
+        command.add(batchPath);
+
+        executeCommandWithWorkingDir(command, workingDir);
+    }
+
+    private static void executeCommandWithWorkingDir(List<String> command, String workingDir) {
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            if (workingDir != null) {
+                processBuilder.directory(new File(workingDir));
+            }
+            
+            // Merge stdout and stderr
+            processBuilder.redirectErrorStream(true);
+            
+            Process process = processBuilder.start();
+            StringBuilder output = new StringBuilder();
+            
+            // Capture output
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    output.append(line).append("\n");
+                    LOGGER.info("Script output: " + line);
+                }
+            }
+            
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                LOGGER.error("Script execution failed. Exit code: " + exitCode);
+                LOGGER.error("Output: " + output);
+                throw new RuntimeException("Script execution failed with code " + exitCode);
+            } else {
+                LOGGER.info("Main script executed successfully");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error executing script: " + e.getMessage(), e);
+            throw new RuntimeException("Script execution error", e);
+        }
     }
 }

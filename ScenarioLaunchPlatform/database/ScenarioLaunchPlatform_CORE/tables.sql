@@ -13,6 +13,8 @@ drop table if exists public.tb_version CASCADE;
 drop table if exists public.tb_stories CASCADE;
 drop table if exists public.tb_myvars CASCADE;
 
+drop table if exists public.tb_content_packs CASCADE;
+
 
 
 drop FUNCTION if exists function_login(TEXT, TEXT);
@@ -99,6 +101,21 @@ CREATE TABLE IF NOT EXISTS public.tb_tasks
 );
 
 RAISE NOTICE 'Created tb_tasks';
+
+
+
+CREATE TABLE IF NOT EXISTS public.tb_content_packs
+(
+    id SERIAL PRIMARY KEY,
+    pack_name character varying(255)  NOT NULL,
+    pack_file_path text NOT NULL,
+	pack_output_path text NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    pack_file_content bytea,
+	pack_deployed character varying (20) DEFAULT 'Not Deployed'
+);
+
+RAISE NOTICE 'Created tb_content_packs';
 
 /************************************************************************************/
 CREATE TABLE IF NOT EXISTS public.tb_databaseconnections

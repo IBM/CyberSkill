@@ -124,6 +124,11 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> getOSTaskByTaskId;
 	public Handler<RoutingContext> updateOSTaskByTaskId;
 	public Handler<RoutingContext> deleteOSTaskByTaskId;
+	public Handler<RoutingContext> addPack;
+	public Handler<RoutingContext> getPacks;
+	public Handler<RoutingContext> getPackByPackId;
+	public Handler<RoutingContext> updatePackByPackId;
+	public Handler<RoutingContext> deletePackByPackId;
 	public Handler<RoutingContext> getDatabaseVersion;
 	public Handler<RoutingContext> addStory;
 	public Handler<RoutingContext> getAllStories;
@@ -186,6 +191,13 @@ public class SetupPostHandlers
 		getOSTaskByTaskId = SetupPostHandlers.this::handleGetOSTasksByTaskId;
 		updateOSTaskByTaskId = SetupPostHandlers.this::handleUpdateOSTasksByTaskId;
 		deleteOSTaskByTaskId = SetupPostHandlers.this::handleDeleteOSTasksByTaskId;
+		
+		
+		addPack = SetupPostHandlers.this::handleAddPack;
+		getPacks = SetupPostHandlers.this::handleGetPacks;
+		getPackByPackId = SetupPostHandlers.this::handleGetPacksByPackId;
+		updatePackByPackId = SetupPostHandlers.this::handleUpdatePacksByPackId;
+		deletePackByPackId = SetupPostHandlers.this::handleDeletePackByPackId;
 		
 		
 		addStory = SetupPostHandlers.this::handleAddStory;
@@ -1112,6 +1124,770 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			}
 		}
 	}
+	
+	
+	/**************************Content Packs APIs Begin**************************/
+	
+	/*****************************handleAddPack*****************************************/
+
+	/*****Adds a content pack to the system
+	 * Recorded in the database.
+	 * Users know what packs they have and what they've deployed*****************************************/
+	private void handleAddPack(RoutingContext routingContext)
+	{
+		LOGGER.info("insdie handleAddOSTask");
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		OSDetectorAndTaskControl scheduler = new OSDetectorAndTaskControl();
+		if (pool == null)
+		{
+			LOGGER.debug("pull is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+
+	    List<FileUpload> uploads = routingContext.fileUploads();
+	    if (uploads.isEmpty()) {
+	        LOGGER.error("No file uploaded");
+	        routingContext.fail(400);
+	        return;
+	    }
+	    
+	 // Parse form attributes (JSON payload is sent as form attributes)
+	    MultiMap formAttributes = routingContext.request().formAttributes();
+	    if (formAttributes.isEmpty()) {
+	        LOGGER.error("No form data provided");
+	        routingContext.fail(400);
+	        return;
+	    }
+	 // Extract JSON payload from form attributes
+	    JsonObject JSONpayload = new JsonObject();
+	    formAttributes.forEach(entry -> JSONpayload.put(entry.getKey(), entry.getValue()));
+	
+		String osName = System.getProperty("os.name").toLowerCase();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info(" handleAddTask required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+				String pack_name = JSONpayload.getString("pack_name");
+				String pack_file_path = JSONpayload.getString("pack_file_path");
+				String pack_output_path = JSONpayload.getString("pack_output_path");
+				
+				
+				LOGGER.debug("task_file_path recieved: " + pack_file_path);
+				
+				utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+				
+				
+				
+				
+			    File uploadFolder = new File(pack_file_path);
+			 if (!uploadFolder.exists()) {
+
+		     uploadFolder.mkdir(); // Create the folder if it doesn't exist
+		}
+			 File outputFolder = new File(pack_output_path);
+			 if (!outputFolder.exists()) {
+
+				 outputFolder.mkdir(); // Create the folder if it doesn't exist
+		}
+				    
+
+				
+				
+				 // Process the uploaded file
+		        FileUpload fileUpload = uploads.iterator().next();
+		        String uploadedFileName = fileUpload.uploadedFileName();
+		     
+			
+		        String targetFilePath = pack_file_path + fileUpload.fileName(); // Save file in "uploads/" directory
+		     // Read the file content as bytes
+			    byte[] fileBytes = null;
+		        try {
+		        	
+		        	fileBytes = Files.readAllBytes(Paths.get(uploadedFileName));
+		            Files.createDirectories(Paths.get("uploads")); // Ensure directory exists
+		            Files.move(Paths.get(uploadedFileName), Paths.get(targetFilePath), StandardCopyOption.REPLACE_EXISTING);
+		            LOGGER.info("File uploaded successfully: " + targetFilePath);
+		        } catch (IOException e) {
+		            LOGGER.error("Error saving uploaded file: " + e.getMessage());
+		            routingContext.fail(500);
+		            return;
+		        }
+		        String encoded_pack_file_path = Encodings.EscapeString(targetFilePath);
+		        String encoded_pack_output_path = Encodings.EscapeString(pack_output_path);
+				LOGGER.debug("Encoded task_file_path" + targetFilePath);
+				//The map is passed to the SQL query
+				Map<String,Object> map = new HashMap<String, Object>();
+				
+				
+				map.put("pack_name", JSONpayload.getValue("pack_name"));
+	
+				map.put("pack_file_path", targetFilePath);
+				map.put("pack_output_path", pack_output_path);
+			    // Store the bytes in the database
+			    map.put("pack_file_content", fileBytes);
+			    
+			    LOGGER.debug("fileBytes:  "+ fileBytes);
+				//LOGGER.debug("Detected OS: " + OSDetectorAndTaskControl.detectOS());
+				//here we do the serverside stuff on the chron/schedule and files. Want to hand off to another class
+				//String action = "Add";
+				//OSDetectorAndTaskControl.detectOS(targetFilePath, pack_name,action);
+				
+				
+				LOGGER.info("Accessible Level is : " + authlevel);
+		        LOGGER.info("username: " + map.get("username"));
+		        
+		        if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+					
+					pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                // Execute a SELECT query
+			                
+			                connection.preparedQuery("INSERT INTO public.tb_content_packs(pack_name,pack_file_path,pack_output_path,pack_file_content) VALUES($1,$2,$3,$4);")
+			                        .execute(Tuple.of(map.get("pack_name"),map.get("pack_file_path"),map.get("pack_output_path"),map.get("pack_file_content")),
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                // Process the result
+			                                
+			                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully added task\"}");
+	                                    	ja.add(jo);
+	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
+			                                response.send(ja.encodePrettily());
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	LOGGER.error("error: " + res.cause() );
+			                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause().getMessage().replaceAll("\"", "")+"}");
+	                                    	ja.add(jo);
+	                                    	response.send(ja.encodePrettily());
+			                                //res.cause().printStackTrace();
+			                            }
+			                            // Close the connection
+			                            //response.end();
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			                //
+			            	JsonArray ja = new JsonArray();
+			                LOGGER.error("error: " + ar.cause() );
+                        	JsonObject jo = new JsonObject("{\"response\":\"error \" "+ ar.cause().getMessage().replaceAll("\"", "") +"}");
+                        	ja.add(jo);
+                        	response.send(ja.encodePrettily());
+			            }
+			            
+			        });
+		        }
+		        else
+		        {
+		        	JsonArray ja = new JsonArray();
+		        	JsonObject jo = new JsonObject();
+		        	jo.put("Error", "Issufficent authentication level to run API");
+		        	ja.add(jo);
+		        	response.send(ja.encodePrettily());
+		        }
+		        
+		        
+			}
+		}
+		
+	}
+	/**********************handleGetPacks******************************************/
+	/******Show the table of packs user has uploaded******************************************/
+	private void handleGetPacks(RoutingContext routingContext)
+	{
+LOGGER.info("Inside SetupPostHandlers.handleGetPacks");  
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		
+		if (pool == null)
+		{
+			LOGGER.debug("pull is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleGetPacks required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+			
+				
+				LOGGER.info("Accessible Level is : " + authlevel);
+		       
+				if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+		        	pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                // Execute a SELECT query
+			                
+			                connection.preparedQuery("Select * from public.tb_content_packs")
+			                        .execute(
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                // Process the query result
+			                                RowSet<Row> rows = res.result();
+			                                rows.forEach(row -> {
+			                                    // Print out each row
+			                                    LOGGER.info("Row: " + row.toJson());
+			                                    try
+			                                    {
+			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
+			                                    	ja.add(jo);
+			                                    	LOGGER.info("Successfully added json object to array");
+			                                    }
+			                                    catch(Exception e)
+			                                    {
+			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
+			                                    }
+			                                    
+			                                });
+			                                
+			                    
+			                                response.send(ja.encodePrettily());
+			                                
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	LOGGER.error("error: " + res.cause() );
+			                            	response.send(res.cause().getMessage());
+			                            }
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			                ar.cause().printStackTrace();
+			                response.send(ar.cause().getMessage());
+			            }
+			            
+			        });
+		        }
+			}
+		
+		}
+	}
+	
+	/**********************handleGetPacksByPackId******************************************/
+	/****Getting the packs for the update function.
+	 * Modal pops up with Packs users can deploy******************************************/
+	private void handleGetPacksByPackId(RoutingContext routingContext)
+	{
+			LOGGER.info("Inside SetupPostHandlers.handleGetPacksByPackId");  
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		
+		if (pool == null)
+		{
+			LOGGER.debug("pull is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleGetPacksByPackId required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+			
+				String PackId = JSONpayload.getString("pack_id"); 
+				LOGGER.info("PackId: " + PackId);
+				LOGGER.info("Accessible Level is : " + authlevel);
+		       
+				if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+		        	pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                // Execute a SELECT query
+			                
+			                connection.preparedQuery("Select * from public.tb_content_packs where id = $1")
+			                        .execute(Tuple.of(Integer.parseInt(PackId)),
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                // Process the query result
+			                                RowSet<Row> rows = res.result();
+			                                rows.forEach(row -> {
+			                                    // Print out each row
+			                                    LOGGER.info("Row: " + row.toJson());
+			                                    try
+			                                    {
+			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
+			                                    	ja.add(jo);
+			                                    	LOGGER.info("Successfully added json object to array");
+			                                    }
+			                                    catch(Exception e)
+			                                    {
+			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
+			                                    }
+			                                    
+			                                });
+			                                
+			                    
+			                                response.send(ja.encodePrettily());
+			                                
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	LOGGER.error("error: " + res.cause() );
+			                            	response.send(res.cause().getMessage());
+			                            }
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			                ar.cause().printStackTrace();
+			                response.send(ar.cause().getMessage());
+			            }
+			            
+			        });
+		        }
+			}
+		
+		}
+	}
+	/************************handleUpdatePacksByPackId***************************************/
+	/***This is where the user decides to deploy the Content pack
+	 * Pack details are stored in DB. Default is not deployed.
+	 * Users can decide on what they upload and deploy
+	 * ****************************/
+	private void handleUpdatePacksByPackId(RoutingContext routingContext) {
+	    LOGGER.info("Inside SetupPostHandlers.handleUpdatePacksByPackId");  
+	    
+	    Context context = routingContext.vertx().getOrCreateContext();
+	    Pool pool = context.get("pool");
+	    
+	    if (pool == null) {
+	        LOGGER.debug("pool is null - restarting");
+	        DatabaseController DB = new DatabaseController(routingContext.vertx());
+	        LOGGER.debug("Taking the refreshed context pool object");
+	        pool = context.get("pool");
+	    }
+	    
+	    HttpServerResponse response = routingContext.response();
+	    JsonObject JSONpayload = routingContext.getBodyAsJson();
+	    
+	    if (JSONpayload.getString("jwt") == null) {
+	        LOGGER.info("handleUpdatePacksByPackId required fields not detected (jwt)");
+	        routingContext.fail(400);
+	    } else {
+	        if(validateJWTToken(JSONpayload)) {
+	            LOGGER.info("jwt: " + JSONpayload.getString("jwt"));
+	            String[] chunks = JSONpayload.getString("jwt").split("\\.");
+	            
+	            JsonObject payload = new JsonObject(decode(chunks[1]));
+	            LOGGER.info("Payload: " + payload);
+	            int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+	            
+	            String pack_name = JSONpayload.getString("pack_name");
+	            String pack_loaded = JSONpayload.getString("pack_loaded");
+	            String id = JSONpayload.getString("pack_id");
+	            
+	            // New parameters for deployment
+	            String zipFilePath = JSONpayload.getString("zipFilePath");
+	            String outputDir = JSONpayload.getString("outputDir");
+	            
+	            LOGGER.debug("pack_name received: " + pack_name);
+	            LOGGER.debug("pack_loaded received: " + pack_loaded);
+	            LOGGER.debug("id received: " + id);
+	            LOGGER.debug("zipFilePath: " + zipFilePath);
+	            LOGGER.debug("outputDir: " + outputDir);
+	            
+	            LOGGER.info("Accessible Level is : " + authlevel);
+	           
+	            if(authlevel >= 1) {
+	                LOGGER.debug("User allowed to execute the API");
+	                response.putHeader("content-type", "application/json");
+	                
+	                pool.getConnection(ar -> {
+	                    if (ar.succeeded()) {
+	                        SqlConnection connection = ar.result();
+	                        JsonArray ja = new JsonArray();
+	                        
+	                        connection.preparedQuery("UPDATE public.tb_content_packs SET pack_deployed = $1 WHERE id = $2")
+	                                .execute(Tuple.of(pack_loaded, Integer.parseInt(id)),
+	                                res -> {
+	                                    if (res.succeeded()) {
+	                                        JsonObject jo = new JsonObject("{\"response\":\"Successfully updated pack\"}");
+	                                        ja.add(jo);
+	                                        LOGGER.info("Successfully updated Pack");
+	                                        
+	                                        // Check if we should deploy
+	                                        if ("Deployed".equalsIgnoreCase(pack_loaded)) {
+	                                            if (zipFilePath != null && outputDir != null) {
+	                                                // Run deployment using the consistent detectOS method
+	                                                context.owner().executeBlocking(future -> {
+	                                                    try {
+	                                                        String result = OSDetectorAndTaskControl.detectOS(
+	                                                            outputDir,     // filePath parameter where we unzip to
+	                                                            null,          // schedule (not used)
+	                                                            zipFilePath,   // Path to zip parameter
+	                                                            "Deploy"       // action
+	                                                        );
+	                                                        LOGGER.info("Deployment result: " + result);
+	                                                        future.complete(result);
+	                                                    } catch (Exception e) {
+	                                                        future.fail(e);
+	                                                    }
+	                                                }, false, asyncResult -> {
+	                                                    if (asyncResult.succeeded()) {
+	                                                        LOGGER.info("Deployment completed successfully");
+	                                                    } else {
+	                                                        LOGGER.error("Deployment failed: " + asyncResult.cause().getMessage());
+	                                                    }
+	                                                });
+	                                            } else {
+	                                                LOGGER.error("Deployment skipped: zipFilePath or outputDir not provided");
+	                                            }
+	                                        }
+	                                        
+	                                        response.end(ja.encodePrettily());
+	                                    } else {
+	                                        JsonObject jo = new JsonObject("{\"response\":\""+ res.cause().getMessage().toString().replaceAll("\""," ") +"\"}");
+	                                        LOGGER.error("error: " + res.cause());
+	                                        ja.add(jo);
+	                                        response.end(ja.encodePrettily());
+	                                        res.cause().printStackTrace();
+	                                    }
+	                                    connection.close();
+	                                });
+	                    } else {
+	                        ar.cause().printStackTrace();
+	                        response.end(ar.cause().getMessage());
+	                    }
+	                });
+	            } else {
+	                JsonArray ja = new JsonArray();
+	                JsonObject jo = new JsonObject();
+	                jo.put("Error", "Insufficient authentication level to run API");
+	                ja.add(jo);
+	                response.end(ja.encodePrettily());
+	            }
+	        }
+	    }
+	}
+	/**********************handleUpdatePacksByPackId******************************************/
+	/**********BAck up of old method. Keeping in case*****************************************/
+	private void handleUpdatePacksByPackIdBack(RoutingContext routingContext)
+	{
+		LOGGER.info("Inside SetupPostHandlers.handleUpdatePacksByPackId");  
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		
+		if (pool == null)
+		{
+			LOGGER.debug("pull is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleUpdatePacksByPackId required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+				
+				String pack_name = JSONpayload.getString("task_name");
+				String pack_loaded = JSONpayload.getString("pack_loaded");
+				
+				String id = JSONpayload.getString("id");
+				
+				
+				
+				LOGGER.debug("pack_name recieved: " + pack_name);
+				LOGGER.debug("pack_loaded recieved: " + pack_loaded);
+				
+				LOGGER.debug("id recieved: " + id);
+				
+				LOGGER.info("Accessible Level is : " + authlevel);
+		       
+				if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+					
+					pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                // Execute a SELECT query
+			                
+			                connection.preparedQuery("UPDATE public.tb_tasks SET pack_deployed = $1 where id = $3")
+			                        .execute(Tuple.of(pack_loaded, Integer.parseInt(id)),
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                
+			                            	
+			                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully update connection\"}");
+	                                    	ja.add(jo);
+	                                    	LOGGER.info("Successfully updated Pack: " + res.toString());
+	                                    	
+			                          
+			                                response.send(ja.encodePrettily());
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	JsonObject jo = new JsonObject("{\"response\":\""+ res.cause().getMessage().toString().replaceAll("\""," ") +"\"}");
+	                                    	LOGGER.error("error: " + res.cause() );
+	                                    	ja.add(jo);
+	                                    	response.send(ja.encodePrettily());
+			                                res.cause().printStackTrace();
+			                            }
+			                            // Close the connection
+			                            //response.end();
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			            	
+			                ar.cause().printStackTrace();
+			                response.send(ar.cause().getMessage());
+			            }
+			            
+			        });
+		        }
+		        else
+		        {
+		        	JsonArray ja = new JsonArray();
+		        	JsonObject jo = new JsonObject();
+		        	jo.put("Error", "Issufficent authentication level to run API");
+		        	ja.add(jo);
+		        	response.send(ja.encodePrettily());
+		        }
+		        
+		        
+			}
+		}
+	}
+	
+	/**********************handleDeletePackByPackId******************************************/
+	/******This is not yet fully implemented. 
+	 * We might not even need this. as we want uers to track all packs.
+	 * So they know what they have and if its deployed or not.
+	 * Deployments is handled by Update Method
+	 */
+	/**
+	 * 
+	 * @param routingContext
+	 */
+	private void handleDeletePackByPackId(RoutingContext routingContext)
+	{
+		LOGGER.info("Inside SetupPostHandlers.handleDeleteOSTasksByTaskId");  
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		
+		if (pool == null)
+		{
+			LOGGER.debug("pull is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleDeleteOSTasksByTaskId required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+				
+				String task_name = JSONpayload.getString("task_name");
+				String task_schedule = JSONpayload.getString("task_schedule");
+				String task_os_type = JSONpayload.getString("task_os_type");
+				String task_file_path = JSONpayload.getString("task_file_path");
+				String id = JSONpayload.getString("id");
+				utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+				
+				String targetFilePath = Encodings.UnescapeString(task_file_path);
+				LOGGER.debug("task_name recieved: " + task_name);
+				LOGGER.debug("task_schedule recieved: " + task_schedule);
+				LOGGER.debug("task_os_type recieved: " + task_os_type);
+				LOGGER.debug("task_file_path recieved: " + task_file_path);
+				
+				LOGGER.debug("targetFilePath recieved: " + targetFilePath);
+				
+				LOGGER.debug("id recieved: " + id);
+				
+				LOGGER.info("Accessible Level is : " + authlevel);
+				String action = "Delete";
+				OSDetectorAndTaskControl.detectOS(targetFilePath, task_schedule,task_name,action);
+				if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+					
+					pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                // Execute a SELECT query
+			                
+			                connection.preparedQuery("DELETE from public.tb_tasks where id = $1")
+			                        .execute(Tuple.of( Integer.parseInt(id)),
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                
+			                            	
+			                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully update connection\"}");
+	                                    	ja.add(jo);
+	                                    	LOGGER.info("Successfully deleted OS Task: " + res.toString());
+	                                    	
+			                          
+			                                response.send(ja.encodePrettily());
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	JsonObject jo = new JsonObject("{\"response\":\""+ res.cause().getMessage().toString().replaceAll("\""," ") +"\"}");
+	                                    	LOGGER.error("error: " + res.cause() );
+	                                    	ja.add(jo);
+	                                    	response.send(ja.encodePrettily());
+			                                res.cause().printStackTrace();
+			                            }
+			                            // Close the connection
+			                            //response.end();
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			            	
+			                ar.cause().printStackTrace();
+			                response.send(ar.cause().getMessage());
+			            }
+			            
+			        });
+		        }
+		        else
+		        {
+		        	JsonArray ja = new JsonArray();
+		        	JsonObject jo = new JsonObject();
+		        	jo.put("Error", "Issufficent authentication level to run API");
+		        	ja.add(jo);
+		        	response.send(ja.encodePrettily());
+		        }
+		        
+		        
+			}
+		}
+	}
+	
+	/**************************Content Packs APIs End****************************/
 	/****************************************************************/
 	private void handleDeleteScheduleJobById(RoutingContext routingContext) 
 	{

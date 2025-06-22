@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>SLP OS Tasks</title>
+<title>SLP Content Packs</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/w3.css">
@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="css/font-awesome.min.css">
 <link rel="stylesheet" href="css/datatables.min.css">
 <link rel='stylesheet' href='css/fonts.css'>
+
+
 <script src="js/jquery.min.js"></script>
 <script src="js/datatables.js"></script>
 <script src="js/tailwindcss.js"></script>
@@ -65,52 +67,40 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">OS Tasks Form</h6>
+              <h6 class="w3-opacity">Content Packs Form</h6>
               <!-- -->
-  				<form id="taskForm" enctype="multipart/form-data">
+  				<form id="packForm" enctype="multipart/form-data">
      <div id="edit" class="w3-container city">
 	<div class="row">
 		<div class="col-25">
-				         OS Type 
-				      </div>
-		<div class="col-75">
-			<select id="task_os_type" name="task_os_type" required>
-				<option value="">Select an option</option>
-				<option value="Linux">Linux</option>
-				<option value="Windows">Windows</option>
-			</select>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-25">
-				         Task Name: 
+				         Pack Name: 
 		</div>
 		<div class="col-75">
-			<input type="text" id="task_name" name="task_name" class="w3-right w3-white w3-border" placeholder="Example Run_API" required>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-25">
-				         Task Schedule: 
-		</div>
-		<div class="col-75">
-				<input type="text" id="task_schedule" name="task_schedule" class="w3-right w3-white w3-border" placeholder="*****" required>
+			<input type="text" id="pack_name" name="pack_name" class="w3-right w3-white w3-border" placeholder="Example Run_API" required>
 		</div>
 	</div>
 	<div class="row">
 				<div class="col-25">
-				         Task File Path: 
+				         Pack File Path: 
 				      </div>
 				<div class="col-75">
-					<input type="text" id="task_file_path" name="task_file_path" class="w3-right w3-white w3-border" placeholder="/tmp/uploads/" required>
+					<input type="text" id="pack_file_path" name="pack_file_path" class="w3-right w3-white w3-border" placeholder="/opt/slp/packs" required>
+					</div>
+	</div>
+	<div class="row">
+				<div class="col-25">
+				         Pack Deploy Path: 
+				      </div>
+				<div class="col-75">
+					<input type="text" id="pack_output_path" name="pack_output_path" class="w3-right w3-white w3-border" placeholder="/opt/slp/packs/unzipped" >
 					</div>
 	</div>
 	<div class="row">
 					<div class="col-25">
-				         Task File 
+				         Pack File 
 				      </div>
 					<div class="col-75">
-						<input type="file" id="task_file_content" class="w3-left w3-white w3-border" name="task_file_content" required>
+						<input type="file" id="pack_file_content" class="w3-left w3-white w3-border" name="pack_file_content" accept=".zip" required>
 						</div>
 					</div>
 	</div>
@@ -140,16 +130,16 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">OS Tasks</h6>
+              <h6 class="w3-opacity">Packs</h6>
               
               <table id="example" class="display" style="width:100%">
 			  <thead>
 			    <tr>
 			    	<th>id</th>
-			      	<th>task_name</th>
-			      	<th>task_schedule</th>
-			      	<th>task_file_path</th>
-			      	<th>task_os_type</th>
+			      	<th>pack_name</th>      	
+			      	<th>pack_file_path</th>
+			      	<th>pack_output_path</th>
+			      	<th>pack_deployed</th>
 			      	<th>created_at</th>
 			    </tr>
 			  </thead>
@@ -283,12 +273,12 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
  <div id="id_edit_modal" class="w3-modal">
 			 <div class="w3-modal-content w3-card-4 w3-animate-zoom custom-modal">
 			  <header class="w3-container w3-blue-grey"> 
-			   <span onclick="closeOSTask();getOSTasks()" class="w3-buttonw3-blue-grey w3-xlarge w3-display-topright">&times;</span>
-			   <h2>OS Tasks</h2>
+			   <span onclick="closePack();getPacks()" class="w3-buttonw3-blue-grey w3-xlarge w3-display-topright">&times;</span>
+			   <h2>Content Packs</h2>
 			  </header>
 			
 			  <div class="w3-bar w3-border-bottom">
-			   <button id="osTasks" class="tablink w3-bar-item w3-button" onclick="toggleEditResultsShowOSTasks()">OS Task</button>
+			   <button id="packs" class="tablink w3-bar-item w3-button" onclick="toggleEditResultsShowPacks()">Content Pack</button>
 			   
 
 			  </div>
@@ -296,60 +286,51 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 			  <div id="edit" class="w3-container city">
 			  <div class="row">
 			   		  <div class="col-25">
-				         Task Id: 
+				         Pack Id: 
 				      </div>
 				      <div class="col-75">
-				        <input type="text" id="osTaskIdToEditId" value="" class="w3-right w3-white w3-border" readonly>
+				        <input type="text" id="packIdToEditId" value="" class="w3-right w3-white w3-border" readonly>
 				      </div>
 			  	</div>
 			  	
 			  	<div class="row">
 			   		  <div class="col-25">
-				         OS Task Name: 
+				         Pack Name: 
 				      </div>
 				      <div class="col-75">		        
-					       <input type="text" id="osTaskNameToEditId" value="" class="w3-right w3-white w3-border" readonly>
+					       <input type="text" id="packNameToEditId" value="" class="w3-right w3-white w3-border" readonly>
 					  </div>
 				</div> 
-				
+	
 				<div class="row">
 			   		  <div class="col-25">
-				         OS Task Schedule: 
+				         Pack File Path: 
 				      </div>
 				      <div class="col-75">		        
-					       <input type="text" id="osTaskScheduleToEditId" value="" class="w3-right w3-white w3-border" readonly>
+					       <input type="text" id="packFilePathToEditId" value="" class="w3-right w3-white w3-border" >
 					  </div>
 				</div> 
 				<div class="row">
 			   		  <div class="col-25">
-				         OS Task File Path: 
+				         Pack File Path: 
 				      </div>
 				      <div class="col-75">		        
-					       <input type="text" id="osTaskFilePathToEditId" value="" class="w3-right w3-white w3-border" readonly>
+					       <input type="text" id="packOutputPathToEditId" value="" class="w3-right w3-white w3-border" >
 					  </div>
 				</div> 
-			   <div class="row">
-	        		  <div class="col-25">
-				         Task OS Type 
-				      </div>
-	        			<div class="col-75">		        
-					       <input type="text" id="osTaskOSTypeToEditId" value="" class="w3-right w3-white w3-border" readonly>
-					  </div>
-				     
-	        	</div>
 		
 				<div class="row">
 			   		  <div class="col-25">
-				         Task Active 
+				         Pack Loaded 
 				      </div>
 				      <div class="col-75">	
-						 <input type="text" id="osTaskActiveToEditId" value="" class="w3-right w3-white w3-border" readonly>
+						 <input type="text" id="packDeployedToEditId" value="" class="w3-right w3-white w3-border" >
 					</div>
 				</div> 
 			 </div>
 			  <div class="w3-container w3-blue-grey w3-padding">
-			   <button id="DeleteOSTaskButton" class="w3-button w3-right w3-white w3-border" onclick="deleteOSTaskByTaskId()">Delete</button>
-			   <button id="CloseOSTaskButton" class="w3-button w3-right w3-white w3-border" onclick="closeOSTask()">Close</button>
+			   <button id="UpdatePackButton" class="w3-button w3-right w3-white w3-border" onclick="updatePackByPackId()">Deploy</button>
+			   <button id="ClosePackButton" class="w3-button w3-right w3-white w3-border" onclick="closePack()">Close</button>
 			  </div>
 			</div>
 			
@@ -380,45 +361,46 @@ function openNav() {
 </script>
 
 <script>
-	function closeOSTask()
+	function closePack()
 	{
 		document.getElementById('id_edit_modal').style.display='none'
 		
-		toggleEditShowOSTask();
+		toggleEditShowPack();
 		
 	}
 	
-	function toggleEditShowOSTask()
+	function toggleEditShowPack()
 	{
 		
-		const deleteOSTaskButton = document.getElementById('DeleteOSTaskButton');
-		const updateOSTaskButton = document.getElementById('UpdateOSTaskButton');
+		const deletePackButton = document.getElementById('DeletePackButton');
+		const updatePackButton = document.getElementById('UpdatePackButton');
 		
 		
-		deleteOSTaskButton.style.display = 'block';
-		updateOSTaskButton.style.display = 'block';
+		deletePackButton.style.display = 'block';
+		updatePackButton.style.display = 'block';
 		
         
 	}
 	</script>
 
 <script>
-function addOSTask(event) {
+function addPack(event) {
     event.preventDefault(); // Prevent default form submission
 
     // Create FormData object
     let formData = new FormData();
     
     // Append individual form fields with correct names
-    formData.append('task_name', document.querySelector('[name="task_name"]').value);
-    formData.append('task_schedule', document.querySelector('[name="task_schedule"]').value);
-    formData.append('task_file_path', document.querySelector('[name="task_file_path"]').value);
-    formData.append('task_os_type', document.querySelector('[name="task_os_type"]').value);
+    formData.append('pack_name', document.querySelector('[name="pack_name"]').value);
+    formData.append('pack_file_path', document.querySelector('[name="pack_file_path"]').value);
+    formData.append('pack_output_path', document.querySelector('[name="pack_output_path"]').value);
+    pack_output_path
+  
     
     // Append file input
-    let fileInput = document.querySelector('[name="task_file_content"]');
+    let fileInput = document.querySelector('[name="pack_file_content"]');
     if (fileInput.files.length > 0) {
-        formData.append('task_file_content', fileInput.files[0]);
+        formData.append('pack_file_content', fileInput.files[0]);
     }
     
     // Append JWT token
@@ -427,7 +409,7 @@ function addOSTask(event) {
 
     // Send AJAX request
     $.ajax({
-        url: '/api/addOSTask',
+        url: '/api/addContentPack',
         type: 'POST',
         data: formData,
         processData: false, // Ensure jQuery does not process FormData
@@ -445,23 +427,33 @@ function addOSTask(event) {
 
 // Attach event listener when the page loads
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById('taskForm').addEventListener('submit', addOSTask);
+    const form = document.getElementById('packForm');
+    if (form) {
+        form.reset(); // This clears all form fields including text
+        const fileInput = document.querySelector('[name="pack_file_content"]');
+        if (fileInput) {
+            fileInput.value = ''; // Some browsers don’t clear file inputs with .reset()
+        }
+
+        form.addEventListener('submit', addPack);
+    }
 });
+
 
  $(document).ready(function() 
   {
-  	getOSTasks();
+  	getPacks();
   	const table = $('#example').DataTable();
   	table.on('click', 'tbody tr', function() 
   	{
   		console.log('API rows values : ', table.row(this).data()[0]);
   		
-  		getOSTaskByTaskID(table.row(this).data()[0]);
+  		getPackByPackID(table.row(this).data()[0]);
   		
 	})
   });
 
- function getOSTasks()
+ function getPacks()
   {
   	const table = $('#example').DataTable();
   
@@ -473,7 +465,7 @@ document.addEventListener("DOMContentLoaded", function() {
   
   
 	$.ajax({
-          url: '/api/getOSTasks', 
+          url: '/api/getContentPacks', 
           type: 'POST',
           data: jsonData,
           contentType: 'application/json; charset=utf-8', // Set content type to JSON
@@ -482,7 +474,7 @@ document.addEventListener("DOMContentLoaded", function() {
              	table.clear();
             
 	            response.forEach((item) => {
-	                table.row.add([item.id, item.task_name, item.task_schedule, item.task_file_path,item.task_os_type, item.created_at]);
+	                table.row.add([item.id, item.pack_name,item.pack_file_path,item.pack_output_path,item.pack_deployed,item.created_at]);
 	            });
             
            		table.draw();
@@ -495,34 +487,34 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   
   /************************************************/
-function deleteOSTaskByTaskId()
+function deletePackByPackId()
 {
 	const jwtToken = '${tokenObject.jwt}';
-	const TaskId = $('#osTaskIdToEditId').val();
-	const TaskName = $('#osTaskNameToEditId').val();
-	const TaskSchedule = $('#osTaskScheduleToEditId').val();
-	const TaskFilePath = $('#osTaskFilePathToEditId').val();
-	const TaskOsType = $('#osTaskIdToEditId').val();
+	const PackId = $('#packIdToEditId').val();
+	const PackName = $('#packNameToEditId').val();
+	const PackFilePath = $('#packFilePathToEditId').val();
+
+	
 	
 
 	const jsonData = JSON.stringify({
           jwt: jwtToken,
-          id: TaskId,
-          task_name: TaskName,
-          task_schedule: TaskSchedule,
-          task_file_path: TaskFilePath,
-          task_os_type: TaskOsType
+          id: PackId,
+          pack_name: PackName,
+          pack_schedule: PackSchedule,
+          pack_file_path: PackFilePath,
+          pack_os_type: PackOsType
         });
   	
   	$.ajax({
-          url: '/api/deleteOSTasksByTaskId', 
+          url: '/api/deletePacksByPackId', 
           type: 'POST',
           data: jsonData,
           contentType: 'application/json; charset=utf-8', // Set content type to JSON
           success: function(response) 
           {
              	console.log(response);
-             	getOSTasks();
+             	getPacks();
           },
           error: function(xhr, status, error) 
           {
@@ -532,35 +524,35 @@ function deleteOSTaskByTaskId()
 
 }
 /************************************************/
-function updateOSTaskByTaskId()
+function updatePackByPackId()
 {
 	const jwtToken = '${tokenObject.jwt}';
-	const TaskId = $('#osTaskIdToEditId').val();
-	const TaskName = $('#osTaskNameToEditId').val();
-	const TaskSchedule = $('#osTaskScheduleToEditId').val();
-	const TaskOSType = $('#osTaskOSTypeToEditId').val();
-	const TaskActive = $('#osTaskActiveToEditId').val();
+	const PackId = $('#packIdToEditId').val();
+	const PackName = $('#packNameToEditId').val();
+	const PackDeployed = $('#packDeployedToEditId').val();
+	const PackZipFilePath = $('#packFilePathToEditId').val();
+	const PackOutputDir = $('#packOutputPathToEditId').val();
 	
-	console.log("Task Name to Update: " + TaskName);
+	console.log("Pack Name to Update: " + PackName);
 	
 	const jsonData = JSON.stringify({
           jwt: jwtToken,
-          task_id: TaskId,
-          task_name: TaskName,
-          task_schedule: TaskSchedule,
-          task_os_type: TaskOSType,
-          task_active: TaskActive,
-        });
+          pack_id: PackId,
+          pack_name: PackName,
+          pack_loaded: PackDeployed,
+          zipFilePath: PackZipFilePath,
+          outputDir : PackOutputDir
+          });
   	
   	$.ajax({
-          url: '/api/updateOSTaskByTaskId', 
+          url: '/api/updatePackByPackId', 
           type: 'POST',
           data: jsonData,
           contentType: 'application/json; charset=utf-8', // Set content type to JSON
           success: function(response) 
           {
              	console.log(response);
-             	getOSTasks();
+             	getPacks();
           },
           error: function(xhr, status, error) 
           {
@@ -571,34 +563,30 @@ function updateOSTaskByTaskId()
 }
 
 /************************************************/
-function getOSTaskByTaskID(varId)
+function getPackByPackID(varId)
 {
 	const jwtToken = '${tokenObject.jwt}';
-	const TaskId = varId;
+	const PackId = varId;
 	
 
 	const jsonData = JSON.stringify({
           jwt: jwtToken,
-          task_id: TaskId,
+          pack_id: PackId,
          });
   	
   	$.ajax({
-          url: '/api/getOSTaskByTaskId', 
+          url: '/api/getPackByPackId', 
           type: 'POST',
           data: jsonData,
           contentType: 'application/json; charset=utf-8', // Set content type to JSON
           success: function(response) 
           {
              	console.log(response);
-             	document.getElementById('osTaskNameToEditId').value = response[0].task_name;
-             	document.getElementById('osTaskScheduleToEditId').value = response[0].task_schedule;
-             	document.getElementById('osTaskFilePathToEditId').value = response[0].task_file_path;
-             	document.getElementById('osTaskOSTypeToEditId').value = response[0].task_os_type;
-             	document.getElementById('osTaskActiveToEditId').value = response[0].task_active;
-             	
-             	document.getElementById('osTaskIdToEditId').value = response[0].id;
-             	
-             	
+             	document.getElementById('packNameToEditId').value = response[0].pack_name;
+             	document.getElementById('packFilePathToEditId').value = response[0].pack_file_path;
+             	document.getElementById('packOutputPathToEditId').value = response[0].pack_output_path;
+             	document.getElementById('packDeployedToEditId').value = response[0].pack_deployed;
+             	document.getElementById('packIdToEditId').value = response[0].id;
   				document.getElementById('id_edit_modal').style.display='block';
           },
           error: function(xhr, status, error) 
@@ -609,7 +597,7 @@ function getOSTaskByTaskID(varId)
 }
   
   document.addEventListener("DOMContentLoaded", function() {
-    getOSTasks();
+    getPacks();
 });
 </script>
 <script>
