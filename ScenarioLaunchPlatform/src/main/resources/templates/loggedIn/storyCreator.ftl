@@ -244,9 +244,14 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
         <div class="chapter-card bg-white p-6 rounded-xl border border-slate-200 shadow-sm animate-fade-in">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-medium text-slate-800">Chapter <span class="chapter-number">1</span></h3>
-                <button type="button" class="delete-chapter text-red-500 hover:text-red-700 text-lg">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <div class="flex space-x-2">
+                    <button type="button" class="duplicate-chapter text-blue-500 hover:text-blue-700">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button type="button" class="delete-chapter text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             </div>
             
             <div class="grid grid-cols-1 gap-6">
@@ -457,13 +462,30 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
                 // Update chapter number
                 chapterClone.querySelector('.chapter-number').textContent = chapterCount;
                 
+                // Add duplicate chapter event
+                chapterClone.querySelector('.duplicate-chapter').addEventListener('click', function() {
+                    const chapterCard = this.closest('.chapter-card');
+                    const title = chapterCard.querySelector('.chapter-title').value;
+                    const datasource = chapterCard.querySelector('.chapter-datasource').value;
+                    const queryId = chapterCard.querySelector('.chapter-query_id').value;
+                    const pauseValue = chapterCard.querySelector('.chapter-pause-value').value;
+                    
+                    addChapter();
+                    const newChapter = chaptersContainer.lastElementChild;
+                    newChapter.querySelector('.chapter-title').value = title;
+                    newChapter.querySelector('.chapter-datasource').value = datasource;
+                    newChapter.querySelector('.chapter-query_id').value = queryId;
+                    newChapter.querySelector('.chapter-pause-value').value = pauseValue;
+                    newChapter.querySelector('.chapter-pause').value = pauseValue;
+                });
+                
                 // Add delete chapter event
                 chapterClone.querySelector('.delete-chapter').addEventListener('click', function() {
                     if (chaptersContainer.children.length > 1) {
                         this.closest('.chapter-card').remove();
                         updateChapterNumbers();
                     } else {
-                        showToast('A story must have at least one chapter!', false);
+                        alert("A story must have at least one chapter!");
                     }
                 });
                 
@@ -515,7 +537,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
                     const chapterData = {
                         chapter: chapter.querySelector('.chapter-title').value,
                         datasource: chapter.querySelector('.chapter-datasource').value,
-                        pause_in_seconds: parseInt(chapter.querySelector('.chapter-pause-value').value) / 1000,
+                        pause_in_seconds: parseInt(chapter.querySelector('.chapter-pause-value').value),
                         query_id: parseInt(chapter.querySelector('.chapter-query_id').value)
                     };
                     
