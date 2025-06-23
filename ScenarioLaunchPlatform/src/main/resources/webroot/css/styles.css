@@ -55,6 +55,9 @@ span.psw {
 	margin:0 auto;
 	margin-top: 150px;
 }
+#footer {
+  margin-top: 300px; /* Adjust this value until it looks right */
+}
 
 /* Change styles for span and cancel button on extra small screens */
 @media screen and (max-width: 300px) {

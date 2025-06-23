@@ -1,6 +1,6 @@
      .chatbot-container {
             position: fixed;
-            bottom: 20px;
+            bottom: 100px;
             right: 20px;
             z-index: 1000;
             transition: all 0.3s ease;
