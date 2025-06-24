@@ -245,10 +245,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-medium text-slate-800">Chapter <span class="chapter-number">1</span></h3>
                 <div class="flex space-x-2">
-                    <button type="button" class="duplicate-chapter text-blue-500 hover:text-blue-700">
+                    <button type="button" class="duplicate-chapter text-blue-500 hover:text-blue-700" title="Duplicate this chapter">
                         <i class="fas fa-copy"></i>
                     </button>
-                    <button type="button" class="delete-chapter text-red-500 hover:text-red-700">
+                    <button type="button" class="delete-chapter text-red-500 hover:text-red-700" title="Delete this chapter">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>

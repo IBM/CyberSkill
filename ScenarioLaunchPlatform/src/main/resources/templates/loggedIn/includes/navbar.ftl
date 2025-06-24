@@ -8,7 +8,7 @@
   <a href="/loggedIn/databases.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Access"><i class="fa fa-database"></i></a>
   <a href="https://ibm.github.io/CyberSkill/" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Videos" target="_blank"><i class="fa fa-film"></i></a>
   <a href="/loggedIn/ostask.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="OS Task"><i class="fa fa-tasks"></i></a>
-    <a href="/loggedIn/contentpacks.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Content Packs"><i class="fa fa-folder"></i></a>
+    <!-- <a href="/loggedIn/contentpacks.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Content Packs"><i class="fa fa-folder"></i></a> -->
   <a href="/loggedIn/storyBuilder.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Story"><i class="fa fa-book"></i></a>
   <span id="plugins">[No Active Plugins]</span>
   
