@@ -4304,9 +4304,9 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
                                 			                 String sql = tokenizer.nextToken();
                                 			                 LOGGER.debug("Query[DatasourceMap]: " + loopIndex + " identified: " + sql );
                                 			                
-                                			                 filterSystemVariables(sql, loopIndex, ram);
+                                			                 //filterSystemVariables(sql, loopIndex, ram);
                                 			                
-                                			                 /*
+                                			                 
                                 			                 while(sql.contains("{SYSTEMVARIABLE}"))
                               				                {
                               				                	
@@ -4345,7 +4345,42 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
                             				                	sql = sql.replaceFirst("\\{i\\}", swap);
                             				                	LOGGER.debug("query updated to: " + sql);
                             				                }
-                                			                 */
+                                			                while(sql.contains("{FIRSTNAME}"))
+													        {
+													        	
+													        	LOGGER.debug("Found a variable firstname");
+													        	
+													        	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomFirstName());
+													        	sql = sql.replaceFirst("\\{FIRSTNAME\\}", swap);
+													        	LOGGER.debug("query updated to: " + sql);
+													        }
+													        while(sql.contains("{SURNAME}"))
+													        {
+													        	
+													        	LOGGER.debug("Found a variable surname");
+													        	
+													        	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomSurname());
+													        	sql = sql.replaceFirst("\\{SURNAME\\}", swap);
+													        	LOGGER.debug("query updated to: " + sql);
+													        }
+													        while(sql.contains("{ADDRESSLINE1}"))
+													        {
+													        	
+													        	LOGGER.debug("Found a variable addressline1");
+													        	
+													        	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomAddressLine1());
+													        	sql = sql.replaceFirst("\\{ADDRESSLINE1\\}", swap);
+													        	LOGGER.debug("query updated to: " + sql);
+													        }
+													        while(sql.contains("{ADDRESSLINE2}"))
+													        {
+													        	
+													        	LOGGER.debug("Found a variable addressline2");
+													        	
+													        	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomAddressLine2());
+													        	sql = sql.replaceFirst("\\{ADDRESSLINE2\\}", swap);
+													        	LOGGER.debug("query updated to: " + sql);
+													        }
                                 			                if (sql.trim().toUpperCase().startsWith("SELECT")) 
                                 			                {
                                 			                	LOGGER.debug("We have detected an Select");
@@ -4677,9 +4712,9 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
     			                 String sql = tokenizer.nextToken();
 				                 LOGGER.debug("Query[DatasourceMap]: " + loopIndex + " identified: " + sql );
 				                 
-				                 filterSystemVariables(sql, loopIndex, ram);
+				                // filterSystemVariables(sql, loopIndex, ram);
 				                 
-				                /* 
+				                 
 				                while(sql.contains("{SYSTEMVARIABLE}"))
    				                {
    				                	
@@ -4721,7 +4756,42 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
 				                	LOGGER.debug("query updated to: " + sql);
 				                }
 				                 
-				                 */
+				                while(sql.contains("{FIRSTNAME}"))
+				                {
+				                	
+				                	LOGGER.debug("Found a variable firstname");
+				                	
+				                	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomFirstName());
+				                	sql = sql.replaceFirst("\\{FIRSTNAME\\}", swap);
+				                	LOGGER.debug("query updated to: " + sql);
+				                }
+				                while(sql.contains("{SURNAME}"))
+				                {
+				                	
+				                	LOGGER.debug("Found a variable surname");
+				                	
+				                	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomSurname());
+				                	sql = sql.replaceFirst("\\{SURNAME\\}", swap);
+				                	LOGGER.debug("query updated to: " + sql);
+				                }
+				                while(sql.contains("{ADDRESSLINE1}"))
+				                {
+				                	
+				                	LOGGER.debug("Found a variable addressline1");
+				                	
+				                	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomAddressLine1());
+				                	sql = sql.replaceFirst("\\{ADDRESSLINE1\\}", swap);
+				                	LOGGER.debug("query updated to: " + sql);
+				                }
+				                while(sql.contains("{ADDRESSLINE2}"))
+				                {
+				                	
+				                	LOGGER.debug("Found a variable addressline2");
+				                	
+				                	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomAddressLine2());
+				                	sql = sql.replaceFirst("\\{ADDRESSLINE2\\}", swap);
+				                	LOGGER.debug("query updated to: " + sql);
+				                }
 				             
 				                if (sql.trim().toUpperCase().startsWith("SELECT")) 
 				                {
