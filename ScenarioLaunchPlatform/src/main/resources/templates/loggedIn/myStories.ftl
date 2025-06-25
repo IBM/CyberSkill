@@ -10,9 +10,6 @@
 <link rel="stylesheet" href="css/font-awesome.min.css">
 <script src="js/jquery.min.js"></script>
 <link rel='stylesheet' href='css/fonts.css'>
-<script src="js/tailwindcss.js"></script>
-<script src="js/chatbot.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 
