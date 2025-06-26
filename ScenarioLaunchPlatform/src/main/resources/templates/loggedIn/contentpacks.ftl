@@ -364,8 +364,9 @@ $(document).ready(function () {
 		console.log("pack_db_type: " + pack_db_type);
 		console.log("packName: " + packName);
 		
-       const tooltipHtml = '<span title="Version: ' + pack_version + '&#10;DBType: ' + pack_db_type + '">' + packName + '</span>';
-
+   const tooltipHtml = '<span title="Version: ' + pack_version + '&#10;DBType: ' + pack_db_type + '">' + packName + '</span>';
+       
+   //  const tooltipHtml = '<div class="custom-tooltip-container"><span class="pack-name">'+packName+'</span><div class="custom-tooltip"> <div class="tooltip-header">Package Details</div><div><strong>Version:</strong>'+pack_version+'</div><div><strong>DB Type:</strong>'+pack_db_type+'</div></div> </div>';
         
         table.row.add([
           item.id,
@@ -379,6 +380,24 @@ $(document).ready(function () {
       });
 
       table.draw();
+$('#example').on('mouseenter', '.custom-tooltip-container', function() {
+  const tooltip = $(this).find('.custom-tooltip');
+  const containerRect = this.getBoundingClientRect();
+  const tooltipRect = tooltip[0].getBoundingClientRect();
+  
+  // Adjust position if tooltip goes off-screen
+  if (tooltipRect.right > window.innerWidth) {
+    tooltip.css('left', 'auto');
+    tooltip.css('right', '0');
+    tooltip.css('transform', 'none');
+  }
+  
+  if (tooltipRect.top < 0) {
+    tooltip.css('bottom', 'auto');
+    tooltip.css('top', '125%');
+    tooltip.css('transform', 'translateX(-50%)');
+  }
+});
     },
     error: function(xhr, status, error) {
       $('#response').text('Error: ' + error);
