@@ -321,7 +321,7 @@ $(document).ready(function () {
  table = $('#example').DataTable({
   columns: [
     null,                      // id
-   null,         // pack_name with tooltip
+   null,         // pack_name with tooltip - removed for issues need to figure out
     null,                      // version
     null,                      // db_type
     null,                      // build_date
@@ -357,19 +357,19 @@ $(document).ready(function () {
 
       response.forEach((item) => {
       console.log('Row item:', item);
-        const pack_version = item.version || 'n/a';
-        const pack_db_type = item.db_type || 'n/a';
-        const packName = item.pack_name || 'Unnamed';
+        const pack_version = item.pack_info?.version || 'n/a';
+        const pack_db_type = item.pack_info?.db_type || 'n/a';
+        const packName = item.pack_info?.pack_name || 'Unnamed';
 		console.log("Version: " + pack_version);
 		console.log("pack_db_type: " + pack_db_type);
 		console.log("packName: " + packName);
 		
-       const tooltipHtml = '<span title="Version: ' + pack_version + '&#10;Author: ' + pack_db_type + '">' + packName + '</span>';
+       const tooltipHtml = '<span title="Version: ' + pack_version + '&#10;DBType: ' + pack_db_type + '">' + packName + '</span>';
 
         
         table.row.add([
           item.id,
-          item.pack_name, // this now renders as HTML
+          tooltipHtml, // this now renders as HTML - removed the tooltip for issues. Needs resolving
           item.version,
           item.db_type,
           item.build_date,
