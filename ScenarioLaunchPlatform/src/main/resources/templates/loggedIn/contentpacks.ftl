@@ -407,6 +407,8 @@ function updatePackByPackId()
 	const PackDeployed = $('#packDeployedToEditId').val();
 	const PackZipFilePath = $('#packFilePathToEditId').val();
 	const PackOutputDir = $('#packOutputPathToEditId').val();
+	console.log("Pack Deployed status is : " + PackDeployed);
+	
 	
 	console.log("Pack Name to Update: " + PackName);
 	
