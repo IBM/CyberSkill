@@ -107,12 +107,13 @@ RAISE NOTICE 'Created tb_tasks';
 CREATE TABLE IF NOT EXISTS public.tb_content_packs
 (
     id SERIAL PRIMARY KEY,
-    pack_name character varying(255)  NOT NULL,
+    pack_name character varying(255),
     pack_file_path text NOT NULL,
 	pack_output_path text NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     pack_file_content bytea,
-	pack_deployed character varying (20) DEFAULT 'Not Deployed'
+	pack_info jsonb,
+	pack_deployed character varying(5) DEFAULT 'false'
 );
 
 RAISE NOTICE 'Created tb_content_packs';
