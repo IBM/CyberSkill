@@ -8,16 +8,19 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import database.thejasonengine.com.DatabaseController;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.sqlclient.Pool;
-
+import io.vertx.sqlclient.SqlConnection;
+import io.vertx.sqlclient.Tuple;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.AsyncFile;
@@ -42,7 +45,6 @@ public class ContentPackHandler
 	{
 		LOGGER.debug("inside: handleInstallContentPack ");
 		Context context = routingContext.vertx().getOrCreateContext();
-		Pool pool = context.get("pool");
 		JsonObject result = new JsonObject();
 		HttpServerResponse response = routingContext.response();
 		JsonObject JSONpayload = routingContext.getBodyAsJson();
@@ -73,7 +75,7 @@ public class ContentPackHandler
 					LOGGER.debug("User has correct access level");
 					result.put("access_response", "User has correct access level (Access Check PASS");
 		        
-					utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+					
 		        
 					/*read the json file*/
 					String pack_name = JSONpayload.getString("pack_name");
@@ -81,32 +83,73 @@ public class ContentPackHandler
 					
 					Path currRelativePath = Paths.get("");
 			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
-			        LOGGER.debug("System execution path is: " + currAbsolutePathString);
+			        
 			        
 			        String filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\mysql_query_inserts.sql";
+			        LOGGER.debug("System execution path is: " + filePath);
 			        
 			        readLines(routingContext.vertx(), filePath)
 			        .onComplete(ar -> 
 			        {
-			            if (ar.succeeded()) 
-			            {
-			                List<String> lines = ar.result();
-			                
-			                /*extract the SQL*/
-			                for (String sql : lines) 
-			                {
-			                    
-			                	/*run the SQL*/
-			                	LOGGER.debug(sql);
-			                }
-							
-			                
-			                
-			            } 
-			            else 
-			            {
-			                LOGGER.error("Failed to read file: " + ar.cause());
-			            }
+			        	LOGGER.debug("All lines have been read");
+			        	List<String> lines = ar.result();
+			            Pool pool = context.get("pool");
+			            if (pool == null)
+			        	{
+			        		LOGGER.debug("pull is null - restarting");
+			        		DatabaseController DB = new DatabaseController(routingContext.vertx());
+			        		LOGGER.debug("Taking the refreshed context pool object");
+			        		pool = context.get("pool");
+			        	}
+			            pool.getConnection(asyncreq -> 
+						{
+								if (asyncreq.succeeded()) 
+						        {
+						         	SqlConnection connection = asyncreq.result();
+						           	JsonArray ja = new JsonArray();
+			        			
+						           	for (String sql : lines) 
+						            {
+						           		int i = 0;
+						           		LOGGER.debug(sql);
+						                    
+						                //utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+						                //not sure we need to encode the sql if the file is giving it to us encoded.  
+						                    
+						                connection.preparedQuery(sql)
+							            .execute(
+					                        res -> {
+					                            if (res.succeeded()) 
+					                            {
+					                                // Process the query result
+					                                
+					                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully added query\"}");
+			                                    	ja.add(jo);
+			                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
+			                                    	result.put("sql_response", ja);
+					                                
+					                            } 
+					                            else 
+					                            {
+					                                // Handle query failure
+					                            	LOGGER.error("error: " + res.cause() );
+					                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause()+"}");
+			                                    	ja.add(jo);
+			                                    	result.put("sql_response", ja);
+					                                //res.cause().printStackTrace();
+					                            }
+					                            //connection.close();
+					                        });
+						                
+						                }
+						            }
+						            else
+						            {
+						            	LOGGER.error("Unable to get database connection");
+						            }
+							});
+			        	})
+			        .onFailure(asyncfail ->{LOGGER.error(asyncfail.getLocalizedMessage());
 			        });
 			       
 			        
