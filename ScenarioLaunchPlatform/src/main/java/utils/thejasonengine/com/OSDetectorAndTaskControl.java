@@ -48,7 +48,7 @@ public class OSDetectorAndTaskControl {
             } else if ("Delete".equalsIgnoreCase(action)) {
                 deleteScheduleTask(taskName, osType);
                 return "Delete task " + osType;
-            } else if ("Deploy".equalsIgnoreCase(action)) {
+            } else if ("True".equalsIgnoreCase(action)) {
                 // Use the unified deployment method
                 return deployContentPack(taskName, filePath);
             } else {
@@ -245,20 +245,20 @@ public class OSDetectorAndTaskControl {
         LOGGER.info("Unzip completed to: " + outputDir);
 
         // Find the main script
-        Path mainScript = findMainScript(outputPath);
+       /* Path mainScript = findMainScript(outputPath);
         if (mainScript == null) {
             throw new FileNotFoundException("No main script found in extracted files");
         }
 
         LOGGER.info("Found main script: " + mainScript);
-        executeLinuxScript(mainScript.toString(), outputDir);
+        executeLinuxScript(mainScript.toString(), outputDir);*/
     }
 
     public static void unzipAndRunMainScriptWindows(String zipFilePath, String outputDir) throws IOException {
         LOGGER.info("Starting Windows unzip operation for: " + zipFilePath);
         
         // Create output directory if it doesn't exist
-        Path outputPath = Paths.get(outputDir);
+        Path outputPath = Paths.get(outputDir+"\\contentpacks\\");
         if (!Files.exists(outputPath)) {
             Files.createDirectories(outputPath);
         }
@@ -292,14 +292,16 @@ public class OSDetectorAndTaskControl {
         LOGGER.info("Unzip completed to: " + outputDir);
 
         // Find the main batch file
-        Path mainBatch = findMainBatch(outputPath);
+        /*Path mainBatch = findMainBatch(outputPath);
         if (mainBatch == null) {
             throw new FileNotFoundException("No main batch file found in extracted files");
         }
 
         LOGGER.info("Found main batch file: " + mainBatch);
-        executeWindowsBatch(mainBatch.toString(), outputDir);
+        executeWindowsBatch(mainBatch.toString(), outputDir);*/
     }
+    
+    
 
     private static Path findMainScript(Path directory) throws IOException {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {

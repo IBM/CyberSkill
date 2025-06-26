@@ -11,6 +11,7 @@ package router.thejasonengine.com;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.charset.StandardCharsets;
@@ -1185,24 +1186,26 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				JsonObject payload = new JsonObject(decode(chunks[1]));
 				LOGGER.info("Payload: " + payload );
 				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-				String pack_name = JSONpayload.getString("pack_name");
-				String pack_file_path = JSONpayload.getString("pack_file_path");
-				String pack_output_path = JSONpayload.getString("pack_output_path");
+				//String pack_name = JSONpayload.getString("pack_name");
+				//String pack_file_path = JSONpayload.getString("pack_file_path");
+				//String pack_output_path = JSONpayload.getString("pack_output_path");
 				
 				
-				LOGGER.debug("task_file_path recieved: " + pack_file_path);
+				//LOGGER.debug("task_file_path recieved: " + pack_file_path);
 				
 				utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+				 Path currRelativePath = Paths.get("");
+			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
+			        System.out.println("Current absolute path is - " + currAbsolutePathString);
 				
 				
 				
-				
-			    File uploadFolder = new File(pack_file_path);
+			    File uploadFolder = new File(currAbsolutePathString);
 			 if (!uploadFolder.exists()) {
 
 		     uploadFolder.mkdir(); // Create the folder if it doesn't exist
 		}
-			 File outputFolder = new File(pack_output_path);
+			 File outputFolder = new File(currAbsolutePathString);
 			 if (!outputFolder.exists()) {
 
 				 outputFolder.mkdir(); // Create the folder if it doesn't exist
@@ -1216,7 +1219,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        String uploadedFileName = fileUpload.uploadedFileName();
 		     
 			
-		        String targetFilePath = pack_file_path + fileUpload.fileName(); // Save file in "uploads/" directory
+		        String targetFilePath = currAbsolutePathString +"\\contentpacks\\"+ fileUpload.fileName(); // Save file in "uploads/" directory
 		     // Read the file content as bytes
 			    byte[] fileBytes = null;
 		        try {
@@ -1231,7 +1234,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		            return;
 		        }
 		        String encoded_pack_file_path = Encodings.EscapeString(targetFilePath);
-		        String encoded_pack_output_path = Encodings.EscapeString(pack_output_path);
+		        String encoded_pack_output_path = Encodings.EscapeString(currAbsolutePathString);
 				LOGGER.debug("Encoded task_file_path" + targetFilePath);
 				//The map is passed to the SQL query
 				Map<String,Object> map = new HashMap<String, Object>();
@@ -1240,7 +1243,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				map.put("pack_name", JSONpayload.getValue("pack_name"));
 	
 				map.put("pack_file_path", targetFilePath);
-				map.put("pack_output_path", pack_output_path);
+				map.put("pack_output_path", currAbsolutePathString);
 			    // Store the bytes in the database
 			    map.put("pack_file_content", fileBytes);
 			    
@@ -1269,8 +1272,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("INSERT INTO public.tb_content_packs(pack_name,pack_file_path,pack_output_path,pack_file_content) VALUES($1,$2,$3,$4);")
-			                        .execute(Tuple.of(map.get("pack_name"),map.get("pack_file_path"),map.get("pack_output_path"),map.get("pack_file_content")),
+			                connection.preparedQuery("INSERT INTO public.tb_content_packs(pack_file_path,pack_output_path,pack_file_content) VALUES($1,$2,$3);")
+			                        .execute(Tuple.of(map.get("pack_file_path"),map.get("pack_output_path"),map.get("pack_file_content")),
 			                        res -> {
 			                            if (res.succeeded()) 
 			                            {
@@ -1590,7 +1593,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
 	                                        LOGGER.info("Successfully updated Pack");
 	                                        
 	                                        // Check if we should deploy
-	                                        if ("Deployed".equalsIgnoreCase(pack_loaded)) {
+	                                        if ("True".equalsIgnoreCase(pack_loaded)) {
 	                                            if (zipFilePath != null && outputDir != null) {
 	                                                // Run deployment using the consistent detectOS method
 	                                                context.owner().executeBlocking(future -> {
@@ -1599,7 +1602,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
 	                                                            outputDir,     // filePath parameter where we unzip to
 	                                                            null,          // schedule (not used)
 	                                                            zipFilePath,   // Path to zip parameter
-	                                                            "Deploy"       // action
+	                                                            "True"       // action
 	                                                        );
 	                                                        LOGGER.info("Deployment result: " + result);
 	                                                        future.complete(result);

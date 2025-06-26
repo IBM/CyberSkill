@@ -70,30 +70,6 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
   				<form id="packForm" enctype="multipart/form-data">
      <div id="edit" class="w3-container city">
 	<div class="row">
-		<div class="col-25">
-				         Pack Name: 
-		</div>
-		<div class="col-75">
-			<input type="text" id="pack_name" name="pack_name" class="w3-right w3-white w3-border" placeholder="Example Run_API" required>
-		</div>
-	</div>
-	<div class="row">
-				<div class="col-25">
-				         Pack File Path: 
-				      </div>
-				<div class="col-75">
-					<input type="text" id="pack_file_path" name="pack_file_path" class="w3-right w3-white w3-border" placeholder="/opt/slp/packs" required>
-					</div>
-	</div>
-	<div class="row">
-				<div class="col-25">
-				         Pack Deploy Path: 
-				      </div>
-				<div class="col-75">
-					<input type="text" id="pack_output_path" name="pack_output_path" class="w3-right w3-white w3-border" placeholder="/opt/slp/packs/unzipped" >
-					</div>
-	</div>
-	<div class="row">
 					<div class="col-25">
 				         Pack File 
 				      </div>
@@ -291,10 +267,9 @@ function addPack(event) {
     let formData = new FormData();
     
     // Append individual form fields with correct names
-    formData.append('pack_name', document.querySelector('[name="pack_name"]').value);
-    formData.append('pack_file_path', document.querySelector('[name="pack_file_path"]').value);
-    formData.append('pack_output_path', document.querySelector('[name="pack_output_path"]').value);
-    pack_output_path
+  //  formData.append('pack_name', document.querySelector('[name="pack_name"]').value);
+  //  formData.append('pack_file_path', document.querySelector('[name="pack_file_path"]').value);
+  //  formData.append('pack_output_path', document.querySelector('[name="pack_output_path"]').value);
   
     
     // Append file input
