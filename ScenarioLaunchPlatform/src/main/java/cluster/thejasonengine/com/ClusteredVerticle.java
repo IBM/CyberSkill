@@ -51,6 +51,7 @@ import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.sqlclient.Pool;
 import memory.thejasonengine.com.Ram;
 import messaging.thejasonengine.com.Websocket;
+import router.thejasonengine.com.ContentPackHandler;
 import router.thejasonengine.com.FileUploadHandler;
 import router.thejasonengine.com.SetupPostHandlers;
 import router.thejasonengine.com.UpgradeHandler;
@@ -80,6 +81,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	private SetupSession setupSession;
 	private SetupPostHandlers setupPostHandlers;
 	private FileUploadHandler fileUploadHandler;
+	private ContentPackHandler contentPackHandler;
 	private AgentDatabaseController agentDatabaseController;
 	
 	private UpgradeHandler upgradeHandler;
@@ -135,7 +137,11 @@ public class ClusteredVerticle extends AbstractVerticle {
 		
 		
 		upgradeHandler = new UpgradeHandler(vertx);
-		LOGGER.info("Set Handlers Setup");
+		LOGGER.info("upgrade handlers setup");
+		
+		
+		contentPackHandler = new ContentPackHandler(vertx);
+		LOGGER.info("contentpack handlers setup");
 		
 		Router router = Router.router(vertx);
 		
@@ -497,10 +503,13 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 
 	  	 router.post("/api/getAvailablePlugins").handler(BodyHandler.create()).handler(setupPostHandlers.getAvailablePlugins);
 	  	 
+	  	 /********************************************************************************/
+	  	 router.post("/api/installContentPack").handler(BodyHandler.create()).handler(contentPackHandler.installContentPack);
+	  	 router.post("/api/uninstallContentPack").handler(BodyHandler.create()).handler(contentPackHandler.uninstallContentPack);
 	  	
-	  	/*********************************************************************************/
+	  	 /*********************************************************************************/
 	  	 
-	  	router.post("/api/checkForUpgrade").handler(BodyHandler.create()).handler(upgradeHandler.checkForUpgrade);
+	  	 router.post("/api/checkForUpgrade").handler(BodyHandler.create()).handler(upgradeHandler.checkForUpgrade);
 	  	
 	  	//router.post("/api/uploadFileToServer").handler(BodyHandler.create().setUploadsDirectory("tempUploads").setDeleteUploadedFilesOnEnd(false)).handler(fileUploadHandler.uploadFileToServer);
 	  	 /*********************************************************************************/
