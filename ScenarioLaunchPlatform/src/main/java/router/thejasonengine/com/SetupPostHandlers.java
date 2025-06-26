@@ -44,6 +44,8 @@ import io.vertx.ext.web.FileUpload;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import utils.thejasonengine.com.ContentPackUtils;
 import utils.thejasonengine.com.OSDetectorAndTaskControl;
 import com.hazelcast.shaded.org.json.JSONObject;
 
@@ -1235,11 +1237,23 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		        }
 		        String encoded_pack_file_path = Encodings.EscapeString(targetFilePath);
 		        String encoded_pack_output_path = Encodings.EscapeString(currAbsolutePathString);
+		        
+
 				LOGGER.debug("Encoded task_file_path" + targetFilePath);
 				//The map is passed to the SQL query
+				
 				Map<String,Object> map = new HashMap<String, Object>();
 				
-				
+				ContentPackUtils.PackParseResult packResult;
+		        try {
+		            packResult = ContentPackUtils.unzipAndExtractPackJson(targetFilePath, currAbsolutePathString);
+		            map.put("pack_json", new JsonObject(packResult.packJsonContent));
+		        } catch (IOException e) {
+		            LOGGER.error("Failed to unzip and extract pack.json: " + e.getMessage());
+		            routingContext.fail(400);
+		            return;
+		        }
+		       
 				map.put("pack_name", JSONpayload.getValue("pack_name"));
 	
 				map.put("pack_file_path", targetFilePath);
@@ -1272,8 +1286,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("INSERT INTO public.tb_content_packs(pack_file_path,pack_output_path,pack_file_content) VALUES($1,$2,$3);")
-			                        .execute(Tuple.of(map.get("pack_file_path"),map.get("pack_output_path"),map.get("pack_file_content")),
+			                connection.preparedQuery("INSERT INTO public.tb_content_packs (pack_file_path, pack_output_path, pack_file_content, pack_info) VALUES ($1, $2, $3, $4);")
+			                        .execute(Tuple.of(map.get("pack_file_path"),map.get("pack_output_path"),map.get("pack_file_content"),map.get("pack_json")),
 			                        res -> {
 			                            if (res.succeeded()) 
 			                            {
