@@ -1,15 +1,28 @@
 package router.thejasonengine.com;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertx.core.Context;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.sqlclient.Pool;
+
+import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.AsyncFile;
+import io.vertx.core.file.OpenOptions;
+import io.vertx.core.parsetools.RecordParser;
 
 public class ContentPackHandler 
 {
@@ -34,10 +47,10 @@ public class ContentPackHandler
 		HttpServerResponse response = routingContext.response();
 		JsonObject JSONpayload = routingContext.getBodyAsJson();
 		
-		if (JSONpayload.getString("jwt") == null) 
+		if (JSONpayload.getString("jwt") == null || JSONpayload.getString("pack_name") == null) 
 	    {
-	    	LOGGER.info("handleInstallContentPack required fields not detected (jwt)");
-	    	routingContext.fail(400);
+	    	LOGGER.info("handleInstallContentPack required fields not detected (jwt or pack_name)");
+	    	routingContext.fail(400); //THIS IS AN UNGRACEFUL ERROR - should be fixed.
 	    } 
 		else
 		{
@@ -57,16 +70,46 @@ public class ContentPackHandler
 			       
 				if(authlevel >= 1)
 		        {
-					LOGGER.info("User has correct access level");
+					LOGGER.debug("User has correct access level");
 					result.put("access_response", "User has correct access level (Access Check PASS");
 		        
 					utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
 		        
 					/*read the json file*/
+					String pack_name = JSONpayload.getString("pack_name");
+					LOGGER.debug("Attempting install process for pack_name: " + pack_name);
 					
-					/*extract the SQL*/
-					
-					/*run the SQL*/
+					Path currRelativePath = Paths.get("");
+			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
+			        LOGGER.debug("System execution path is: " + currAbsolutePathString);
+			        
+			        String filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\mysql_query_inserts.sql";
+			        
+			        readLines(routingContext.vertx(), filePath)
+			        .onComplete(ar -> 
+			        {
+			            if (ar.succeeded()) 
+			            {
+			                List<String> lines = ar.result();
+			                
+			                /*extract the SQL*/
+			                for (String sql : lines) 
+			                {
+			                    
+			                	/*run the SQL*/
+			                	LOGGER.debug(sql);
+			                }
+							
+			                
+			                
+			            } 
+			            else 
+			            {
+			                LOGGER.error("Failed to read file: " + ar.cause());
+			            }
+			        });
+			       
+			        
 		        
 					/*respond to the UI jobs complete */
 		        
@@ -127,5 +170,38 @@ public class ContentPackHandler
 		}
 		response.send("{\"result\":\""+result+"\"}");
 	}
+	/******************************************************************************/
+	 public static Future<List<String>> readLines(Vertx vertx, String filePath) 
+	 {
+	        Promise<List<String>> promise = Promise.promise();
+	        List<String> lines = new ArrayList<>();
+
+	        vertx.fileSystem().open(filePath, new OpenOptions(), result -> {
+	            if (result.succeeded()) {
+	                AsyncFile file = result.result();
+	                RecordParser parser = RecordParser.newDelimited("\n", file);
+
+	                parser.handler(buffer -> {
+	                    String line = buffer.toString().trim();
+	                    lines.add(line);
+	                });
+
+	                parser.endHandler(v -> {
+	                    file.close();
+	                    promise.complete(lines);
+	                });
+
+	                parser.exceptionHandler(err -> {
+	                    file.close();
+	                    promise.fail(err);
+	                });
+
+	            } else {
+	                promise.fail(result.cause());
+	            }
+	        });
+
+	        return promise.future();
+	    }
 	
 }
