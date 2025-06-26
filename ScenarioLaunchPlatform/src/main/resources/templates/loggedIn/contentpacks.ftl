@@ -316,51 +316,76 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
- $(document).ready(function() 
-  {
-  	getPacks();
-  	const table = $('#example').DataTable();
-  	table.on('click', 'tbody tr', function() 
-  	{
-  		console.log('API rows values : ', table.row(this).data()[0]);
-  		
-  		getPackByPackID(table.row(this).data()[0]);
-  		
-	})
-  });
+let table; //
+$(document).ready(function () {
+ table = $('#example').DataTable({
+  columns: [
+    null,                      // id
+   null,         // pack_name with tooltip
+    null,                      // version
+    null,                      // db_type
+    null,                      // build_date
+    null,                      // build_version
+    null                       // uploaded_date
+  ]
+});
 
- function getPacks()
-  {
-  	const table = $('#example').DataTable();
-  
-  	const jwtToken = '${tokenObject.jwt}';
-   
-  	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-        });
-  
-  
-	$.ajax({
-          url: '/api/getContentPacks', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	table.clear();
-            
-	            response.forEach((item) => {
-	                table.row.add([item.id,item.pack_name,item.version,item.db_type,item.build_date,item.build_version,item.uploaded_date]);
-	            });
-           		table.draw();
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-  }
-  
+
+  getPacks(); // call function without redeclaring table
+
+  table.on('click', 'tbody tr', function () {
+    const packId = table.row(this).data()[0];
+    getPackByPackID(packId);
+  });
+});
+
+
+
+
+ function getPacks() {
+  const jwtToken = '${tokenObject.jwt}';
+
+  const jsonData = JSON.stringify({ jwt: jwtToken });
+
+  $.ajax({
+    url: '/api/getContentPacks',
+    type: 'POST',
+    data: jsonData,
+    contentType: 'application/json; charset=utf-8',
+    success: function(response) {
+      table.clear();
+
+      response.forEach((item) => {
+      console.log('Row item:', item);
+        const pack_version = item.version || 'n/a';
+        const pack_db_type = item.db_type || 'n/a';
+        const packName = item.pack_name || 'Unnamed';
+		console.log("Version: " + pack_version);
+		console.log("pack_db_type: " + pack_db_type);
+		console.log("packName: " + packName);
+		
+       const tooltipHtml = '<span title="Version: ' + pack_version + '&#10;Author: ' + pack_db_type + '">' + packName + '</span>';
+
+        
+        table.row.add([
+          item.id,
+          item.pack_name, // this now renders as HTML
+          item.version,
+          item.db_type,
+          item.build_date,
+          item.build_version,
+          item.uploaded_date
+        ]);
+      });
+
+      table.draw();
+    },
+    error: function(xhr, status, error) {
+      $('#response').text('Error: ' + error);
+    }
+  });
+}
+
   /************************************************/
 function deletePackByPackId()
 {

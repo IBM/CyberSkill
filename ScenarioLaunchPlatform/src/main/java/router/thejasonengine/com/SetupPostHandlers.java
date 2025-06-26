@@ -1405,7 +1405,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("Select * from public.tb_content_packs")
+			                connection.preparedQuery("SELECT id, pack_name, version, db_type, build_date, build_version, uploaded_date, pack_info FROM tb_content_packs")
 			                        .execute(
 			                        res -> {
 			                            if (res.succeeded()) 
