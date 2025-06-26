@@ -109,12 +109,13 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
               <table id="example" class="display" style="width:100%">
 			  <thead>
 			    <tr>
-			    	<th>id</th>
+			    	<th>id</th> 
 			      	<th>pack_name</th>      	
-			      	<th>pack_file_path</th>
-			      	<th>pack_output_path</th>
-			      	<th>pack_deployed</th>
-			      	<th>created_at</th>
+			      	<th>version</th>
+			      	<th>db_type</th>
+			      	<th>build_date</th>
+			      	<th>build_version</th>
+			      	<th>uploaded_date</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -349,9 +350,8 @@ document.addEventListener("DOMContentLoaded", function() {
              	table.clear();
             
 	            response.forEach((item) => {
-	                table.row.add([item.id, item.pack_name,item.pack_file_path,item.pack_output_path,item.pack_deployed,item.created_at]);
+	                table.row.add([item.id,item.pack_name,item.version,item.db_type,item.build_date,item.build_version,item.uploaded_date]);
 	            });
-            
            		table.draw();
           },
           error: function(xhr, status, error) 

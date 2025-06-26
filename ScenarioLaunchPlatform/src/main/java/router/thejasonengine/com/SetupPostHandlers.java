@@ -1245,16 +1245,28 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				Map<String,Object> map = new HashMap<String, Object>();
 				
 				ContentPackUtils.PackParseResult packResult;
-		        try {
-		            packResult = ContentPackUtils.unzipAndExtractPackJson(targetFilePath, currAbsolutePathString);
-		            map.put("pack_json", new JsonObject(packResult.packJsonContent));
-		        } catch (IOException e) {
-		            LOGGER.error("Failed to unzip and extract pack.json: " + e.getMessage());
-		            routingContext.fail(400);
-		            return;
-		        }
-		       
-				map.put("pack_name", JSONpayload.getValue("pack_name"));
+				try {
+				    packResult = ContentPackUtils.unzipAndExtractPackJson(targetFilePath, currAbsolutePathString);
+				    JsonObject json = new JsonObject(packResult.packJsonContent);
+
+				    // Put full jsonb content
+				    map.put("pack_json", json);
+
+				    // Extract individual fields for separate columns
+				    map.put("pack_name", json.getString("pack_name"));
+				    map.put("version", json.getString("version"));
+				    map.put("db_type", json.getString("db_type"));
+				    map.put("build_date", json.getString("build_date"));
+				    map.put("build_version", json.getString("build_version"));
+				    map.put("description", json.getString("description"));
+				    map.put("author", json.getString("author"));
+				    map.put("icon", json.getString("icon"));
+				    map.put("background_traffic", json.getString("background_traffic"));
+
+				} catch (IOException e) {
+				    LOGGER.error("Failed to unzip and extract pack.json: " + e.getMessage());
+				    routingContext.fail(400);
+				}
 	
 				map.put("pack_file_path", targetFilePath);
 				map.put("pack_output_path", currAbsolutePathString);
@@ -1286,8 +1298,11 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("INSERT INTO public.tb_content_packs (pack_file_path, pack_output_path, pack_file_content, pack_info) VALUES ($1, $2, $3, $4);")
-			                        .execute(Tuple.of(map.get("pack_file_path"),map.get("pack_output_path"),map.get("pack_file_content"),map.get("pack_json")),
+			                connection.preparedQuery("INSERT INTO tb_content_packs (pack_name, version, db_type, build_date, build_version, description,author, icon, background_traffic,pack_file_content, pack_info\r\n"
+			                		+ ") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);")
+			                        .execute(Tuple.of(map.get("pack_name"),map.get("version"),map.get("db_type"),map.get("build_date")
+			                        		,map.get("build_version"),map.get("description"),map.get("author"),map.get("icon"),
+			                        		map.get("background_traffic"),map.get("pack_file_content"),map.get("pack_json")),
 			                        res -> {
 			                            if (res.succeeded()) 
 			                            {
@@ -1607,7 +1622,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
 	                                        LOGGER.info("Successfully updated Pack");
 	                                        
 	                                        // Check if we should deploy
-	                                        if ("True".equalsIgnoreCase(pack_loaded)) {
+	                                       /* if ("True".equalsIgnoreCase(pack_loaded)) {
 	                                            if (zipFilePath != null && outputDir != null) {
 	                                                // Run deployment using the consistent detectOS method
 	                                                context.owner().executeBlocking(future -> {
@@ -1633,7 +1648,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
 	                                            } else {
 	                                                LOGGER.error("Deployment skipped: zipFilePath or outputDir not provided");
 	                                            }
-	                                        }
+	                                        }*/
 	                                        
 	                                        response.end(ja.encodePrettily());
 	                                    } else {
