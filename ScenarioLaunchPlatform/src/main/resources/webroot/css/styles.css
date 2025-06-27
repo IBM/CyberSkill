@@ -55,6 +55,9 @@ span.psw {
 	margin:0 auto;
 	margin-top: 150px;
 }
+#footer {
+  margin-top: 300px; /* Adjust this value until it looks right */
+}
 
 /* Change styles for span and cancel button on extra small screens */
 @media screen and (max-width: 300px) {
@@ -65,4 +68,67 @@ span.psw {
   .cancelbtn {
      width: 100%;
   }
+}
+/* Custom tooltip container */
+/* Essential tooltip styles */
+.custom-tooltip-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  overflow: visible;
+}
+
+.pack-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-tooltip {
+  /* Initially hidden */
+  visibility: hidden;
+  opacity: 0;
+  
+  /* Positioning */
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  /* Size and appearance */
+  width: 300px;
+  padding: 15px;
+  background: #333;
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  
+  /* Animation */
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+/* Show tooltip on hover */
+.custom-tooltip-container:hover .custom-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Tooltip arrow */
+.custom-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -10px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+/* Ensure table cells can display tooltips properly */
+#example td {
+  overflow: visible !important;
+  position: relative;
 }

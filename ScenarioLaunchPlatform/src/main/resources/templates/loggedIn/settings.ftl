@@ -11,11 +11,8 @@
 <link rel="stylesheet" href="css/font-awesome.min.css">
 <link rel="stylesheet" href="css/datatables.min.css">
 <link rel='stylesheet' href='css/fonts.css'>
-
-
 <script src="js/jquery.min.js"></script>
 <script src="js/datatables.js"></script>
-
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 </style>
@@ -690,7 +687,6 @@ function refreshConnections()
     
   <!-- End Grid -->
   </div>
-  
 <!-- End Page Container -->
 </div>
 <br>

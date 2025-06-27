@@ -11,8 +11,6 @@
 <link rel="stylesheet" href="css/font-awesome.min.css">
 <link rel="stylesheet" href="css/datatables.min.css">
 <link rel='stylesheet' href='css/fonts.css'>
-
-
 <script src="js/jquery.min.js"></script>
 <script src="js/datatables.js"></script>
 
@@ -130,6 +128,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 					          <option value="db2">db2</option>
 					          <option value="mysql">mysql</option>
 					          <option value="postgres">postgres</option>
+					          <option value="oracle">oracle</option>
 					        </select>
 					        </p>
 					    </div>
@@ -139,6 +138,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 					          <option value="Select">Select</option>
 					          <option value="Update">Update</option>
 					          <option value="Alert">Alert</option>
+					          <option value="Delete">Delete</option>
 					        </select>
 					        </p>
 					   	</div>
@@ -261,8 +261,6 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
     
   <!-- End Grid -->
   </div>
-  
-  
 <!-- End Page Container -->
 </div>
 <br>

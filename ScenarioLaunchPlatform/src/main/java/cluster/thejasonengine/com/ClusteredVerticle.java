@@ -51,6 +51,8 @@ import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.sqlclient.Pool;
 import memory.thejasonengine.com.Ram;
 import messaging.thejasonengine.com.Websocket;
+import router.thejasonengine.com.ContentPackHandler;
+import router.thejasonengine.com.FileUploadHandler;
 import router.thejasonengine.com.SetupPostHandlers;
 import router.thejasonengine.com.UpgradeHandler;
 import session.thejasonengine.com.SetupSession;
@@ -81,6 +83,8 @@ public class ClusteredVerticle extends AbstractVerticle {
 	private AuthUtils AU;
 	private SetupSession setupSession;
 	private SetupPostHandlers setupPostHandlers;
+	private FileUploadHandler fileUploadHandler;
+	private ContentPackHandler contentPackHandler;
 	private AgentDatabaseController agentDatabaseController;
 	
 	private UpgradeHandler upgradeHandler;
@@ -136,7 +140,11 @@ public class ClusteredVerticle extends AbstractVerticle {
 		
 		
 		upgradeHandler = new UpgradeHandler(vertx);
-		LOGGER.info("Set Handlers Setup");
+		LOGGER.info("upgrade handlers setup");
+		
+		
+		contentPackHandler = new ContentPackHandler(vertx);
+		LOGGER.info("contentpack handlers setup");
 		
 		Router router = Router.router(vertx);
 		
@@ -517,12 +525,15 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 
 	  	 router.post("/api/getAvailablePlugins").handler(BodyHandler.create()).handler(setupPostHandlers.getAvailablePlugins);
 	  	 
+	  	 /********************************************************************************/
+	  	 router.post("/api/installContentPack").handler(BodyHandler.create()).handler(contentPackHandler.installContentPack);
+	  	 router.post("/api/uninstallContentPack").handler(BodyHandler.create()).handler(contentPackHandler.uninstallContentPack);
 	  	
-	  	/*********************************************************************************/
+	  	 /*********************************************************************************/
 	  	 
-	  	router.post("/api/checkForUpgrade").handler(BodyHandler.create()).handler(upgradeHandler.checkForUpgrade);
+	  	 router.post("/api/checkForUpgrade").handler(BodyHandler.create()).handler(upgradeHandler.checkForUpgrade);
 	  	
-	  	
+	  	//router.post("/api/uploadFileToServer").handler(BodyHandler.create().setUploadsDirectory("tempUploads").setDeleteUploadedFilesOnEnd(false)).handler(fileUploadHandler.uploadFileToServer);
 	  	 /*********************************************************************************/
 	  	 //router.post("/api/monitor/guardium").handler(BodyHandler.create()).handler(setupPostHandlers.monitorGuardium);
 	  	 //router.post("/api/monitor/getMonitorGuardiumSourcesForCron").handler(BodyHandler.create()).handler(setupPostHandlers.getMonitorGuardiumSourcesForCron);
@@ -553,6 +564,18 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 router.post("/api/getOSTaskByTaskId").handler(BodyHandler.create()).handler(setupPostHandlers.getOSTaskByTaskId);
 	  	 //router.post("/api/updateOSTasksById").handler(BodyHandler.create()).handler(setupPostHandlers.updateOSTaskByTaskId);
 	  	 router.post("/api/deleteOSTasksByTaskId").handler(BodyHandler.create()).handler(setupPostHandlers.deleteOSTaskByTaskId);
+	  	 
+	  	 
+	  	 
+	  	 /********************************************************************************/
+	  	 /*These APIs are for the Content packs*/
+	  	 /********************************************************************************/
+	  	router.post("/api/addContentPack").handler(BodyHandler.create()).handler(setupPostHandlers.addPack);
+	  	 router.post("/api/getContentPacks").handler(BodyHandler.create()).handler(setupPostHandlers.getPacks);
+	  	 router.post("/api/getPackByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.getPackByPackId);
+	  	 router.post("/api/updatePackByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.updatePackByPackId);
+	  	// router.post("/api/deletePacksByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.deletePackByPackId);
+	  	 
 	  	 
 	  	/*********************************************************************************/
 	  	/*These are the controller APIs for the various databases we want to drive     				     */

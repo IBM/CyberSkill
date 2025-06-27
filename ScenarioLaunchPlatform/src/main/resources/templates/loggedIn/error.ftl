@@ -43,5 +43,6 @@
         <p>Have you tried recalling the heartbeat.</p>
         <p><a href="/loggedIn/dashboard.ftl">Return to Homepage</a></p>
     </div>
+  
 </body>
 </html>
