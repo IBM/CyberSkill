@@ -9,6 +9,10 @@
 
 package messaging.thejasonengine.com;
 
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,13 +24,74 @@ import io.vertx.core.json.JsonObject;
 
 public class PublisherVerticle extends AbstractVerticle {
     
-	private static final Logger LOGGER = LogManager.getLogger(PublisherVerticle.class);
-	@Override
-    public void start() {
-        EventBus eventBus = vertx.eventBus();
-        
-        PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(io.micrometer.prometheus.PrometheusConfig.DEFAULT);
-        Counter general_queue_counter = prometheusRegistry.counter("general.queue", "type", "counter");
+	private final Set<String> processedMessages = ConcurrentHashMap.newKeySet();
+	 private static final Logger LOGGER = LogManager.getLogger(PublisherVerticle.class);
+	    private Counter notificationCounter;
+	    
+	    @Override
+	    public void start() {
+	        EventBus eventBus = vertx.eventBus();
+	        PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(io.micrometer.prometheus.PrometheusConfig.DEFAULT);
+	        
+	        // Create counter for notifications
+	        notificationCounter = prometheusRegistry.counter("push.notifications", "type", "counter");
+	        
+	        JsonObject ctfMessage = new JsonObject().put("message", "Hello from Publisher to send.notification");
+	        eventBus.consumer("send.notification", message -> {
+	            try {
+	                JsonObject notification = (JsonObject) message.body();
+	                String messageId = notification.getString("id");
+	                
+	                // Deduplication check
+	                if (messageId != null && processedMessages.contains(messageId)) {
+	                    LOGGER.debug("Duplicate message ignored: {}", messageId);
+	                    message.reply("DUPLICATE");
+	                    return;
+	                }
+	                
+	                LOGGER.info("Received notification request: {}", notification.encodePrettily());
+	                
+	                // Add timestamp and ID
+	                String id = UUID.randomUUID().toString();
+	                notification.put("id", id)
+	                    .put("timestamp", System.currentTimeMillis());
+	                
+	                // Add to processed set
+	                processedMessages.add(id);
+	                
+	                // Broadcast to all connected clients
+	                eventBus.publish("sse.broadcast", notification.encode());
+	                
+	                // Increment counter
+	                notificationCounter.increment();
+	                
+	                LOGGER.debug("Notification broadcasted to clients");
+	                
+	                // Reply to sender
+	                message.reply("OK");
+	            } catch (Exception e) {
+	                LOGGER.error("Error processing notification: {}", e.getMessage());
+	                message.fail(500, "Internal server error");
+	            }
+	        });
+	        
+	        // Cleanup processed IDs periodically
+	        vertx.setPeriodic(60000, id -> {
+	            int size = processedMessages.size();
+	            processedMessages.clear();
+	            LOGGER.debug("Cleared {} processed message IDs", size);
+	        });
+	        // Initialize other queues (keep your existing code)
+	        initializeOtherQueues(eventBus, prometheusRegistry);
+	    }
+	
+
+	    
+	        
+	  
+	   
+        private void initializeOtherQueues(EventBus eventBus, PrometheusMeterRegistry registry) {
+        Counter general_queue_counter = registry.counter("general.queue", "type", "counter");
         general_queue_counter.increment();
         
         
@@ -38,14 +103,14 @@ public class PublisherVerticle extends AbstractVerticle {
         eventBus.send("special.queue", specialMessage);
         LOGGER.debug("Message sent to special.queue: " + specialMessage);
         
-        Counter special_queue_counter = prometheusRegistry.counter("special.queue", "type", "counter");
+        Counter special_queue_counter = registry.counter("special.queue", "type", "counter");
         special_queue_counter.increment();
         
         JsonObject queryMessage = new JsonObject().put("message", "Hello from Publisher to general.queue");
         eventBus.send("query.queue", queryMessage);
         LOGGER.debug("Message sent to query.queue: " + queryMessage);
         
-        Counter query_queue_counter = prometheusRegistry.counter("query.queue", "type", "counter");
+        Counter query_queue_counter = registry.counter("query.queue", "type", "counter");
         query_queue_counter.increment();
         
         
@@ -57,7 +122,7 @@ public class PublisherVerticle extends AbstractVerticle {
         eventBus.send("extensionService.queue", extensionService);
         LOGGER.debug("Message sent to query.queue: " + extensionService.encodePrettily());
         
-        Counter extensionService_counter = prometheusRegistry.counter("extensionService.queue", "type", "counter");
+        Counter extensionService_counter = registry.counter("extensionService.queue", "type", "counter");
         extensionService_counter.increment();
         
         // Simulating a producer that sends messages to a queue
@@ -67,4 +132,13 @@ public class PublisherVerticle extends AbstractVerticle {
             System.out.println("Message sent to queue: " + message);
         });*/
     }
+
+	    
+	   
+	    
+	  
+	    
+	   
+	  
+	
 }

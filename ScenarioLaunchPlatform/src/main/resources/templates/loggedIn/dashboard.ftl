@@ -280,5 +280,8 @@ function getConnections()
   }
 
 </script>
+<!-- SweetAlert2 and notification script -->
+<script src="/js/sweetalert.js"></script>
+<script src="/js/notifications.js"></script>
 </body>
 </html> 

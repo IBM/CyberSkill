@@ -39,6 +39,7 @@ import io.micrometer.core.instrument.Counter;
 import manager.thejasonengine.com.Admin;
 import messaging.thejasonengine.com.PublisherVerticle;
 import messaging.thejasonengine.com.SubscriberVerticle;
+import push.ctf.thejasonengine.com.SSEHandler;
 
 import cluster.thejasonengine.com.ClusteredVerticle;
 
@@ -91,6 +92,8 @@ public class WebVerticle extends AbstractVerticle {
                  vertx.deployVerticle(new ClusteredVerticle());
             	 vertx.deployVerticle(new PublisherVerticle());
             	 vertx.deployVerticle(new SubscriberVerticle());
+        
+            	
             } 
             
             else 
