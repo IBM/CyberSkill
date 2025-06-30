@@ -158,16 +158,20 @@ public class ContentPackHandler
 					                            {
 					                                // Handle query failure
 					                            	LOGGER.error("error: " + res.cause() );
+					                            	result.put("database_write", "Error writting query to database: " + res.cause().getLocalizedMessage().replaceAll("\"", "") );
 					                            }
 					                            //connection.close();
 					                        });
 						           	}
+						           	result.put("database_write", "All queries install processed");
+						           	
 			    		        }
 								else
 								{
 									LOGGER.error("User has incorrect access level");
 									result.put("access_response", "User has incorrect access level (Access Check FAIL");
 								}
+								response.send("{\"result\":\""+result+"\"}");
 						});
 			
 			        });
