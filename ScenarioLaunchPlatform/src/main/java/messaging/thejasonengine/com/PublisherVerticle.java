@@ -129,7 +129,7 @@ public class PublisherVerticle extends AbstractVerticle {
         /*vertx.setPeriodic(1000, id -> {
             JsonObject message = new JsonObject().put("message", "Hello from Publisher");
             eventBus.send("queue.address", message);
-            System.out.println("Message sent to queue: " + message);
+            LOGGER.debug("Message sent to queue: " + message);
         });*/
     }
 

@@ -32,7 +32,7 @@ public class ConfigLoader
 	    
 	    
 	    String configPath = Paths.get(filename).toAbsolutePath().toString();
-        System.out.println("Loading config from: " + configPath);
+        LOGGER.debug("Loading config from: " + configPath);
 	    
 	    ConfigStoreOptions fileStore = new ConfigStoreOptions()
 	        .setType("file")

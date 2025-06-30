@@ -1138,7 +1138,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	 * Users know what packs they have and what they've deployed*****************************************/
 	private void handleAddPack(RoutingContext routingContext)
 	{
-		LOGGER.info("insdie handleAddOSTask");
+		LOGGER.info("insdie handleAddPack");
 		
 		Context context = routingContext.vertx().getOrCreateContext();
 		Pool pool = context.get("pool");
@@ -1152,13 +1152,25 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		}
 		
 		HttpServerResponse response = routingContext.response();
+		List<FileUpload> uploads = routingContext.fileUploads();
+		try {
+		    
+		    if (uploads.isEmpty()) {
+		        LOGGER.warn("File upload attempt failed: No files received.");
+		        routingContext.response().setStatusCode(400).end("No file uploaded.");
+		        return;
+		    }
+		    
+		} catch (Exception e) {
+		    LOGGER.error("File upload failed with unexpected error", e);
+		    routingContext.response().setStatusCode(500).end("Server error while handling upload.");
+		}
+		LOGGER.info("Received headers: " + routingContext.request().headers());
+		LOGGER.info("File upload size: " + routingContext.fileUploads().size());
+		if (routingContext.request().getHeader("Content-Type") != null) {
+		    LOGGER.info("Content-Type header: " + routingContext.request().getHeader("Content-Type"));
+		}
 
-	    List<FileUpload> uploads = routingContext.fileUploads();
-	    if (uploads.isEmpty()) {
-	        LOGGER.error("No file uploaded");
-	        routingContext.fail(400);
-	        return;
-	    }
 	    
 	 // Parse form attributes (JSON payload is sent as form attributes)
 	    MultiMap formAttributes = routingContext.request().formAttributes();
@@ -1198,7 +1210,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
 				 Path currRelativePath = Paths.get("");
 			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
-			        System.out.println("Current absolute path is - " + currAbsolutePathString);
+			        LOGGER.debug("Current absolute path is - " + currAbsolutePathString);
 				
 				
 				
@@ -1209,18 +1221,11 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		}
 			 File outputFolder = new File(currAbsolutePathString);
 			 if (!outputFolder.exists()) {
-
 				 outputFolder.mkdir(); // Create the folder if it doesn't exist
 		}
-				    
-
-				
-				
 				 // Process the uploaded file
 		        FileUpload fileUpload = uploads.iterator().next();
 		        String uploadedFileName = fileUpload.uploadedFileName();
-		     
-			
 		        String targetFilePath = currAbsolutePathString +"\\contentpacks\\"+ fileUpload.fileName(); // Save file in "uploads/" directory
 		     // Read the file content as bytes
 			    byte[] fileBytes = null;

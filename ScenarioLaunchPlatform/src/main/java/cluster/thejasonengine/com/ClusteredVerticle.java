@@ -461,10 +461,9 @@ public class ClusteredVerticle extends AbstractVerticle {
     		// In start() method
     		BodyHandler bodyHandler = BodyHandler.create();
     		bodyHandler.setBodyLimit(1024 * 1024); // 1MB limit
-    		bodyHandler.setHandleFileUploads(false); // Disable file uploads
+    		bodyHandler.setHandleFileUploads(true); // Disable file uploads
 
     		router.route().handler(bodyHandler);
-    		router.route().handler(BodyHandler.create());
 
     		// Notification submission handler
     		router.post("/api/sendnotification").handler(this::handleNotificationSubmission);
@@ -570,6 +569,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 /********************************************************************************/
 	  	 /*These APIs are for the Content packs*/
 	  	 /********************************************************************************/
+	  	
 	  	router.post("/api/addContentPack").handler(BodyHandler.create()).handler(setupPostHandlers.addPack);
 	  	 router.post("/api/getContentPacks").handler(BodyHandler.create()).handler(setupPostHandlers.getPacks);
 	  	 router.post("/api/getPackByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.getPackByPackId);

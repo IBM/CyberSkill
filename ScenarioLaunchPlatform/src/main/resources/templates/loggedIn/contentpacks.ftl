@@ -278,11 +278,11 @@ function addPack(event) {
     if (fileInput.files.length > 0) {
         formData.append('pack_file_content', fileInput.files[0]);
     }
-    
+    console.log("File selected:", fileInput.files[0]);
+
     // Append JWT token
     const jwtToken = '${tokenObject.jwt}'; // Ensure tokenObject is defined
-    formData.append('jwt', jwtToken);
-
+    formData.append('jwt', jwtToken);;
     // Send AJAX request
     $.ajax({
         url: '/api/addContentPack',
