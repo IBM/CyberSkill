@@ -113,7 +113,10 @@ public class ContentPackHandler
 			        			
 						           	for(int i = 0; i < ja.size(); i ++)
 						           	{
-						           		
+						           		/*
+						           		 This needs to be a composit future as its an asyn call in a for loop. 
+						           		 until that's done, this wont return an accurate completion state.
+						           		 */
 						           		Map<String,Object> map = new HashMap<String, Object>();
 										
 						           		JsonObject queryObject = ja.getJsonObject(i);
