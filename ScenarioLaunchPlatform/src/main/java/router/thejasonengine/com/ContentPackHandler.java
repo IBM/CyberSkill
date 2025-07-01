@@ -3,7 +3,9 @@ package router.thejasonengine.com;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -85,14 +87,15 @@ public class ContentPackHandler
 			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
 			        
 			        
-			        String filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\mysql_query_inserts.sql";
+			        String filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\query_inserts.json";
 			        LOGGER.debug("System execution path is: " + filePath);
 			        
-			        readLines(routingContext.vertx(), filePath)
+			       
+			        readJsonFile(routingContext.vertx(), filePath)
 			        .onComplete(ar -> 
 			        {
 			        	LOGGER.debug("All lines have been read");
-			        	List<String> lines = ar.result();
+			        	JsonObject jo = ar.result();
 			            Pool pool = context.get("pool");
 			            if (pool == null)
 			        	{
@@ -102,86 +105,79 @@ public class ContentPackHandler
 			        		pool = context.get("pool");
 			        	}
 			            pool.getConnection(asyncreq -> 
-						{
+						{	
 								if (asyncreq.succeeded()) 
 						        {
 						         	SqlConnection connection = asyncreq.result();
-						           	JsonArray ja = new JsonArray();
+						           	JsonArray ja = jo.getJsonArray("queries");
 			        			
-						           	for (String sql : lines) 
-						            {
-						           		int i = 0;
-						           		LOGGER.debug(sql);
-						                    
-						                //utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
-						                //not sure we need to encode the sql if the file is giving it to us encoded.  
-						                    
-						                connection.preparedQuery(sql)
-							            .execute(
-					                        res -> {
-					                            if (res.succeeded()) 
+						           	for(int i = 0; i < ja.size(); i ++)
+						           	{
+						           		
+						           		Map<String,Object> map = new HashMap<String, Object>();
+										
+						           		JsonObject queryObject = ja.getJsonObject(i);
+						           		
+						           		utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+										
+						           		String query_string = queryObject.getString("query_string");
+										String encoded_query = Encodings.EscapeString(query_string);
+										LOGGER.debug("Query recieved: " + query_string);
+										LOGGER.debug("Query encoded: " + encoded_query);
+			            
+										LOGGER.debug("id: " + Integer.parseInt(queryObject.getString("id")));
+										LOGGER.debug("query_db_type" + queryObject.getString("query_db_type"));
+										LOGGER.debug("query_type", queryObject.getString("query_type"));
+										LOGGER.debug("query_usecase" + queryObject.getString("query_usecase"));
+										LOGGER.debug("encoded_query" +  encoded_query);
+										LOGGER.debug("db_connection_id" +  Integer.parseInt(queryObject.getString("db_connection_id")));
+										LOGGER.debug("query_loop"+ Integer.parseInt(queryObject.getString("query_loop")));
+										LOGGER.debug("video_link"+ queryObject.getString("video_link"));
+										
+										
+										map.put("id", Integer.parseInt(queryObject.getString("id")));
+										map.put("query_db_type", queryObject.getString("query_db_type"));
+										map.put("query_type", queryObject.getString("query_type"));
+										map.put("query_usecase", queryObject.getString("query_usecase"));
+										map.put("encoded_query", encoded_query);
+										map.put("db_connection_id", Integer.parseInt(queryObject.getString("db_connection_id")));
+										map.put("query_loop", Integer.parseInt(queryObject.getString("query_loop")));
+										map.put("query_description", queryObject.getString("query_description"));
+										map.put("video_link", queryObject.getString("video_link"));
+						           		
+										
+										connection.preparedQuery("Insert into public.tb_query(id, query_db_type, query_string, query_usecase, query_type, fk_tb_databaseConnections_id,query_loop, query_description, video_link) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9);")
+				                        .execute(Tuple.of(map.get("id"), map.get("query_db_type"), map.get("encoded_query"), map.get("query_usecase"), map.get("query_type"), map.get("db_connection_id"), map.get("query_loop"), map.get("query_description"),  map.get("video_link")),
+				                        res -> {
+				                            if (res.succeeded()) 
 					                            {
 					                                // Process the query result
-					                                
-					                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully added query\"}");
-			                                    	ja.add(jo);
-			                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
-			                                    	result.put("sql_response", ja);
-					                                
-					                            } 
+					                                LOGGER.info("Successfully added json object to array: " + res.toString());
+			                                    } 
 					                            else 
 					                            {
 					                                // Handle query failure
 					                            	LOGGER.error("error: " + res.cause() );
-					                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause()+"}");
-			                                    	ja.add(jo);
-			                                    	result.put("sql_response", ja);
-					                                //res.cause().printStackTrace();
+					                            	result.put("database_write", "Error writting query to database: " + res.cause().getLocalizedMessage().replaceAll("\"", "") );
 					                            }
 					                            //connection.close();
 					                        });
-						                
-						                }
-						            }
-						            else
-						            {
-						            	LOGGER.error("Unable to get database connection");
-						            }
-							});
-			        	})
-			        .onFailure(asyncfail ->{LOGGER.error(asyncfail.getLocalizedMessage());
+						           	}
+						           	result.put("database_write", "All queries install processed");
+						           	
+			    		        }
+								else
+								{
+									LOGGER.error("User has incorrect access level");
+									result.put("access_response", "User has incorrect access level (Access Check FAIL");
+								}
+								response.send("{\"result\":\""+result+"\"}");
+						});
+			
 			        });
-			       
-			        
-		        
-					/*respond to the UI jobs complete */
-		        
 		        }
-				else
-				{
-					
-					LOGGER.error("User has incorrect access level");
-					result.put("access_response", "User has incorrect access level (Access Check FAIL");
-				}
-				
-				
-				
-				/*
-					String encoded_query = Encodings.EscapeString(query);
-					LOGGER.debug("Query recieved: " + query);
-					LOGGER.debug("Query encoded: " + encoded_query);
-				*/
-				
-				
 			}
-			else
-			{
-				LOGGER.error("User NOT permitted to run handleInstallContentPack (JWT Check FAIL)");
-				result.put("jwt_response", "User NOT permitted to run handleInstallContentPack (JWT Check FAIL)");
-				
-			}
-		}
-		response.send("{\"result\":\""+result+"\"}");
+		}     
 	}
 	
 	public void handleUninstallContentPack(RoutingContext routingContext)
@@ -246,5 +242,25 @@ public class ContentPackHandler
 
 	        return promise.future();
 	    }
-	
+	 public static Future<JsonObject> readJsonFile(Vertx vertx, String filePath) 
+	 {
+	     LOGGER.debug("Reading JSON File: ", filePath); 
+		 Promise<JsonObject> promise = Promise.promise();
+	      vertx.fileSystem().readFile(filePath, ar -> 
+	      {
+	    	if (ar.succeeded()) 
+	   	   	{
+	       	    Buffer buffer = ar.result();
+	       	    JsonObject json = buffer.toJsonObject();
+	       	    LOGGER.debug("JSON: " + json.encodePrettily());
+	       	    promise.complete(json);
+	   	   	} 
+	   	   	else 
+	   	   	{
+	   	   		LOGGER.error("Failed to read file: " +filePath+" - "+ ar.cause().getMessage());
+	   	   		promise.fail("Failed to read file: " +filePath+" - "+ ar.cause().getMessage());
+	   	   	}
+	      });
+		  return promise.future();
+	 }
 }

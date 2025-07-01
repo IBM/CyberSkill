@@ -1,0 +1,37 @@
+{
+    "queries": [
+        {
+            "id": "997",
+            "query_type": "mysql",
+            "query_db_type": "insert",
+            "query_string": "this is mysql statement1 ;  this is mysql statement2",
+            "db_connection_id": "35",
+            "query_usecase": "useCaseName",
+            "query_loop": "1",
+            "query_description": "useCaseDescription",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": "998",
+            "query_type": "mysql",
+            "query_db_type": "insert",
+            "query_string": "this is mysql statement1 ;  this is mysql statement2",
+            "db_connection_id": "35",
+            "query_usecase": "useCaseName",
+            "query_loop": "1",
+            "query_description": "useCaseDescription",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": "999",
+            "query_type": "mysql",
+            "query_db_type": "insert",
+            "query_string": "this is mysql statement1 ;  this is mysql statement2",
+            "db_connection_id": "35",
+            "query_usecase": "useCaseName",
+            "query_loop": "1",
+            "query_description": "useCaseDescription",
+            "video_link": "VideoURL"
+        }
+    ]
+}

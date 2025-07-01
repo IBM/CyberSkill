@@ -26,4 +26,27 @@ INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type
 INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (25, 'mysql_127.0.0.1_crm_Umar', 'inactive', 'mysql', '', 'Umar', 'guardium', '3306', 'crm', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', '', '', 'Standard User', 'Select,Update,Insert,Delete,Drop,Execute');
 INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (26, 'mysql_127.0.0.1_crm_Una', 'inactive', 'mysql', '', 'Una', 'guardium', '3306', 'crm', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', '', '', 'Standard User', 'Select,Update,Insert,Delete,Drop,Execute');
 
-UPDATE public.tb_version SET version = 'v01.0009';
+
+-- 1.00010 changes --
+
+
+CREATE TABLE IF NOT EXISTS public.tb_content_packs
+(
+    id SERIAL PRIMARY KEY,
+    pack_name character varying(255),
+    version character varying(255),
+	db_type character varying(255),
+	build_date character varying(255),
+	build_version character varying(255),
+	description character varying(255),
+	author character varying(255),
+	icon character varying(255),
+	background_traffic character varying(255),
+    pack_file_content bytea,
+	pack_info jsonb,
+	pack_deployed character varying(5) DEFAULT 'false',
+	uploaded_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+UPDATE public.tb_version SET version = 'v01.0010';

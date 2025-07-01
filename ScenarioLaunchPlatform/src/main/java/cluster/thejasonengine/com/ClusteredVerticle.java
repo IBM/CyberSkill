@@ -461,7 +461,6 @@ public class ClusteredVerticle extends AbstractVerticle {
     		bodyHandler.setHandleFileUploads(true); // Disable file uploads
 
     		router.route().handler(bodyHandler);
-    		router.route().handler(BodyHandler.create());
 
     	
     		// Add in start() method after creating router
@@ -558,6 +557,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 /********************************************************************************/
 	  	 /*These APIs are for the Content packs*/
 	  	 /********************************************************************************/
+	  	
 	  	router.post("/api/addContentPack").handler(BodyHandler.create()).handler(setupPostHandlers.addPack);
 	  	 router.post("/api/getContentPacks").handler(BodyHandler.create()).handler(setupPostHandlers.getPacks);
 	  	 router.post("/api/getPackByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.getPackByPackId);

@@ -1,0 +1,68 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "status": "inactive",
+            "db_type": "mysql",
+            "db_version": "8.0.2",
+            "db_username": "usertest",
+            "db_password": "passwordtest",
+            "db_port": "4000",
+            "db_database": "databasename",
+            "db_url": "localhost",
+            "db_jdbcClassName": "com.mysql.cj.jdbc.Driver",
+            "db_userIcon": "usericon",
+            "db_databaseIcon": "databaseicon",
+            "db_alias": "alias",
+            "db_access": ""
+        },
+        {
+            "id": 2,
+            "status": "inactive",
+            "db_type": "mysql",
+            "db_version": "8.0.2",
+            "db_username": "usertest",
+            "db_password": "passwordtest",
+            "db_port": "4000",
+            "db_database": "databasename",
+            "db_url": "localhost",
+            "db_jdbcClassName": "com.mysql.cj.jdbc.Driver",
+            "db_userIcon": "usericon",
+            "db_databaseIcon": "databaseicon",
+            "db_alias": "alias",
+            "db_access": ""
+        },
+        {
+            "id": 3,
+            "status": "inactive",
+            "db_type": "mysql",
+            "db_version": "8.0.2",
+            "db_username": "usertest",
+            "db_password": "passwordtest",
+            "db_port": "4000",
+            "db_database": "databasename",
+            "db_url": "localhost",
+            "db_jdbcClassName": "com.mysql.cj.jdbc.Driver",
+            "db_userIcon": "usericon",
+            "db_databaseIcon": "databaseicon",
+            "db_alias": "alias",
+            "db_access": ""
+        },
+        {
+            "id": 4,
+            "status": "inactive",
+            "db_type": "mysql",
+            "db_version": "8.0.2",
+            "db_username": "usertest",
+            "db_password": "passwordtest",
+            "db_port": "4000",
+            "db_database": "databasename",
+            "db_url": "localhost",
+            "db_jdbcClassName": "com.mysql.cj.jdbc.Driver",
+            "db_userIcon": "usericon",
+            "db_databaseIcon": "databaseicon",
+            "db_alias": "alias",
+            "db_access": ""
+        }
+    ]
+}
