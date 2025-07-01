@@ -65,13 +65,10 @@ import io.vertx.ext.web.handler.FormLoginHandler;
 import io.vertx.ext.web.handler.TemplateHandler;
 import io.vertx.ext.web.openapi.RouterBuilder;
 import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
-
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import push.ctf.thejasonengine.com.SSEHandler;
 
 
 
@@ -461,21 +458,12 @@ public class ClusteredVerticle extends AbstractVerticle {
     		// In start() method
     		BodyHandler bodyHandler = BodyHandler.create();
     		bodyHandler.setBodyLimit(1024 * 1024); // 1MB limit
-    		bodyHandler.setHandleFileUploads(false); // Disable file uploads
+    		bodyHandler.setHandleFileUploads(true); // Disable file uploads
 
     		router.route().handler(bodyHandler);
     		router.route().handler(BodyHandler.create());
 
-    		// Notification submission handler
-    		router.post("/api/sendnotification").handler(this::handleNotificationSubmission);
-    		// Add SSE route
-    		router.get("/notifications").handler(new SSEHandler());
-    		// Notification form route
-    		router.get("/notification-form").handler(ctx -> {
-    		    ctx.response().sendFile("webroot/notification-form.html");
-    		});
-    		
-    		
+    	
     		// Add in start() method after creating router
     		router.route().failureHandler(this::handleFailure);
 
@@ -685,82 +673,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	        .putHeader("Content-Type", "text/plain")
 	        .end(message);
 	}
- // Add to handleNotificationSubmission method
-	private void handleNotificationSubmission(RoutingContext ctx) {
-	    // Use body handler to ensure body is processed
-	 
-	    // Check if body has been processed
-	    if (ctx.body() == null) {
-	        LOGGER.warn("Request body not processed for {}", ctx.request().remoteAddress());
-	        ctx.fail(400, new Throwable("Request body not processed"));
-	        return;
-	    }
-
-	    try {
-	        JsonObject body = ctx.getBodyAsJson();
-	        LOGGER.info("Incoming POST /api/sendnotification with body: {}", ctx.getBodyAsString());
-	        if (body == null) {
-	            // Try to get body as string
-	            String bodyString = ctx.getBodyAsString();
-	            if (bodyString == null || bodyString.isEmpty()) {
-	                LOGGER.warn("Empty request body from {}", ctx.request().remoteAddress());
-	                ctx.fail(400, new Throwable("Request body is empty"));
-	                return;
-	            }
-	            
-	            // Try to parse as JSON string
-	            try {
-	                body = new JsonObject(bodyString);
-	            } catch (Exception e) {
-	                LOGGER.error("Failed to parse body as JSON: {}", bodyString, e);
-	                ctx.fail(400, new Throwable("Invalid JSON format"));
-	                return;
-	            }
-	        }
-
-	        String team = body.getString("team");
-	        String challenge = body.getString("challenge");
-	        String result = body.getString("result");
-
-	        if (team == null || team.isEmpty() || 
-	            challenge == null || challenge.isEmpty() || 
-	            result == null || result.isEmpty()) {
-	            
-	            LOGGER.warn("Missing required fields from {}: team={}, challenge={}, result={}", 
-	                        ctx.request().remoteAddress(), team, challenge, result);
-	            
-	            ctx.fail(400, new Throwable("Missing required fields"));
-	            return;
-	        }
-
-	        // Create notification object
-	        JsonObject notification = new JsonObject()
-	            .put("team", team)
-	            .put("challenge", challenge)
-	            .put("result", result);
-	        
-	        // Send to PublisherVerticle via event bus
-	        EventBus eventBus = vertx.eventBus();
-	        eventBus.request("send.notification", notification, reply -> {
-	            if (reply.succeeded()) {
-	                ctx.response()
-	                    .putHeader("Content-Type", "text/plain")
-	                    .end("Notification sent successfully!");
-	            } else {
-	                Throwable cause = reply.cause();
-	                LOGGER.error("Failed to send notification: {}", cause.getMessage(), cause);
-	                ctx.response()
-	                    .setStatusCode(500)
-	                    .end("Failed to send notification: " + cause.getMessage());
-	            }
-	        });
-	    } catch (Exception e) {
-	        LOGGER.error("Unexpected error processing notification submission: {}", e.getMessage(), e);
-	        ctx.response()
-	            .setStatusCode(500)
-	            .end("Internal server error");
-	    }
-	}
+ 
 
     // Add this exception class at the bottom of the file
     class HttpException extends RuntimeException {

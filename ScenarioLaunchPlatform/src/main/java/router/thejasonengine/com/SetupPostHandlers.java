@@ -1138,7 +1138,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	 * Users know what packs they have and what they've deployed*****************************************/
 	private void handleAddPack(RoutingContext routingContext)
 	{
-		LOGGER.info("insdie handleAddOSTask");
+		LOGGER.info("insdie handleAddPack");
 		
 		Context context = routingContext.vertx().getOrCreateContext();
 		Pool pool = context.get("pool");
@@ -1175,7 +1175,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		
 		if (JSONpayload.getString("jwt") == null) 
 	    {
-	    	LOGGER.info(" handleAddTask required fields not detected (jwt)");
+	    	LOGGER.info(" handleAddPAck required fields not detected (jwt)");
 	    	routingContext.fail(400);
 	    } 
 		else
