@@ -1142,7 +1142,6 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		
 		Context context = routingContext.vertx().getOrCreateContext();
 		Pool pool = context.get("pool");
-		OSDetectorAndTaskControl scheduler = new OSDetectorAndTaskControl();
 		if (pool == null)
 		{
 			LOGGER.debug("pull is null - restarting");
@@ -1322,9 +1321,17 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                            {
 			                                // Handle query failure
 			                            	LOGGER.error("error: " + res.cause() );
-			                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause().getMessage().replaceAll("\"", "")+"}");
-	                                    	ja.add(jo);
-	                                    	response.send(ja.encodePrettily());
+			                            	Throwable cause = res.cause();
+			    			                String message = cause.getMessage();
+			    			                JsonObject jo = new JsonObject();
+			    			                if (cause.getMessage().contains("duplicate key value violates unique constraint")) {
+			    			                    response.setStatusCode(409); // Conflict
+			    			                    jo.put("error", "A content pack with the same name and version already exists.");
+			    			                } else {
+			    			                    response.setStatusCode(500); // Generic server error
+			    			                    jo.put("error", "Database error: " + cause.getMessage().replaceAll("\"", ""));
+			    			                }
+			    			                response.send(ja.encodePrettily());
 			                                //res.cause().printStackTrace();
 			                            }
 			                            // Close the connection

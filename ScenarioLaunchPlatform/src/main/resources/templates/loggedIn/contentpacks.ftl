@@ -97,6 +97,29 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
     flex: 1;
   }
 </style>
+<style>
+.packs-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #323232;
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  opacity: 0;
+  z-index: 9999;
+  transition: opacity 0.5s ease-in-out;
+  pointer-events: none;
+}
+
+.packs-toast.show {
+  opacity: 1;
+}
+
+
+</style>
 </head>
 <body class="w3-theme-l5">
 
@@ -235,23 +258,6 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 	
 				<div class="row">
 			   		  <div class="col-25">
-				         Pack File Path: 
-				      </div>
-				      <div class="col-75">		        
-					       <input type="text" id="packFilePathToEditId" value="" class="w3-right w3-white w3-border" >
-					  </div>
-				</div> 
-				<div class="row">
-			   		  <div class="col-25">
-				         Pack File Path: 
-				      </div>
-				      <div class="col-75">		        
-					       <input type="text" id="packOutputPathToEditId" value="" class="w3-right w3-white w3-border" >
-					  </div>
-				</div> 
-		
-				<div class="row">
-			   		  <div class="col-25">
 				         Pack Loaded 
 				      </div>
 				      <div class="col-75">	
@@ -264,7 +270,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 			   <button id="ClosePackButton" class="w3-button w3-right w3-white w3-border" onclick="closePack()">Close</button>
 			  </div>
 			</div>
-			
+</div>
 			<!-- EOF Modal --> 
 <script>
 // Accordion
@@ -346,13 +352,19 @@ function addPack(event) {
         processData: false, // Ensure jQuery does not process FormData
         contentType: false, // Ensure correct content type for FormData
         success: function(response) {
-            console.log('Success:', response);
-            alert('Form submitted successfully!');
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', xhr.responseText);
-            alert('Failed to submit the form.');
-        }
+    console.log('Success:', response);
+    showToast('Pack uploaded successfully!', 3500);
+},
+
+error: function(xhr, status, error) {
+    console.error('Error:', xhr.responseText);
+    if (xhr.status === 409) {
+    
+        showToast('Duplicate pack: name and version already exist.', 5000);
+    } else {
+        showToast('Failed to submit the pack. Please try again.', 5000);
+    }
+}
     });
 }
 
@@ -369,6 +381,16 @@ document.addEventListener("DOMContentLoaded", function() {
         form.addEventListener('submit', addPack);
     }
 });
+
+function showToast(message, duration = 3000) {
+ console.log("TOAST IS CALLED");
+    const toast = document.getElementById("packs-toast");
+    toast.textContent = message;
+    toast.className = "packs-toast show";
+    setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+    }, duration);
+}
 
 
 let table; //
@@ -473,7 +495,6 @@ function getPacks() {
 }
 
 
-
  
 
   /************************************************/
@@ -520,8 +541,6 @@ function updatePackByPackId()
 	const PackId = $('#packIdToEditId').val();
 	const PackName = $('#packNameToEditId').val();
 	const PackDeployed = $('#packDeployedToEditId').val();
-	const PackZipFilePath = $('#packFilePathToEditId').val();
-	const PackOutputDir = $('#packOutputPathToEditId').val();
 	console.log("Pack Deployed status is : " + PackDeployed);
 	
 	
@@ -531,9 +550,7 @@ function updatePackByPackId()
           jwt: jwtToken,
           pack_id: PackId,
           pack_name: PackName,
-          pack_loaded: PackDeployed,
-          zipFilePath: PackZipFilePath,
-          outputDir : PackOutputDir
+          pack_loaded: PackDeployed
           });
   	
   	$.ajax({
@@ -575,8 +592,6 @@ function getPackByPackID(varId)
           {
              	console.log(response);
              	document.getElementById('packNameToEditId').value = response[0].pack_name;
-             	document.getElementById('packFilePathToEditId').value = response[0].pack_file_path;
-             	document.getElementById('packOutputPathToEditId').value = response[0].pack_output_path;
              	document.getElementById('packDeployedToEditId').value = response[0].pack_deployed;
              	document.getElementById('packIdToEditId').value = response[0].id;
   				document.getElementById('id_edit_modal').style.display='block';
@@ -695,5 +710,7 @@ function getPackByPackID(varId)
 	});
 }
 </script>
+
+	<div id="packs-toast" class="packs-toast"></div>
 </body>
 </html> 
