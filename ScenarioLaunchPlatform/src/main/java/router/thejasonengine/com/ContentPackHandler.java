@@ -97,7 +97,7 @@ public class ContentPackHandler
 			            Pool pool = context.get("pool");
 			            if (pool == null)
 			        	{
-			        		LOGGER.debug("pull is null - restarting");
+			        		LOGGER.debug("pool is null - restarting");
 			        		DatabaseController DB = new DatabaseController(routingContext.vertx());
 			        		LOGGER.debug("Taking the refreshed context pool object");
 			        		pool = context.get("pool");
@@ -107,9 +107,9 @@ public class ContentPackHandler
 								if (asyncreq.succeeded()) 
 						        {
 						         	SqlConnection connection = asyncreq.result();
-						           	JsonArray ja = jo.getJsonArray("queries");
+						           	JsonArray ja_queries = jo.getJsonArray("queries");
 			        			
-						           	for(int i = 0; i < ja.size(); i ++)
+						           	for(int i = 0; i < ja_queries.size(); i++)
 						           	{
 						           		/*
 						           		 This needs to be a composit future as its an asyn call in a for loop. 
@@ -117,32 +117,34 @@ public class ContentPackHandler
 						           		 */
 						           		Map<String,Object> map = new HashMap<String, Object>();
 										
-						           		JsonObject queryObject = ja.getJsonObject(i);
+						           		JsonObject queryObject = ja_queries.getJsonObject(i);
 						           		
 						           		utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
 										
 						           		String query_string = queryObject.getString("query_string");
 										String encoded_query = Encodings.EscapeString(query_string);
+										
+										
 										LOGGER.debug("Query recieved: " + query_string);
 										LOGGER.debug("Query encoded: " + encoded_query);
 			            
-										LOGGER.debug("id: " + Integer.parseInt(queryObject.getString("id")));
+										LOGGER.debug("id: " + queryObject.getInteger("id"));
 										LOGGER.debug("query_db_type" + queryObject.getString("query_db_type"));
 										LOGGER.debug("query_type", queryObject.getString("query_type"));
 										LOGGER.debug("query_usecase" + queryObject.getString("query_usecase"));
 										LOGGER.debug("encoded_query" +  encoded_query);
-										LOGGER.debug("db_connection_id" +  Integer.parseInt(queryObject.getString("db_connection_id")));
-										LOGGER.debug("query_loop"+ Integer.parseInt(queryObject.getString("query_loop")));
+										LOGGER.debug("db_connection_id" +  queryObject.getInteger("db_connection_id"));
+										LOGGER.debug("query_loop"+ queryObject.getInteger("query_loop"));
 										LOGGER.debug("video_link"+ queryObject.getString("video_link"));
 										
 										
-										map.put("id", Integer.parseInt(queryObject.getString("id")));
+										map.put("id", queryObject.getInteger("id"));
 										map.put("query_db_type", queryObject.getString("query_db_type"));
 										map.put("query_type", queryObject.getString("query_type"));
 										map.put("query_usecase", queryObject.getString("query_usecase"));
 										map.put("encoded_query", encoded_query);
-										map.put("db_connection_id", Integer.parseInt(queryObject.getString("db_connection_id")));
-										map.put("query_loop", Integer.parseInt(queryObject.getString("query_loop")));
+										map.put("db_connection_id", queryObject.getInteger("db_connection_id"));
+										map.put("query_loop", queryObject.getInteger("query_loop"));
 										map.put("query_description", queryObject.getString("query_description"));
 										map.put("video_link", queryObject.getString("video_link"));
 						           		
@@ -153,7 +155,7 @@ public class ContentPackHandler
 				                            if (res.succeeded()) 
 					                            {
 					                                // Process the query result
-					                                LOGGER.info("Successfully added json object to array: " + res.toString());
+					                                LOGGER.info("Successfully added json object to query array ["+ map.get("id") +"]: " + res.toString());
 			                                    } 
 					                            else 
 					                            {
@@ -199,18 +201,18 @@ public class ContentPackHandler
 								if (asyncreq.succeeded()) 
 						        {
 						         	SqlConnection connection = asyncreq.result();
-						           	JsonArray ja = jo.getJsonArray("users");
+						           	JsonArray ja_users = jo.getJsonArray("users");
 			        			
-						           	for(int i = 0; i < ja.size(); i ++)
+						           	for(int i = 0; i < ja_users.size(); i++)
 						           	{
 						           		
 						           		
-						           		JsonObject JsonOb = ja.getJsonObject(i);
+						           		JsonObject JsonOb = ja_users.getJsonObject(i);
 						           		/*
 						           		 This needs to be a composit future as its an asyn call in a for loop. 
 						           		 until that's done, this wont return an accurate completion state.
 						           		 */
-						           		String id = JsonOb.getString("id");
+						           		Integer id = JsonOb.getInteger("id");
 						           		String status = JsonOb.getString("status");
 										String db_type = JsonOb.getString("db_type");
 										String db_version = JsonOb.getString("db_version");
@@ -251,11 +253,12 @@ public class ContentPackHandler
 				                            {
 				                                
 				                            	
-				                            	LOGGER.info("Successfully added json object to db: " + res.toString());
+				                            	LOGGER.info("Successfully added json object to connection db ["+ id +"]");
+				                            	
 		                                    } 
 				                            else 
 				                            {
-				                            	LOGGER.info("Unable to add json object to db: " + res.toString());
+				                            	LOGGER.info("Unable to add json object to db connection : [ " +id + "] " + res.toString());
 		                                    }
 				                        });
 										result.put("database_write", "All queries install processed");
@@ -293,13 +296,13 @@ public class ContentPackHandler
 								if (asyncreq.succeeded()) 
 						        {
 						         	SqlConnection connection = asyncreq.result();
-						           	JsonArray ja = jo.getJsonArray("users");
+						           	JsonArray ja_stories = jo.getJsonArray("stories");
 			        			
-						           	for(int i = 0; i < ja.size(); i ++)
+						           	for(int i = 0; i < ja_stories.size(); i++)
 						           	{
 						           		
 						           		
-						           		JsonObject JsonOb = ja.getJsonObject(i);
+						           		JsonObject JsonOb = ja_stories.getJsonObject(i);
 						           		
 						           		String sql = "insert into public.tb_stories(story) VALUES ($1)";
 				                            
@@ -400,14 +403,14 @@ public class ContentPackHandler
 									{
 										JsonObject user = users.getJsonObject(i);
 										
-										String sql = "delete from public.tb_user where id = $1";
+										String sql = "delete from public.tb_databaseconnections where id = $1";
 			                            connection.preparedQuery(sql)
 			                            .execute(Tuple.of(user.getInteger("id")))
 			                            .onSuccess(res3 -> {
-			                            	LOGGER.debug("user id: " + user.getInteger("id") + " removed from database");
+			                            	LOGGER.debug("user id: " + user.getInteger("id") + " tb_databaseconnections removed from database");
 			                            })
 			                            .onFailure(err -> {
-			                            	LOGGER.error("user id: " + user.getInteger("id") + " not removed from database " + err.getLocalizedMessage());
+			                            	LOGGER.error("user id: " + user.getInteger("id") + " tb_databaseconnections not removed from database " + err.getLocalizedMessage());
 			                            });
 			                         }
 									
@@ -419,10 +422,10 @@ public class ContentPackHandler
 			                            connection.preparedQuery(sql)
 			                            .execute(Tuple.of(query.getInteger("id")))
 			                            .onSuccess(res3 -> {
-			                            	LOGGER.debug("query id: " + query.getInteger("id") + " removed from database");
+			                            	LOGGER.debug("query id: " + query.getInteger("id") + " tb_query removed from database");
 			                            })
 			                            .onFailure(err -> {
-			                            	LOGGER.error("query id: " + query.getInteger("id") + " not removed from database " + err.getLocalizedMessage());
+			                            	LOGGER.error("query id: " + query.getInteger("id") + " tb_query not removed from database " + err.getLocalizedMessage());
 			                            });
 									}
 									for(int i = 0; i < stories.size(); i++ )
@@ -433,10 +436,10 @@ public class ContentPackHandler
 			                            connection.preparedQuery(sql)
 			                            .execute(Tuple.of(story.getInteger("id")))
 			                            .onSuccess(res3 -> {
-			                            	LOGGER.debug("story id: " + story.getInteger("id") + " removed from database");
+			                            	LOGGER.debug("story id: " + story.getInteger("id") + " tb_stories removed from database");
 			                            })
 			                            .onFailure(err -> {
-			                            	LOGGER.error("story id: " + story.getInteger("id") + " not removed from database " + err.getLocalizedMessage());
+			                            	LOGGER.error("story id: " + story.getInteger("id") + " tb_stories not removed from database " + err.getLocalizedMessage());
 			                            });	
 									}
 									

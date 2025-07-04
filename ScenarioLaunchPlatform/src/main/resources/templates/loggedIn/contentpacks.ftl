@@ -142,7 +142,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Content Packs Form</h6>
+              <h6 class="w3-opacity">Upload your content pack</h6>
               <!-- -->
   				<form id="packForm" enctype="multipart/form-data">
      <div id="edit" class="w3-container city">
@@ -181,7 +181,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Packs</h6>
+              <h6 class="w3-opacity">Available system content packs</h6>
               
               <table id="example" class="display" style="width:100%">
 			  <thead>
@@ -261,13 +261,14 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 				         Pack Loaded 
 				      </div>
 				      <div class="col-75">	
-						 <input type="text" id="packDeployedToEditId" value="" class="w3-right w3-white w3-border" >
+						 <input type="text" id="packDeployedToEditId" value="" class="w3-right w3-white w3-border" readonly>
 					</div>
 				</div> 
 			 </div>
 			  <div class="w3-container w3-blue-grey w3-padding">
-			   <button id="UpdatePackButton" class="w3-button w3-right w3-white w3-border" onclick="updatePackByPackId()">Deploy</button>
-			   <button id="ClosePackButton" class="w3-button w3-right w3-white w3-border" onclick="closePack()">Close</button>
+			   
+			   <button id="UpdatePackButton" class="w3-button w3-right w3-white w3-border" onclick="installPack()">Install</button>
+			   <button id="UpdatePackButton" class="w3-button w3-right w3-white w3-border" onclick="uninstallPack()">Uninstall</button>
 			  </div>
 			</div>
 </div>
@@ -321,6 +322,107 @@ function openNav() {
 	</script>
 
 <script>
+function installPack() 
+{
+    const jwtToken = '${tokenObject.jwt}';
+  	
+  	const PackId = $('#packNameToEditId').val();
+  	
+	const jsonData = JSON.stringify({
+          jwt: jwtToken,
+          pack_name: PackId,
+         });
+  	
+  	$.ajax({
+          url: '/api/installContentPack', 
+          type: 'POST',
+          data: jsonData,
+          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+          success: function(response) 
+          {
+    		console.log('Success:', response);
+    		showToast('Pack install invoked successfully!', 3500);
+		  },
+		  error: function(xhr, status, error) 
+		  {
+	    	console.error('Error:', xhr.responseText);
+    	  }
+     });
+}
+
+function uninstallPack() 
+{
+    const jwtToken = '${tokenObject.jwt}';
+  	
+  	const PackId = $('#packNameToEditId').val();
+  	
+	const jsonData = JSON.stringify({
+          jwt: jwtToken,
+          pack_name: PackId,
+         });
+  	
+  	$.ajax({
+          url: '/api/uninstallContentPack', 
+          type: 'POST',
+          data: jsonData,
+          contentType: 'application/json; charset=utf-8', // Set content type to JSON
+          success: function(response) 
+          {
+    		console.log('Success:', response);
+    		showToast('Pack uninstall invoked successfully!', 3500);
+		  },
+		  error: function(xhr, status, error) 
+		  {
+	    	console.error('Error:', xhr.responseText);
+    	  }
+     });
+}
+
+
+// Attach event listener when the page loads
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById('packForm');
+    if (form) {
+        form.reset(); // This clears all form fields including text
+        const fileInput = document.querySelector('[name="pack_file_content"]');
+        if (fileInput) {
+            fileInput.value = ''; // Some browsers don’t clear file inputs with .reset()
+        }
+
+        form.addEventListener('submit', addPack);
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function addPack(event) {
     event.preventDefault(); // Prevent default form submission
 
@@ -464,7 +566,7 @@ function getPacks() {
             '</div>' +
             '<div class="tooltip-row">' +
               '<div class="tooltip-label">Uploaded:</div>' +
-              '<div class="tooltip-value">' + (item.uploaded_date || 'n/a') + '</div>' +
+              '<div class="tooltip-value">' + (formatTimestamp(item.uploaded_date) || 'n/a') + '</div>' +
             '</div>' +
           '</div>';
 
@@ -482,7 +584,7 @@ function getPacks() {
           item.db_type,
           item.build_date,
           item.build_version,
-          item.uploaded_date
+          formatTimestamp(item.uploaded_date)
         ]);
       });
 
@@ -709,6 +811,23 @@ function getPackByPackID(varId)
 		 }
 	});
 }
+
+	function formatTimestamp(timestamp) 
+	{
+	  const date = new Date(timestamp);
+	
+	  const day = String(date.getDate()).padStart(2, '0');
+	  const month = date.toLocaleString('en-US', { month: 'long' }); // "July"
+	  const year = date.getFullYear();
+	
+	  const hours = String(date.getHours()).padStart(2, '0');
+	  const minutes = String(date.getMinutes()).padStart(2, '0');
+	
+	 const formatted = day + '-' + month + '-' + year + ' [' + hours + ':' + minutes + ']';
+	 
+	 return formatted;
+	}
+
 </script>
 
 	<div id="packs-toast" class="packs-toast"></div>
