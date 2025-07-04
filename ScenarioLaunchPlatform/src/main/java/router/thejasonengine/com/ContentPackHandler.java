@@ -303,11 +303,12 @@ public class ContentPackHandler
 						           		
 						           		
 						           		JsonObject JsonOb = ja_stories.getJsonObject(i);
-						           		
-						           		String sql = "insert into public.tb_stories(story) VALUES ($1)";
+						           		Integer id = JsonOb.getInteger("id");
+						           		JsonObject story = JsonOb.getJsonObject("story");
+						           		String sql = "insert into public.tb_stories(id, story) VALUES ($1, $2)";
 				                            
 				                            connection.preparedQuery(sql)
-				                            .execute(Tuple.of(JsonOb))
+				                            .execute(Tuple.of(id, story))
 				                            .onSuccess(res3 -> {
 				                            	LOGGER.debug("JSON story Inserted Successfully!");
 				                            })
