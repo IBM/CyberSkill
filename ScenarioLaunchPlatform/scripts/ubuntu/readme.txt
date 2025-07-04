@@ -1,0 +1,1 @@
+*/2 * * * * /bin/bash /opt/slp/scripts/cronrunner.sh >> /opt/slp/log/cronrunner.log 2>&1
