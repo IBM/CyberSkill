@@ -1,0 +1,115 @@
+{
+    "stories": [
+        {
+            "id": 1,
+            "story": {
+                "name": "StoryName",
+                "description": "Story Description",
+                "author": "Story Author",
+                "outcomes": "What the user should release as a result of running this",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 500,
+                        "pause_in_seconds": 5000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    },
+                    {
+                        "query_id": 502,
+                        "pause_in_seconds": 6000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    },
+                    {
+                        "query_id": 505,
+                        "pause_in_seconds": 3000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    },
+                    {
+                        "query_id": 503,
+                        "pause_in_seconds": 2000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "story": {
+                "name": "StoryName",
+                "description": "Story Description",
+                "author": "Story Author",
+                "outcomes": "What the user should release as a result of running this",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 500,
+                        "pause_in_seconds": 5000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    },
+                    {
+                        "query_id": 502,
+                        "pause_in_seconds": 6000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    },
+                    {
+                        "query_id": 505,
+                        "pause_in_seconds": 3000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    },
+                    {
+                        "query_id": 503,
+                        "pause_in_seconds": 2000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "story": {
+                "name": "StoryName",
+                "description": "Story Description",
+                "author": "Story Author",
+                "outcomes": "What the user should release as a result of running this",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 500,
+                        "pause_in_seconds": 5000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    },
+                    {
+                        "query_id": 502,
+                        "pause_in_seconds": 6000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    },
+                    {
+                        "query_id": 505,
+                        "pause_in_seconds": 3000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    },
+                    {
+                        "query_id": 503,
+                        "pause_in_seconds": 2000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Chapter Title"
+                    }
+                ]
+            }
+        }
+    ]
+}
