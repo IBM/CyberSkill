@@ -99,7 +99,7 @@
             "query_description": "This building block is part of a Malicious procedure story\n It can be run indivdually as part of a manual sequence with building blocks 7(Create STP Account Groups) and 8(Call STP Account Groups)   \n - The sequence is 7,8,9,8 to get the desired effect of a Malicious procedure violation\n - Execute as Liher\n- Replace Stored Procedures (drop table)",
             "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
         },
-	 {
+        {
             "id": 10,
             "query_type": "mysql",
             "query_db_type": "Create",
@@ -107,10 +107,10 @@
             "db_connection_id": 35,
             "query_usecase": "Create Multipe users",
             "query_loop": 30,
-            "query_description": "In this building block the user will create multiple users in the database. This can be run as an individual block or in sequence with building block 11(Grant privileges to Multiple users) and 12(Delete Multiple users) to clean up and reset.\\n\\n The mentioned blocks can also be run in story mode as Massive grants violation ",
+            "query_description": "In this building block the user will create multiple users in the database. This can be run as an individual block or in sequence with building block 11(Grant privileges to Multiple users) and 12(Delete Multiple users) to clean up and reset.\n\n The mentioned blocks can also be run in story mode as Massive grants violation ",
             "video_link": "VideoURL"
         },
-	{
+        {
             "id": 11,
             "query_type": "mysql",
             "query_db_type": "Grant",
@@ -118,10 +118,10 @@
             "db_connection_id": 35,
             "query_usecase": "Grant privileges to Multiple users",
             "query_loop": 30,
-            "query_description": "In this building block the user will grant privileges to  multiple users in the database. This can be run in sequence with building block 10(Create Multipe users) and 12(Delete Multiple users) to clean up and reset.\\n\\n The mentioned blocks can also be run in story mode as Massive grants violation ",
+            "query_description": "In this building block the user will grant privileges to  multiple users in the database. This can be run in sequence with building block 10(Create Multipe users) and 12(Delete Multiple users) to clean up and reset.\n\n The mentioned blocks can also be run in story mode as Massive grants violation ",
             "video_link": "VideoURL"
         },
-	{
+        {
             "id": 12,
             "query_type": "mysql",
             "query_db_type": "Drop",
@@ -129,10 +129,10 @@
             "db_connection_id": 35,
             "query_usecase": "Drop Multiple users",
             "query_loop": 30,
-            "query_description": "In this building block the user will drop multiple users in the database. This can be run in sequence with building block 10(Create Multipe users) and 11(Grant privileges to Multiple users).\\n\\n The mentioned blocks can also be run in story mode as Massive grants violation",
+            "query_description": "In this building block the user will drop multiple users in the database. This can be run in sequence with building block 10(Create Multipe users) and 11(Grant privileges to Multiple users).\n\n The mentioned blocks can also be run in story mode as Massive grants violation",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 13,
             "query_type": "mysql",
             "query_db_type": "Insert",
@@ -143,7 +143,7 @@
             "query_description": "In this query we insert a random row into tbl_bugs",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 14,
             "query_type": "mysql",
             "query_db_type": "Insert",
@@ -154,7 +154,7 @@
             "query_description": "In this query we insert a random row into tbl_calls",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 15,
             "query_type": "mysql",
             "query_db_type": "Insert",
@@ -165,7 +165,7 @@
             "query_description": "In this query we insert a random row into tbl_accounts",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 16,
             "query_type": "mysql",
             "query_db_type": "Insert",
@@ -176,7 +176,7 @@
             "query_description": "In this query we insert a random row into tbl_email_lists",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 17,
             "query_type": "mysql",
             "query_db_type": "Insert",
@@ -187,7 +187,7 @@
             "query_description": "In this query we insert a random row into tbl_product",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 18,
             "query_type": "mysql",
             "query_db_type": "Select",
@@ -198,7 +198,7 @@
             "query_description": "In this query we select a random number of rows from tbl_bugs",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 19,
             "query_type": "mysql",
             "query_db_type": "Select",
@@ -209,7 +209,7 @@
             "query_description": "In this query we select a random number of rows from tbl_calls",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 20,
             "query_type": "mysql",
             "query_db_type": "Select",
@@ -220,7 +220,7 @@
             "query_description": "In this query we select a random number of rows from tbl_crm_accounts_status",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 21,
             "query_type": "mysql",
             "query_db_type": "Select",
@@ -231,7 +231,7 @@
             "query_description": "In this query we select a random number of rows from tbl_crm_accounts",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 22,
             "query_type": "mysql",
             "query_db_type": "Select",
@@ -242,7 +242,7 @@
             "query_description": "In this query we select a random number of rows from tbl_email_lists",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 23,
             "query_type": "mysql",
             "query_db_type": "Select",
@@ -253,7 +253,7 @@
             "query_description": "In this query we select a random number of rows from tbl_marketing_campaign",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 24,
             "query_type": "mysql",
             "query_db_type": "Select",
@@ -264,7 +264,7 @@
             "query_description": "In this query we select a random number of rows from tbl_marketing_template",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 25,
             "query_type": "mysql",
             "query_db_type": "Select",
@@ -275,7 +275,7 @@
             "query_description": "In this query we select a random number of rows from tbl_product",
             "video_link": "VideoURL"
         },
-		{
+        {
             "id": 25,
             "query_type": "mysql",
             "query_db_type": "Update",
@@ -283,9 +283,8 @@
             "db_connection_id": 35,
             "query_usecase": "Update from crm.tbl_product",
             "query_loop": 1,
-            "query_description": "In this query we Update a rows in tbl_product",8
+            "query_description": "In this query we Update a rows in tbl_product",
             "video_link": "VideoURL"
         }
-
     ]
 }
