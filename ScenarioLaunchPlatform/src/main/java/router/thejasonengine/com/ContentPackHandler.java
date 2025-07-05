@@ -1,5 +1,6 @@
 package router.thejasonengine.com;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class ContentPackHandler
 		JsonObject result = new JsonObject();
 		HttpServerResponse response = routingContext.response();
 		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		String pack_name = "tmp";
 		
 		if (JSONpayload.getString("jwt") == null || JSONpayload.getString("pack_name") == null) 
 	    {
@@ -78,7 +80,7 @@ public class ContentPackHandler
 					result.put("access_response", "User has correct access level (Access Check PASS");
 		        
 					/*read the json file*/
-					String pack_name = JSONpayload.getString("pack_name");
+					pack_name = JSONpayload.getString("pack_name");
 					LOGGER.debug("Attempting install process for pack_name: " + pack_name);
 					
 					Path currRelativePath = Paths.get("");
@@ -328,6 +330,42 @@ public class ContentPackHandler
 		        }
 			}
 		}  
+		
+		/*Now lets move the chron tasks to the right folder*/
+		boolean enableContentPackCronActivity = true;
+		if(enableContentPackCronActivity)
+		{
+			LOGGER.debug("Enabling content pack cron activity");
+			try
+			{
+				String jarDir = new File(getClass()
+				        .getProtectionDomain()
+				        .getCodeSource()
+				        .getLocation()
+				        .toURI())
+				        .getParent();
+	
+				    // Folder path relative to the JAR
+				    Path folderPath = Paths.get(jarDir, pack_name);
+				    LOGGER.debug("Creating content in: " + folderPath.toString());
+				    
+				   
+			}
+			catch(Exception e)
+			{
+				LOGGER.error("Unable to calculate system path: " + e.getLocalizedMessage());
+			}
+			
+			
+		}
+		else
+		{
+			LOGGER.debug("Not enabling content pack cron activity");
+		}
+		
+		
+		
+		
 		response.send("{\"result\":\"Operation submitted\"}");
 		
 	}
