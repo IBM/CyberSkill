@@ -1,34 +1,40 @@
 #!/usr/bin/env bash
-# runById.sh <datasource> <id>— POST a SQL query to the datasource API
+# runById.sh <datasource> <id> — POST a SQL query to the datasource API
+# runById.sh with no parameters will randomly pick from a list of datasources and ids.
 # Example: ./runById mysql_localhost_crm_polly 12
 
 set -euo pipefail
 
+# Predefined list of datasources and IDs
+DATASOURCES=("mysql_localhost_crm_liher" "mysql_localhost_crm_polly" "mysql_localhost_crm_john" "mysql_localhost_crm_jason")
+IDS=("13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23" "24" "25")
+
 ###############################################################################
-# 1. Argument check
+# 1. Argument check or random fallback
 ###############################################################################
 if [[ $# -ne 2 ]]; then
-  echo "Usage: $0 <datasource> $1 <id>"
-  exit 1
+  echo "No or insufficient arguments provided. Picking random values..."
+  DATASOURCE=$(shuf -n1 -e "${DATASOURCES[@]}")
+  ID=$(shuf -n1 -e "${IDS[@]}")
+  echo "Using random datasource: $DATASOURCE"
+  echo "Using random ID: $ID"
+else
+  DATASOURCE="$1"
+  ID="$2"
 fi
-DATASOURCE="$1"
-ID = "$2"
 
-
-
-# echo "ID: $ID"
 ###############################################################################
-# 2. Build JSON payload safely (cat <<'EOF' keeps literal quotes)
+# 2. Build JSON payload safely
 ###############################################################################
 PAYLOAD=$(cat <<EOF
 {
   "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZmlyc3RuYW1lIjoiamFzb24iLCJzdXJuYW1lIjoiZmxvb2QiLCJlbWFpbCI6Imphc29uLmZsb29kQGVtYWlsLmNvbSIsInVzZXJuYW1lIjoibXl1c2VybmFtZSIsImFjdGl2ZSI6IjEiLCJhdXRobGV2ZWwiOjEsImlhdCI6MTczMzkxMzU1NywiZXhwIjoxNzMzOTEzNjE3fQ.mvDvSanNTCvN5puizSme7URjPbhWOkRfW3ZioUWz174",
   "datasource": "${DATASOURCE}",
-  "queryId": "${ID}",
-  }
+  "queryId": "${ID}"
+}
 EOF
 )
-# echo "Payload: $PAYLOAD"
+
 ###############################################################################
 # 3. Call curl and log everything
 ###############################################################################
