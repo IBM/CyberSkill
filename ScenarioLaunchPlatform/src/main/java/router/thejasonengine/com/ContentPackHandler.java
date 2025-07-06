@@ -24,6 +24,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.sqlclient.Pool;
 import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Tuple;
+import utils.thejasonengine.com.FolderCopier;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.AsyncFile;
@@ -346,10 +347,25 @@ public class ContentPackHandler
 				        .getParent();
 	
 				    // Folder path relative to the JAR
-				    Path folderPath = Paths.get(jarDir, pack_name);
-				    LOGGER.debug("Creating content in: " + folderPath.toString());
+				    Path srcfolderPath = Paths.get(jarDir, "/contentpacks/" + pack_name);
+				    String sourceFolder = srcfolderPath.toString();
+				    LOGGER.debug("Creating content in: " + sourceFolder);
 				    
-				   
+				    Path dstfolderPath = Paths.get(jarDir, "/scripts/" + pack_name);
+				   	String destinationFolder = dstfolderPath.toString();
+				   	LOGGER.debug("Creating content in: " + destinationFolder);
+				   	
+				    FolderCopier.copyFolder(routingContext.vertx(), sourceFolder, destinationFolder, res -> 
+				    {
+				      if (res.succeeded()) 
+				      {
+				    	  LOGGER.debug("Folder copied successfully!");
+				      } 
+				      else 
+				      {
+				    	  LOGGER.error("Failed to copy folder: " + res.cause());
+				      }
+				    });
 			}
 			catch(Exception e)
 			{
