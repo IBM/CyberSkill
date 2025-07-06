@@ -127,10 +127,10 @@ public class ContentPackHandler
 						           		String query_string = queryObject.getString("query_string");
 										String encoded_query = Encodings.EscapeString(query_string);
 										
-										
+										/*
 										LOGGER.debug("Query recieved: " + query_string);
 										LOGGER.debug("Query encoded: " + encoded_query);
-			            
+										
 										LOGGER.debug("id: " + queryObject.getInteger("id"));
 										LOGGER.debug("query_db_type" + queryObject.getString("query_db_type"));
 										LOGGER.debug("query_type", queryObject.getString("query_type"));
@@ -139,7 +139,7 @@ public class ContentPackHandler
 										LOGGER.debug("db_connection_id" +  queryObject.getInteger("db_connection_id"));
 										LOGGER.debug("query_loop"+ queryObject.getInteger("query_loop"));
 										LOGGER.debug("video_link"+ queryObject.getString("video_link"));
-										
+										*/
 										
 										map.put("id", queryObject.getInteger("id"));
 										map.put("query_db_type", queryObject.getString("query_db_type"));
@@ -232,7 +232,7 @@ public class ContentPackHandler
 										
 										
 										String db_connection_id = db_type+"_"+db_url+"_"+db_database+"_"+db_username;
-										
+										/*
 										LOGGER.debug("id recieved: " + id);
 										LOGGER.debug("db_type recieved: " + db_type);
 										LOGGER.debug("db_connection_id recieved: " + db_connection_id);
@@ -247,8 +247,7 @@ public class ContentPackHandler
 										LOGGER.debug("db_databaseIcon recieved: " + db_databaseIcon);
 										LOGGER.debug("db_alias recieved: " + db_alias);
 										LOGGER.debug("db_access recieved: " + db_access);
-										
-										
+										*/
 										connection.preparedQuery("Insert into public.tb_databaseConnections(id, status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon,db_alias,db_access) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)")
 				                        .execute(Tuple.of(id, status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon,db_alias,db_access),
 				                        res -> {
@@ -336,7 +335,7 @@ public class ContentPackHandler
 		boolean enableContentPackCronActivity = true;
 		if(enableContentPackCronActivity)
 		{
-			LOGGER.debug("Enabling content pack cron activity");
+			LOGGER.debug("****************************** Enabling content pack cron activity **************************************");
 			try
 			{
 				String jarDir = new File(getClass()
@@ -374,7 +373,7 @@ public class ContentPackHandler
 		}
 		else
 		{
-			LOGGER.debug("Not enabling content pack cron activity");
+			LOGGER.debug("************************** Not enabling content pack cron activity *******************************************");
 		}
 		response.send("{\"result\":\"Operation submitted\"}");
 	}
@@ -572,7 +571,7 @@ public class ContentPackHandler
 	   	   	{
 	       	    Buffer buffer = ar.result();
 	       	    JsonObject json = buffer.toJsonObject();
-	       	    LOGGER.debug("JSON: " + json.encodePrettily());
+	       	    //LOGGER.debug("JSON: " + json.encodePrettily());
 	       	    promise.complete(json);
 	   	   	} 
 	   	   	else 
