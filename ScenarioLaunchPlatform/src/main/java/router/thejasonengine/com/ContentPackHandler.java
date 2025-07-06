@@ -371,21 +371,13 @@ public class ContentPackHandler
 			{
 				LOGGER.error("Unable to calculate system path: " + e.getLocalizedMessage());
 			}
-			
-			
 		}
 		else
 		{
 			LOGGER.debug("Not enabling content pack cron activity");
 		}
-		
-		
-		
-		
 		response.send("{\"result\":\"Operation submitted\"}");
-		
 	}
-	
 	public void handleUninstallContentPack(RoutingContext routingContext)
 	{
 		LOGGER.debug("inside: handleUninstallContentPack ");
@@ -501,6 +493,37 @@ public class ContentPackHandler
 						        }
 						});
 			        });
+			        
+			        try
+					{
+						String jarDir = new File(getClass()
+						        .getProtectionDomain()
+						        .getCodeSource()
+						        .getLocation()
+						        .toURI())
+						        .getParent();
+			
+			        Path dstfolderPath = Paths.get(jarDir, "/scripts/" + pack_name);
+				   	String destinationFolder = dstfolderPath.toString();
+				   	LOGGER.debug("Creating content in: " + destinationFolder);
+				   	
+				  
+				        utils.thejasonengine.com.FolderDelete.deleteDirectory(routingContext.vertx(), destinationFolder, res -> 
+				        {
+				        	if (res.succeeded()) 
+						    {
+						    	  LOGGER.debug("Folder deleted successfully: " + destinationFolder );
+						    } 
+						    else 
+						    {
+						    	  LOGGER.error("Failed to delete folder: " + res.cause());
+						    }
+				        });
+					}
+			        catch(Exception e)
+			        {
+			        	LOGGER.error("Unable to delete directory: " + e.toString());
+			        }
 		        }
 			}
 		}
