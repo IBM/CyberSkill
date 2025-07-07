@@ -181,6 +181,10 @@ public class ContentPackHandler
 			
 			        });
 			        
+			        
+			        
+			        
+			        
 			        /**********************************************************************************************************/
 			        filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\users.json";
 			        LOGGER.debug("System execution path is: " + filePath);
@@ -273,7 +277,11 @@ public class ContentPackHandler
 								}
 						});
 			
+			            
 			        });
+			        
+			        
+			        
 			        
 			        /**********************************************************************************************************/
 			        filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\story_inserts.json";
@@ -325,10 +333,13 @@ public class ContentPackHandler
 									result.put("access_response", "User has incorrect access level (Access Check FAIL");
 								}
 						});
-			
+			            
 			        });
+			        
 		        }
+				
 			}
+			
 		}  
 		
 		/*Now lets move the chron tasks to the right folder*/
@@ -375,6 +386,31 @@ public class ContentPackHandler
 		{
 			LOGGER.debug("************************** Not enabling content pack cron activity *******************************************");
 		}
+		/***************************/
+        Pool pool = context.get("pool");
+        if (pool == null)
+    	{
+    		LOGGER.debug("poll is null - restarting");
+    		DatabaseController DB = new DatabaseController(routingContext.vertx());
+    		LOGGER.debug("Taking the refreshed context pool object");
+    		pool = context.get("pool");
+    	}
+        pool.getConnection(asyncreq -> 
+		{	
+				if (asyncreq.succeeded()) 
+		        {
+					SqlConnection connection = asyncreq.result();
+					String sql = "UPDATE public.tb_content_packs SET pack_deployed = 'true' WHERE pack_name = $1";
+                    connection.preparedQuery(sql)
+                    .execute(Tuple.of(JSONpayload.getString("pack_name")))
+                        .onSuccess(res3 -> {
+                        	LOGGER.debug("Pack_name: " + JSONpayload.getString("pack_name")+ " tb_content_packs deployment updated to true");
+                        })
+                        .onFailure(err -> {
+                        	LOGGER.error("Pack_name: " + JSONpayload.getString("pack_name")+ " tb_content_packs deployment status failed to update" + err.getLocalizedMessage());
+                        });
+		        }
+		});
 		response.send("{\"result\":\"Operation submitted\"}");
 	}
 	public void handleUninstallContentPack(RoutingContext routingContext)
@@ -523,6 +559,34 @@ public class ContentPackHandler
 			        {
 			        	LOGGER.error("Unable to delete directory: " + e.toString());
 			        }
+			        
+			        /***************************/
+			        Pool pool = context.get("pool");
+		            if (pool == null)
+		        	{
+		        		LOGGER.debug("poll is null - restarting");
+		        		DatabaseController DB = new DatabaseController(routingContext.vertx());
+		        		LOGGER.debug("Taking the refreshed context pool object");
+		        		pool = context.get("pool");
+		        	}
+		            pool.getConnection(asyncreq -> 
+					{	
+							if (asyncreq.succeeded()) 
+					        {
+								SqlConnection connection = asyncreq.result();
+								String sql = "UPDATE public.tb_content_packs SET pack_deployed = 'false' WHERE pack_name = $1";
+		                        connection.preparedQuery(sql)
+		                        .execute(Tuple.of(pack_name))
+		                            .onSuccess(res3 -> {
+		                            	LOGGER.debug("Pack_name: " + pack_name+ " tb_content_packs deployment updated to false");
+		                            })
+		                            .onFailure(err -> {
+		                            	LOGGER.error("Pack_name: " + pack_name+ " tb_content_packs deployment status failed to update" + err.getLocalizedMessage());
+		                            });
+					        }
+					});
+			        
+			        
 		        }
 			}
 		}

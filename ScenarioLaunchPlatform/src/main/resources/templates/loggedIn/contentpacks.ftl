@@ -181,7 +181,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Available system content packs</h6>
+              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="getPacks();" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='purple'" onmouseout="this.style.color='gray'"></i> Refresh available content packs </h6>
               
               <table id="example" class="display" style="width:100%">
 			  <thead>
