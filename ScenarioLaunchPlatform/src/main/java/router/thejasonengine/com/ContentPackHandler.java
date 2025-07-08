@@ -357,7 +357,7 @@ public class ContentPackHandler
 				        .getParent();
 	
 				    // Folder path relative to the JAR
-				    Path srcfolderPath = Paths.get(jarDir, "/contentpacks/" + pack_name);
+				    Path srcfolderPath = Paths.get(jarDir, "/contentpacks/" + pack_name + "/scripts");
 				    String sourceFolder = srcfolderPath.toString();
 				    LOGGER.debug("Creating content in: " + sourceFolder);
 				    
