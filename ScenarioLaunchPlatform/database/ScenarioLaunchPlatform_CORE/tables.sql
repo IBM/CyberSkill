@@ -206,14 +206,12 @@ ALTER SEQUENCE tb_query_types_id_seq RESTART WITH 5000;
 	INSERT INTO public.tb_query_types (id,query_type) VALUES (10,'Setup');
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (11, 'New Grants');
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (12, 'Brute-force Attack');
-	
-	
-	-- 1.0009 changes --
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (13, 'SQL Injection');
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (14, 'DDL');
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (15, 'DML');
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (16, 'DQL');
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (17, 'DCL');
+	INSERT INTO public.tb_query_types (id, query_type) VALUES (18, 'Massive Grants');
 	
 	
 	
