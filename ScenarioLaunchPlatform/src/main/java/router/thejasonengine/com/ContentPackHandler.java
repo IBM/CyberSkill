@@ -455,7 +455,7 @@ public class ContentPackHandler
 			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
 			        
 			        
-			        String filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\uninstall.json";
+			        String filePath = currAbsolutePathString + "/contentpacks\\" + pack_name + "/sql/uninstall.json";
 			        LOGGER.debug("System execution path is: " + filePath);
 			        
 			       
