@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# mysql_getValidatedDatabaseConnections.sh — POST a SQL query to the datasource API
-# Example: ./mysql_getValidatedDatabaseConnections
+# getValidatedDatabaseConnections.sh — POST a SQL query to the datasource API
+# Example: ./getValidatedDatabaseConnections
 
 set -euo pipefail
 

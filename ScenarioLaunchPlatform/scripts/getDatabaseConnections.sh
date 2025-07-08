@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# mysql_getDatabaseConnections.sh — POST a SQL query to the datasource API
-# Example: ./mysql_getDatabaseConnections
+# getDatabaseConnections.sh — POST a SQL query to the datasource API
+# Example: ./getDatabaseConnections
 
 set -euo pipefail
 
