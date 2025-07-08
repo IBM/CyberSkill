@@ -88,7 +88,7 @@ public class ContentPackHandler
 			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
 			        
 			        
-			        String filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\query_inserts.json";
+			        String filePath = currAbsolutePathString + "/contentpacks/" + pack_name + "/sql/query_inserts.json";
 			        LOGGER.debug("System execution path is: " + filePath);
 			        
 			       
@@ -186,7 +186,7 @@ public class ContentPackHandler
 			        
 			        
 			        /**********************************************************************************************************/
-			        filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\users.json";
+			        filePath = currAbsolutePathString + "/contentpacks/" + pack_name + "/sql/users.json";
 			        LOGGER.debug("System execution path is: " + filePath);
 			        
 			       
@@ -284,7 +284,7 @@ public class ContentPackHandler
 			        
 			        
 			        /**********************************************************************************************************/
-			        filePath = currAbsolutePathString + "\\contentpacks\\" + pack_name + "\\sql\\story_inserts.json";
+			        filePath = currAbsolutePathString + "/contentpacks/" + pack_name + "/sql/story_inserts.json";
 			        LOGGER.debug("System execution path is: " + filePath);
 			        
 			       
