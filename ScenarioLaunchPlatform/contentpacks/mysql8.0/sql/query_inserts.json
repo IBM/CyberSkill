@@ -276,7 +276,7 @@
             "video_link": "VideoURL"
         },
         {
-            "id": 25,
+            "id": 26,
             "query_type": "mysql",
             "query_db_type": "Update",
             "query_string": "UPDATE crm.tbl_product SET quantity = quantity + 1 WHERE id = (SELECT id FROM (SELECT id FROM crm.tbl_product ORDER BY RAND() LIMIT 1) AS r);",
