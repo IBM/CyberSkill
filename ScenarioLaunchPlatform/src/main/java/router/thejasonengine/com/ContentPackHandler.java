@@ -449,13 +449,13 @@ public class ContentPackHandler
 		        
 					/*read the json file*/
 					String pack_name = JSONpayload.getString("pack_name");
-					LOGGER.debug("Attempting install process for pack_name: " + pack_name);
+					LOGGER.debug("Attempting uninstall process for pack_name: " + pack_name);
 					
 					Path currRelativePath = Paths.get("");
 			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
 			        
 			        
-			        String filePath = currAbsolutePathString + "/contentpacks\\" + pack_name + "/sql/uninstall.json";
+			        String filePath = currAbsolutePathString + "/contentpacks/" + pack_name + "/sql/uninstall.json";
 			        LOGGER.debug("System execution path is: " + filePath);
 			        
 			       
