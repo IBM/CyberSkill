@@ -12,7 +12,6 @@ drop table if exists public.tb_query_types CASCADE;
 drop table if exists public.tb_version CASCADE;
 drop table if exists public.tb_stories CASCADE;
 drop table if exists public.tb_myvars CASCADE;
-
 drop table if exists public.tb_content_packs CASCADE;
 
 
@@ -151,12 +150,6 @@ CREATE TABLE IF NOT EXISTS public.tb_databaseconnections
     PRIMARY KEY (id)
 );
 
--- RAISE NOTICE 'Created tb_databaseConnections';
--- insert into public.tb_databaseConnections(status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon)  VALUES('active','mysql_127.0.0.1_world_root' ,'mysql', '8.4.2', 'root', 'mysqladmin', '3306', 'world', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', 'userIcon', 'databaseIcon', 'Standard User', 'Select,Update');
--- delete from tb_databaseConnections;
-
-
-
 ALTER SEQUENCE tb_databaseconnections_id_seq RESTART WITH 5000;
 
 /************************************************************************************/
@@ -182,8 +175,6 @@ CREATE TABLE IF NOT EXISTS public.tb_query
 ALTER SEQUENCE tb_query_id_seq RESTART WITH 5000;
 
 RAISE NOTICE 'Created tb_query';
-
-END;$$;
 /*****************************************************************/
 
 CREATE TABLE IF NOT EXISTS public.tb_query_types
@@ -214,7 +205,9 @@ ALTER SEQUENCE tb_query_types_id_seq RESTART WITH 5000;
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (18, 'Massive Grants');
 	
 	
-	
+END;$$;	
+
+
 CREATE FUNCTION function_login(var_username TEXT, var_password TEXT)
 returns table (
 		id integer,
