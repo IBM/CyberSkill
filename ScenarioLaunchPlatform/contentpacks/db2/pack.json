@@ -6,6 +6,6 @@
     "build_version": "139",
     "description": "A brief description of the pack contents",
     "author": "Official",
-    "icon": "my2sql.png",
+    "icon": "db2.png",
     "background_traffic": "yes"
 }
