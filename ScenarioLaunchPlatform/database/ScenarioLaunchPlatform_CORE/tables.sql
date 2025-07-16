@@ -129,6 +129,8 @@ INSERT INTO public.tb_content_packs (id, pack_name, version, db_type, build_date
 INSERT INTO public.tb_content_packs (id, pack_name, version, db_type, build_date, build_version, description, author, icon, background_traffic, pack_info, pack_deployed) VALUES (3, 'oracle', 'v1.0', 'oracle', '08-Jul-2025', '139', 'A brief description of the pack contents', 'Official', 'oracle.png', 'yes', '{"icon": "oracle.png", "author": "Official", "db_type": "oracle", "version": "v1.0", "pack_name": "oracle", "build_date": "08-Jul-2025", "description": "A brief description of the pack contents", "build_version": "139", "background_traffic": "yes"}', 'false');
 INSERT INTO public.tb_content_packs (id, pack_name, version, db_type, build_date, build_version, description, author, icon, background_traffic, pack_info, pack_deployed) VALUES (4, 'postgres', 'v1.0', 'postgres', '08-Jul-2025', '139', 'A brief description of the pack contents', 'Official', 'postgres.png', 'yes', '{"icon": "postgres.png", "author": "Official", "db_type": "postgres", "version": "v1.0", "pack_name": "postgres", "build_date": "08-Jul-2025", "description": "A brief description of the pack contents", "build_version": "139", "background_traffic": "yes"}', 'false');
 
+ALTER SEQUENCE public.tb_content_packs_id_seq RESTART WITH 5;
+
 /************************************************************************************/
 CREATE TABLE IF NOT EXISTS public.tb_databaseconnections
 (
