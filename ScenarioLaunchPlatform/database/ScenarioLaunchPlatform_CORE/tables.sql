@@ -131,6 +131,7 @@ INSERT INTO public.tb_content_packs (id, pack_name, version, db_type, build_date
 
 ALTER SEQUENCE public.tb_content_packs_id_seq RESTART WITH 5;
 
+
 /************************************************************************************/
 CREATE TABLE IF NOT EXISTS public.tb_databaseconnections
 (
