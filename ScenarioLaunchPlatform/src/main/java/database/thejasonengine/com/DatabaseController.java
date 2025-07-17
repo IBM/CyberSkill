@@ -47,47 +47,102 @@ public class DatabaseController
 		
 		Ram ram = new Ram();
 		
-		JsonObject configs = ram.getSystemConfig();
+		LOGGER.debug("Evaluating postgres system pool");
+		
+		if(ram.getPostGresSystemPool() == null)
+		{
+			LOGGER.debug("ram postgresSystemPool not initialized.");
+			JsonObject configs = ram.getSystemConfig();
+			
+			PgConnectOptions connectOptions = new PgConnectOptions()
+				      .setHost(configs.getJsonObject("systemDatabaseController").getString("host"))
+				      .setPort(configs.getJsonObject("systemDatabaseController").getInteger("port"))
+				      .setDatabase(configs.getJsonObject("systemDatabaseController").getString("database"))
+				      .setUser(configs.getJsonObject("systemDatabaseController").getString("user"))
+				      .setPassword(configs.getJsonObject("systemDatabaseController").getString("password"));
 	
-		PgConnectOptions connectOptions = new PgConnectOptions()
-			      .setHost(configs.getJsonObject("systemDatabaseController").getString("host"))
-			      .setPort(configs.getJsonObject("systemDatabaseController").getInteger("port"))
-			      .setDatabase(configs.getJsonObject("systemDatabaseController").getString("database"))
-			      .setUser(configs.getJsonObject("systemDatabaseController").getString("user"))
-			      .setPassword(configs.getJsonObject("systemDatabaseController").getString("password"));
-
-	    PoolOptions poolOptions = new PoolOptions().setMaxSize(configs.getJsonObject("systemDatabaseController").getInteger("maxConnections")); // Max pool size
-        LOGGER.debug("Set pool options");
-        Pool pool = Pool.pool(vertx, connectOptions, poolOptions);
-        try
-        {
-        	pool.getConnection(ar ->
-        	{
-        		if(ar.succeeded())
-        		{
-        			LOGGER.debug("--- POOL TEST COMPLETE, SYSTEM CONNECTION AVAILABLE ---");
-        		}
-        		else
-        		{
-        			LOGGER.error("--- POOL TEST FAILURE, SYSTEM CONNECTION UNAVAILABLE ---");
-        		}
-        	});
-        }
-        catch(Exception e)
-        {
-        	LOGGER.error("Unable to get connection to pool :" + e.toString());
-        }
+		    PoolOptions poolOptions = new PoolOptions().setMaxSize(configs.getJsonObject("systemDatabaseController").getInteger("maxConnections")); // Max pool size
+	        LOGGER.debug("Set pool options");
+	        Pool pool = Pool.pool(vertx, connectOptions, poolOptions);
+	        try
+	        {
+	        	pool.getConnection(con_ar ->
+	        	{
+	        		if(con_ar.succeeded())
+	        		{
+	        			LOGGER.debug("--- POOL TEST COMPLETE, SYSTEM CONNECTION AVAILABLE ---");
+	        		}
+	        		else
+	        		{
+	        			LOGGER.error("--- POOL TEST FAILURE, SYSTEM CONNECTION UNAVAILABLE ---");
+	        		}
+	        	});
+	        }
+	        catch(Exception e)
+	        {
+	        	LOGGER.error("Unable to get connection to pool :" + e.toString());
+	        }
+	        
+	        LOGGER.debug("Pool Created");
+	        
+	        Context context = vertx.getOrCreateContext();
+	        context.put("pool", pool);
+	        LOGGER.debug("Pool added to context");
+	        ram.setPostGresSystemPool(pool);
+	        LOGGER.info("JDBC Pool SET");
+		}
+		else
+		{
+			ram.getPostGresSystemPool().getConnection(ar -> 
+			{
+				if (ar.succeeded()) 
+				{
+					 LOGGER.debug("JDBC Pool SET already - not recreating!!");
+				}
+				if(ar.failed())
+				{
+					JsonObject configs = ram.getSystemConfig();
+				
+					PgConnectOptions connectOptions = new PgConnectOptions()
+						      .setHost(configs.getJsonObject("systemDatabaseController").getString("host"))
+						      .setPort(configs.getJsonObject("systemDatabaseController").getInteger("port"))
+						      .setDatabase(configs.getJsonObject("systemDatabaseController").getString("database"))
+						      .setUser(configs.getJsonObject("systemDatabaseController").getString("user"))
+						      .setPassword(configs.getJsonObject("systemDatabaseController").getString("password"));
+			
+				    PoolOptions poolOptions = new PoolOptions().setMaxSize(configs.getJsonObject("systemDatabaseController").getInteger("maxConnections")); // Max pool size
+			        LOGGER.debug("Set pool options");
+			        Pool pool = Pool.pool(vertx, connectOptions, poolOptions);
+			        try
+			        {
+			        	pool.getConnection(con_ar ->
+			        	{
+			        		if(con_ar.succeeded())
+			        		{
+			        			LOGGER.debug("--- POOL TEST COMPLETE, SYSTEM CONNECTION AVAILABLE ---");
+			        		}
+			        		else
+			        		{
+			        			LOGGER.error("--- POOL TEST FAILURE, SYSTEM CONNECTION UNAVAILABLE ---");
+			        		}
+			        	});
+			        }
+			        catch(Exception e)
+			        {
+			        	LOGGER.error("Unable to get connection to pool :" + e.toString());
+			        }
+			        
+			        LOGGER.debug("Pool Created");
+			        
+			        Context context = vertx.getOrCreateContext();
+			        context.put("pool", pool);
+			        LOGGER.debug("Pool added to context");
+			        ram.setPostGresSystemPool(pool);
+			        LOGGER.info("JDBC Pool SET");
+				}
+			});
+		}
+	}
         
-        LOGGER.debug("Pool Created");
-        
-        Context context = vertx.getOrCreateContext();
-        context.put("pool", pool);
-        LOGGER.debug("Pool added to context");
-        
-       
-        ram.setPostGresSystemPool(pool);
-        
-        LOGGER.info("JDBC Pool SET");
-        
-    }
+    
 }
