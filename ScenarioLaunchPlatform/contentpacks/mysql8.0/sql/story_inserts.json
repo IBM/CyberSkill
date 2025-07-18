@@ -3,7 +3,7 @@
         {
             "id": 1,
             "story": {
-                "name": "Malicious Stored Proceedure",
+                "name": "MySQL Malicious Stored Procedure",
                 "description": "This story involves the removal and recreation of a critical stored proceedure. Activities such as this are hard to discover for humans, but straight forward for GDP. This story runs in the following flow. 1. Polly our systems admin creates a stored proceedure. Sometime later (8 seconds), 2. Jason, a standard user calls that stored proceedure. Sometime later (4 seconds) 3. Liher our evil admin drops and recreates the stored proceedure with the same name as the original stored proceedure but now it includes malicious intent (drop table). Some time later (4 seconds) 4. John, a standard user calls this malicious stored procedure unaware of the change.",
                 "author": "SLP Team",
                 "outcomes": "Understand how Guardium provides governence using a Stored Proceedure as an example",
@@ -40,7 +40,7 @@
         {
             "id": 2,
             "story": {
-                "name": "Cross-Site Scripting (XSS) Injection",
+                "name": "MySQL Cross-Site Scripting (XSS) Injection",
                 "description": "This story involves a user creating a tempTable in the database, then proceeding to insert Javascript into the created table. Injection is still very high in the OWASP Top 10. Injection includes vulnerabilities where untrusted data is sent to an interpreter (like an SQL database) without proper validation, leading to potential code execution or data manipulation. In our case 1. Liher creates a tempTable. Sometime later (5 seconds), 2. Liher inserts javascript into the new table.",
                 "author": "SLP Team",
                 "outcomes": "Understand how Guardium detect XSS Injection in a users database",
@@ -65,7 +65,7 @@
         {
             "id": 3,
             "story": {
-                "name": "SQL Injection - Tautology",
+                "name": "MySQL SQL Injection - Tautology",
                 "description": "This story involves a user creating a tempTable in the database, then proceeding to perform SQL Injection on the created table. Injection is still very high in the OWASP Top 10. Injection includes vulnerabilities where untrusted data is sent to an interpreter (like an SQL database) without proper validation, leading to potential code execution or data manipulation. In our case 1. Liher creates a tempTable. Sometime later (5 seconds), 2. Liher manipulates the where clause the WHERE clause of an SQL query to create a condition that is always true.",
                 "author": "Story Author",
                 "outcomes": "Understand how Guardium detect SQL Injection tautology in a users database",
@@ -87,10 +87,60 @@
                 ]
             }
         },
-	{
+        {
             "id": 4,
             "story": {
-                "name": "OS Command Injection",
+                "name": "MySQL SQL Injection - Side Channel",
+                "description": "This story involves a user creating a tempTable in the database, then proceeding to perform SQL Injection Side channel on the created table. Injection is still very high in the OWASP Top 10. Injection includes vulnerabilities where untrusted data is sent to an interpreter (like an SQL database) without proper validation, leading to potential code execution or data manipulation. A side channel refers to any observable behavior or system response that leaks information unintentionally. In SQL injection, this means attackers don’t see query results directly but instead:\nObserve response times\nDetect error messages\nNotice page content changes\nMonitor network behavior\nThese subtle cues allow attackers to reconstruct sensitive data, even when the application doesn’t return query results.\nIn our case 1. Liher creates a tempTable. Sometime later (5 seconds), 2. Liher sends some time based sql functions such as sleep to delay responses.",
+                "author": "Story Author",
+                "outcomes": "Understand how Guardium detect SQL Injection side channel in a users database",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 1,
+                        "pause_in_seconds": 5000,
+                        "datasource": "mysql_127.0.0.1_crm_liher",
+                        "chapter": "Create testTable for Policy violations"
+                    },
+                    {
+                        "query_id": 4,
+                        "pause_in_seconds": 3000,
+                        "datasource": "mysql_127.0.0.1_crm_liher",
+                        "chapter": "SQL Injection - Side Channel"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "story": {
+                "name": "MySQL SQL Injection - Denial Of Service",
+                "description": "This story involves a user creating a tempTable in the database, then proceeding to perform SQL Injection DOS on the created table. Injection is still very high in the OWASP Top 10. Injection includes vulnerabilities where untrusted data is sent to an interpreter (like an SQL database) without proper validation, leading to potential code execution or data manipulation. In our case 1. Liher creates a tempTable. Sometime later (5 seconds), 2. Liher sends multiple SQL queries that attempt to run a DOS on the database trying to impact DB performance.",
+                "author": "Story Author",
+                "outcomes": "Understand how Guardium detect SQL Injection DOS in a users database",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 1,
+                        "pause_in_seconds": 5000,
+                        "datasource": "mysql_127.0.0.1_crm_liher",
+                        "chapter": "Create testTable for Policy violations"
+                    },
+                    {
+                        "query_id": 5,
+                        "pause_in_seconds": 3000,
+                        "datasource": "mysql_127.0.0.1_crm_liher",
+                        "chapter": "SQL Injection - Denial Of Service"
+                    }
+                ]
+            }
+        },
+	{
+            "id": 6,
+            "story": {
+                "name": "MySQL OS Command Injection",
                 "description": "This story involves a user creating a tempTable in the database, then proceeding to perform OS Command Injection on the created table. Injection is still very high in the OWASP Top 10. Injection includes vulnerabilities where untrusted data is sent to an interpreter (like an SQL database) without proper validation, leading to potential code execution or data manipulation.OS Command Injection allows an attacker to execute operating system (OS) commands on the server/database. In our case 1. Polly creates a tempTable. Sometime later (5 seconds), 2. Polly sends a number of queries to the database that contain OS Commands.",
                 "author": "SLP Team",
                 "outcomes": "Understand how Guardium detect OS Command Injection tautology in a users database",
@@ -113,9 +163,9 @@
             }
         },
 	{
-            "id": 5,
+            "id": 7,
             "story": {
-                "name": "Massive Grants",
+                "name": "MySQL Massive Grants",
                 "description": "This story involves a user creating a number of users in the database, then proceeding to grant privileges to those users. The final query removes the users to reset the story for reuse. In our case 1. Polly creates a number of users. Sometime later (5 seconds), 2. Polly grants privileges to those users. Sometime later (5 seconds), 3. Polly deletes those users",
                 "author": "SLP Team",
                 "outcomes": "Understand how Guardium detect OS Command Injection tautology in a users database",
@@ -141,6 +191,31 @@
                         "chapter": " Drop Multiple users"
                     }
 
+                ]
+            }
+        },
+	{
+            "id": 8,
+            "story": {
+                "name": "MySQL Brute-Force ",
+                "description": "This story involves a a number of users attempting to connect to the database from the same IP.\n In this case the user MYUSER followed by a number like: MYUSER0, MYUSER1 and so on will try to login to the database",
+                "author": "SLP Team",
+                "outcomes": "Understand how Guardium detect brute-force attempts",
+                "handbook": "A URL that describes the story in more details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 7,
+                        "pause_in_seconds": 5000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Many failed attempts by multiple DB users from the same client IP"
+                    },
+		    {
+                        "query_id": 7,
+                        "pause_in_seconds": 5000,
+                        "datasource": "mysql_127.0.0.1_crm_polly",
+                        "chapter": "Many failed attempts by multiple DB users from the same client IP"
+                    }
                 ]
             }
         }
