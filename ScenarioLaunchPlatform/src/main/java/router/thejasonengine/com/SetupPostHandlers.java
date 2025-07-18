@@ -1302,11 +1302,11 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("INSERT INTO tb_content_packs (pack_name, version, db_type, build_date, build_version, description,author, icon, background_traffic,pack_file_content, pack_info\r\n"
-			                		+ ") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);")
+			                connection.preparedQuery("INSERT INTO tb_content_packs (pack_name, version, db_type, build_date, build_version, description,author, icon, background_traffic, pack_info\r\n"
+			                		+ ") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT (pack_name, version) DO UPDATE SET db_type = EXCLUDED.db_type, build_date = EXCLUDED.build_date, build_version = EXCLUDED.build_version, description = EXCLUDED.description, author = EXCLUDED.author, icon = EXCLUDED.icon, background_traffic = EXCLUDED.background_traffic, pack_info = EXCLUDED.pack_info, pack_deployed = EXCLUDED.pack_deployed, uploaded_date = CURRENT_TIMESTAMP;")
 			                        .execute(Tuple.of(map.get("pack_name"),map.get("version"),map.get("db_type"),map.get("build_date")
 			                        		,map.get("build_version"),map.get("description"),map.get("author"),map.get("icon"),
-			                        		map.get("background_traffic"),map.get("pack_file_content"),map.get("pack_json")),
+			                        		map.get("background_traffic"),map.get("pack_json")),
 			                        res -> {
 			                            if (res.succeeded()) 
 			                            {

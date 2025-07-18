@@ -1,0 +1,150 @@
+{
+    "stories": [
+        {
+            "id": 301,
+            "story": {
+                "name": "Malicious Stored Proceedure",
+                "description": "This story involves the removal and recreation of a critical stored proceedure. Activities such as this are hard to discover for humans, but straight forward for GDP. This story runs in the following flow. 1. Polly our systems admin creates a stored proceedure. Sometime later (8 seconds), 2. Jason, a standard user calls that stored proceedure. Sometime later (4 seconds) 3. Liher our evil admin drops and recreates the stored proceedure with the same name as the original stored proceedure but now it includes malicious intent (drop table). Some time later (4 seconds) 4. John, a standard user calls this malicious stored procedure unaware of the change.",
+                "author": "SLP Team",
+                "outcomes": "Understand how Guardium provides governence using a Stored Proceedure as an example",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "https://ibm.github.io/CyberSkill/?video=Malicious_Store_Procedure_SLP_To_GDP.mp4",
+                "story": [
+                    {
+                        "query_id": 307,
+                        "pause_in_seconds": 5000,
+                        "datasource": "postgres_127.0.0.1_crm_polly",
+                        "chapter": "Create STP Account Groups"
+                    },
+                    {
+                        "query_id": 308,
+                        "pause_in_seconds": 6000,
+                        "datasource": "postgres_127.0.0.1_crm_jason",
+                        "chapter": "Call STP Account Groups"
+                    },
+                    {
+                        "query_id": 309,
+                        "pause_in_seconds": 3000,
+                        "datasource": "postgres_127.0.0.1_crm_liher",
+                        "chapter": "Malicious STP Update Account Groups"
+                    },
+                    {
+                        "query_id": 308,
+                        "pause_in_seconds": 2000,
+                        "datasource": "postgres_127.0.0.1_crm_john",
+                        "chapter": "Call STP Account Groups"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 302,
+            "story": {
+                "name": "Cross-Site Scripting (XSS) Injection",
+                "description": "This story involves a user creating a tempTable in the database, then proceeding to insert Javascript into the created table. Injection is still very high in the OWASP Top 10. Injection includes vulnerabilities where untrusted data is sent to an interpreter (like an SQL database) without proper validation, leading to potential code execution or data manipulation. In our case 1. Liher creates a tempTable. Sometime later (5 seconds), 2. Liher inserts javascript into the new table.",
+                "author": "SLP Team",
+                "outcomes": "Understand how Guardium detect XSS Injection in a users database",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 301,
+                        "pause_in_seconds": 5000,
+                        "datasource": "postgres_127.0.0.1_crm_liher",
+                        "chapter": "Create testTable for Policy violations"
+                    },
+                    {
+                        "query_id": 302,
+                        "pause_in_seconds": 3000,
+                        "datasource": "postgres_127.0.0.1_crm_liher",
+                        "chapter": "Cross-Site Scripting (XSS) Injection"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 303,
+            "story": {
+                "name": "SQL Injection - Tautology",
+                "description": "This story involves a user creating a tempTable in the database, then proceeding to perform SQL Injection on the created table. Injection is still very high in the OWASP Top 10. Injection includes vulnerabilities where untrusted data is sent to an interpreter (like an SQL database) without proper validation, leading to potential code execution or data manipulation. In our case 1. Liher creates a tempTable. Sometime later (5 seconds), 2. Liher manipulates the where clause the WHERE clause of an SQL query to create a condition that is always true.",
+                "author": "Story Author",
+                "outcomes": "Understand how Guardium detect SQL Injection tautology in a users database",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 301,
+                        "pause_in_seconds": 5000,
+                        "datasource": "postgres_127.0.0.1_crm_liher",
+                        "chapter": "Create testTable for Policy violations"
+                    },
+                    {
+                        "query_id": 303,
+                        "pause_in_seconds": 3000,
+                        "datasource": "postgres_127.0.0.1_crm_liher",
+                        "chapter": "SQL Injection - Tautology"
+                    }
+                ]
+            }
+        },
+	{
+            "id": 304,
+            "story": {
+                "name": "OS Command Injection",
+                "description": "This story involves a user creating a tempTable in the database, then proceeding to perform OS Command Injection on the created table. Injection is still very high in the OWASP Top 10. Injection includes vulnerabilities where untrusted data is sent to an interpreter (like an SQL database) without proper validation, leading to potential code execution or data manipulation.OS Command Injection allows an attacker to execute operating system (OS) commands on the server/database. In our case 1. Polly creates a tempTable. Sometime later (5 seconds), 2. Polly sends a number of queries to the database that contain OS Commands.",
+                "author": "SLP Team",
+                "outcomes": "Understand how Guardium detect OS Command Injection tautology in a users database",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 301,
+                        "pause_in_seconds": 5000,
+                        "datasource": "postgres_127.0.0.1_crm_polly",
+                        "chapter": "Create testTable for Policy violations"
+                    },
+                    {
+                        "query_id": 304,
+                        "pause_in_seconds": 3000,
+                        "datasource": "postgres_127.0.0.1_crm_polly",
+                        "chapter": "OS Command Injection"
+                    }
+                ]
+            }
+        },
+	{
+            "id": 305,
+            "story": {
+                "name": "Massive Grants",
+                "description": "This story involves a user creating a number of users in the database, then proceeding to grant privileges to those users. The final query removes the users to reset the story for reuse. In our case 1. Polly creates a number of users. Sometime later (5 seconds), 2. Polly grants privileges to those users. Sometime later (5 seconds), 3. Polly deletes those users",
+                "author": "SLP Team",
+                "outcomes": "Understand how Guardium detect OS Command Injection tautology in a users database",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "A URL to the video of the story executing",
+                "story": [
+                    {
+                        "query_id": 310,
+                        "pause_in_seconds": 5000,
+                        "datasource": "postgres_127.0.0.1_crm_polly",
+                        "chapter": "Create Multipe users"
+                    },
+                    {
+                        "query_id": 311,
+                        "pause_in_seconds": 3000,
+                        "datasource": "postgres_127.0.0.1_crm_polly",
+                        "chapter": "Grant privileges to Multiple users"
+                    },
+		    {
+                        "query_id": 312,
+                        "pause_in_seconds": 3000,
+                        "datasource": "postgres_127.0.0.1_crm_polly",
+                        "chapter": " Drop Multiple users"
+                    }
+
+                ]
+            }
+        }
+
+	
+    ]
+}

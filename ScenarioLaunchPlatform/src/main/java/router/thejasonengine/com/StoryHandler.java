@@ -482,11 +482,9 @@ public class StoryHandler
                             .onSuccess(res3 -> {
                             	LOGGER.debug("JSON Inserted Successfully!");
                             	response.send("{\"result\":\"ok\"}");
-                            	PGconnection.close();
                             })
                             .onFailure(err -> {
                             	LOGGER.error("Failed to insert JSON: " + err.getMessage());
-                            	PGconnection.close();
                             	response.send("{\"result\":\""+err.getMessage()+"\"}");
                             });
                          }

@@ -1,0 +1,185 @@
+{
+    "stories": [
+        {
+            "id": 601,
+            "story": {
+                "name": "DB2 Monitoring Sys Privilege Management",
+                "description": "This simple story involves revoking and adding privilege. (Running queries 633, 634, 635)",
+                "author": "SLP Team",
+                "outcomes": "Understand how Guardium monitors privilege management",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "https://ibm.github.io/CyberSkill",
+                "story": [
+                {
+				        "query_id": 633,
+				        "datasource": "db2_localhost_SAMPLE_polly",
+				        "pause_in_seconds": 4000,
+				        "chapter": "Chapter 1"
+				    },
+				    {
+				        "query_id": 634,
+				        "datasource": "db2_localhost_SAMPLE_polly",
+				        "pause_in_seconds": 4000,
+				        "chapter": "Chapter 1"
+				    },
+				    {
+				        "query_id": 635,
+				        "datasource": "db2_localhost_SAMPLE_polly",
+				        "pause_in_seconds": 4000,
+				        "chapter": "Chapter 1"
+				    }
+					   
+					]
+            }
+        },
+        {
+            "id": 602,
+            "story": {
+                "name": "DB2 Monitoring table management",
+                "description": "This simple story involves monitoring table managment. (Running queries 623, 624, 625, 626, 627, 628)",
+                "author": "SLP Team",
+                "outcomes": "Understand how Guardium monitors table management",
+                "handbook": "https://ibm.github.io/CyberSkill",
+                "video": "https://ibm.github.io/CyberSkill",
+                "story": [
+				    {
+				        "query_id": 623,
+				        "datasource": "db2_localhost_SAMPLE_polly",
+				        "pause_in_seconds": 4000,
+				        "chapter": "Chapter 1"
+				    },
+				    {
+				        "query_id": 624,
+				        "datasource": "db2_localhost_SAMPLE_polly",
+				        "pause_in_seconds": 4000,
+				        "chapter": "Chapter 2"
+				    },
+				    {
+				        "query_id": 625,
+				        "datasource": "db2_localhost_SAMPLE_polly",
+				        "pause_in_seconds": 4000,
+				        "chapter": "Chapter 3"
+				    },
+				    {
+				        "query_id": 626,
+				        "datasource": "db2_localhost_SAMPLE_jason",
+				        "pause_in_seconds": 4000,
+				        "chapter": "Chapter 4"
+				    },
+				    {
+				        "query_id": 627,
+				        "datasource": "db2_localhost_SAMPLE_liher",
+				        "pause_in_seconds": 4000,
+				        "chapter": "Chapter 5"
+				    },
+				    {
+				        "query_id": 628,
+				        "datasource": "db2_localhost_SAMPLE_polly",
+				        "pause_in_seconds": 4000,
+				        "chapter": "Chapter 6"
+				    }
+				]
+            }
+        },
+        {
+            "id": 603,
+            "story": {
+                "name": "DB2 Monitoring bad behaviour",
+                "description": "This simple story involves monitoring bad behaviour.  (Running queries 633, 634, 635)",
+                "author": "Story Author",
+                "outcomes": "Understand how Guardium monitors bad behaviour",
+                "handbook": "https://ibm.github.io/CyberSkill",
+                "video": "https://ibm.github.io/CyberSkill",
+                "story": [
+				    {
+				        "query_id": 629,
+				        "datasource": "db2_localhost_SAMPLE_liher",
+				        "pause_in_seconds": 2000,
+				        "chapter": "Chapter 1"
+				    },
+				    {
+				        "query_id": 630,
+				        "datasource": "db2_localhost_SAMPLE_liher",
+				        "pause_in_seconds": 2000,
+				        "chapter": "Chapter 2"
+				    },
+				    {
+				        "query_id": 631,
+				        "datasource": "db2_localhost_SAMPLE_liher",
+				        "pause_in_seconds": 2000,
+				        "chapter": "Chapter 3"
+				    },
+				    {
+				        "query_id": 632,
+				        "datasource": "db2_localhost_SAMPLE_liher",
+				        "pause_in_seconds": 2000,
+				        "chapter": "Chapter 4"
+				    }
+				]
+            }
+        },
+	{
+            "id": 604,
+            "story": {
+                "name": "DB2 Monitoring Sys Admins",
+                "description": "This story creates data that shows up in the DAM reports.  (Running queries 616, 617, 618, 619, 616, 620, 621, 622)",
+                "author": "SLP Team",
+                "outcomes": "Understand how Guardium monitors system activity",
+                "handbook": "https://ibm.github.io/CyberSkill",
+                "video": "https://ibm.github.io/CyberSkill",
+                "story": [
+				     {
+					        "query_id": 616,
+					        "datasource": "db2_localhost_SAMPLE_polly",
+					        "pause_in_seconds": 4000,
+					        "chapter": "Chapter 1"
+					    },
+					    {
+					        "query_id": 617,
+					        "datasource": "db2_localhost_SAMPLE_polly",
+					        "pause_in_seconds": 4000,
+					        "chapter": "Chapter 2"
+					    },
+					    {
+					        "query_id": 618,
+					        "datasource": "db2_localhost_SAMPLE_jason",
+					        "pause_in_seconds": 4000,
+					        "chapter": "Chapter 3"
+					    },
+					    {
+					        "query_id": 619,
+					        "datasource": "db2_localhost_SAMPLE_liher",
+					        "pause_in_seconds": 4000,
+					        "chapter": "Chapter 4"
+					    },
+					    {
+					        "query_id": 616,
+					        "datasource": "db2_localhost_SAMPLE_jason",
+					        "pause_in_seconds": 4000,
+					        "chapter": "Chapter 5"
+					    },
+					    {
+					        "query_id": 620,
+					        "datasource": "db2_localhost_SAMPLE_polly",
+					        "pause_in_seconds": 4000,
+					        "chapter": "Chapter 6"
+					    },
+					    {
+					        "query_id": 621,
+					        "datasource": "db2_localhost_SAMPLE_polly",
+					        "pause_in_seconds": 4000,
+					        "chapter": "Chapter 7"
+					    },
+					    {
+					        "query_id": 622,
+					        "datasource": "db2_localhost_SAMPLE_polly",
+					        "pause_in_seconds": 4000,
+					        "chapter": "Chapter 8"
+					    }
+				]
+            }
+        }
+
+	
+    ]
+}
