@@ -1177,231 +1177,226 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	 * Users know what packs they have and what they've deployed*****************************************/
 	private void handleAddPack(RoutingContext routingContext)
 	{
-		LOGGER.info("insdie handleAddPack");
 		
-		Context context = routingContext.vertx().getOrCreateContext();
-		Pool pool = context.get("pool");
-		if (pool == null)
+		String method = "SetupPostHandlers.handleAddPack";
+		
+		LOGGER.info("Inside: " + method);  
+		
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
+		
+		validateSystemPool(pool, method).onComplete(validation -> 
 		{
-			LOGGER.debug("pull is null - restarting");
-			DatabaseController DB = new DatabaseController(routingContext.vertx());
-			LOGGER.debug("Taking the refreshed context pool object");
-			pool = context.get("pool");
-		}
-		
-		HttpServerResponse response = routingContext.response();
-		List<FileUpload> uploads = routingContext.fileUploads();
-		try {
-		    
-		    if (uploads.isEmpty()) {
-		        LOGGER.warn("File upload attempt failed: No files received.");
-		        routingContext.response().setStatusCode(400).end("No file uploaded.");
+		      if (validation.failed()) 
+		      {
+		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
 		        return;
-		    }
-		    
-		} catch (Exception e) {
-		    LOGGER.error("File upload failed with unexpected error", e);
-		    routingContext.response().setStatusCode(500).end("Server error while handling upload.");
-		}
-		LOGGER.info("Received headers: " + routingContext.request().headers());
-		LOGGER.info("File upload size: " + routingContext.fileUploads().size());
-		if (routingContext.request().getHeader("Content-Type") != null) {
-		    LOGGER.info("Content-Type header: " + routingContext.request().getHeader("Content-Type"));
-		}
-
-	    
-	 // Parse form attributes (JSON payload is sent as form attributes)
-	    MultiMap formAttributes = routingContext.request().formAttributes();
-	    if (formAttributes.isEmpty()) {
-	        LOGGER.error("No form data provided");
-	        routingContext.fail(400);
-	        return;
-	    }
-	 // Extract JSON payload from form attributes
-	    JsonObject JSONpayload = new JsonObject();
-	    formAttributes.forEach(entry -> JSONpayload.put(entry.getKey(), entry.getValue()));
-	
-		String osName = System.getProperty("os.name").toLowerCase();
-		
-		if (JSONpayload.getString("jwt") == null) 
-	    {
-	    	LOGGER.info(" handleAddPAck required fields not detected (jwt)");
-	    	routingContext.fail(400);
-	    } 
-		else
-		{
-			if(validateJWTToken(JSONpayload))
-			{
-				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-				String [] chunks = JSONpayload.getString("jwt").split("\\.");
-				
-				JsonObject payload = new JsonObject(decode(chunks[1]));
-				LOGGER.info("Payload: " + payload );
-				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-				//String pack_name = JSONpayload.getString("pack_name");
-				//String pack_file_path = JSONpayload.getString("pack_file_path");
-				//String pack_output_path = JSONpayload.getString("pack_output_path");
-				
-				
-				//LOGGER.debug("task_file_path recieved: " + pack_file_path);
-				
-				utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
-				 Path currRelativePath = Paths.get("");
-			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
-			        LOGGER.debug("Current absolute path is - " + currAbsolutePathString);
-				
-				
-				
-			    File uploadFolder = new File(currAbsolutePathString);
-			 if (!uploadFolder.exists()) {
-
-		     uploadFolder.mkdir(); // Create the folder if it doesn't exist
-		}
-			 File outputFolder = new File(currAbsolutePathString);
-			 if (!outputFolder.exists()) {
-				 outputFolder.mkdir(); // Create the folder if it doesn't exist
-		}
-				 // Process the uploaded file
-		        FileUpload fileUpload = uploads.iterator().next();
-		        String uploadedFileName = fileUpload.uploadedFileName();
-		        String targetFilePath = currAbsolutePathString +"\\contentpacks\\"+ fileUpload.fileName(); // Save file in "uploads/" directory
-		     // Read the file content as bytes
-			    byte[] fileBytes = null;
-		        try {
-		        	
-		        	fileBytes = Files.readAllBytes(Paths.get(uploadedFileName));
-		            Files.createDirectories(Paths.get("uploads")); // Ensure directory exists
-		            Files.move(Paths.get(uploadedFileName), Paths.get(targetFilePath), StandardCopyOption.REPLACE_EXISTING);
-		            LOGGER.info("File uploaded successfully: " + targetFilePath);
-		        } catch (IOException e) {
-		            LOGGER.error("Error saving uploaded file: " + e.getMessage());
-		            routingContext.fail(500);
-		            return;
-		        }
-		        String encoded_pack_file_path = Encodings.EscapeString(targetFilePath);
-		        String encoded_pack_output_path = Encodings.EscapeString(currAbsolutePathString);
-		        
-
-				LOGGER.debug("Encoded task_file_path" + targetFilePath);
-				//The map is passed to the SQL query
-				
-				Map<String,Object> map = new HashMap<String, Object>();
-				
-				ContentPackUtils.PackParseResult packResult;
-				try {
-				    packResult = ContentPackUtils.unzipAndExtractPackJson(targetFilePath, currAbsolutePathString);
-				    JsonObject json = new JsonObject(packResult.packJsonContent);
-
-				    // Put full jsonb content
-				    map.put("pack_json", json);
-
-				    // Extract individual fields for separate columns
-				    map.put("pack_name", json.getString("pack_name"));
-				    map.put("version", json.getString("version"));
-				    map.put("db_type", json.getString("db_type"));
-				    map.put("build_date", json.getString("build_date"));
-				    map.put("build_version", json.getString("build_version"));
-				    map.put("description", json.getString("description"));
-				    map.put("author", json.getString("author"));
-				    map.put("icon", json.getString("icon"));
-				    map.put("background_traffic", json.getString("background_traffic"));
-
-				} catch (IOException e) {
-				    LOGGER.error("Failed to unzip and extract pack.json: " + e.getMessage());
-				    routingContext.fail(400);
+		      }
+		      if (validation.succeeded())
+		      {
+		    	LOGGER.debug("DB Validation passed: " + method);
+		    	HttpServerResponse response = routingContext.response();
+				List<FileUpload> uploads = routingContext.fileUploads();
+				try 
+				{
+				    if (uploads.isEmpty()) 
+				    {
+				        LOGGER.warn("File upload attempt failed: No files received.");
+				        routingContext.response().setStatusCode(400).end("No file uploaded.");
+				        return;
+				    }
+				    
+				} 
+				catch (Exception e) 
+				{
+				    LOGGER.error("File upload failed with unexpected error", e);
+				    routingContext.response().setStatusCode(500).end("Server error while handling upload.");
 				}
-	
-				map.put("pack_file_path", targetFilePath);
-				map.put("pack_output_path", currAbsolutePathString);
-			    // Store the bytes in the database
-			    map.put("pack_file_content", fileBytes);
-			    
-			    LOGGER.debug("fileBytes:  "+ fileBytes);
-				//LOGGER.debug("Detected OS: " + OSDetectorAndTaskControl.detectOS());
-				//here we do the serverside stuff on the chron/schedule and files. Want to hand off to another class
-				//String action = "Add";
-				//OSDetectorAndTaskControl.detectOS(targetFilePath, pack_name,action);
+				LOGGER.info("Received headers: " + routingContext.request().headers());
+				LOGGER.info("File upload size: " + routingContext.fileUploads().size());
+				if (routingContext.request().getHeader("Content-Type") != null) 
+				{
+				    LOGGER.info("Content-Type header: " + routingContext.request().getHeader("Content-Type"));
+				}
+				// Parse form attributes (JSON payload is sent as form attributes)
+			    MultiMap formAttributes = routingContext.request().formAttributes();
+			    if (formAttributes.isEmpty()) 
+			    {
+			        LOGGER.error("No form data provided");
+			        routingContext.fail(400);
+			        return;
+			    }
+			    // Extract JSON payload from form attributes
+			    JsonObject JSONpayload = new JsonObject();
+			    formAttributes.forEach(entry -> JSONpayload.put(entry.getKey(), entry.getValue()));
+			
+				String osName = System.getProperty("os.name").toLowerCase();
 				
-				
-				LOGGER.info("Accessible Level is : " + authlevel);
-		        LOGGER.info("username: " + map.get("username"));
-		        
-		        if(authlevel >= 1)
-		        {
-		        	LOGGER.debug("User allowed to execute the API");
-		        	response
-			        .putHeader("content-type", "application/json");
-					
-					pool.getConnection(ar -> 
+				if (JSONpayload.getString("jwt") == null) 
+			    {
+			    	LOGGER.info(" handleAddPAck required fields not detected (jwt)");
+			    	routingContext.fail(400);
+			    } 
+				else
+				{
+					if(validateJWTToken(JSONpayload))
 					{
-			            if (ar.succeeded()) 
-			            {
-			                SqlConnection connection = ar.result();
-			                JsonArray ja = new JsonArray();
-			                
-			                // Execute a SELECT query
-			                
-			                connection.preparedQuery("INSERT INTO tb_content_packs (pack_name, version, db_type, build_date, build_version, description,author, icon, background_traffic, pack_info\r\n"
-			                		+ ") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT (pack_name, version) DO UPDATE SET db_type = EXCLUDED.db_type, build_date = EXCLUDED.build_date, build_version = EXCLUDED.build_version, description = EXCLUDED.description, author = EXCLUDED.author, icon = EXCLUDED.icon, background_traffic = EXCLUDED.background_traffic, pack_info = EXCLUDED.pack_info, pack_deployed = EXCLUDED.pack_deployed, uploaded_date = CURRENT_TIMESTAMP;")
-			                        .execute(Tuple.of(map.get("pack_name"),map.get("version"),map.get("db_type"),map.get("build_date")
-			                        		,map.get("build_version"),map.get("description"),map.get("author"),map.get("icon"),
-			                        		map.get("background_traffic"),map.get("pack_json")),
-			                        res -> {
-			                            if (res.succeeded()) 
-			                            {
-			                                // Process the result
-			                                
-			                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully added task\"}");
-	                                    	ja.add(jo);
-	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
-			                                response.send(ja.encodePrettily());
-			                            } 
-			                            else 
-			                            {
-			                                // Handle query failure
-			                            	LOGGER.error("error: " + res.cause() );
-			                            	Throwable cause = res.cause();
-			    			                String message = cause.getMessage();
-			    			                JsonObject jo = new JsonObject();
-			    			                if (cause.getMessage().contains("duplicate key value violates unique constraint")) {
-			    			                    response.setStatusCode(409); // Conflict
-			    			                    jo.put("error", "A content pack with the same name and version already exists.");
-			    			                } else {
-			    			                    response.setStatusCode(500); // Generic server error
-			    			                    jo.put("error", "Database error: " + cause.getMessage().replaceAll("\"", ""));
-			    			                }
-			    			                response.send(ja.encodePrettily());
-			                                //res.cause().printStackTrace();
-			                            }
-			                            // Close the connection
-			                            //response.end();
-			                            connection.close();
-			                        });
-			            } else {
-			                // Handle connection failure
-			                //
-			            	JsonArray ja = new JsonArray();
-			                LOGGER.error("error: " + ar.cause() );
-                        	JsonObject jo = new JsonObject("{\"response\":\"error \" "+ ar.cause().getMessage().replaceAll("\"", "") +"}");
-                        	ja.add(jo);
-                        	response.send(ja.encodePrettily());
-			            }
-			            
-			        });
-		        }
-		        else
-		        {
-		        	JsonArray ja = new JsonArray();
-		        	JsonObject jo = new JsonObject();
-		        	jo.put("Error", "Issufficent authentication level to run API");
-		        	ja.add(jo);
-		        	response.send(ja.encodePrettily());
-		        }
-		        
-		        
+						LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+						String [] chunks = JSONpayload.getString("jwt").split("\\.");
+						
+						JsonObject payload = new JsonObject(decode(chunks[1]));
+						LOGGER.info("Payload: " + payload );
+						int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+						
+						utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+						Path currRelativePath = Paths.get("");
+					    String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
+					    LOGGER.debug("Current absolute path is - " + currAbsolutePathString);
+						
+						File uploadFolder = new File(currAbsolutePathString);
+						if (!uploadFolder.exists()) 
+						{
+							uploadFolder.mkdir(); // Create the folder if it doesn't exist
+						}
+						File outputFolder = new File(currAbsolutePathString);
+						if (!outputFolder.exists()) 
+						{
+							outputFolder.mkdir(); // Create the folder if it doesn't exist
+						}
+						 // Process the uploaded file
+				        FileUpload fileUpload = uploads.iterator().next();
+				        String uploadedFileName = fileUpload.uploadedFileName();
+				        String targetFilePath = currAbsolutePathString +"\\contentpacks\\"+ fileUpload.fileName(); // Save file in "uploads/" directory
+				     // Read the file content as bytes
+					    byte[] fileBytes = null;
+				        try 
+				        {
+				        	fileBytes = Files.readAllBytes(Paths.get(uploadedFileName));
+				            Files.createDirectories(Paths.get("uploads")); // Ensure directory exists
+				            Files.move(Paths.get(uploadedFileName), Paths.get(targetFilePath), StandardCopyOption.REPLACE_EXISTING);
+				            LOGGER.info("File uploaded successfully: " + targetFilePath);
+				        } 
+				        catch (IOException e) 
+				        {
+				            LOGGER.error("Error saving uploaded file: " + e.getMessage());
+				            routingContext.fail(500);
+				            return;
+				        }
+				        String encoded_pack_file_path = Encodings.EscapeString(targetFilePath);
+				        String encoded_pack_output_path = Encodings.EscapeString(currAbsolutePathString);
+				        
+						LOGGER.debug("Encoded task_file_path" + targetFilePath);
+						//The map is passed to the SQL query						
+						Map<String,Object> map = new HashMap<String, Object>();
+						ContentPackUtils.PackParseResult packResult;
+						try 
+						{
+						    packResult = ContentPackUtils.unzipAndExtractPackJson(targetFilePath, currAbsolutePathString);
+						    JsonObject json = new JsonObject(packResult.packJsonContent);
+						    // Put full jsonb content
+						    map.put("pack_json", json);
+						    // Extract individual fields for separate columns
+						    map.put("pack_name", json.getString("pack_name"));
+						    map.put("version", json.getString("version"));
+						    map.put("db_type", json.getString("db_type"));
+						    map.put("build_date", json.getString("build_date"));
+						    map.put("build_version", json.getString("build_version"));
+						    map.put("description", json.getString("description"));
+						    map.put("author", json.getString("author"));
+						    map.put("icon", json.getString("icon"));
+						    map.put("background_traffic", json.getString("background_traffic"));
+						} 
+						catch (IOException e) 
+						{
+						    LOGGER.error("Failed to unzip and extract pack.json: " + e.getMessage());
+						    routingContext.fail(400);
+						}
+			
+						map.put("pack_file_path", targetFilePath);
+						map.put("pack_output_path", currAbsolutePathString);
+					    map.put("pack_file_content", fileBytes);
+					    
+					    LOGGER.debug("fileBytes:  "+ fileBytes);
+						LOGGER.info("Accessible Level is : " + authlevel);
+				        LOGGER.info("username: " + map.get("username"));
+				        
+				        if(authlevel >= 1)
+				        {
+				        	LOGGER.debug("User allowed to execute the API");
+				        	response
+					        .putHeader("content-type", "application/json");
+							
+							pool.getConnection(ar -> 
+							{
+					            if (ar.succeeded()) 
+					            {
+					                SqlConnection connection = ar.result();
+					                JsonArray ja = new JsonArray();
+					                connection.preparedQuery("INSERT INTO tb_content_packs (pack_name, version, db_type, build_date, build_version, description,author, icon, background_traffic, pack_info\r\n"
+					                		+ ") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT (pack_name, version) DO UPDATE SET db_type = EXCLUDED.db_type, build_date = EXCLUDED.build_date, build_version = EXCLUDED.build_version, description = EXCLUDED.description, author = EXCLUDED.author, icon = EXCLUDED.icon, background_traffic = EXCLUDED.background_traffic, pack_info = EXCLUDED.pack_info, pack_deployed = EXCLUDED.pack_deployed, uploaded_date = CURRENT_TIMESTAMP;")
+					                        .execute(Tuple.of(map.get("pack_name"),map.get("version"),map.get("db_type"),map.get("build_date")
+					                        		,map.get("build_version"),map.get("description"),map.get("author"),map.get("icon"),
+					                        		map.get("background_traffic"),map.get("pack_json")),
+					                        res -> 
+					                        {
+					                            if (res.succeeded()) 
+					                            {
+					                                JsonObject jo = new JsonObject("{\"response\":\"Successfully added task\"}");
+			                                    	ja.add(jo);
+			                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
+					                                response.send(ja.encodePrettily());
+					                                connection.close();
+					                                LOGGER.info("closed method: " + method + " to connection pool");
+					                            } 
+					                            else 
+					                            {
+					                                // Handle query failure
+					                            	LOGGER.error("error: " + res.cause() );
+					                            	Throwable cause = res.cause();
+					    			                String message = cause.getMessage();
+					    			                JsonObject jo = new JsonObject();
+					    			                if (cause.getMessage().contains("duplicate key value violates unique constraint")) 
+					    			                {
+					    			                    response.setStatusCode(409); // Conflict
+					    			                    jo.put("error", "A content pack with the same name and version already exists.");
+					    			                    LOGGER.error("A content pack with the same name and version already exists.");
+					    			                } 
+					    			                else 
+					    			                {
+					    			                    response.setStatusCode(500); // Generic server error
+					    			                    LOGGER.error("Database error: " + cause.getMessage().replaceAll("\"", ""));
+					    			                    jo.put("error", "Database error: " + cause.getMessage().replaceAll("\"", ""));
+					    			                }
+					    			                response.send(ja.encodePrettily());
+					                                connection.close();
+					    			                LOGGER.info("closed method: " + method + " to connection pool");
+					                            }
+					                            connection.close();
+					                        });
+					            } 
+					            else 
+					            {
+					                JsonArray ja = new JsonArray();
+					                LOGGER.error("error: " + ar.cause() );
+		                        	JsonObject jo = new JsonObject("{\"response\":\"error \" "+ ar.cause().getMessage().replaceAll("\"", "") +"}");
+		                        	ja.add(jo);
+		                        	response.send(ja.encodePrettily());
+					            }
+					        });
+				        }
+				        else
+				        {
+				        	JsonArray ja = new JsonArray();
+				        	JsonObject jo = new JsonObject();
+				        	jo.put("Error", "Issufficent authentication level to run API");
+				        	ja.add(jo);
+				        	response.send(ja.encodePrettily());
+				        }
+					}
+				}
 			}
-		}
-		
+				
+		});
 	}
 	/**********************handleGetPacks******************************************/
 	/******Show the table of packs user has uploaded******************************************/
