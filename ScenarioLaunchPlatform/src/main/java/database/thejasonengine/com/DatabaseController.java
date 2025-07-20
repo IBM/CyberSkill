@@ -61,7 +61,13 @@ public class DatabaseController
 				      .setUser(configs.getJsonObject("systemDatabaseController").getString("user"))
 				      .setPassword(configs.getJsonObject("systemDatabaseController").getString("password"));
 	
-		    PoolOptions poolOptions = new PoolOptions().setMaxSize(configs.getJsonObject("systemDatabaseController").getInteger("maxConnections")); // Max pool size
+		    PoolOptions poolOptions = new PoolOptions()
+		    		.setIdleTimeout(30000) // 30 seconds
+		    		.setShared(true) 
+		    		.setMaxSize(configs.getJsonObject("systemDatabaseController").getInteger("maxConnections"));
+		    		
+		    					
+		    				
 	        LOGGER.debug("Set pool options");
 	        Pool pool = Pool.pool(vertx, connectOptions, poolOptions);
 	        try
