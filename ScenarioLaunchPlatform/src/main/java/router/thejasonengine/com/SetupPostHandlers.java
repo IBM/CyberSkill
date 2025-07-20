@@ -543,7 +543,7 @@ public class SetupPostHandlers
 		StoryHandler.handleDeleteStoryById(routingContext);
 	}
 	
-	/***********************************************************************/
+	/***********************************************************************NOPOSTMAN/
 	private void handleAddOSTask(RoutingContext routingContext)
 	{
 		LOGGER.info("insdie handleAddOSTask");
@@ -727,7 +727,7 @@ public class SetupPostHandlers
 		}
 		
 	}
-	/**********************handleGetOSTasks******************************************/
+	/**********************handleGetOSTasks******************************************NOPOSTMAN/
 	private void handleGetOSTasks(RoutingContext routingContext)
 	{
 LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");  
@@ -827,7 +827,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		}
 	}
 	
-	/**********************handleGetOSTasks******************************************/
+	/**********************handleGetOSTasks******************************************NOPOSTMAN/
 	private void handleGetOSTasksByTaskId(RoutingContext routingContext)
 	{
 			LOGGER.info("Inside SetupPostHandlers.handleGetOSTasksByTaskId");  
@@ -929,7 +929,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	}
 	/****************************************************************/
 	
-	/**********************handleUpdateOSTasksByTaskId******************************************/
+	/**********************handleUpdateOSTasksByTaskId******************************************NOPOSTMAN/
 	private void handleUpdateOSTasksByTaskId(RoutingContext routingContext)
 	{
 		LOGGER.info("Inside SetupPostHandlers.handleUpdateOSTasksByTaskId");  
@@ -1047,7 +1047,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		}
 	}
 	
-	/**********************handleDeleteOSTasksByTaskId******************************************/
+	/**********************handleDeleteOSTasksByTaskId******************************************NOPOSTMAN/
 	private void handleDeleteOSTasksByTaskId(RoutingContext routingContext)
 	{
 		LOGGER.info("Inside SetupPostHandlers.handleDeleteOSTasksByTaskId");  
@@ -1174,7 +1174,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 
 	/*****Adds a content pack to the system
 	 * Recorded in the database.
-	 * Users know what packs they have and what they've deployed*****************************************/
+	 * Users know what packs they have and what they've deployed*****************************************NOPOSTMAN/
 	private void handleAddPack(RoutingContext routingContext)
 	{
 		
@@ -1399,66 +1399,72 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		});
 	}
 	/**********************handleGetPacks******************************************/
-	/******Show the table of packs user has uploaded******************************************/
+	
+	/******Show the table of packs user has uploaded******************************************NOPOSTMAN/
 	private void handleGetPacks(RoutingContext routingContext)
 	{
-LOGGER.info("Inside SetupPostHandlers.handleGetPacks");  
 		
-		Context context = routingContext.vertx().getOrCreateContext();
-		Pool pool = context.get("pool");
+		String method = "SetupPostHandlers.handleGetPacks";
 		
-		if (pool == null)
+		LOGGER.info("Inside: " + method);  
+		
+		//Context context = routingContext.vertx().getOrCreateContext();
+		//Pool pool = context.get("pool");
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
+		
+		validateSystemPool(pool, method).onComplete(validation -> 
 		{
-			LOGGER.debug("pull is null - restarting");
-			DatabaseController DB = new DatabaseController(routingContext.vertx());
-			LOGGER.debug("Taking the refreshed context pool object");
-			pool = context.get("pool");
-		}
-		
-		HttpServerResponse response = routingContext.response();
-		JsonObject JSONpayload = routingContext.getBodyAsJson();
-		
-		if (JSONpayload.getString("jwt") == null) 
-	    {
-	    	LOGGER.info("handleGetPacks required fields not detected (jwt)");
-	    	routingContext.fail(400);
-	    } 
-		else
-		{
-			if(validateJWTToken(JSONpayload))
-			{
-				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+		      if (validation.failed()) 
+		      {
+		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
+		        return;
+		      }
+		      if (validation.succeeded())
+		      {
+		    	LOGGER.debug("DB Validation passed: " + method);
+		    	HttpServerResponse response = routingContext.response();
+				JsonObject JSONpayload = routingContext.getBodyAsJson();
 				
-				JsonObject payload = new JsonObject(decode(chunks[1]));
-				LOGGER.info("Payload: " + payload );
-				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-			
-				
-				LOGGER.info("Accessible Level is : " + authlevel);
-		       
-				if(authlevel >= 1)
-		        {
-		        	LOGGER.debug("User allowed to execute the API");
-		        	response
-			        .putHeader("content-type", "application/json");
-		        	pool.getConnection(ar -> 
+				if (JSONpayload.getString("jwt") == null) 
+			    {
+			    	LOGGER.info(method + " required fields not detected (jwt)");
+			    	routingContext.fail(400);
+			    } 
+				else
+				{
+					if(validateJWTToken(JSONpayload))
 					{
-			            if (ar.succeeded()) 
-			            {
-			                SqlConnection connection = ar.result();
-			                JsonArray ja = new JsonArray();
-			                
-			                // Execute a SELECT query
-			                
-			                connection.preparedQuery("SELECT id, pack_name, version, db_type, build_date, build_version, uploaded_date, pack_info FROM tb_content_packs")
+						LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+						String [] chunks = JSONpayload.getString("jwt").split("\\.");
+						
+						JsonObject payload = new JsonObject(decode(chunks[1]));
+						LOGGER.info("Payload: " + payload );
+						int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+						String username  =payload.getString("username");
+						LOGGER.debug("Username recieved: " + username);
+						
+						if(authlevel >= 1)
+				        {
+				        	LOGGER.debug("User allowed to execute the API");
+				        	response
+					        .putHeader("content-type", "application/json");
+				        	pool.getConnection(ar -> 
+							{
+					            if (ar.succeeded()) 
+					            {
+					            	SqlConnection connection = ar.result();
+					                JsonArray ja = new JsonArray();
+					            	connection.preparedQuery("SELECT id, pack_name, version, db_type, build_date, build_version, uploaded_date, pack_info FROM tb_content_packs")
 			                        .execute(
-			                        res -> {
+			                        res -> 
+			                        {
 			                            if (res.succeeded()) 
 			                            {
 			                                // Process the query result
 			                                RowSet<Row> rows = res.result();
-			                                rows.forEach(row -> {
+			                                rows.forEach(row -> 
+			                                {
 			                                    // Print out each row
 			                                    LOGGER.info("Row: " + row.toJson());
 			                                    try
@@ -1473,253 +1479,278 @@ LOGGER.info("Inside SetupPostHandlers.handleGetPacks");
 			                                    }
 			                                    
 			                                });
-			                                
-			                    
 			                                response.send(ja.encodePrettily());
-			                                
+			                                connection.close();
+			                                LOGGER.info("closed method: " + method + " to connection pool");
 			                            } 
 			                            else 
 			                            {
 			                                // Handle query failure
 			                            	LOGGER.error("error: " + res.cause() );
 			                            	response.send(res.cause().getMessage());
+			                            	connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
 			                            }
-			                            connection.close();
 			                        });
-			            } else {
-			                // Handle connection failure
-			                ar.cause().printStackTrace();
-			                response.send(ar.cause().getMessage());
-			            }
-			            
-			        });
-		        }
-			}
-		
-		}
+					            } 
+					            else 
+					            {
+					                // Handle connection failure
+					                ar.cause().printStackTrace();
+					                response.send(ar.cause().getMessage().replaceAll("\"", ""));
+					                
+			                    }
+							});
+				        }
+				        else
+				        {
+				        		JsonArray ja = new JsonArray();
+				        		JsonObject jo = new JsonObject();
+				        		jo.put("Error", "Issufficent authentication level to run API");
+				        		ja.add(jo);
+				        		response.send(ja.encodePrettily());
+				        	}
+						}
+					} 
+		      	}
+			});
+			
 	}
 	
 	/**********************handleGetPacksByPackId******************************************/
-	/****Getting the packs for the update function.
+	/****Getting the packs for the update function. NOPOSTMAN
 	 * Modal pops up with Packs users can deploy******************************************/
 	private void handleGetPacksByPackId(RoutingContext routingContext)
 	{
-			LOGGER.info("Inside SetupPostHandlers.handleGetPacksByPackId");  
+		String method = "SetupPostHandlers.handleGetPacksByPackId";
+		LOGGER.info("Inside: " + method);  
 		
-		Context context = routingContext.vertx().getOrCreateContext();
-		Pool pool = context.get("pool");
+		//Context context = routingContext.vertx().getOrCreateContext();
+		//Pool pool = context.get("pool");
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
 		
-		if (pool == null)
+		validateSystemPool(pool, method).onComplete(validation -> 
 		{
-			LOGGER.debug("pull is null - restarting");
-			DatabaseController DB = new DatabaseController(routingContext.vertx());
-			LOGGER.debug("Taking the refreshed context pool object");
-			pool = context.get("pool");
-		}
-		
-		HttpServerResponse response = routingContext.response();
-		JsonObject JSONpayload = routingContext.getBodyAsJson();
-		
-		if (JSONpayload.getString("jwt") == null) 
-	    {
-	    	LOGGER.info("handleGetPacksByPackId required fields not detected (jwt)");
-	    	routingContext.fail(400);
-	    } 
-		else
-		{
-			if(validateJWTToken(JSONpayload))
-			{
-				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+		      if (validation.failed()) 
+		      {
+		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
+		        return;
+		      }
+		      if (validation.succeeded())
+		      {
+		    	LOGGER.debug("DB Validation passed: " + method);
+		    	HttpServerResponse response = routingContext.response();
+				JsonObject JSONpayload = routingContext.getBodyAsJson();
 				
-				JsonObject payload = new JsonObject(decode(chunks[1]));
-				LOGGER.info("Payload: " + payload );
-				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-			
-				String PackId = JSONpayload.getString("pack_id"); 
-				LOGGER.info("PackId: " + PackId);
-				LOGGER.info("Accessible Level is : " + authlevel);
-		       
-				if(authlevel >= 1)
-		        {
-		        	LOGGER.debug("User allowed to execute the API");
-		        	response
-			        .putHeader("content-type", "application/json");
-		        	pool.getConnection(ar -> 
+				if (JSONpayload.getString("jwt") == null) 
+			    {
+			    	LOGGER.info(method + " required fields not detected (jwt)");
+			    	routingContext.fail(400);
+			    } 
+				else
+				{
+					if(validateJWTToken(JSONpayload))
 					{
-			            if (ar.succeeded()) 
-			            {
-			                SqlConnection connection = ar.result();
-			                JsonArray ja = new JsonArray();
-			                
-			                // Execute a SELECT query
-			                
-			                connection.preparedQuery("Select * from public.tb_content_packs where id = $1")
-			                        .execute(Tuple.of(Integer.parseInt(PackId)),
-			                        res -> {
-			                            if (res.succeeded()) 
-			                            {
-			                                // Process the query result
-			                                RowSet<Row> rows = res.result();
-			                                rows.forEach(row -> {
-			                                    // Print out each row
-			                                    LOGGER.info("Row: " + row.toJson());
-			                                    try
-			                                    {
-			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
-			                                    	ja.add(jo);
-			                                    	LOGGER.info("Successfully added json object to array");
-			                                    }
-			                                    catch(Exception e)
-			                                    {
-			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
-			                                    }
-			                                    
-			                                });
-			                                
-			                    
-			                                response.send(ja.encodePrettily());
-			                                
-			                            } 
-			                            else 
-			                            {
-			                                // Handle query failure
-			                            	LOGGER.error("error: " + res.cause() );
-			                            	response.send(res.cause().getMessage());
-			                            }
-			                            connection.close();
-			                        });
-			            } else {
-			                // Handle connection failure
-			                ar.cause().printStackTrace();
-			                response.send(ar.cause().getMessage());
-			            }
-			            
-			        });
-		        }
-			}
-		
-		}
+						LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+						String [] chunks = JSONpayload.getString("jwt").split("\\.");
+						
+						JsonObject payload = new JsonObject(decode(chunks[1]));
+						LOGGER.info("Payload: " + payload );
+						int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+					
+						String PackId = JSONpayload.getString("pack_id"); 
+						LOGGER.info("PackId: " + PackId);
+						LOGGER.info("Accessible Level is : " + authlevel);
+						
+						if(authlevel >= 1)
+				        {
+				        	LOGGER.debug("User allowed to execute the API");
+				        	response
+					        .putHeader("content-type", "application/json");
+				        	pool.getConnection(ar -> 
+							{
+					            if (ar.succeeded()) 
+					            {
+					            	SqlConnection connection = ar.result();
+					                JsonArray ja = new JsonArray();
+					            	connection.preparedQuery("Select * from public.tb_content_packs where id = $1")
+				                    .execute(Tuple.of(Integer.parseInt(PackId)),
+				                    res -> 
+				                    {
+				                    	if (res.succeeded()) 
+				                        {
+					                        // Process the query result
+					                        RowSet<Row> rows = res.result();
+					                        rows.forEach(row -> 
+					                        {
+					                          // Print out each row
+					                          LOGGER.info("Row: " + row.toJson());
+					                          try
+					                          {
+					                        	  JsonObject jo = new JsonObject(row.toJson().encode());
+					                              ja.add(jo);
+					                              LOGGER.info("Successfully added json object to array");
+					                          }
+					                          catch(Exception e)
+					                          {
+					                        	  LOGGER.error("Unable to add JSON Object to array: " + e.toString());
+					                          }
+					                                    
+					                        });
+					                        response.send(ja.encodePrettily());
+					                        connection.close();
+					                        LOGGER.info("closed method: " + method + " to connection pool");
+				                        } 
+				                    	else 
+				                    	{
+				                    		// Handle query failure
+				                    		LOGGER.error("error: " + res.cause() );
+				                    		response.send(res.cause().getMessage());
+				                    		connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
+				                    	}
+				                    	
+				                    });
+					            } 
+					            else 
+					            {
+					                // Handle connection failure
+					                ar.cause().printStackTrace();
+					                response.send(ar.cause().getMessage().replaceAll("\"", ""));
+					            }
+							});
+				        }
+				        else
+				        {
+				        		JsonArray ja = new JsonArray();
+				        		JsonObject jo = new JsonObject();
+				        		jo.put("Error", "Issufficent authentication level to run API");
+				        		ja.add(jo);
+				        		response.send(ja.encodePrettily());
+				        	}
+						}
+					} 
+		      	}
+			});
+	
 	}
 	/************************handleUpdatePacksByPackId***************************************/
 	/***This is where the user decides to deploy the Content pack
 	 * Pack details are stored in DB. Default is not deployed.
 	 * Users can decide on what they upload and deploy
 	 * ****************************/
-	private void handleUpdatePacksByPackId(RoutingContext routingContext) {
-	    LOGGER.info("Inside SetupPostHandlers.handleUpdatePacksByPackId");  
-	    
-	    Context context = routingContext.vertx().getOrCreateContext();
-	    Pool pool = context.get("pool");
-	    
-	    if (pool == null) {
-	        LOGGER.debug("pool is null - restarting");
-	        DatabaseController DB = new DatabaseController(routingContext.vertx());
-	        LOGGER.debug("Taking the refreshed context pool object");
-	        pool = context.get("pool");
-	    }
-	    
-	    HttpServerResponse response = routingContext.response();
-	    JsonObject JSONpayload = routingContext.getBodyAsJson();
-	    
-	    if (JSONpayload.getString("jwt") == null) {
-	        LOGGER.info("handleUpdatePacksByPackId required fields not detected (jwt)");
-	        routingContext.fail(400);
-	    } else {
-	        if(validateJWTToken(JSONpayload)) {
-	            LOGGER.info("jwt: " + JSONpayload.getString("jwt"));
-	            String[] chunks = JSONpayload.getString("jwt").split("\\.");
-	            
-	            JsonObject payload = new JsonObject(decode(chunks[1]));
-	            LOGGER.info("Payload: " + payload);
-	            int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-	            
-	            String pack_name = JSONpayload.getString("pack_name");
-	            String pack_loaded = JSONpayload.getString("pack_loaded");
-	            String id = JSONpayload.getString("pack_id");
-	            
-	            // New parameters for deployment
-	            String zipFilePath = JSONpayload.getString("zipFilePath");
-	            String outputDir = JSONpayload.getString("outputDir");
-	            
-	            LOGGER.debug("pack_name received: " + pack_name);
-	            LOGGER.debug("pack_loaded received: " + pack_loaded);
-	            LOGGER.debug("id received: " + id);
-	            LOGGER.debug("zipFilePath: " + zipFilePath);
-	            LOGGER.debug("outputDir: " + outputDir);
-	            
-	            LOGGER.info("Accessible Level is : " + authlevel);
-	           
-	            if(authlevel >= 1) {
-	                LOGGER.debug("User allowed to execute the API");
-	                response.putHeader("content-type", "application/json");
-	                
-	                pool.getConnection(ar -> {
-	                    if (ar.succeeded()) {
-	                        SqlConnection connection = ar.result();
-	                        JsonArray ja = new JsonArray();
-	                        
-	                        connection.preparedQuery("UPDATE public.tb_content_packs SET pack_deployed = $1 WHERE id = $2")
-	                                .execute(Tuple.of(pack_loaded, Integer.parseInt(id)),
-	                                res -> {
-	                                    if (res.succeeded()) {
-	                                        JsonObject jo = new JsonObject("{\"response\":\"Successfully updated pack\"}");
-	                                        ja.add(jo);
-	                                        LOGGER.info("Successfully updated Pack");
-	                                        
-	                                        // Check if we should deploy
-	                                       /* if ("True".equalsIgnoreCase(pack_loaded)) {
-	                                            if (zipFilePath != null && outputDir != null) {
-	                                                // Run deployment using the consistent detectOS method
-	                                                context.owner().executeBlocking(future -> {
-	                                                    try {
-	                                                        String result = OSDetectorAndTaskControl.detectOS(
-	                                                            outputDir,     // filePath parameter where we unzip to
-	                                                            null,          // schedule (not used)
-	                                                            zipFilePath,   // Path to zip parameter
-	                                                            "True"       // action
-	                                                        );
-	                                                        LOGGER.info("Deployment result: " + result);
-	                                                        future.complete(result);
-	                                                    } catch (Exception e) {
-	                                                        future.fail(e);
-	                                                    }
-	                                                }, false, asyncResult -> {
-	                                                    if (asyncResult.succeeded()) {
-	                                                        LOGGER.info("Deployment completed successfully");
-	                                                    } else {
-	                                                        LOGGER.error("Deployment failed: " + asyncResult.cause().getMessage());
-	                                                    }
-	                                                });
-	                                            } else {
-	                                                LOGGER.error("Deployment skipped: zipFilePath or outputDir not provided");
-	                                            }
-	                                        }*/
-	                                        
-	                                        response.end(ja.encodePrettily());
-	                                    } else {
-	                                        JsonObject jo = new JsonObject("{\"response\":\""+ res.cause().getMessage().toString().replaceAll("\""," ") +"\"}");
-	                                        LOGGER.error("error: " + res.cause());
-	                                        ja.add(jo);
-	                                        response.end(ja.encodePrettily());
-	                                        res.cause().printStackTrace();
-	                                    }
-	                                    connection.close();
-	                                });
-	                    } else {
-	                        ar.cause().printStackTrace();
-	                        response.end(ar.cause().getMessage());
-	                    }
-	                });
-	            } else {
-	                JsonArray ja = new JsonArray();
-	                JsonObject jo = new JsonObject();
-	                jo.put("Error", "Insufficient authentication level to run API");
-	                ja.add(jo);
-	                response.end(ja.encodePrettily());
-	            }
-	        }
-	    }
+	private void handleUpdatePacksByPackId(RoutingContext routingContext) 
+	{
+		
+		String method = "SetupPostHandlers.handleUpdatePacksByPackId";
+		LOGGER.info("Inside: " + method);  
+		
+		//Context context = routingContext.vertx().getOrCreateContext();
+		//Pool pool = context.get("pool");
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
+		
+		validateSystemPool(pool, method).onComplete(validation -> 
+		{
+		      if (validation.failed()) 
+		      {
+		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
+		        return;
+		      }
+		      if (validation.succeeded())
+		      {
+		    	LOGGER.debug("DB Validation passed: " + method);
+		    	HttpServerResponse response = routingContext.response();
+				JsonObject JSONpayload = routingContext.getBodyAsJson();
+				
+				if (JSONpayload.getString("jwt") == null) 
+			    {
+			    	LOGGER.info(method + " required fields not detected (jwt)");
+			    	routingContext.fail(400);
+			    } 
+				else
+				{
+					if(validateJWTToken(JSONpayload))
+					{
+						LOGGER.info("jwt: " + JSONpayload.getString("jwt"));
+			            String[] chunks = JSONpayload.getString("jwt").split("\\.");
+			            
+			            JsonObject payload = new JsonObject(decode(chunks[1]));
+			            LOGGER.info("Payload: " + payload);
+			            int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+			            
+			            String pack_name = JSONpayload.getString("pack_name");
+			            String pack_loaded = JSONpayload.getString("pack_loaded");
+			            String id = JSONpayload.getString("pack_id");
+			            
+			            // New parameters for deployment
+			            String zipFilePath = JSONpayload.getString("zipFilePath");
+			            String outputDir = JSONpayload.getString("outputDir");
+			            
+			            LOGGER.debug("pack_name received: " + pack_name);
+			            LOGGER.debug("pack_loaded received: " + pack_loaded);
+			            LOGGER.debug("id received: " + id);
+			            LOGGER.debug("zipFilePath: " + zipFilePath);
+			            LOGGER.debug("outputDir: " + outputDir);
+			            
+			            LOGGER.info("Accessible Level is : " + authlevel);
+						
+						if(authlevel >= 1)
+				        {
+				        	LOGGER.debug("User allowed to execute the API");
+				        	response
+					        .putHeader("content-type", "application/json");
+				        	pool.getConnection(ar -> 
+							{
+								if (ar.succeeded()) 
+								{
+			                        SqlConnection connection = ar.result();
+			                        JsonArray ja = new JsonArray();
+			                        connection.preparedQuery("UPDATE public.tb_content_packs SET pack_deployed = $1 WHERE id = $2")
+			                        .execute(Tuple.of(pack_loaded, Integer.parseInt(id)),
+			                        res -> 
+			                        {
+			                        	if (res.succeeded()) 
+			                        	{
+			                        		JsonObject jo = new JsonObject("{\"response\":\"Successfully updated pack\"}");
+			                                ja.add(jo);
+			                                LOGGER.info("Successfully updated Pack");
+			                                response.end(ja.encodePrettily());
+			                                connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
+			                            } 
+			                        	else 
+			                        	{
+			                        		JsonObject jo = new JsonObject("{\"response\":\""+ res.cause().getMessage().toString().replaceAll("\""," ") +"\"}");
+			                                LOGGER.error("error: " + res.cause());
+			                                ja.add(jo);
+			                                response.end(ja.encodePrettily());
+			                                connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
+			                            }
+			                        });
+			                    } 
+								else 
+								{
+			                        LOGGER.error("ar.cause().getMessage()");
+			                        response.end(ar.cause().getMessage());
+			                    }  
+					        });
+				        }
+				        else
+				        {
+				        		JsonArray ja = new JsonArray();
+				        		JsonObject jo = new JsonObject();
+				        		jo.put("Error", "Issufficent authentication level to run API");
+				        		ja.add(jo);
+				        		response.send(ja.encodePrettily());
+				        	}
+						}
+					} 
+		      	}
+		});
+		
 	}
 	/**********************handleUpdatePacksByPackId******************************************/
 	/**********BAck up of old method. Keeping in case*****************************************/
