@@ -543,7 +543,7 @@ public class SetupPostHandlers
 		StoryHandler.handleDeleteStoryById(routingContext);
 	}
 	
-	/***********************************************************************NOPOSTMAN/
+	/***********************************************************************NOPOSTMAN*/
 	private void handleAddOSTask(RoutingContext routingContext)
 	{
 		LOGGER.info("insdie handleAddOSTask");
@@ -727,7 +727,7 @@ public class SetupPostHandlers
 		}
 		
 	}
-	/**********************handleGetOSTasks******************************************NOPOSTMAN/
+	/**********************handleGetOSTasks******************************************NOPOSTMAN*/
 	private void handleGetOSTasks(RoutingContext routingContext)
 	{
 LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");  
@@ -827,7 +827,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		}
 	}
 	
-	/**********************handleGetOSTasks******************************************NOPOSTMAN/
+	/**********************handleGetOSTasks******************************************NOPOSTMAN*/
 	private void handleGetOSTasksByTaskId(RoutingContext routingContext)
 	{
 			LOGGER.info("Inside SetupPostHandlers.handleGetOSTasksByTaskId");  
@@ -929,7 +929,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	}
 	/****************************************************************/
 	
-	/**********************handleUpdateOSTasksByTaskId******************************************NOPOSTMAN/
+	/**********************handleUpdateOSTasksByTaskId******************************************NOPOSTMAN*/
 	private void handleUpdateOSTasksByTaskId(RoutingContext routingContext)
 	{
 		LOGGER.info("Inside SetupPostHandlers.handleUpdateOSTasksByTaskId");  
@@ -1047,7 +1047,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		}
 	}
 	
-	/**********************handleDeleteOSTasksByTaskId******************************************NOPOSTMAN/
+	/**********************handleDeleteOSTasksByTaskId******************************************NOPOSTMAN*/
 	private void handleDeleteOSTasksByTaskId(RoutingContext routingContext)
 	{
 		LOGGER.info("Inside SetupPostHandlers.handleDeleteOSTasksByTaskId");  
@@ -1174,7 +1174,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 
 	/*****Adds a content pack to the system
 	 * Recorded in the database.
-	 * Users know what packs they have and what they've deployed*****************************************NOPOSTMAN/
+	 * Users know what packs they have and what they've deployed*****************************************NOPOSTMAN*/
 	private void handleAddPack(RoutingContext routingContext)
 	{
 		
@@ -1400,7 +1400,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	}
 	/**********************handleGetPacks******************************************/
 	
-	/******Show the table of packs user has uploaded******************************************NOPOSTMAN/
+	/******Show the table of packs user has uploaded******************************************NOPOSTMAN*/
 	private void handleGetPacks(RoutingContext routingContext)
 	{
 		
@@ -1879,6 +1879,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	 */
 	private void handleDeletePackByPackId(RoutingContext routingContext)
 	{
+		
 		LOGGER.info("Inside SetupPostHandlers.handleDeleteOSTasksByTaskId");  
 		
 		Context context = routingContext.vertx().getOrCreateContext();
@@ -2527,95 +2528,78 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	/****************************************************************/
 	private void handleAddQueryTypes(RoutingContext routingContext) 
 	{
+		String method = "SetupPostHandlers.handleAddQueryTypes";
+		LOGGER.info("Inside: " + method);  
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
 		
-		LOGGER.info("Inside SetupPostHandlers.handleAddQueryTypes");  
-		
-		Context context = routingContext.vertx().getOrCreateContext();
-		Pool pool = context.get("pool");
-		
-		if (pool == null)
+		validateSystemPool(pool, method).onComplete(validation -> 
 		{
-			LOGGER.debug("pull is null - restarting");
-			DatabaseController DB = new DatabaseController(routingContext.vertx());
-			LOGGER.debug("Taking the refreshed context pool object");
-			pool = context.get("pool");
-		}
-		
-		HttpServerResponse response = routingContext.response();
-		JsonObject JSONpayload = routingContext.getBodyAsJson();
-		
-		if (JSONpayload.getString("jwt") == null) 
-	    {
-	    	LOGGER.info("handleAddQueryTypes required fields not detected (jwt)");
-	    	routingContext.fail(400);
-	    } 
-		else
-		{
-			if(validateJWTToken(JSONpayload))
-			{
-				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+		      if (validation.failed()) 
+		      {
+		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
+		        return;
+		      }
+		      if (validation.succeeded())
+		      {
+		    	LOGGER.debug("DB Validation passed: " + method);
+		    	HttpServerResponse response = routingContext.response();
+				JsonObject JSONpayload = routingContext.getBodyAsJson();
 				
-				JsonObject payload = new JsonObject(decode(chunks[1]));
-				LOGGER.info("Payload: " + payload );
-				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-				String queryType = JSONpayload.getString("query_type");
-				
-				LOGGER.debug("Query recieved: " + queryType);
-				
-				utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
-				
-				//The map is passed to the SQL query
-				Map<String,Object> map = new HashMap<String, Object>();
-				
-				
-				map.put("query_type", JSONpayload.getValue("query_type"));
-				
-				LOGGER.info("Accessible Level is : " + authlevel);
-		        LOGGER.info("username: " + map.get("username"));
-		        
-		        if(authlevel >= 1)
-		        {
-		        	LOGGER.debug("User allowed to execute the API");
-		        	response
-			        .putHeader("content-type", "application/json");
-					
-					pool.getConnection(ar -> 
+				if (JSONpayload.getString("jwt") == null) 
+			    {
+			    	LOGGER.info(method + " required fields not detected (jwt)");
+			    	routingContext.fail(400);
+			    } 
+				else
+				{
+					if(validateJWTToken(JSONpayload))
 					{
-			            if (ar.succeeded()) 
-			            {
-			                SqlConnection connection = ar.result();
-			                JsonArray ja = new JsonArray();
-			                
-			                // Execute a SELECT query
-			                
-			                connection.preparedQuery("INSERT INTO public.tb_query_types(query_type) VALUES($1);")
-			                        .execute(Tuple.of(map.get("query_type")),
-			                        res -> {
-			                            if (res.succeeded()) 
-			                            {
-			                                // Process the query result
-			                                
+						LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+						String [] chunks = JSONpayload.getString("jwt").split("\\.");
+						
+						JsonObject payload = new JsonObject(decode(chunks[1]));
+						LOGGER.info("Payload: " + payload );
+						int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+						String queryType = JSONpayload.getString("query_type");
+						
+						LOGGER.debug("Query recieved: " + queryType);
+						
+						utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+						
+						//The map is passed to the SQL query
+						Map<String,Object> map = new HashMap<String, Object>();
+						
+						
+						map.put("query_type", JSONpayload.getValue("query_type"));
+						
+						LOGGER.info("Accessible Level is : " + authlevel);
+				        LOGGER.info("username: " + map.get("username"));
+						
+						if(authlevel >= 1)
+				        {
+				        	LOGGER.debug("User allowed to execute the API");
+				        	response
+					        .putHeader("content-type", "application/json");
+				        	pool.getConnection(ar -> 
+							{
+								if (ar.succeeded()) 
+					            {
+					                SqlConnection connection = ar.result();
+					                JsonArray ja = new JsonArray();
+					                // Execute a SELECT query
+					                connection.preparedQuery("INSERT INTO public.tb_query_types(query_type) VALUES($1);")
+					                .execute(Tuple.of(map.get("query_type")),
+					                res -> 
+					                {
+					                	if (res.succeeded()) 
+					                    {
 			                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully added query type\"}");
 	                                    	ja.add(jo);
 	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
-			                                
-			                                /*rows.forEach(row -> {
-			                                    // Print out each row
-			                                    LOGGER.info("Row: " + row.toJson());
-			                                    try
-			                                    {
-			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
-			                                    	ja.add(jo);
-			                                    	LOGGER.info("Successfully added json object to array");
-			                                    }
-			                                    catch(Exception e)
-			                                    {
-			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
-			                                    }
-			                                    
-			                                });*/
 			                                response.send(ja.encodePrettily());
+			                                connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
 			                            } 
 			                            else 
 			                            {
@@ -2624,36 +2608,38 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 			                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause()+"}");
 	                                    	ja.add(jo);
 	                                    	response.send(ja.encodePrettily());
+	                                    	connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
 			                                //res.cause().printStackTrace();
 			                            }
-			                            // Close the connection
-			                            //response.end();
 			                            connection.close();
 			                        });
-			            } else {
-			                // Handle connection failure
-			                //
-			            	JsonArray ja = new JsonArray();
-			                LOGGER.error("error: " + ar.cause() );
-                        	JsonObject jo = new JsonObject("{\"response\":\"error \" "+ ar.cause().getMessage().replaceAll("\"", "") +"}");
-                        	ja.add(jo);
-                        	response.send(ja.encodePrettily());
-			            }
-			            
-			        });
-		        }
-		        else
-		        {
-		        	JsonArray ja = new JsonArray();
-		        	JsonObject jo = new JsonObject();
-		        	jo.put("Error", "Issufficent authentication level to run API");
-		        	ja.add(jo);
-		        	response.send(ja.encodePrettily());
-		        }
-		        
-		        
-			}
-		}
+					            } 
+								else 
+					            {
+					                // Handle connection failure
+					                //
+					            	JsonArray ja = new JsonArray();
+					                LOGGER.error("error: " + ar.cause() );
+		                        	JsonObject jo = new JsonObject("{\"response\":\"error \" "+ ar.cause().getMessage().replaceAll("\"", "") +"}");
+		                        	ja.add(jo);
+		                        	response.send(ja.encodePrettily());
+					            }
+							});
+				        }
+				        else
+				        {
+				        		JsonArray ja = new JsonArray();
+				        		JsonObject jo = new JsonObject();
+				        		jo.put("Error", "Issufficent authentication level to run API");
+				        		ja.add(jo);
+				        		response.send(ja.encodePrettily());
+				        	}
+						}
+					} 
+		      	}
+			});
+		
 	}
 	/****************************************************************/
 	private void handleDeleteQueryTypesByID(RoutingContext routingContext) 
