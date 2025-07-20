@@ -2644,128 +2644,105 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	/****************************************************************/
 	private void handleDeleteQueryTypesByID(RoutingContext routingContext) 
 	{
+		String method = "SetupPostHandlers.handleDeleteQueryTypesByID";
+		LOGGER.info("Inside: " + method);  
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
 		
-		LOGGER.info("Inside SetupPostHandlers.handleDeleteQueryTypesByID");  
-		
-		Context context = routingContext.vertx().getOrCreateContext();
-		Pool pool = context.get("pool");
-		
-		if (pool == null)
+		validateSystemPool(pool, method).onComplete(validation -> 
 		{
-			LOGGER.debug("pool is null - restarting");
-			DatabaseController DB = new DatabaseController(routingContext.vertx());
-			LOGGER.debug("Taking the refreshed context pool object");
-			pool = context.get("pool");
-		}
-		
-		HttpServerResponse response = routingContext.response();
-		JsonObject JSONpayload = routingContext.getBodyAsJson();
-		
-		if (JSONpayload.getString("jwt") == null) 
-	    {
-	    	LOGGER.info("handleDeleteQueryTypesByID required fields not detected (jwt)");
-	    	routingContext.fail(400);
-	    } 
-		else
-		{
-			if(validateJWTToken(JSONpayload))
-			{
-				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+		      if (validation.failed()) 
+		      {
+		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
+		        return;
+		      }
+		      if (validation.succeeded())
+		      {
+		    	LOGGER.debug("DB Validation passed: " + method);
+		    	HttpServerResponse response = routingContext.response();
+				JsonObject JSONpayload = routingContext.getBodyAsJson();
 				
-				JsonObject payload = new JsonObject(decode(chunks[1]));
-				LOGGER.info("Payload: " + payload );
-				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-				
-				String queryTypeId = JSONpayload.getString("id"); 
-				LOGGER.info("queryTypeId: " + queryTypeId);
-				
-				
-				LOGGER.info("Accessible Level is : " + authlevel);
-		       
-				if(authlevel >= 1)
-		        {
-		        	LOGGER.debug("User allowed to execute the API");
-		        	response
-			        .putHeader("content-type", "application/json");
-					
-		        	pool.getConnection(ar -> 
+				if (JSONpayload.getString("jwt") == null) 
+			    {
+			    	LOGGER.info(method + " required fields not detected (jwt)");
+			    	routingContext.fail(400);
+			    } 
+				else
+				{
+					if(validateJWTToken(JSONpayload))
 					{
-			            if (ar.succeeded()) 
-			            {
-			                SqlConnection connection = ar.result();
-			                JsonArray ja = new JsonArray();
-			                
-			                // Execute a SELECT query
-			                
-			                
-			                connection.preparedQuery("DELETE from public.tb_query_types WHERE id = $1")
-			                        .execute(Tuple.of(Integer.parseInt(queryTypeId)),
-			                        res -> {
-			                            if (res.succeeded()) 
-			                            {
-			                                // Process the query result
-			                                /*RowSet<Row> rows = res.result();
-			                                rows.forEach(row -> {
-			                                    // Print out each row
-			                                    LOGGER.info("Row: " + row.toJson());
-			                                    try
-			                                    {
-			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
-			                                    	ja.add(jo);
-			                                    	LOGGER.info("Successfully added json object to array");
-			                                    }
-			                                    catch(Exception e)
-			                                    {
-			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
-			                                    }
-			                                    
-			                                });*/
-			                            	
-			                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully deleted connection\"}");
-	                                    	ja.add(jo);
-	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
-			                                
-			                                response.send(ja.encodePrettily());
-			                                
-			                                /* Create the database connection pool for all the test databases */
-			                                    
-			                            } 
-			                            else 
-			                            {
-			                                // Handle query failure
-			                            	JsonObject jo = new JsonObject("{\"response\":\"Unable to delete connection\"}");
-	                                    	ja.add(jo);
-	                                    	LOGGER.error("error: " + res.cause().getMessage() );
-			                            	response.send(ja.encodePrettily());
-			                                //res.cause().printStackTrace();
-			                            }
-			                            // Close the connection
-			                            //response.end();
-			                            connection.close();
-			                        });
-			            } else {
-			                // Handle connection failure
-			            	JsonArray ja = new JsonArray();
-			            	JsonObject jo = new JsonObject("{\"response\":\"Error: "+ar.cause().getMessage().replaceAll("\"", "")+ "\"}");
-                        	ja.add(jo);
-                        	LOGGER.error("error: " + ar.cause().getMessage() );
-                        	response.send(ja.encodePrettily());
-			            }
-			            
-			        });
-		        }
-		        else
-		        {
-		        	JsonArray ja = new JsonArray();
-		        	JsonObject jo = new JsonObject("{\"response\":\"Error: Insufficient access to run API\"}");
-		        	ja.add(jo);
-		        	response.send(ja.encodePrettily());
-		        }
-		        
-		        
-			}
-		}
+						LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+						String [] chunks = JSONpayload.getString("jwt").split("\\.");
+						
+						JsonObject payload = new JsonObject(decode(chunks[1]));
+						LOGGER.info("Payload: " + payload );
+						int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+						
+						String queryTypeId = JSONpayload.getString("id"); 
+						LOGGER.info("queryTypeId: " + queryTypeId);
+						
+						
+						LOGGER.info("Accessible Level is : " + authlevel);
+						if(authlevel >= 1)
+				        {
+				        	LOGGER.debug("User allowed to execute the API");
+				        	response
+					        .putHeader("content-type", "application/json");
+				        	pool.getConnection(ar -> 
+							{
+								if (ar.succeeded()) 
+					            {
+					                SqlConnection connection = ar.result();
+					                JsonArray ja = new JsonArray();
+					                connection.preparedQuery("DELETE from public.tb_query_types WHERE id = $1")
+					                .execute(Tuple.of(Integer.parseInt(queryTypeId)),
+					                res -> 
+					                {
+					                	if (res.succeeded()) 
+					                    {
+					                		JsonObject jo = new JsonObject("{\"response\":\"Successfully deleted connection\"}");
+			                                ja.add(jo);
+			                                LOGGER.info("Successfully added json object to array: " + res.toString());
+					                        response.send(ja.encodePrettily());
+					                        connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
+					                    } 
+					                    else 
+					                    {
+					                       	JsonObject jo = new JsonObject("{\"response\":\"Unable to delete connection\"}");
+			                               	ja.add(jo);
+			                               	LOGGER.error("error: " + res.cause().getMessage() );
+					                       	response.send(ja.encodePrettily());
+					                       	connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
+					                    }
+					                    connection.close();
+					                 });
+					            } 
+								else 
+								{
+					                // Handle connection failure
+					            	JsonArray ja = new JsonArray();
+					            	JsonObject jo = new JsonObject("{\"response\":\"Error: "+ar.cause().getMessage().replaceAll("\"", "")+ "\"}");
+		                        	ja.add(jo);
+		                        	LOGGER.error("error: " + ar.cause().getMessage() );
+		                        	response.send(ja.encodePrettily());
+					            }
+							});
+				        }
+				        else
+				        {
+				        		JsonArray ja = new JsonArray();
+				        		JsonObject jo = new JsonObject();
+				        		jo.put("Error", "Issufficent authentication level to run API");
+				        		ja.add(jo);
+				        		response.send(ja.encodePrettily());
+				        	}
+						}
+					} 
+		      	}
+			});
+		
 	}
 	/****************************************************************/
 	/****************************************************************/
@@ -2782,142 +2759,123 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	/****************************************************************/
 	private void handleAddDatabaseQuery(RoutingContext routingContext) 
 	{
+		String method = "SetupPostHandlers.handleAddDatabaseQuery";
+		LOGGER.info("Inside: " + method);  
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
 		
-		LOGGER.info("Inside SetupPostHandlers.handleAddDatabaseQuery");  
-		
-		Context context = routingContext.vertx().getOrCreateContext();
-		Pool pool = context.get("pool");
-		
-		if (pool == null)
+		validateSystemPool(pool, method).onComplete(validation -> 
 		{
-			LOGGER.debug("pull is null - restarting");
-			DatabaseController DB = new DatabaseController(routingContext.vertx());
-			LOGGER.debug("Taking the refreshed context pool object");
-			pool = context.get("pool");
-		}
-		
-		HttpServerResponse response = routingContext.response();
-		JsonObject JSONpayload = routingContext.getBodyAsJson();
-		
-		if (JSONpayload.getString("jwt") == null) 
-	    {
-	    	LOGGER.info("handleAddDatabaseQuery required fields not detected (jwt)");
-	    	routingContext.fail(400);
-	    } 
-		else
-		{
-			if(validateJWTToken(JSONpayload))
-			{
-				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+		      if (validation.failed()) 
+		      {
+		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
+		        return;
+		      }
+		      if (validation.succeeded())
+		      {
+		    	LOGGER.debug("DB Validation passed: " + method);
+		    	HttpServerResponse response = routingContext.response();
+				JsonObject JSONpayload = routingContext.getBodyAsJson();
 				
-				JsonObject payload = new JsonObject(decode(chunks[1]));
-				LOGGER.info("Payload: " + payload );
-				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-				String query = JSONpayload.getString("query_string");
-				
-				LOGGER.debug("Query recieved: " + query);
-				
-				utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
-				
-				String encoded_query = Encodings.EscapeString(query);
-				LOGGER.debug("Query recieved: " + query);
-				LOGGER.debug("Query encoded: " + encoded_query);
-				
-				//The map is passed to the SQL query
-				Map<String,Object> map = new HashMap<String, Object>();
-				
-				
-				map.put("query_db_type", JSONpayload.getValue("query_db_type"));
-				map.put("query_type", JSONpayload.getValue("query_type"));
-				map.put("query_usecase", JSONpayload.getValue("query_usecase"));
-				map.put("encoded_query", encoded_query);
-				map.put("db_connection_id", Integer.parseInt(JSONpayload.getValue("db_connection_id").toString()));
-				map.put("query_loop", Integer.parseInt(JSONpayload.getValue("query_loop").toString()));
-				map.put("query_description", JSONpayload.getValue("query_description").toString());
-				map.put("video_link", JSONpayload.getValue("video_link").toString());
-				
-				
-				LOGGER.debug("The Query Loop value is : " + Integer.parseInt(JSONpayload.getValue("query_loop").toString()));
-				LOGGER.info("Accessible Level is : " + authlevel);
-		        LOGGER.info("username: " + map.get("username"));
-		        
-		        if(authlevel >= 1)
-		        {
-		        	LOGGER.debug("User allowed to execute the API");
-		        	response
-			        .putHeader("content-type", "application/json");
-					
-					pool.getConnection(ar -> 
+				if (JSONpayload.getString("jwt") == null) 
+			    {
+			    	LOGGER.info(method + " required fields not detected (jwt)");
+			    	routingContext.fail(400);
+			    } 
+				else
+				{
+					if(validateJWTToken(JSONpayload))
 					{
-			            if (ar.succeeded()) 
-			            {
-			                SqlConnection connection = ar.result();
-			                JsonArray ja = new JsonArray();
-			                
-			                // Execute a SELECT query
-			                
-			                connection.preparedQuery("Insert into public.tb_query(query_db_type, query_string, query_usecase, query_type, fk_tb_databaseConnections_id,query_loop, query_description, video_link) VALUES($1,$2,$3,$4,$5,$6,$7,$8);")
-			                        .execute(Tuple.of(map.get("query_db_type"), map.get("encoded_query"), map.get("query_usecase"), map.get("query_type"), map.get("db_connection_id"), map.get("query_loop"), map.get("query_description"),  map.get("video_link")),
-			                        res -> {
-			                            if (res.succeeded()) 
-			                            {
-			                                // Process the query result
-			                                
-			                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully added query\"}");
-	                                    	ja.add(jo);
-	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
-			                                
-			                                /*rows.forEach(row -> {
-			                                    // Print out each row
-			                                    LOGGER.info("Row: " + row.toJson());
-			                                    try
-			                                    {
-			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
-			                                    	ja.add(jo);
-			                                    	LOGGER.info("Successfully added json object to array");
-			                                    }
-			                                    catch(Exception e)
-			                                    {
-			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
-			                                    }
-			                                    
-			                                });*/
-			                                response.send(ja.encodePrettily());
-			                            } 
-			                            else 
-			                            {
-			                                // Handle query failure
-			                            	LOGGER.error("error: " + res.cause() );
-			                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause()+"}");
-	                                    	ja.add(jo);
-	                                    	response.send(ja.encodePrettily());
-			                                //res.cause().printStackTrace();
-			                            }
-			                            // Close the connection
-			                            //response.end();
-			                            connection.close();
-			                        });
-			            } else {
-			                // Handle connection failure
-			                ar.cause().printStackTrace();
-			                response.send(ar.cause().getMessage());
-			            }
-			            
-			        });
-		        }
-		        else
-		        {
-		        	JsonArray ja = new JsonArray();
-		        	JsonObject jo = new JsonObject();
-		        	jo.put("Error", "Issufficent authentication level to run API");
-		        	ja.add(jo);
-		        	response.send(ja.encodePrettily());
-		        }
-		        
-		        
-			}
-		}
+						LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+						String [] chunks = JSONpayload.getString("jwt").split("\\.");
+						
+						JsonObject payload = new JsonObject(decode(chunks[1]));
+						LOGGER.info("Payload: " + payload );
+						int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+						String query = JSONpayload.getString("query_string");
+						
+						LOGGER.debug("Query recieved: " + query);
+						
+						utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+						
+						String encoded_query = Encodings.EscapeString(query);
+						LOGGER.debug("Query recieved: " + query);
+						LOGGER.debug("Query encoded: " + encoded_query);
+						
+						//The map is passed to the SQL query
+						Map<String,Object> map = new HashMap<String, Object>();
+						
+						
+						map.put("query_db_type", JSONpayload.getValue("query_db_type"));
+						map.put("query_type", JSONpayload.getValue("query_type"));
+						map.put("query_usecase", JSONpayload.getValue("query_usecase"));
+						map.put("encoded_query", encoded_query);
+						map.put("db_connection_id", Integer.parseInt(JSONpayload.getValue("db_connection_id").toString()));
+						map.put("query_loop", Integer.parseInt(JSONpayload.getValue("query_loop").toString()));
+						map.put("query_description", JSONpayload.getValue("query_description").toString());
+						map.put("video_link", JSONpayload.getValue("video_link").toString());
+						
+						
+						LOGGER.debug("The Query Loop value is : " + Integer.parseInt(JSONpayload.getValue("query_loop").toString()));
+						LOGGER.info("Accessible Level is : " + authlevel);
+				        LOGGER.info("username: " + map.get("username"));
+				        
+						if(authlevel >= 1)
+				        {
+				        	LOGGER.debug("User allowed to execute the API");
+				        	response
+					        .putHeader("content-type", "application/json");
+				        	pool.getConnection(ar -> 
+							{
+								if (ar.succeeded()) 
+					            {
+					                SqlConnection connection = ar.result();
+					                JsonArray ja = new JsonArray();
+					                connection.preparedQuery("Insert into public.tb_query(query_db_type, query_string, query_usecase, query_type, fk_tb_databaseConnections_id,query_loop, query_description, video_link) VALUES($1,$2,$3,$4,$5,$6,$7,$8);")
+					                .execute(Tuple.of(map.get("query_db_type"), map.get("encoded_query"), map.get("query_usecase"), map.get("query_type"), map.get("db_connection_id"), map.get("query_loop"), map.get("query_description"),  map.get("video_link")),
+					                res -> 
+					                {
+					                	if (res.succeeded()) 
+					                    {
+					                		JsonObject jo = new JsonObject("{\"response\":\"Successfully added query\"}");
+			                                ja.add(jo);
+			                                LOGGER.info("Successfully added json object to array: " + res.toString());
+			                                connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
+					                    } 
+					                    else 
+					                    {
+					                    	// Handle query failure
+					                        LOGGER.error("error: " + res.cause() );
+					                        JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause().getMessage().replaceAll("\"", "")+"}");
+			                                ja.add(jo);
+			                                connection.close();
+			                            	LOGGER.info("closed method: " + method + " to connection pool");
+					                    }
+					                	response.send(ja.encodePrettily());
+					                    connection.close();
+					                });
+					            } 
+								else 
+								{
+					                LOGGER.error(ar.cause().getMessage());
+					                response.send(ar.cause().getMessage());
+					            }
+							});
+				        }
+				        else
+				        {
+				        		JsonArray ja = new JsonArray();
+				        		JsonObject jo = new JsonObject();
+				        		jo.put("Error", "Issufficent authentication level to run API");
+				        		ja.add(jo);
+				        		response.send(ja.encodePrettily());
+				        	}
+						}
+					} 
+		      	}
+			});
+		
 	}
 	/****************************************************************/
 	private void handleGetValidatedDatabaseConnections(RoutingContext routingContext) 
