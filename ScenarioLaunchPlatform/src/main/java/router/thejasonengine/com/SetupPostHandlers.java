@@ -357,107 +357,118 @@ public class SetupPostHandlers
 	/***********************************************************************/
 	private void handleSetMySystemVariables(RoutingContext routingContext)
 	{
-		LOGGER.info("Inside SetupPostHandlers.handleSetMySystemVariables");  
+		String method = "SetupPostHandlers.handleSetMySystemVariables";
 		
-		Context context = routingContext.vertx().getOrCreateContext();
-		Pool pool = context.get("pool");
+		LOGGER.info("Inside: " + method);  
 		
-		if (pool == null)
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
+		
+		validateSystemPool(pool, method).onComplete(validation -> 
 		{
-			LOGGER.debug("database pool is null - restarting");
-			DatabaseController DB = new DatabaseController(routingContext.vertx());
-			LOGGER.debug("Taking the refreshed context pool object");
-			pool = context.get("pool");
-		}
-		
-		HttpServerResponse response = routingContext.response();
-		JsonObject JSONpayload = routingContext.getBodyAsJson();
-		
-		if (JSONpayload.getString("jwt") == null) 
-	    {
-	    	LOGGER.info("handleSetMySystemVariables required fields not detected (jwt)");
-	    	routingContext.fail(400);
-	    } 
-		else
-		{
-			if(validateJWTToken(JSONpayload))
-			{
-				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+		      if (validation.failed()) 
+		      {
+		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
+		        return;
+		      }
+		      if (validation.succeeded())
+		      {
+		    	LOGGER.debug("DB Validation passed: " + method);
+		    	HttpServerResponse response = routingContext.response();
+				JsonObject JSONpayload = routingContext.getBodyAsJson();
 				
-				JsonObject payload = new JsonObject(decode(chunks[1]));
-				LOGGER.info("Payload: " + payload );
-				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-				
-				JsonObject mySystemVariables = JSONpayload.getJsonObject("mySystemVariables");
-				
-				LOGGER.debug("mySystemVariables recieved: " + mySystemVariables.encodePrettily());
-				
-				Map<String,Object> map = new HashMap<String, Object>();
-				
-				map.put("username", payload.getValue("username"));
-				
-				map.put("mySystemVariables", mySystemVariables);
-				
-				LOGGER.info("Accessible Level is : " + authlevel);
-		        LOGGER.info("username: " + map.get("username"));
-		        LOGGER.info("mySystemVariables: " + map.get("mySystemVariables"));
-		        
-		        if(authlevel >= 1)
-		        {
-		        	LOGGER.debug("User allowed to execute the API");
-		        	response
-			        .putHeader("content-type", "application/json");
-					
-					pool.getConnection(ar -> 
+				if (JSONpayload.getString("jwt") == null) 
+			    {
+			    	LOGGER.info(method + " required fields not detected (jwt)");
+			    	routingContext.fail(400);
+			    } 
+				else
+				{
+					if(validateJWTToken(JSONpayload))
 					{
-			            if (ar.succeeded()) 
-			            {
-			                SqlConnection connection = ar.result();
-			                JsonArray ja = new JsonArray();
-			                connection.preparedQuery("INSERT INTO public.tb_myvars  (username, data) VALUES ($1, $2) ON CONFLICT (username) DO UPDATE SET data = EXCLUDED.data;")
-			                		.execute(Tuple.of(map.get("username"), mySystemVariables),
-			                        res -> {
-			                            if (res.succeeded()) 
-			                            {
-			                                JsonObject jo = new JsonObject("{\"response\":\"Successfully added system variables\"}");
-	                                    	ja.add(jo);
-	                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
-	                                    	Ram ram = new Ram();
-	                                    	ram.setSystemVariable(mySystemVariables);
-			                                response.send(ja.encodePrettily());
-			                            } 
-			                            else 
-			                            {
-			                                LOGGER.error("error: " + res.cause() );
-			                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause().getMessage().replaceAll("\"", "")+"}");
-	                                    	ja.add(jo);
-	                                    	response.send(ja.encodePrettily());
-			                            }
-			                            connection.close();
-			                        });
-			            } 
-			            else 
-			            {
-			                JsonArray ja = new JsonArray();
-			                LOGGER.error("error: " + ar.cause() );
-                        	JsonObject jo = new JsonObject("{\"response\":\"error \" "+ ar.cause().getMessage().replaceAll("\"", "") +"}");
-                        	ja.add(jo);
-                        	response.send(ja.encodePrettily());
-			            }
-			        });
-		        }
-		        else
-		        {
-		        	JsonArray ja = new JsonArray();
-		        	JsonObject jo = new JsonObject();
-		        	jo.put("Error", "Issufficent authentication level to run API");
-		        	ja.add(jo);
-		        	response.send(ja.encodePrettily());
-		        	
-		        }
-		    }
-		}
+						LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+						String [] chunks = JSONpayload.getString("jwt").split("\\.");
+						
+						JsonObject payload = new JsonObject(decode(chunks[1]));
+						LOGGER.info("Payload: " + payload );
+						int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+						
+						JsonObject mySystemVariables = JSONpayload.getJsonObject("mySystemVariables");
+						
+						LOGGER.debug("mySystemVariables recieved: " + mySystemVariables.encodePrettily());
+						
+						Map<String,Object> map = new HashMap<String, Object>();
+						
+						map.put("username", payload.getValue("username"));
+						
+						map.put("mySystemVariables", mySystemVariables);
+						
+						LOGGER.info("Accessible Level is : " + authlevel);
+				        LOGGER.info("username: " + map.get("username"));
+				        LOGGER.info("mySystemVariables: " + map.get("mySystemVariables"));
+						
+						if(authlevel >= 1)
+				        {
+				        	LOGGER.debug("User allowed to execute the API");
+				        	response
+					        .putHeader("content-type", "application/json");
+				        	pool.getConnection(ar -> 
+							{
+					            
+								if (ar.succeeded()) 
+					            {
+					                SqlConnection connection = ar.result();
+					                JsonArray ja = new JsonArray();
+					                connection.preparedQuery("INSERT INTO public.tb_myvars  (username, data) VALUES ($1, $2) ON CONFLICT (username) DO UPDATE SET data = EXCLUDED.data;")
+					                		.execute(Tuple.of(map.get("username"), mySystemVariables),
+					                        res -> 
+					                		{
+					                            if (res.succeeded()) 
+					                            {
+					                                JsonObject jo = new JsonObject("{\"response\":\"Successfully added system variables\"}");
+			                                    	ja.add(jo);
+			                                    	LOGGER.info("Successfully added json object to array: " + res.toString());
+			                                    	ram.setSystemVariable(mySystemVariables);
+					                                response.send(ja.encodePrettily());
+					                                LOGGER.info("Successfully added json object to array: " + res.toString());
+					                                connection.close();
+					                                LOGGER.error("Closed " + method +" connection to pool");
+					                            } 
+					                            else 
+					                            {
+					                                LOGGER.error("error: " + res.cause() );
+					                            	JsonObject jo = new JsonObject("{\"response\":\"error \" "+res.cause().getMessage().replaceAll("\"", "")+"}");
+			                                    	ja.add(jo);
+			                                    	response.send(ja.encodePrettily());
+			                                    	connection.close();
+			                                    	LOGGER.error("Closed " + method +" connection to pool");
+					                            }
+					                        });
+					            } 
+					            else 
+					            {
+					                JsonArray ja = new JsonArray();
+					                LOGGER.error("error: " + ar.cause() );
+		                        	JsonObject jo = new JsonObject("{\"response\":\"error \" "+ ar.cause().getMessage().replaceAll("\"", "") +"}");
+		                        	ja.add(jo);
+		                        	response.send(ja.encodePrettily());
+		                        	
+					            }
+							});
+				        }
+						else
+				        {
+				        	JsonArray ja = new JsonArray();
+				        	JsonObject jo = new JsonObject();
+				        	jo.put("Error", "Issufficent authentication level to run API");
+				        	ja.add(jo);
+				        	response.send(ja.encodePrettily());
+				        	
+				        }
+					}
+				}
+		     }
+		});
 	}
 	/***********************************************************************/
 	private void handleGetSwagger(RoutingContext routingContext)
