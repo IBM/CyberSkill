@@ -247,7 +247,7 @@ public class SetupPostHandlers
 		
 		LOGGER.info("Inside: " + method);  
 		
-		Context context = routingContext.vertx().getOrCreateContext();
+		//Context context = routingContext.vertx().getOrCreateContext();
 		//Pool pool = context.get("pool");
 		Ram ram = new Ram();
 		Pool pool = ram.getPostGresSystemPool();
