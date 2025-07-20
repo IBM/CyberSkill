@@ -243,12 +243,16 @@ public class SetupPostHandlers
 	/***********************************************************************/
 	private void handleGetMySystemVariables(RoutingContext routingContext)
 	{
-		LOGGER.info("Inside SetupPostHandlers.handleGetMySystemVariables");  
+		String method = "SetupPostHandlers.handleGetMySystemVariables";
+		
+		LOGGER.info("Inside: " + method);  
 		
 		Context context = routingContext.vertx().getOrCreateContext();
-		Pool pool = context.get("pool");
+		//Pool pool = context.get("pool");
+		Ram ram = new Ram();
+		Pool pool = ram.getPostGresSystemPool();
 		
-		validateSystemPool(pool, "handleGetMySystemVariables").onComplete(validation -> 
+		validateSystemPool(pool, method).onComplete(validation -> 
 		{
 		      if (validation.failed()) 
 		      {
@@ -257,13 +261,13 @@ public class SetupPostHandlers
 		      }
 		      if (validation.succeeded())
 		      {
-		    	LOGGER.debug("DB Validation passed: " + "handleGetMySystemVariables");
+		    	LOGGER.debug("DB Validation passed: " + method);
 		    	HttpServerResponse response = routingContext.response();
 				JsonObject JSONpayload = routingContext.getBodyAsJson();
 				
 				if (JSONpayload.getString("jwt") == null) 
 			    {
-			    	LOGGER.info("handleGetMySystemVariables required fields not detected (jwt)");
+			    	LOGGER.info(method + " required fields not detected (jwt)");
 			    	routingContext.fail(400);
 			    } 
 				else
@@ -304,8 +308,6 @@ public class SetupPostHandlers
 							                    {
 							                    	JsonObject jo = new JsonObject(row.toJson().encode());
 							                        ja.add(jo);
-							                        Ram ram = new Ram();
-							                                    	
 							                        ram.setSystemVariable(jo);
 							                        LOGGER.info("Successfully added SystemVariable to ram: " + jo.encodePrettily());
 							                        LOGGER.info("Successfully added json object to array");
@@ -314,16 +316,19 @@ public class SetupPostHandlers
 							                    {
 							                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
 							                    	connection.close();
+							                    	LOGGER.error("Closed" + method +" connection to pool : " + e.toString());
 							                    }
 							                });
 							                response.send(ja.encodePrettily());
 							                connection.close();
+							                LOGGER.debug("Closed " + method +" connection to pool");
 							                } 
 							                else 
 							                {
 							                	LOGGER.error("error: " + res.cause() );
 							                    response.send(res.cause().getMessage().replaceAll("\"", "")+"}");
 							                    connection.close();
+							                    LOGGER.error("Closed " + method +" connection to pool");
 							                }
 					                	});
 					            	} 
