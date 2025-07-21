@@ -2950,7 +2950,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 					}
 					response = routingContext.response();
 					response.send(ja.encodePrettily());
-					response.end();
+					
 		        }
 			}
 			else
@@ -2960,7 +2960,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	        	jo.put("Error", "Issufficent authentication level to run API");
 	        	ja.add(jo);
 	        	response.send(ja.encodePrettily());
-	        	response.end();
+	        	
 	        }
 		}
 	}
