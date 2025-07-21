@@ -529,7 +529,7 @@ function refreshConnections()
 			  
 			  <div class="w3-container w3-blue-grey w3-padding">
 			   <button class="w3-button w3-right w3-white w3-border" 
-			   onclick="document.getElementById('id_edit_modal').style.display='none';getConnections()">Close</button>
+			   onclick="document.getElementById('id_edit_modal').style.display='none'">Close</button>
 			  </div>
 			 </div>
 			</div>
