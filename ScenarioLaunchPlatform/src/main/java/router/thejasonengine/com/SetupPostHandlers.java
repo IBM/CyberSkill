@@ -2885,10 +2885,6 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		
 		LOGGER.info("Inside: " + method);  
 		
-		LOGGER.info("Inside SetupPostHandlers.handleGetValidatedDatabaseConnections");  
-
-		Context context = routingContext.vertx().getOrCreateContext();
-
 		HttpServerResponse response = routingContext.response();
 		JsonObject JSONpayload = routingContext.getBodyAsJson();
 
@@ -2952,26 +2948,9 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 				    	LOGGER.info("Successfully added json object to array");
 
 					}
-					/*for (Map.Entry<String, BasicDataSource> set :dataSourceMap.entrySet()) 
-					{
-						LOGGER.debug(set.getKey() + " = "+ set.getValue());
-						
-
-			            // Retrieve alias and access info from userAliasAccess if available
-			            String alias = userAliasAccess.getString("alias");
-			            String access = userAliasAccess.getString("access");
-						JsonObject jo = new JsonObject();
-						jo.put("connection", set.getKey());
-						//jo.put("alias", alias);
-						//jo.put("access", access);
-				    	ja.add(jo);
-				    	
-				    	LOGGER.info("Successfully added json object to array");
-					
-					}*/
-
 					response = routingContext.response();
 					response.send(ja.encodePrettily());
+					response.end();
 		        }
 			}
 			else
@@ -2981,6 +2960,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	        	jo.put("Error", "Issufficent authentication level to run API");
 	        	ja.add(jo);
 	        	response.send(ja.encodePrettily());
+	        	response.end();
 	        }
 		}
 	}
