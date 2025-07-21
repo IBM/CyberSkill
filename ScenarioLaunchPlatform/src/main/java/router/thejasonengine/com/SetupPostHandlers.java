@@ -2885,92 +2885,104 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		
 		LOGGER.info("Inside: " + method);  
 		
-		//Context context = routingContext.vertx().getOrCreateContext();
-		//Pool pool = context.get("pool");
-		Ram ram = new Ram();
-		Pool pool = ram.getPostGresSystemPool();
-		
-		validateSystemPool(pool, method).onComplete(validation -> 
+		LOGGER.info("Inside SetupPostHandlers.handleGetValidatedDatabaseConnections");  
+
+		Context context = routingContext.vertx().getOrCreateContext();
+
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleGetValidatedDatabaseConnections required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
 		{
-		      if (validation.failed()) 
-		      {
-		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
-		        return;
-		      }
-		      if (validation.succeeded())
-		      {
-		    	LOGGER.debug("DB Validation passed: " + method);
-		    	HttpServerResponse response = routingContext.response();
-				JsonObject JSONpayload = routingContext.getBodyAsJson();
-				
-				if (JSONpayload.getString("jwt") == null) 
-			    {
-			    	LOGGER.info(method + " required fields not detected (jwt)");
-			    	routingContext.fail(400);
-			    } 
-				else
-				{
-					if(validateJWTToken(JSONpayload))
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+
+				LOGGER.info("Accessible Level is : " + authlevel);
+
+				if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+		        	Ram ram = new Ram();
+
+
+					//HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
+
+					HashMap<String, JsonArray> validatedConnections = ram.getValidatedConnections();
+					// Retrieve the user alias access object
+
+					try
 					{
-						LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-						String [] chunks = JSONpayload.getString("jwt").split("\\.");
+						LOGGER.debug("Ram.DatasourceMap size: " + validatedConnections.size());
+					}
+					catch(Exception e)
+					{
+						LOGGER.error("Ram.DatasourceMap has not been initialzed - have you run getConnections: " + e.getMessage());
+					}
+
+					JsonArray ja = new JsonArray();
+
+					for (Map.Entry<String, JsonArray> set :validatedConnections.entrySet()) 
+					{
+						LOGGER.debug(set.getKey() + " = "+ set.getValue().encodePrettily());
+						JsonArray innerJa = set.getValue();
+
+						LOGGER.debug("Innerja to string : "+ innerJa.encodePrettily());
+			            // Retrieve alias and access info from userAliasAccess if available
+						JsonObject hold = innerJa.getJsonObject(0);
+						JsonObject jo = new JsonObject();
+						jo.put("connection", set.getKey());
+						jo.put("alias", hold.getValue("alias"));
+						jo.put("access", hold.getValue("access"));
+						jo.put("status", hold.getValue("status"));
+						ja.add(jo);
+
+				    	LOGGER.info("Successfully added json object to array");
+
+					}
+					/*for (Map.Entry<String, BasicDataSource> set :dataSourceMap.entrySet()) 
+					{
+						LOGGER.debug(set.getKey() + " = "+ set.getValue());
 						
-						JsonObject payload = new JsonObject(decode(chunks[1]));
-						LOGGER.info("Payload: " + payload );
-						int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-						
-						LOGGER.info("Accessible Level is : " + authlevel);
-						
-						if(authlevel >= 1)
-				        {
-				        	LOGGER.debug("User allowed to execute the API");
-				        	response.putHeader("content-type", "application/json");
-				        	HashMap<String, JsonArray> validatedConnections = ram.getValidatedConnections();
-							try
-							{
-								LOGGER.debug("Ram.DatasourceMap size: " + validatedConnections.size());
-								JsonArray ja = new JsonArray();
-								for (Map.Entry<String, JsonArray> set :validatedConnections.entrySet()) 
-								{
-									LOGGER.debug(set.getKey() + " = "+ set.getValue().encodePrettily());
-									JsonArray innerJa = set.getValue();
-									LOGGER.debug("Innerja to string : "+ innerJa.encodePrettily());
-						            // Retrieve alias and access info from userAliasAccess if available
-									JsonObject hold = innerJa.getJsonObject(0);
-									JsonObject jo = new JsonObject();
-									jo.put("connection", set.getKey());
-									jo.put("alias", hold.getValue("alias"));
-									jo.put("access", hold.getValue("access"));
-									jo.put("status", hold.getValue("status"));
-									ja.add(jo);
-							    	
-							    	LOGGER.info("Successfully added json object to array");
-								}
-								response = routingContext.response();
-								response.send(ja.encodePrettily());
-							}
-							catch(Exception e)
-							{
-								LOGGER.error("Ram.DatasourceMap has not been initialzed - have you run getConnections: " + e.getMessage());
-								JsonArray ja = new JsonArray();
-						        JsonObject jo = new JsonObject();
-								jo.put("Error", "Ram.DatasourceMap has not been initialzed - have you run getConnections: " + e.getMessage().replaceAll("\"", ""));
-						        ja.add(jo);
-						        response.send(ja.encodePrettily());
-							}
-				        }
-						else
-					    {
-							JsonArray ja = new JsonArray();
-					        JsonObject jo = new JsonObject();
-					        jo.put("Error", "Issufficent authentication level to run API");
-					        ja.add(jo);
-					        response.send(ja.encodePrettily());
-					    }
-				    }
-				}
+
+			            // Retrieve alias and access info from userAliasAccess if available
+			            String alias = userAliasAccess.getString("alias");
+			            String access = userAliasAccess.getString("access");
+						JsonObject jo = new JsonObject();
+						jo.put("connection", set.getKey());
+						//jo.put("alias", alias);
+						//jo.put("access", access);
+				    	ja.add(jo);
+				    	
+				    	LOGGER.info("Successfully added json object to array");
+					
+					}*/
+
+					response = routingContext.response();
+					response.send(ja.encodePrettily());
+		        }
 			}
-		});
+			else
+	        {
+	        	JsonArray ja = new JsonArray();
+	        	JsonObject jo = new JsonObject();
+	        	jo.put("Error", "Issufficent authentication level to run API");
+	        	ja.add(jo);
+	        	response.send(ja.encodePrettily());
+	        }
+		}
 	}
 	/****************************************************************/
 	private void handleGetRefreshedDatabaseConnections(RoutingContext routingContext) 
