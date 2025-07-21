@@ -6161,196 +6161,193 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	 */
 	private void handleWebLogin(RoutingContext routingContext) 
 	{
-		LOGGER.info("Inside SetupPostHandlers.handleWebLogin");  
+		String method = "SetupPostHandlers.handleWebLogin";
+		
+		LOGGER.info("Inside: " + method);  
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Ram ram = new Ram();
 		HttpServerResponse response = routingContext.response();
-		try
+		
+		Pool pool = ram.getPostGresSystemPool();
+		
+		validateSystemPool(pool, method).onComplete(validation -> 
 		{
-		  String webLoginPayload = new String(routingContext.getBodyAsString().getBytes("ISO-8859-1"), "UTF-8");
-		  LOGGER.info("WebLoginPayload Payload:" + webLoginPayload);
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Unable to get body of webLoginPayload post as string: " + e.getMessage());
-		}
-		JsonObject loginPayloadJSON = routingContext.getBodyAsJson();
-		LOGGER.info(loginPayloadJSON);
-		
-		
-		
-		try 
-		  { 
-			//Make sure the context has the parameter that is expected.
-				if (loginPayloadJSON.getString("username") == null) 
+		      if (validation.failed()) 
+		      {
+		        LOGGER.error("DB validation failed: " + validation.cause().getMessage());
+		        return;
+		      }
+		      
+		      if (validation.succeeded())
+		      {
+		    	LOGGER.debug("DB Validation passed: " + method);
+		    	
+				JsonObject JSONpayload = routingContext.getBodyAsJson();
+				LOGGER.info(JSONpayload);
+				
+				if (JSONpayload.getString("username") == null) 
 			    {
-			    	LOGGER.info("webLoginPayload required fields not detected (username)");
+			    	LOGGER.info(method + " required fields not detected (username)");
 			    	routingContext.fail(400);
 			    } 
-			    else 
-			    {
-			    		//JsonObject temp = new JsonObject();
-			    		boolean verified = true;
-			    		LOGGER.info("Starting login prep for username: " + loginPayloadJSON.getValue("username") );
-			    		
-			    		Map<String,Object> map = new HashMap<String, Object>();  
-				    	map.put("username", loginPayloadJSON.getValue("username"));
-				    	map.put("password", hashAndSaltPass(loginPayloadJSON.getValue("password").toString()));
-				    	
-				    	LOGGER.debug("map username: " + map.get("username"));
-				    	LOGGER.debug("map password: " + map.get("password"));
-				    	/*****************************************************************************/
-					    Context context = routingContext.vertx().getOrCreateContext();
-						Pool pool = context.get("pool");
-						
-						if (pool == null)
+				else
+				{
+					LOGGER.info("Starting login prep for username: " + JSONpayload.getValue("username") );
+		    		
+		    		Map<String,Object> map = new HashMap<String, Object>();  
+			    	map.put("username", JSONpayload.getValue("username"));
+			    	map.put("password", hashAndSaltPass(JSONpayload.getValue("password").toString()));
+			    	
+			    	LOGGER.debug("map username: " + map.get("username"));
+			    	LOGGER.debug("map password: " + map.get("password"));
+					
+			    	LOGGER.debug("User allowed to execute the API");
+				    response
+					.putHeader("content-type", "application/json");
+				    pool.getConnection(ar -> 
+					{
+						if (ar.succeeded()) 
+					    {
+							SqlConnection connection = ar.result();
+					        JsonArray ja = new JsonArray();
+					        connection.preparedQuery("select * FROM function_login($1,$2)")
+			                .execute(Tuple.of(map.get("username"), map.get("password")), 
+					        res -> 
+					        {
+					        	if (res.succeeded()) 
+			                    {
+					        		RowSet<Row> rows = res.result();
+			                        rows.forEach(row -> 
+			                        {
+			                        	JsonObject jo = new JsonObject(row.toJson().encode());
+			                            ja.add(jo);
+			                            LOGGER.debug("Found user: " + ja.encodePrettily());
+			                        });
+				                    LOGGER.debug("Result size: " + ja.size());
+				                    if(ja.size() > 0)
+			                        {
+				                    	LOGGER.debug("Found user: " + ja.encodePrettily());
+				                    	JsonObject dbObject = ja.getJsonObject(0);
+			                            LOGGER.info("Successfully ran query: webLogin");
+									    Vertx vertx = routingContext.vertx();					        	
+									    FreeMarkerTemplateEngine engine = FreeMarkerTemplateEngine.create(vertx);
+									    JWTAuth jwt;
+									    String name = "JWT";
+									    AuthUtils AU = new AuthUtils();
+									    jwt = AU.createJWTToken(context);
+									    JsonObject tokenObject = new JsonObject();
+									        	
+									        	// We would need to tweak these values to determine the authorization rights for the user
+									    tokenObject.put("username", dbObject.getValue("username").toString());
+									    tokenObject.put("authlevel", dbObject.getValue("authlevel").toString());
+									    Map<String, String> memoryMap = ram.getRamSharedMap();
+									    		
+									    memoryMap.put("username", dbObject.getValue("username").toString());
+									    memoryMap.put("authlevel",dbObject.getValue("authlevel").toString());
+									        	
+									    JSONObject jsonObject = new JSONObject(memoryMap);
+							    		JsonObject jsonMemoryObject = new JsonObject(jsonObject.toString());
+							    		String token = jwt.generateToken(jsonMemoryObject, new JWTOptions().setExpiresInSeconds(60000));
+									    		
+							    		LOGGER.info("JWT TOKEN CREATED AT WEB LOGIN: " + token + ", From IP:" + routingContext.request().remoteAddress());
+									    memoryMap.put("jwt", token);
+									    tokenObject.put("jwt", token);
+									        	
+									    LOGGER.debug("Added JWT Token to RAM");
+									    //Not going to use session variables
+									    //SetupSession setupSession = new SetupSession(vertx);
+									    //LOGGER.info("created the session object");
+									    //setupSession.putTokenInSession(routingContext, "token", token);
+									    //setupSession.putTokenInSession(routingContext, "tokenObject", tokenObject.toString());
+									    		
+									    // Now we add the cookie values to the system such that they can be used for future manipulation
+									    AuthUtils au = new AuthUtils();
+									    Cookie cookie  = au.createCookie(routingContext, 60000, name, token, "/");
+									    		
+									    response.addCookie(cookie);
+									    response.setChunked(true);
+									    response.putHeader("Authorization", dbObject.getValue("authlevel").toString());
+									    response.putHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+									    //response.putHeader("content-type", "application/json");
+									    response.putHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET");
+									    //response.send("{\"redirect\":\"loggedIn\\dashboard.ftl\"}");
+									    		
+									    routingContext.put("jsonMemoryObject", jsonMemoryObject);
+									    routingContext.put("tokenObject", tokenObject);
+									    		
+									    engine.render(routingContext.data(), "templates/loggedIn/dashboard.ftl", 
+										resy -> 
+										{
+											if (resy.succeeded()) 
+										   	{
+												String renderedContent = resy.result().toString();
+										   		if (renderedContent.isEmpty()) 
+										   		{
+										   			LOGGER.error("Rendered content is empty!");
+										   		}
+										   		LOGGER.info(renderedContent);
+										   		routingContext.response()
+										   		.putHeader("content-type", "text/html")
+										   		.end(renderedContent);
+										   		
+										   		LOGGER.debug("Successfully sent template");
+										   	} 
+										   	else 
+										   	{
+										   		routingContext.fail(resy.cause());
+										   		LOGGER.error("Unable to send template : " + resy.cause().getMessage());
+										   	}
+										 });
+			                        }
+				                    else
+				                    {
+				                    	LOGGER.error("*Potential security violation* Signin error for username: " + map.get("username") + ", at IP:" + routingContext.request().remoteAddress());
+									    response.sendFile("index.html", result -> 
+									    {
+									        if (res.failed()) 
+									        {
+									        	routingContext.fail(404);
+									        }
+									    });
+									    response.end();
+				                    }
+			                    }
+					        	else
+			                    {
+			                    	LOGGER.error("*Potential security violation* Signin error for username: " + map.get("username") + ", at IP:" + routingContext.request().remoteAddress());
+								    response.sendFile("index.html", result -> 
+								    {
+								        if (res.failed()) 
+								        {
+								        	routingContext.fail(404);
+								        }
+								    });
+								    response.end();
+			                    }
+					        });
+					        connection.close();
+                        	LOGGER.error("Closed " + method +" connection to pool");
+					    }
+						else
 						{
-							LOGGER.debug("pool is null - restarting");
-							DatabaseController DB = new DatabaseController(routingContext.vertx());
-							LOGGER.debug("Taking the refreshed context pool object");
-							pool = context.get("pool");
+							LOGGER.error("Cannot get connection to database");
+							
 						}
-						
-						pool.getConnection(ar -> 
-						{
-				            if (ar.succeeded()) 
-				            {
-				                SqlConnection connection = ar.result();
-				                JsonArray ja = new JsonArray();
-				                
-				                // Execute a SELECT query
-				                connection.preparedQuery("select * FROM function_login($1,$2)")
-		                        .execute(Tuple.of(map.get("username"), map.get("password")), 
-		                        	res -> 
-		                        		{
-		                        			if (res.succeeded()) 
-				                            {
-				                                // Process the query result
-				                            	
-				                                RowSet<Row> rows = res.result();
-				                                
-				                                rows.forEach(row -> 
-				                                {
-				                                	JsonObject jo = new JsonObject(row.toJson().encode());
-				                                	ja.add(jo);
-				                                	LOGGER.debug("Found user: " + ja.encodePrettily());
-				                                });
-				                                
-				                                LOGGER.debug("Result size: " + ja.size());
-				                                
-				                                if(ja.size() > 0)
-				                                {
-				                                	LOGGER.debug("Found user: " + ja.encodePrettily());
-				                                	JsonObject dbObject = ja.getJsonObject(0);
-				                                	
-				                                	
-				                                	LOGGER.info("Successfully ran query: webLogin");
-										        	 
-
-										        	Vertx vertx = routingContext.vertx();					        	
-										        	FreeMarkerTemplateEngine engine = FreeMarkerTemplateEngine.create(vertx);
-				                                	
-										        	Ram ram = new Ram();
-										        	
-										        	
-										        	
-										        	
-				                                	
-										        	JWTAuth jwt;
-										        	// Set up the authentication tokens 
-										        	String name = "JWT";
-										        	AuthUtils AU = new AuthUtils();
-										        	jwt = AU.createJWTToken(context);
-										        	
-										        	
-										        	
-										        	
-										        	JsonObject tokenObject = new JsonObject();
-										        	
-										        	// We would need to tweak these values to determine the authorization rights for the user
-										        	
-										    		tokenObject.put("username", dbObject.getValue("username").toString());
-										    		tokenObject.put("authlevel", dbObject.getValue("authlevel").toString());
-										        	Map<String, String> memoryMap = ram.getRamSharedMap();
-										    		
-										        	
-										    		memoryMap.put("username", dbObject.getValue("username").toString());
-										    		memoryMap.put("authlevel",dbObject.getValue("authlevel").toString());
-										        	
-										    		JSONObject jsonObject = new JSONObject(memoryMap);
-								    				JsonObject jsonMemoryObject = new JsonObject(jsonObject.toString());
-										        	String token = jwt.generateToken(jsonMemoryObject, new JWTOptions().setExpiresInSeconds(60000));
-										    		
-										        	LOGGER.info("JWT TOKEN CREATED AT WEB LOGIN: " + token + ", From IP:" + routingContext.request().remoteAddress());
-										    		memoryMap.put("jwt", token);
-										    		tokenObject.put("jwt", token);
-										        	
-										    		
-										    		
-										    		LOGGER.debug("Added JWT Token to RAM");
-										    		//Not going to use session variables
-										    		//SetupSession setupSession = new SetupSession(vertx);
-										        	//LOGGER.info("created the session object");
-										        	//setupSession.putTokenInSession(routingContext, "token", token);
-										        	//setupSession.putTokenInSession(routingContext, "tokenObject", tokenObject.toString());
-										    		
-										    		// Now we add the cookie values to the system such that they can be used for future manipulation
-										    		AuthUtils au = new AuthUtils();
-										    		
-										    		Cookie cookie  = au.createCookie(routingContext, 60000, name, token, "/");
-										    		
-										    		response.addCookie(cookie);
-										    		response.setChunked(true);
-										    		response.putHeader("Authorization", dbObject.getValue("authlevel").toString());
-										    		response.putHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-										    		//response.putHeader("content-type", "application/json");
-										    		response.putHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET");
-										    		//response.send("{\"redirect\":\"loggedIn\\dashboard.ftl\"}");
-										    		
-										    		
-										    		routingContext.put("jsonMemoryObject", jsonMemoryObject);
-										    		routingContext.put("tokenObject", tokenObject);
-										    		
-										    		
-										    		engine.render(routingContext.data(), "templates/loggedIn/dashboard.ftl", 
-											   			     resy -> 
-											   				 {
-											   					
-											   					 if (resy.succeeded()) 
-											   		             {
-											   						String renderedContent = resy.result().toString();
-											   						if (renderedContent.isEmpty()) 
-											   						{
-											   				            LOGGER.error("Rendered content is empty!");
-											   				            
-											   				        }
-											   						LOGGER.info(renderedContent);
-											   						routingContext.response().end(renderedContent);
-											   		            	LOGGER.debug("Successfully sent template");
-											   		             } 
-											   		             else 
-											   		             {
-											   		            	routingContext.fail(resy.cause());
-											   		            	LOGGER.error("Unable to send template : " + resy.cause().getMessage());
-											   		             }
-											   				 });
-										         }
-				                              }
-				                              else
-				                              {
-				                                	LOGGER.error("*Potential security violation* Signin error for username: " + map.get("username") + ", at IP:" + routingContext.request().remoteAddress());
-									        		response.sendFile("index.html");
-				                              }
-		                        		});
-				            }
-						});
-			    }	
-				           
-			    
-		  }
-		  catch(Exception e)
-		  {
-			  LOGGER.info("ERROR on weblogin: " + e.toString());
-			  response.sendFile("index.html");
-		  }
+					});
+		      }}
+		      else
+		      {
+		    	  JsonArray ja = new JsonArray();
+				  JsonObject jo = new JsonObject();
+				  jo.put("Error", "ERROR on weblogin");
+				  ja.add(jo);
+				  LOGGER.info("ERROR on weblogin");
+				  response.sendFile("index.html");
+				  
+				  
+		      }
+		});
 	}
 	/** **********************************************************/
 	/* This function is called repeatidly to validate that the user
