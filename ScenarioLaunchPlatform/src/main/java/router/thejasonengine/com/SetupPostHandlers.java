@@ -3899,283 +3899,255 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                                 {
                                     LOGGER.debug("Successfully got connection to master system database");
                                     SqlClient systemConnection = fu.result();
-
                                     String query = "SELECT * FROM public.tb_query WHERE id = $1";
+                                    LOGGER.debug("SELECT * FROM public.tb_query WHERE id = " + queryId);
                                     
-                                   LOGGER.debug("SELECT * FROM public.tb_query WHERE id = " + queryId);
-
                                     systemConnection.preparedQuery(query)
-                                        .execute(Tuple.of(queryId), res -> 
+                                    .execute(Tuple.of(queryId), res -> 
+                                    {
+                                    	if (res.succeeded()) 
                                         {
-                                            if (res.succeeded()) 
+                                    		RowSet<Row> queryrows = res.result();
+                                    		LOGGER.debug("Result size: " + queryrows.size());
+                                            for (Row row : queryrows) 
                                             {
-                                            	RowSet<Row> queryrows = res.result();
-                                                for (Row row : queryrows) 
+                                            	JsonObject jo_row = row.toJson();
+                                                LOGGER.debug("Row data: " + jo_row);
+
+                                                String sqlParameterEncoded = jo_row.getString("query_string");
+                                                LOGGER.debug("Encoded Query: " + sqlParameterEncoded);
+                                                String sqlParameter = Encodings.UnescapeString(sqlParameterEncoded);
+                                                LOGGER.debug("Unencoded Query: " + sqlParameter);
+                                                Integer queryLoop = jo_row.getInteger("query_loop");
+                                                // Check if queryLoop is 0 and assign a random number between 1 and 100
+                                                if (queryLoop == 0) 
                                                 {
-                                                    JsonObject jo_row = row.toJson();
-                                                    LOGGER.debug("Row data: " + jo_row);
-
-                                                    String sqlParameterEncoded = jo_row.getString("query_string");
-                                                    LOGGER.debug("Encoded Query: " + sqlParameterEncoded);
-                                                    String sqlParameter = Encodings.UnescapeString(sqlParameterEncoded);
-                                                    LOGGER.debug("Unencoded Query: " + sqlParameter);
-                                                    Integer queryLoop = jo_row.getInteger("query_loop");
-                                                    // Check if queryLoop is 0 and assign a random number between 1 and 100
-                                                    if (queryLoop == 0) {
-                                                        Random random = new Random();
-                                                        queryLoop = random.nextInt(20) + 1;
-                                                        LOGGER.debug("RANDOM QUERY LOOP IS : " + queryLoop);
-                                                    }
-                                                    LOGGER.debug("QUERY LOOP IS : " + queryLoop);
-                                                    
-                                                    StringTokenizer tokenizer = new StringTokenizer(sqlParameter, "\r\n");
-                                                    DatabasePoolPOJO databasePoolPojo = new DatabasePoolPOJO();
-                                                    
-                                                    databasePoolPojo =  dataSourceMap.get(datasource);
-                                                    BasicDataSource BDS = databasePoolPojo.getBDS();
-                                                    
-                                                    JSONObject joLoop;
-                                                    JsonArray JsonResponse = new JsonArray();
-                                                    for (int loopIndex = 0; loopIndex < queryLoop; loopIndex++) 
-                                                    {
-                                                    	 while (tokenizer.hasMoreTokens()) 
-                                			             {
-                                			                 String sql = tokenizer.nextToken();
-                                			                 LOGGER.debug("Query[DatasourceMap]: " + loopIndex + " identified: " + sql );
-                                			                
-                                			                 //filterSystemVariables(sql, loopIndex, ram);
-                                			                
-                                			                 
-                                			                 while(sql.contains("{SYSTEMVARIABLE}"))
-                              				                {
-                              				                	
-                              				                	LOGGER.debug("Found a system variable string");
-                              				                	
-                              				                	JsonObject jo = ram.getSystemVariable();
-                              				                	LOGGER.debug("My system variable: " + jo.encodePrettily());
-                              				                	
-                              				                	String swap = jo.getJsonObject("data").getString("mydatavariable");
-                              				                	LOGGER.debug("Swap: " + swap); 
-                              				                	
-                              				                	sql = sql.replaceFirst("\\{SYSTEMVARIABLE\\}", swap);
-                              				                	LOGGER.debug("query updated to: " + sql);
-                              				                }
-                                			                while(sql.contains("{STRING}"))
-                             				                {
-                             				                	
-                             				                	LOGGER.debug("Found a variable string");
-                             				                	String swap = generateRandomString();
-                             				                	sql = sql.replaceFirst("\\{STRING\\}", swap);
-                             				                	LOGGER.debug("query updated to: " + sql);
-                             				                }
-                                			                while(sql.contains("{INT}"))
-                            				                {
-                            				                	
-                            				                	LOGGER.debug("Found a variable integer");
-                            				                	String swap = String.valueOf(generateRandomInteger());
-                            				                	sql = sql.replaceFirst("\\{INT\\}", swap);
-                            				                	LOGGER.debug("query updated to: " + sql);
-                            				                }
-                                			                while(sql.contains("{i}"))
-                            				                {
-                            				                	
-                            				                	LOGGER.debug("Found a iteration string");
-                            				                	String swap = String.valueOf(loopIndex);
-                            				                	sql = sql.replaceFirst("\\{i\\}", swap);
-                            				                	LOGGER.debug("query updated to: " + sql);
-                            				                }
-                                			                while(sql.contains("{FIRSTNAME}"))
-													        {
-													        	
-													        	LOGGER.debug("Found a variable firstname");
-													        	
-													        	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomFirstName());
-													        	sql = sql.replaceFirst("\\{FIRSTNAME\\}", swap);
-													        	LOGGER.debug("query updated to: " + sql);
-													        }
-													        while(sql.contains("{SURNAME}"))
-													        {
-													        	
-													        	LOGGER.debug("Found a variable surname");
-													        	
-													        	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomSurname());
-													        	sql = sql.replaceFirst("\\{SURNAME\\}", swap);
-													        	LOGGER.debug("query updated to: " + sql);
-													        }
-													        while(sql.contains("{ADDRESSLINE1}"))
-													        {
-													        	
-													        	LOGGER.debug("Found a variable addressline1");
-													        	
-													        	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomAddressLine1());
-													        	sql = sql.replaceFirst("\\{ADDRESSLINE1\\}", swap);
-													        	LOGGER.debug("query updated to: " + sql);
-													        }
-													        while(sql.contains("{ADDRESSLINE2}"))
-													        {
-													        	
-													        	LOGGER.debug("Found a variable addressline2");
-													        	
-													        	String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomAddressLine2());
-													        	sql = sql.replaceFirst("\\{ADDRESSLINE2\\}", swap);
-													        	LOGGER.debug("query updated to: " + sql);
-													        }
-                                			                if (sql.trim().toUpperCase().startsWith("SELECT")) 
-                                			                {
-                                			                	LOGGER.debug("We have detected an Select");
-                                			                	try 
-                                			                	{
-                                			                		
-                                			                		
-                                			                		String regex = "\\{bruteforce(?::([^}]+))?\\}";
-
-                                			                        Pattern pattern = Pattern.compile(regex);
-                                			                        Matcher matcher = pattern.matcher(sql);
-
-                                			                           	                            			                	
-                                			                		if(matcher.find())
-                                			                		{
-                                			                			String username = matcher.group(1);
-                                			                            LOGGER.debug("username found for brute force: " + username);
-                                			                            
-                                			                			LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
-                                			                			BruteForceDBConnections BF = new BruteForceDBConnections();
-                                			                			JsonArray ja_hold = new JsonArray();
-                                			                			ja_hold.add(BF.BruteForceConnectionErrors(datasource));
-                                			                			JsonObject jo = new JsonObject();
-                                			                			jo.put("Result",ja_hold );
-                                			                			jo.put("loopIndex", loopIndex);
-                                			                			jo.put("SQL", "Create bad connection");
-                                			                			JsonResponse.add(jo);
-                                			                		}
-                                			                		else
-                                			                		{
-                                			                			LOGGER.debug("Attempting to retrieve database connection for select");
-                                			                			try
-                                			                			{
-                                			                				if(BDS == null)
-                                			                				{
-                                			                					LOGGER.debug("BDS is null - recreating");
-                                			                					databasePoolPojo = dataSourceMap.get(datasource);
-                                			                					BDS = databasePoolPojo.getBDS();
-                                			                				}
-                                			                				
-                                			                				Connection connection = BDS.getConnection();
-                                			                				LOGGER.debug("Have retrieved database connection for select");
-                                			                				String result = executeSelect(connection, sql).encodePrettily();
-    	    	                            			                	LOGGER.debug("SELECT RESULT: " + result);
-    	                                			                		JsonObject jo = new JsonObject(result);
-    	    	                            			                	jo.put("loopIndex", loopIndex);
-    	    	                            			                	
-    	    	                            			                	LOGGER.debug("result jo now: " + jo.encodePrettily());
-    	    	                            			                	
-    	    	                            			                	JsonResponse.add(jo);
-    	    	                            			                	
-    	    	                            			                	LOGGER.debug("result ja now: " + JsonResponse.encodePrettily());
-    	    	                            					            connection.close();
-                                			                			}
-                                			                			catch(Exception e)
-                                			                			{
-                                			                				LOGGER.error("Unable to get connection: " + e.toString());
-                                			                			}
-                                			                		}
-                                			                	}
-                                			                	catch(Exception error)
-                                			                	{
-                                			                		LOGGER.error("");
-                                			                		JsonObject jo = new JsonObject("{\"response\":\"error running SELECT: " + error +"\"}");
-                                			                		JsonResponse.add(jo);
-                                			                	}
-                                					        }
-                                			                else if(sql.trim().toUpperCase().startsWith("--"))
-                                			                {
-                                			                	LOGGER.debug("Comment detected - Ignoring");
-                                			                }
-                                							else 
-                                							{
-                                								LOGGER.debug("We have detected an update");
-                                								try 
-                                			                	{
-                                									String regex = "\\{bruteforce(?::([^}]+))?\\}";
-
-                                			                        Pattern pattern = Pattern.compile(regex);
-                                			                        Matcher matcher = pattern.matcher(sql);
-
-                                			                           	                            			                	
-                                			                		if(matcher.find())
-                                			                		{
-                                			                			String username = matcher.group(1);
-                                			                            LOGGER.debug("username found for brute force: " + username);
-                                										LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
-                                										BruteForceDBConnections BF = new BruteForceDBConnections();
-                                										JsonArray ja_hold = new JsonArray();
-                                										ja_hold.add(BF.BruteForceConnectionErrors(datasource));
-                                			                			JsonObject jo = new JsonObject();
-                                			                			jo.put("Result",ja_hold );
-                                			                			jo.put("loopIndex", loopIndex);
-                                			                			jo.put("SQL", "Create bad connection");
-                                			                			JsonResponse.add(jo);
-                                										
-                                										
-                                			                		}
-                                			                		else
-                                			                		{
-                                			                			
-                                			                			LOGGER.debug("Attempting to retrieve database connection for update");
-                                			                			try
-                                			                			{
-                                			                				if(BDS == null)
-                                			                				{
-                                			                					LOGGER.debug("BDS is null - recreating");
-                                			                					databasePoolPojo = dataSourceMap.get(datasource);
-                                			                					BDS = databasePoolPojo.getBDS();
-                                			                				}
-                                			                				
-                                			                				Connection connection = BDS.getConnection();
-                                			                				
-                                			                				LOGGER.debug("Have retrieved database connection for update");
-                                			                				String result = executeUpdate(connection, sql).encodePrettily();
-    	    	                            			                	LOGGER.debug("NON SELECT RESULT: " + result);
-    	                                			                		JsonObject jo = new JsonObject(result);
-    	    	                            			                	jo.put("loopIndex", loopIndex);
-    	    	                            			                	
-    	    	                            			                	LOGGER.debug("result jo now: " + jo.encodePrettily());
-    	    	                            			                	
-    	    	                            			                	JsonResponse.add(jo);
-    	    	                            			                	LOGGER.debug("result ja now: " + JsonResponse.encodePrettily());
-    	    	                            					            connection.close();
-                                			                			}
-                                			                			catch(Exception e)
-                                			                			{
-                                			                				LOGGER.error("Unable to get connection: " + e.toString());
-                                			                			}
-                                			                		}
-                                			                	}
-                                								catch(Exception error)
-                                			                	{
-                                			                		LOGGER.error("");
-                                			                		JsonObject jo = new JsonObject("{\"response\":\"error running OTHER: " + error +"\"}");
-                                			                		JsonResponse.add(jo);
-                                			                	}
-                                							}
-                                			             }
-                                			            //response.send(JsonResponse.encodePrettily());
-                                                        tokenizer = new StringTokenizer(sqlParameter, ";\r\n");
-                                                        LOGGER.debug("Query run successfully loop:  " + loopIndex);
-                                                        LoopRun.add(JsonResponse);
-                                                        JsonResponse = new JsonArray();
-                                                    }
-                                                    
-                                                    response.send(LoopRun.encodePrettily());
+                                                	Random random = new Random();
+                                                    queryLoop = random.nextInt(20) + 1;
+                                                    LOGGER.debug("RANDOM QUERY LOOP IS : " + queryLoop);
                                                 }
-                                                LOGGER.debug("Query run successfully");
-                                            } 
-                                            else 
-                                            {
-                                                LOGGER.error("Query failed: " + res.cause());
-                                            }
-                                        });
+                                                LOGGER.debug("QUERY LOOP IS : " + queryLoop);
+                                                StringTokenizer tokenizer = new StringTokenizer(sqlParameter, "\r\n");
+                                                DatabasePoolPOJO databasePoolPojo = new DatabasePoolPOJO();
+                                                    
+                                                databasePoolPojo =  dataSourceMap.get(datasource);
+                                                BasicDataSource BDS = databasePoolPojo.getBDS();
+                                                    
+                                                JSONObject joLoop;
+                                                JsonArray JsonResponse = new JsonArray();
+                                                for (int loopIndex = 0; loopIndex < queryLoop; loopIndex++) 
+                                                {
+                                                	while (tokenizer.hasMoreTokens()) 
+                                			        {
+                                                		String sql = tokenizer.nextToken();
+                                			            LOGGER.debug("Query[DatasourceMap]: " + loopIndex + " identified: " + sql );
+                                			                
+                                			            while(sql.contains("{SYSTEMVARIABLE}"))
+                              				            {
+                                			            	LOGGER.debug("Found a system variable string");
+                              				                JsonObject jo = ram.getSystemVariable();
+                              				                LOGGER.debug("My system variable: " + jo.encodePrettily());
+                              				                	
+                              				                String swap = jo.getJsonObject("data").getString("mydatavariable");
+                              				                LOGGER.debug("Swap: " + swap); 
+                              				                	
+                              				                sql = sql.replaceFirst("\\{SYSTEMVARIABLE\\}", swap);
+                              				                LOGGER.debug("query updated to: " + sql);
+                              				            }
+                                			            while(sql.contains("{STRING}"))
+                             				            {
+                             				                LOGGER.debug("Found a variable string");
+                             				                String swap = generateRandomString();
+                             				                sql = sql.replaceFirst("\\{STRING\\}", swap);
+                             				                LOGGER.debug("query updated to: " + sql);
+                             				            }
+                                			            while(sql.contains("{INT}"))
+                            				            {
+                                			            	LOGGER.debug("Found a variable integer");
+                            				                String swap = String.valueOf(generateRandomInteger());
+                            				                sql = sql.replaceFirst("\\{INT\\}", swap);
+                            				                LOGGER.debug("query updated to: " + sql);
+                            				            }
+                                			            while(sql.contains("{i}"))
+                            				            {
+                                			            	LOGGER.debug("Found a iteration string");
+                            				                String swap = String.valueOf(loopIndex);
+                            				                sql = sql.replaceFirst("\\{i\\}", swap);
+                            				                LOGGER.debug("query updated to: " + sql);
+                            				            }
+                                			            while(sql.contains("{FIRSTNAME}"))
+													    {
+                                			            	LOGGER.debug("Found a variable firstname");
+													        String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomFirstName());
+													        sql = sql.replaceFirst("\\{FIRSTNAME\\}", swap);
+													        LOGGER.debug("query updated to: " + sql);
+													    }
+													    while(sql.contains("{SURNAME}"))
+													    {
+													    	LOGGER.debug("Found a variable surname");
+													        String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomSurname());
+													        sql = sql.replaceFirst("\\{SURNAME\\}", swap);
+													        LOGGER.debug("query updated to: " + sql);
+													    }
+													    while(sql.contains("{ADDRESSLINE1}"))
+													    {
+													    	LOGGER.debug("Found a variable addressline1");
+													        String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomAddressLine1());
+													        sql = sql.replaceFirst("\\{ADDRESSLINE1\\}", swap);
+													        LOGGER.debug("query updated to: " + sql);
+													    }
+													    while(sql.contains("{ADDRESSLINE2}"))
+													    {
+													    	LOGGER.debug("Found a variable addressline2");
+													        String swap = String.valueOf(utils.thejasonengine.com.DataVariableBuilder.randomAddressLine2());
+													        sql = sql.replaceFirst("\\{ADDRESSLINE2\\}", swap);
+													        LOGGER.debug("query updated to: " + sql);
+													    }
+                                			            if (sql.trim().toUpperCase().startsWith("SELECT")) 
+                                			            {
+                                			            	LOGGER.debug("We have detected an Select");
+                                			                try 
+                                			                {
+                                			                	String regex = "\\{bruteforce(?::([^}]+))?\\}";
+                                			                	Pattern pattern = Pattern.compile(regex);
+                                			                    Matcher matcher = pattern.matcher(sql);
 
+                                			                    if(matcher.find())
+                                			                	{
+                                			                    	String username = matcher.group(1);
+                                			                        LOGGER.debug("username found for brute force: " + username);
+                                			                            
+                                			                		LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
+                                			                		BruteForceDBConnections BF = new BruteForceDBConnections();
+                                			                		JsonArray ja_hold = new JsonArray();
+                                			                		ja_hold.add(BF.BruteForceConnectionErrors(datasource));
+                                			                		JsonObject jo = new JsonObject();
+                                			                		jo.put("Result",ja_hold );
+                                			                		jo.put("loopIndex", loopIndex);
+                                			                		jo.put("SQL", "Create bad connection");
+                                			                		JsonResponse.add(jo);
+                                			                	}
+                                			                	else
+                                			                	{
+                                			                		LOGGER.debug("Attempting to retrieve database connection for select");
+                                			                		try
+                                			                		{
+                                			                			if(BDS == null)
+                                			                			{
+                                			                				LOGGER.debug("BDS is null - recreating");
+                                			                				databasePoolPojo = dataSourceMap.get(datasource);
+                                			                				BDS = databasePoolPojo.getBDS();
+                                			                			}
+                                			                			Connection connection = BDS.getConnection();
+                                			                			LOGGER.debug("Have retrieved database connection for select");
+                                			                			String result = executeSelect(connection, sql).encodePrettily();
+    	    	                            			                LOGGER.debug("SELECT RESULT: " + result);
+    	                                			                	JsonObject jo = new JsonObject(result);
+    	    	                            			                jo.put("loopIndex", loopIndex);
+    	    	                            			                	
+    	    	                            			                LOGGER.debug("result jo now: " + jo.encodePrettily());
+    	    	                            			                	
+    	    	                            			                JsonResponse.add(jo);
+    	    	                            			                	
+    	    	                            			                LOGGER.debug("result ja now: " + JsonResponse.encodePrettily());
+    	    	                            					        connection.close();
+                                			                		}
+                                			                		catch(Exception e)
+                                			                		{
+                                			                			LOGGER.error("Unable to get connection: " + e.toString());
+                                			                		}
+                                			                	}
+                                			                }
+                                			                catch(Exception error)
+                                			                {
+                                			                	LOGGER.error("");
+                                			                	JsonObject jo = new JsonObject("{\"response\":\"error running SELECT: " + error +"\"}");
+                                			                	JsonResponse.add(jo);
+                                			                }
+                                			            }
+                                			            else if(sql.trim().toUpperCase().startsWith("--"))
+                                			            {
+                                			            	LOGGER.debug("Comment detected - Ignoring");
+                                			            }
+                                						else 
+                                						{
+                                							LOGGER.debug("We have detected an update");
+                                							try 
+                                			                {
+                                								String regex = "\\{bruteforce(?::([^}]+))?\\}";
+                                			                    Pattern pattern = Pattern.compile(regex);
+                                			                    Matcher matcher = pattern.matcher(sql);
+
+                                			                    if(matcher.find())
+                                			                	{
+                                			                    	String username = matcher.group(1);
+                                			                        LOGGER.debug("username found for brute force: " + username);
+                                									LOGGER.debug("Generating a brute force based off of datasource: " + datasource);
+                                									BruteForceDBConnections BF = new BruteForceDBConnections();
+                                									JsonArray ja_hold = new JsonArray();
+                                									ja_hold.add(BF.BruteForceConnectionErrors(datasource));
+                                			                		JsonObject jo = new JsonObject();
+                                			                		jo.put("Result",ja_hold );
+                                			                		jo.put("loopIndex", loopIndex);
+                                			                		jo.put("SQL", "Create bad connection");
+                                			                		JsonResponse.add(jo);
+                                								}
+                                			                	else
+                                			                	{
+                                			                		LOGGER.debug("Attempting to retrieve database connection for update");
+                                			                		try
+                                			                		{
+                                			                			if(BDS == null)
+                                			                			{
+                                			                				LOGGER.debug("BDS is null - recreating");
+                                			                				databasePoolPojo = dataSourceMap.get(datasource);
+                                			                				BDS = databasePoolPojo.getBDS();
+                                			                			}
+                                			                			Connection connection = BDS.getConnection();
+                                			                				
+                                			                			LOGGER.debug("Have retrieved database connection for update");
+                                			                			String result = executeUpdate(connection, sql).encodePrettily();
+    	    	                            			                LOGGER.debug("NON SELECT RESULT: " + result);
+    	                                			                	JsonObject jo = new JsonObject(result);
+    	    	                            			                jo.put("loopIndex", loopIndex);
+    	    	                            			                	
+    	    	                            			                LOGGER.debug("result jo now: " + jo.encodePrettily());
+    	    	                            			                	
+    	    	                            			                JsonResponse.add(jo);
+    	    	                            			                LOGGER.debug("result ja now: " + JsonResponse.encodePrettily());
+    	    	                            					        connection.close();
+                                			                		}
+                                			                		catch(Exception e)
+                                			                		{
+                                			                			LOGGER.error("Unable to get connection: " + e.toString());
+                                			                		}
+                                			                	}
+                                			                }
+                                							catch(Exception error)
+                                			                {
+                                								LOGGER.error("");
+                                			                	JsonObject jo = new JsonObject("{\"response\":\"error running OTHER: " + error +"\"}");
+                                			                	JsonResponse.add(jo);
+                                			                }
+                                						}
+                                			        }
+                                			         //response.send(JsonResponse.encodePrettily());
+                                                    tokenizer = new StringTokenizer(sqlParameter, ";\r\n");
+                                                    LOGGER.debug("Query run successfully loop:  " + loopIndex);
+                                                    LoopRun.add(JsonResponse);
+                                                    JsonResponse = new JsonArray();
+                                                }
+                                                response.send(LoopRun.encodePrettily());
+                                            }
+                                            LOGGER.debug("Query run successfully");
+                                        } 
+                                        else 
+                                        {
+                                        	LOGGER.error("Query failed: " + res.cause());
+                                        }
+                                    });
+                                    
+                                    LOGGER.debug("closing connection to system database");
                                     systemConnection.close();
                                 } 
                                 else 
@@ -4194,16 +4166,12 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
                     } 
                     else 
                     {
-
                     	JsonObject jo = new JsonObject();
                         jo.put("Error", "Insufficient authentication level to run API");
                         ja.add(jo);
                         response.send(ja.encodePrettily());
                     }
                 }
-                
-
-                
             }
         }
     }
@@ -4241,6 +4209,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
     /****************************************************************/
 	private void handleRunDatabaseQueryByDatasourceMap(RoutingContext routingContext) 
 	{
+		
 		
 		LOGGER.info("Inside SetupPostHandlers.handleRunDatabaseQueryByDatasourceMap");  
 		
