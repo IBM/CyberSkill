@@ -561,8 +561,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	router.post("/api/addContentPack").handler(BodyHandler.create()).handler(setupPostHandlers.addPack);
 	  	 router.post("/api/getContentPacks").handler(BodyHandler.create()).handler(setupPostHandlers.getPacks);
 	  	 router.post("/api/getPackByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.getPackByPackId);
-	  	 router.post("/api/updatePackByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.updatePackByPackId);
-	  	// router.post("/api/deletePacksByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.deletePackByPackId);
+	  	router.post("/api/deletePacksByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.deletePackByPackId);
 	  	 
 	  	 
 	  	/*********************************************************************************/

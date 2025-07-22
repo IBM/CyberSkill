@@ -393,36 +393,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function addPack(event) {
     event.preventDefault(); // Prevent default form submission
 
@@ -600,80 +570,7 @@ function getPacks() {
  
 
   /************************************************/
-function deletePackByPackId()
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const PackId = $('#packIdToEditId').val();
-	const PackName = $('#packNameToEditId').val();
-	const PackFilePath = $('#packFilePathToEditId').val();
 
-	
-	
-
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          id: PackId,
-          pack_name: PackName,
-          pack_schedule: PackSchedule,
-          pack_file_path: PackFilePath,
-          pack_os_type: PackOsType
-        });
-  	
-  	$.ajax({
-          url: '/api/deletePacksByPackId', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	getPacks();
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-
-}
-/************************************************/
-function updatePackByPackId()
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const PackId = $('#packIdToEditId').val();
-	const PackName = $('#packNameToEditId').val();
-	const PackDeployed = $('#packDeployedToEditId').val();
-	console.log("Pack Deployed status is : " + PackDeployed);
-	
-	
-	console.log("Pack Name to Update: " + PackName);
-	
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          pack_id: PackId,
-          pack_name: PackName,
-          pack_loaded: PackDeployed
-          });
-  	
-  	$.ajax({
-          url: '/api/updatePackByPackId', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	getPacks();
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-
-}
-
-/************************************************/
 function getPackByPackID(varId)
 {
 	const jwtToken = '${tokenObject.jwt}';
