@@ -5645,6 +5645,15 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 	private void handleGetQueryTypes(RoutingContext routingContext) 
 	{
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		LOGGER.info("Inside SetupPostHandlers.handleGetQueryTypes");  
 		
 		Context context = routingContext.vertx().getOrCreateContext();
