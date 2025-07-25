@@ -1,0 +1,22 @@
+[Unit]
+Description=SLP Application Restart Service
+After=network.target
+
+[Service]
+Environment="CONFIG=/opt/slp/config.json"
+WorkingDirectory=/opt/slp
+ExecStart=/usr/bin/nohup java -jar /opt/slp/slp-0.0.1-SNAPSHOT.jar > /var/log/slp_output.log 2>&1
+Restart=always
+RestartSec=5
+User=root
+StandardOutput=append:/var/log/slp_output.log
+StandardError=append:/var/log/slp_error.log
+
+
+[Service]
+ExecStop=/usr/bin/pkill -f slp-0.0.1-SNAPSHOT.jar
+TimeoutStopSec=30
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
