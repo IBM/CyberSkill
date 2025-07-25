@@ -2,7 +2,7 @@
     "users": [
         {
             "id": 601,
-            "status": "inactive",
+            "status": "active",
             "db_type": "db2",
             "db_version": "8.0.2",
             "db_username": "polly",
@@ -18,7 +18,7 @@
         },
         {
             "id": 602,
-            "status": "inactive",
+            "status": "active",
             "db_type": "db2",
             "db_version": "8.0.2",
             "db_username": "liher",
@@ -34,7 +34,7 @@
         },
         {
             "id": 603,
-            "status": "inactive",
+            "status": "active",
             "db_type": "db2",
             "db_version": "8.0.2",
             "db_username": "jason",
@@ -50,7 +50,7 @@
         },
         {
             "id": 604,
-            "status": "inactive",
+            "status": "active",
             "db_type": "db2",
             "db_version": "8.0.2",
             "db_username": "john",
