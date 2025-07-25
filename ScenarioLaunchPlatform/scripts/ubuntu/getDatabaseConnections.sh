@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# getDatabaseConnections.sh — POST a SQL query to the datasource API
+# Example: ./getDatabaseConnections
+
+set -euo pipefail
+
+PAYLOAD=$(cat <<EOF
+{
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZmlyc3RuYW1lIjoiamFzb24iLCJzdXJuYW1lIjoiZmxvb2QiLCJlbWFpbCI6Imphc29uLmZsb29kQGVtYWlsLmNvbSIsInVzZXJuYW1lIjoibXl1c2VybmFtZSIsImFjdGl2ZSI6IjEiLCJhdXRobGV2ZWwiOjEsImlhdCI6MTczMzkxMzU1NywiZXhwIjoxNzMzOTEzNjE3fQ.mvDvSanNTCvN5puizSme7URjPbhWOkRfW3ZioUWz174"
+}
+EOF
+)
+
+echo "Payload db2_getDatabaseConnections.sh: $PAYLOAD"
+
+###############################################################################
+# 4. Call curl and log everything
+###############################################################################
+{
+  echo "=== $(date '+%Y-%m-%d %H:%M:%S') ==="
+  curl --silent --show-error --location --request POST \
+       'http://127.0.0.1:80/api/getDatabaseConnections' \
+       --header 'Content-Type: application/json' \
+       --data-raw "${PAYLOAD}"
+  echo -e "\n"  # neat blank line between entries
+} | tee -a /var/log/mysql_db2_run_query.log

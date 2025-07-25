@@ -85,7 +85,7 @@
             "id": 603,
             "story": {
                 "name": "DB2 Monitoring bad behaviour",
-                "description": "This simple story involves monitoring bad behaviour.  (Running queries 633, 634, 635)",
+                "description": "This simple story involves monitoring bad behaviour.  (Running queries 629, 630, 631, 632)",
                 "author": "Story Author",
                 "outcomes": "Understand how Guardium monitors bad behaviour",
                 "handbook": "https://ibm.github.io/CyberSkill",
