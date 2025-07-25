@@ -207,6 +207,8 @@ ALTER SEQUENCE tb_query_types_id_seq RESTART WITH 5000;
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (17, 'DCL');
 	INSERT INTO public.tb_query_types (id, query_type) VALUES (18, 'Massive Grants');
 	
+
+ALTER DATABASE slp SET idle_in_transaction_session_timeout = '1min';	
 	
 END;$$;	
 

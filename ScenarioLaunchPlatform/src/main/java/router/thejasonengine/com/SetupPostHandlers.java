@@ -225,12 +225,14 @@ public class SetupPostHandlers
 	    {
 	      if (ar.succeeded()) 
 	      {
-	        promise.complete();
+	    	  promise.complete();
+	        
 	      } 
 	      else 
 	      {
 	        promise.fail("Connection pool validation failed: " + ar.cause().getMessage());
 	      }
+	      
 	    });
 
 	    return promise.future();
@@ -5326,7 +5328,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 					                         });
 					                         response.send(ja.encodePrettily());
 					                         connection.close();
-					                         LOGGER.error("Closed " + method +" connection to pool");
+					                         LOGGER.debug("Closed " + method +" connection to pool");
 					                     	} 
 					                     	else 
 					                        {
