@@ -150,8 +150,20 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 <body class="w3-theme-l5">
 
 <div id="navbar"></div>
-
-  <div class="container mx-auto px-4 py-8 max-w-4xl">
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
+  <!-- The Grid -->
+  <div class="w3-row">
+    <!-- Left Column -->
+    <div id="leftColumn"></div>
+    
+    <!-- End Left Column -->
+    
+    
+    <!-- Middle Column -->
+    <div class="w3-col m9">
+    
+      <div class="container mx-auto px-4 py-8 max-w-4xl">
      <!-- Toast Notification -->
         <div id="toast" class="toast hidden">
             <i class="fas fa-info-circle"></i>
@@ -293,6 +305,26 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 </div>
   
 <!-- End Page Container -->
+      
+      
+      
+    <!-- End Middle Column -->
+    </div>
+    
+    <!-- Right Column -->
+    
+  
+      
+    <!-- End Right Column -->
+    </div>
+    
+  <!-- End Grid -->
+  </div>
+ 
+<!-- End Page Container -->
+
+</div>
+ 
 <!-- Chatbot toggle button -->
     <div class="fixed bottom-6 right-6 z-50">
         <button id="chatbot-toggle" class="w-16 h-16 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center">
