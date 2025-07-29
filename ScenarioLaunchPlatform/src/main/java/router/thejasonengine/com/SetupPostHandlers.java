@@ -143,8 +143,9 @@ public class SetupPostHandlers
 	
 	public Handler<RoutingContext> getSwagger;
 	
-
-	
+	public Handler<RoutingContext> createAdminFunctions;
+	public Handler<RoutingContext> runAdminFunctions;
+	public Handler<RoutingContext> getAdminFunctions;
 	
 	public SetupPostHandlers(Vertx vertx)
     {
@@ -214,6 +215,9 @@ public class SetupPostHandlers
 		
 		getMySystemVariables = SetupPostHandlers.this::handleGetMySystemVariables;
 		setMySystemVariables = SetupPostHandlers.this::handleSetMySystemVariables;
+		createAdminFunctions = SetupPostHandlers.this::handleCreateAdminFunctions;
+		getAdminFunctions = SetupPostHandlers.this::handleGetAdminFunctions;
+		runAdminFunctions = SetupPostHandlers.this::handleRunAdminFunctions;
 		
 	}
 	/***********************************************************************/
@@ -541,7 +545,7 @@ public class SetupPostHandlers
 		StoryHandler.handleDeleteStoryById(routingContext);
 	}
 	
-	/***********************************************************************NOPOSTMAN*/
+	/************************************************************************/
 	private void handleAddOSTask(RoutingContext routingContext)
 	{
 		LOGGER.info("insdie handleAddOSTask");
@@ -725,7 +729,7 @@ public class SetupPostHandlers
 		}
 		
 	}
-	/**********************handleGetOSTasks******************************************NOPOSTMAN*/
+	/**********************handleGetOSTasks*******************************************/
 	private void handleGetOSTasks(RoutingContext routingContext)
 	{
 LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");  
@@ -1048,6 +1052,340 @@ LOGGER.info("Inside SetupPostHandlers.handleGetOSTask");
 		}
 	}
 	
+	/**************************Admin Functions API call***************************/
+	
+	/***********************handleCreateAdminFunctions*****************************/
+	/************************************************************************/
+	private void handleCreateAdminFunctions(RoutingContext routingContext) {
+	    LOGGER.info("inside handleCreateAdminFunctions");
+
+	    Context context = routingContext.vertx().getOrCreateContext();
+	    Pool pool = context.get("pool");
+	    if (pool == null) {
+	        LOGGER.debug("pool is null - restarting");
+	        new DatabaseController(routingContext.vertx());
+	        pool = context.get("pool");
+	    }
+
+	    HttpServerResponse response = routingContext.response();
+	    List<FileUpload> uploads = routingContext.fileUploads();
+
+	    if (uploads.isEmpty()) {
+	        LOGGER.error("No file uploaded");
+	        routingContext.fail(400);
+	        return;
+	    }
+
+	    MultiMap formAttributes = routingContext.request().formAttributes();
+	    if (formAttributes.isEmpty()) {
+	        LOGGER.error("No form data provided");
+	        routingContext.fail(400);
+	        return;
+	    }
+
+	    JsonObject JSONpayload = new JsonObject();
+	    formAttributes.forEach(entry -> JSONpayload.put(entry.getKey(), entry.getValue()));
+
+	    if (JSONpayload.getString("jwt") == null || !validateJWTToken(JSONpayload)) {
+	        LOGGER.info("Missing or invalid JWT");
+	        routingContext.fail(400);
+	        return;
+	    }
+
+	    String[] chunks = JSONpayload.getString("jwt").split("\\.");
+	    JsonObject payload = new JsonObject(decode(chunks[1]));
+	    int authlevel = Integer.parseInt(payload.getString("authlevel"));
+
+	    if (authlevel < 1) {
+	        JsonObject jo = new JsonObject().put("Error", "Insufficient authentication level");
+	        response.send(new JsonArray().add(jo).encodePrettily());
+	        return;
+	    }
+
+	    // Extract function data
+	    String function_name = JSONpayload.getString("function_name");
+	    String function_description = JSONpayload.getString("function_description");
+	    String function_script = JSONpayload.getString("function_script");
+	    String function_api_call = JSONpayload.getString("function_api_call");
+	    String function_os_type = JSONpayload.getString("function_os_type");
+
+	    utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+
+	    // Define working directory dynamically
+	    String workingDirectory = System.getProperty("user.dir");
+	    String finalFilePath;
+
+	    try {
+	        Files.createDirectories(Paths.get(workingDirectory));
+	    } catch (IOException e) {
+	        LOGGER.error("Couldn't create working directory: " + e.getMessage());
+	        routingContext.fail(500);
+	        return;
+	    }
+
+	    FileUpload fileUpload = uploads.iterator().next();
+	    String uploadedFileName = fileUpload.uploadedFileName();
+	    String originalFileName = fileUpload.fileName();
+	    finalFilePath = workingDirectory + originalFileName;
+
+	    byte[] fileBytes;
+	    try {
+	        fileBytes = Files.readAllBytes(Paths.get(uploadedFileName));
+	        Files.move(Paths.get(uploadedFileName), Paths.get(finalFilePath), StandardCopyOption.REPLACE_EXISTING);
+	        LOGGER.info("File moved to working directory: " + finalFilePath);
+	    } catch (IOException e) {
+	        LOGGER.error("File move failed: " + e.getMessage());
+	        routingContext.fail(500);
+	        return;
+	    }
+
+	    // Escape path for DB
+	    String encoded_function_file_path = Encodings.EscapeString(finalFilePath);
+
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("function_name", function_name);
+	    map.put("function_description", function_description);
+	    map.put("function_script", function_script);
+	    map.put("function_api_call", function_api_call);
+	    map.put("function_file_path", workingDirectory);
+	    map.put("function_os_type", function_os_type);
+
+	    response.putHeader("content-type", "application/json");
+	    pool.getConnection(ar -> {
+	        if (ar.succeeded()) {
+	            SqlConnection connection = ar.result();
+	            JsonArray ja = new JsonArray();
+	            LOGGER.debug("Preparing DB insert...");
+
+	            connection.preparedQuery(
+	              "INSERT INTO public.tb_admin_functions(function_name,function_description,function_script,function_api_call,function_file_path,function_os_type) " +
+	              "VALUES($1,$2,$3,$4,$5,$6);"
+	            )
+	            .execute(Tuple.of(
+	                map.get("function_name"),
+	                map.get("function_description"),
+	                map.get("function_script"),
+	                map.get("function_api_call"),
+	                map.get("function_file_path"),
+	                map.get("function_os_type")),
+	            res -> {
+	                if (res.succeeded()) {
+	                    LOGGER.info("DB Insert succeeded");
+	                    response.send(new JsonArray().add(new JsonObject().put("response", "Function created")).encodePrettily());
+	                } else {
+	                    LOGGER.error("DB Insert failed: " + res.cause().getMessage(), res.cause());
+	                    response.send(new JsonArray().add(new JsonObject().put("error", res.cause().getMessage())).encodePrettily());
+	                }
+	                connection.close();
+	            });
+	        } else {
+	            JsonObject jo = new JsonObject().put("response", "Connection failed: " + ar.cause().getMessage());
+	            response.send(new JsonArray().add(jo).encodePrettily());
+	        }
+	    });
+	}
+
+
+	/*******************EOF handleCreateAdminFunctions******************************************/
+	
+	/**********************handleGetAdminFunctions*******************************************/
+	private void handleGetAdminFunctions(RoutingContext routingContext)
+	{
+LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");  
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		
+		if (pool == null)
+		{
+			LOGGER.debug("pull is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info("handleGetAdminFunctions required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+			
+				
+				LOGGER.info("Accessible Level is : " + authlevel);
+		       
+				if(authlevel >= 1)
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+		        	response
+			        .putHeader("content-type", "application/json");
+		        	pool.getConnection(ar -> 
+					{
+			            if (ar.succeeded()) 
+			            {
+			                SqlConnection connection = ar.result();
+			                JsonArray ja = new JsonArray();
+			                
+			                // Execute a SELECT query
+			                
+			                connection.preparedQuery("Select * from public.tb_admin_functions")
+			                        .execute(
+			                        res -> {
+			                            if (res.succeeded()) 
+			                            {
+			                                // Process the query result
+			                                RowSet<Row> rows = res.result();
+			                                rows.forEach(row -> {
+			                                    // Print out each row
+			                                    LOGGER.info("Row: " + row.toJson());
+			                                    try
+			                                    {
+			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
+			                                    	ja.add(jo);
+			                                    	LOGGER.info("Successfully added json object to array");
+			                                    }
+			                                    catch(Exception e)
+			                                    {
+			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
+			                                    }
+			                                    
+			                                });
+			                                
+			                    
+			                                response.send(ja.encodePrettily());
+			                                
+			                            } 
+			                            else 
+			                            {
+			                                // Handle query failure
+			                            	LOGGER.error("error: " + res.cause() );
+			                            	response.send(res.cause().getMessage());
+			                            }
+			                            connection.close();
+			                        });
+			            } else {
+			                // Handle connection failure
+			                ar.cause().printStackTrace();
+			                response.send(ar.cause().getMessage());
+			            }
+			            
+			        });
+		        }
+			}
+		
+		}
+	}
+	/********************************EOF get Admin Functions API call***************************/
+	/********************************Restart SLP API Call***************************************/
+	private void handleRunAdminFunctions(RoutingContext routingContext)
+	{
+		LOGGER.info("insdie SetupPostHandler.handleResartSLP");
+		
+		Context context = routingContext.vertx().getOrCreateContext();
+		Pool pool = context.get("pool");
+		if (pool == null)
+		{
+			LOGGER.debug("pull is null - restarting");
+			DatabaseController DB = new DatabaseController(routingContext.vertx());
+			LOGGER.debug("Taking the refreshed context pool object");
+			pool = context.get("pool");
+		}
+		
+		HttpServerResponse response = routingContext.response();
+		JsonObject JSONpayload = routingContext.getBodyAsJson();
+	   
+	
+		String osName = System.getProperty("os.name").toLowerCase();
+		LOGGER.info("OS IS : " + osName);
+		
+		
+		if (JSONpayload.getString("jwt") == null) 
+	    {
+	    	LOGGER.info(" handleResartSLP required fields not detected (jwt)");
+	    	routingContext.fail(400);
+	    } 
+		else
+		{
+			if(validateJWTToken(JSONpayload))
+			{
+				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+				String [] chunks = JSONpayload.getString("jwt").split("\\.");
+				
+				JsonObject payload = new JsonObject(decode(chunks[1]));
+				LOGGER.info("Payload: " + payload );
+				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+				String function_name = JSONpayload.getString("function_name");
+				String function_description = JSONpayload.getString("function_description");
+				String function_script = JSONpayload.getString("function_script");
+				String function_api_call = JSONpayload.getString("function_api_call");
+				String function_file_path = JSONpayload.getString("function_file_path");
+				String function_os_type = JSONpayload.getString("function_os_type");
+				LOGGER.debug("function_name recieved: " + function_name);
+				LOGGER.debug("function_description recieved: " + function_description);
+				LOGGER.debug("function_script recieved: " + function_script);
+				LOGGER.debug("function_api_call recieved: " + function_api_call);
+				LOGGER.debug("function_file_path recieved: " + function_file_path);
+				LOGGER.debug("function_os_type recieved: " + function_os_type);
+				
+				utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+		
+		        String targetFilePath = function_file_path + function_script; // Save file in "uploads/" directory
+		     // Read the file content as bytes
+			    
+		        String encoded_function_file_path = Encodings.EscapeString(targetFilePath);
+				LOGGER.debug("Encoded task_file_path" + targetFilePath);
+				//The map is passed to the SQL query
+				Map<String,Object> map = new HashMap<String, Object>();
+				
+			
+				LOGGER.info("Accessible Level is : " + authlevel);
+		        LOGGER.info("username: " + map.get("username"));
+		        
+		        if(authlevel >= 1 && function_os_type.contains("Linux"))
+		        {
+		        	LOGGER.debug("User allowed to execute the API");
+				OSDetectorAndTaskControl.executeSLPAdminFunctionScriptLinux(function_script, function_file_path);
+				JsonObject result = new JsonObject();
+			    result.put("status", "success");
+			    result.put("message", function_name + " executed on Linux");
+			    response.putHeader("content-type", "application/json").end(result.encodePrettily());
+		        }
+		        else if (authlevel >= 1 && function_os_type.contains("Windows"))
+		        {
+		        	OSDetectorAndTaskControl.executeSLPAdminFunctionScriptWindows(function_script, function_file_path);
+		        	JsonObject result = new JsonObject();
+		            result.put("status", "success");
+		            result.put("message", function_name + " executed on Windows");
+		            response.putHeader("content-type", "application/json").end(result.encodePrettily());
+		        }
+		        else
+		        {
+		        	JsonArray ja = new JsonArray();
+		        	JsonObject jo = new JsonObject();
+		        	jo.put("Error", "Issufficent authentication level to run API");
+		        	ja.add(jo);
+		        	response.send(ja.encodePrettily());
+		        }
+		        
+		        
+			}
+		}
+		
+	}
+	/**********************EOF Restart SLP API call************************************************/
+	/**********************EOF Admin Function API calls************************************************/
 	
 	/**************************Content Packs APIs Begin**************************/
 	

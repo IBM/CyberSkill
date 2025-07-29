@@ -563,6 +563,14 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	 router.post("/api/getPackByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.getPackByPackId);
 	  	router.post("/api/deletePacksByPackId").handler(BodyHandler.create()).handler(setupPostHandlers.deletePackByPackId);
 	  	 
+	  	
+	  	 /********************************************************************************/
+	  	 /*These APIs are for the Admin Functions*/
+	  	 /********************************************************************************/
+	  	router.post("/api/createAdminFunction").handler(BodyHandler.create()).handler(setupPostHandlers.createAdminFunctions);
+	  	 router.post("/api/getAdminFunctions").handler(BodyHandler.create()).handler(setupPostHandlers.getAdminFunctions);
+	  	router.post("/api/runAdminFunctions").handler(BodyHandler.create()).handler(setupPostHandlers.runAdminFunctions);
+	  	 
 	  	 
 	  	/*********************************************************************************/
 	  	/*These are the controller APIs for the various databases we want to drive     				     */

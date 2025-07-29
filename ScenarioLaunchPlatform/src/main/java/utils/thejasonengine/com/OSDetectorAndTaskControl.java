@@ -362,7 +362,21 @@ public class OSDetectorAndTaskControl {
 
         executeCommandWithWorkingDir(command, workingDir);
     }
+    public static void executeSLPAdminFunctionScriptLinux(String scriptPath, String workingDir) {
+        List<String> command = new ArrayList<>();
+        command.add("/bin/bash");
+        command.add(scriptPath);
 
+        executeCommandWithWorkingDir(command, workingDir);
+    }
+    public static void executeSLPAdminFunctionScriptWindows(String batchPath, String workingDir) {
+        List<String> command = new ArrayList<>();
+        command.add("cmd.exe");
+        command.add("/c");
+        command.add(batchPath);
+
+        executeCommandWithWorkingDir(command, workingDir);
+    }
     private static void executeWindowsBatch(String batchPath, String workingDir) {
         List<String> command = new ArrayList<>();
         command.add("cmd.exe");
