@@ -146,6 +146,8 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> createAdminFunctions;
 	public Handler<RoutingContext> runAdminFunctions;
 	public Handler<RoutingContext> getAdminFunctions;
+	public Handler<RoutingContext> toggleAdminFunctions;
+	public Handler<RoutingContext> toggleAdminFunctionsByID;
 	
 	public SetupPostHandlers(Vertx vertx)
     {
@@ -218,6 +220,8 @@ public class SetupPostHandlers
 		createAdminFunctions = SetupPostHandlers.this::handleCreateAdminFunctions;
 		getAdminFunctions = SetupPostHandlers.this::handleGetAdminFunctions;
 		runAdminFunctions = SetupPostHandlers.this::handleRunAdminFunctions;
+		toggleAdminFunctions = SetupPostHandlers.this::handleToggleAllFunctions;
+		toggleAdminFunctionsByID = SetupPostHandlers.this::handleToggleFunctionById;
 		
 	}
 	/***********************************************************************/
@@ -1240,7 +1244,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
 			                
 			                // Execute a SELECT query
 			                
-			                connection.preparedQuery("Select * from public.tb_admin_functions")
+			                connection.preparedQuery("Select * from public.tb_admin_functions where task_active = 'Active'")
 			                        .execute(
 			                        res -> {
 			                            if (res.succeeded()) 
@@ -1385,6 +1389,158 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
 		
 	}
 	/**********************EOF Restart SLP API call************************************************/
+	
+	/**********************handleToggleAllFunctions***********************************************/
+	 private void handleToggleAllFunctions(RoutingContext routingContext) {
+  JsonObject body = routingContext.getBodyAsJson();
+  String jwt = body.getString("jwt");
+  String newState = body.getString("new_state");
+
+  if (jwt == null || newState == null || !validateJWTToken(body)) {
+    routingContext.response().setStatusCode(400).end("Invalid request");
+    return;
+  }
+
+  Pool pool = routingContext.vertx().getOrCreateContext().get("pool");
+  if (pool == null) {
+    new DatabaseController(routingContext.vertx()); // reload pool
+    pool = routingContext.vertx().getOrCreateContext().get("pool");
+  }
+
+  pool.preparedQuery("UPDATE public.tb_admin_functions SET task_active = $1")
+    .execute(Tuple.of(newState), ar -> {
+      if (ar.succeeded()) {
+        routingContext.response().putHeader("content-type", "application/json")
+          .end(new JsonObject().put("status", "success").put("new_state", newState).encode());
+      } else {
+        routingContext.response().setStatusCode(500)
+          .end(new JsonObject().put("error", ar.cause().getMessage()).encode());
+      }
+    });
+}
+	 
+/*****************************handleToggleFunctionById******************************************/
+		private void handleToggleFunctionById(RoutingContext routingContext) 
+		{
+			
+			LOGGER.info("Inside SetupPostHandlers.handleToggleFunctionById");  
+			
+			Context context = routingContext.vertx().getOrCreateContext();
+			Pool pool = context.get("pool");
+			
+			if (pool == null)
+			{
+				LOGGER.debug("pull is null - restarting");
+				DatabaseController DB = new DatabaseController(routingContext.vertx());
+				LOGGER.debug("Taking the refreshed context pool object");
+				pool = context.get("pool");
+			}
+			
+			HttpServerResponse response = routingContext.response();
+			JsonObject JSONpayload = routingContext.getBodyAsJson();
+			
+			if (JSONpayload.getString("jwt") == null) 
+		    {
+		    	LOGGER.info("handleToggleFunctionById required fields not detected (jwt)");
+		    	routingContext.fail(400);
+		    } 
+			else
+			{
+				if(validateJWTToken(JSONpayload))
+				{
+					LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
+					String [] chunks = JSONpayload.getString("jwt").split("\\.");
+					
+					JsonObject payload = new JsonObject(decode(chunks[1]));
+					LOGGER.info("Payload: " + payload );
+					int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+					
+					String function_id = JSONpayload.getString("id");
+					
+					
+					
+					
+					LOGGER.debug("Function id recieved: " + function_id);
+					
+					
+					utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
+					
+					
+					
+					//The map is passed to the SQL query
+					Map<String,Object> map = new HashMap<String, Object>();
+					map.put("task_active", "Inactive");
+					map.put("function_id", function_id);
+					
+					
+					LOGGER.info("Accessible Level is : " + authlevel);
+			       
+					if(authlevel >= 1)
+			        {
+			        	LOGGER.debug("User allowed to execute the API");
+			        	response
+				        .putHeader("content-type", "application/json");
+						
+						pool.getConnection(ar -> 
+						{
+				            if (ar.succeeded()) 
+				            {
+				                SqlConnection connection = ar.result();
+				                JsonArray ja = new JsonArray();
+				                
+				                
+								connection.preparedQuery("UPDATE public.tb_admin_functions SET task_active = $1, where id = $2")
+				                        .execute(Tuple.of(map.get("task_active").toString(),
+				                        		Integer.parseInt(map.get("function_id").toString())),
+				       
+				                        res -> {
+				                            if (res.succeeded()) 
+				                            {
+				                            	JsonObject jo = new JsonObject("{\"response\":\"Successfully updated sql statement\"}");
+		                                    	ja.add(jo);
+		                                    	LOGGER.info("Successfully added json object to array: " + res.toString().replaceAll("\"", ""));
+				    
+				                                response.send(ja.encodePrettily());
+				                            } 
+				                            else 
+				                            {
+				                                // Handle query failure
+				                            	JsonObject jo = new JsonObject("{\"response\":\"error: " +res.cause().getMessage().replaceAll("\"", "") +"\"}");
+		                                    	ja.add(jo);
+				                            	LOGGER.error("error: " + res.cause() );
+				                            	response.send(ja.encodePrettily());
+				                                //res.cause().printStackTrace();
+				                            }
+				                            // Close the connection
+				                            //response.end();
+				                            connection.close();
+				                        });
+				            } else {
+				                // Handle connection failure
+				                ar.cause().printStackTrace();
+				                response.send(ar.cause().getMessage());
+				            }
+				            
+				        });
+			        }
+			        else
+			        {
+			        	JsonArray ja = new JsonArray();
+			        	JsonObject jo = new JsonObject();
+			        	jo.put("Error", "Issufficent authentication level to run API");
+			        	ja.add(jo);
+			        	response.send(ja.encodePrettily());
+			        }
+			        
+			        
+				}
+			}
+		}
+			
+		  
+		
+
+/*****************************EOF handleToggleFunctionById*********************************************/
 	/**********************EOF Admin Function API calls************************************************/
 	
 	/**************************Content Packs APIs Begin**************************/

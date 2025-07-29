@@ -570,6 +570,9 @@ public class ClusteredVerticle extends AbstractVerticle {
 	  	router.post("/api/createAdminFunction").handler(BodyHandler.create()).handler(setupPostHandlers.createAdminFunctions);
 	  	 router.post("/api/getAdminFunctions").handler(BodyHandler.create()).handler(setupPostHandlers.getAdminFunctions);
 	  	router.post("/api/runAdminFunctions").handler(BodyHandler.create()).handler(setupPostHandlers.runAdminFunctions);
+	  	router.post("/api/toggleAdminFunctions").handler(BodyHandler.create()).handler(setupPostHandlers.toggleAdminFunctions);
+	  	router.post("/api/toggleAdminFunctionsByID").handler(BodyHandler.create()).handler(setupPostHandlers.toggleAdminFunctionsByID);
+	  	
 	  	 
 	  	 
 	  	/*********************************************************************************/

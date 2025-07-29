@@ -67,15 +67,24 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
     <!-- End Left Column -->
     
     <!-- Middle Column -->
-    <div class="w3-col m9">s
+    <div class="w3-col m9">
     
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding" style="overflow-x: auto;">
               <h6 class="w3-opacity">Current Admin Functions</h6>
+               <div class="d-flex gap-2 mb-3">     
                     <!-- Trigger Button -->
-<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadModal">Add Admin Function</button>
+                    <div id="addFunctionContainer" style="display: none;">
+  <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#uploadModal">
+    ➕ Add Function
+  </button>
+</div>
+    
+                    <button id="toggleAllBtn" class="btn btn-warning mb-3">Deactivate All</button>
+               </div>
+
      
   <table id="example" class="table table-striped table-bordered" style="width:100%">
 			  <thead>
@@ -322,11 +331,11 @@ function getAdminFunctions() {
       {
         title: 'Run Button',
         data: null,
-        render: function (data, type, row) {
-          // Removed inline onclick, added data attribute
-          return '<button id="btn-' + row.id + '" class="btn btn-primary run-button" data-row-id="' + row.id + '">Run</button>';
+         render: function (data, type, row) {
+  return '<button id="btn-' + row.id + '" class="btn btn-primary btn-sm me-1 run-button" data-row-id="' + row.id + '">▶ Run</button>';
+}
+
         }
-      }
     ],
     createdRow: function (row, data, dataIndex) {
       $('td', row).eq(0).attr('id', `td-id-<#noparse>${data.id}</#noparse>`);
@@ -422,6 +431,27 @@ $(document).on('click', '.run-button', function () {
  console.log('[RUN BUTTON] Clicked:', this);
   getRunAdminFunction(this);
 });
+
+$(document).on('click', '.deactivate-button', function () {
+  const $button = $(this); // ✅ Capture the button
+  const rowId = $button.data('row-id');
+  const jwtToken = '${tokenObject.jwt}';
+
+  $.ajax({
+    url: '/api/toggleAdminFunctionsByID',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ jwt: jwtToken, id: rowId }),
+    success: function () {
+      showToast(`⛔ Function ID <#noparse>${rowId}</#noparse> toggled`, 'success');
+      getRunAdminFunction($button[0]); // ⏎ Pass the actual button element back
+    },
+    error: function (_, __, error) {
+      showToast(`❌ Failed to toggle function <#noparse>${rowId}: ${error}</#noparse>`, 'error');
+    }
+  });
+});
+
 </script>
 <script>
  $(document).ready(function() 
@@ -483,7 +513,28 @@ $(document).on('click', '.run-button', function () {
   const modal = new bootstrap.Modal(document.getElementById('debugModal'));
   modal.show();
 }
+let allActive = true; // assume functions start as active
 
+$('#toggleAllBtn').on('click', function () {
+  const jwtToken = '${tokenObject.jwt}';
+  const newState = allActive ? 'Inactive' : 'Active';
+
+  $.ajax({
+    url: '/api/toggleAdminFunctions',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ jwt: jwtToken, new_state: newState }),
+    success: function (res) {
+      showToast(`✅ All functions set to "<#noparse>${newState}</#noparse>"`, 'success');
+      allActive = !allActive;
+      $('#toggleAllBtn').text(allActive ? 'Deactivate All' : 'Activate All');
+      getAdminFunctions();
+    },
+    error: function (err) {
+      showToast(`❌ Failed to update all functions`, 'error');
+    }
+  });
+});
     function getQueryTypes()
 	{
 		const var_jwt = '${tokenObject.jwt}';
@@ -529,6 +580,20 @@ $(document).on('click', '.run-button', function () {
 			 }
 		});
 	}
+</script>
+<script>
+function getQueryParam(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const flag = getQueryParam('flag');
+
+  if (flag === 'exposed') {
+    document.getElementById('addFunctionContainer').style.display = 'block';
+  }
+});
 </script>
 <script>
 function showToast(message, type = 'success') {
