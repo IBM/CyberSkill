@@ -99,7 +99,7 @@ public class ClusteredVerticle extends AbstractVerticle {
 		LOGGER.debug("This is a ClusteredVerticle 'DEBUG' TEST MESSAGE");
 		LOGGER.warn("This is a ClusteredVerticle 'WARN' TEST MESSAGE");
 		LOGGER.error("This is an ClusteredVerticle 'ERROR' TEST MESSAGE");
-		
+		boolean accessFlag = Boolean.parseBoolean(System.getProperty("accessFlag", "false"));
 		String config = System.getenv().getOrDefault("CONFIG", "config.json");
 		
 		/*Create the RAM object that will store and reference data for the worker*/
@@ -213,7 +213,14 @@ public class ClusteredVerticle extends AbstractVerticle {
 			    				{
 			    						JsonObject tokenObject = new JsonObject();
 					    				JsonObject hold = (JsonObject) JSON_JWT.getValue("payload");
-					    				
+					    			    ctx.put("accessFlag", accessFlag);
+
+					    		        // 🚫 Block access to adminFunctions.ftl if flag is false
+					    		        if (file2send.endsWith("adminFunctions.ftl") && !accessFlag) {
+					    		            LOGGER.warn("Access denied to adminFunctions.ftl — accessFlag is false.");
+					    		            ctx.redirect("/loggedIn/noAccess.ftl");
+					    		            return;
+					    		        }
 					    				LOGGER.info("Username: " + hold.getString("username"));
 					    				
 					    				tokenObject.put("username", hold.getString("username"));
@@ -275,6 +282,9 @@ public class ClusteredVerticle extends AbstractVerticle {
 			    			//ctx.response().sendFile("webroot/index.htm"); //drop starting slash
 			    		}
 				 });
+		/***************************************************************************************/
+	
+
 		/***************************************************************************************/
 		router.get("/api/passwordGenerator/:password").handler(
     		    ctx -> 
