@@ -8,7 +8,12 @@
   <a href="/loggedIn/databases.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Building Block Queries"><i class="fa fa-database"></i></a>
   <a href="https://ibm.github.io/CyberSkill/" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Support Videos" target="_blank"><i class="fa fa-film"></i></a>
   <a href="/loggedIn/contentpacks.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Content Packs"><i class="fa fa-suitcase"></i></a>
-  <a href="/loggedIn/ostask.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="OS Scheduled Tasks"><i class="fa fa-tasks"></i></a>
+   <#if accessFlag?? && accessFlag>
+ <a href="/loggedIn/ostask.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="OS Scheduled Tasks"><i class="fa fa-tasks"></i></a>
+  <#else>
+  <a href="/loggedIn/noAccess.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="OS Scheduled Tasks"><i class="fa fa-tasks"></i></a>
+  </#if>
+  
   <a href="/loggedIn/storyRunner.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Story Runner"><i class="fa fa-book"></i></a>
    <a href="/loggedIn/storyCreator.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Story Creator"><i class="fa fa-wrench"></i></a>
   <span id="plugins">[No Active Plugins]</span>

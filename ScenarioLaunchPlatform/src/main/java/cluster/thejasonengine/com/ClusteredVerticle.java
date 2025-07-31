@@ -221,6 +221,12 @@ public class ClusteredVerticle extends AbstractVerticle {
 					    		            ctx.redirect("/loggedIn/noAccess.ftl");
 					    		            return;
 					    		        }
+					    		        // 🚫 Block access to adminFunctions.ftl if flag is false
+					    		        if (file2send.endsWith("ostask.ftl") && !accessFlag) {
+					    		            LOGGER.warn("Access denied to ostask.ftl — accessFlag is false.");
+					    		            ctx.redirect("/loggedIn/noAccess.ftl");
+					    		            return;
+					    		        }
 					    				LOGGER.info("Username: " + hold.getString("username"));
 					    				
 					    				tokenObject.put("username", hold.getString("username"));
