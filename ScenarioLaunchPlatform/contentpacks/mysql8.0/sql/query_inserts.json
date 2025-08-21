@@ -106,7 +106,7 @@
             "query_string": "select * from account_groups;\nCALL move_to_gold('345278446');\nCALL move_to_silver('485266791');\nCALL move_to_silver('543987556');\nCALL move_to_platinum('555196666');\nCALL move_to_gold('193756824');\nCALL move_to_platinum('555196666');\nselect * from account_groups;",
             "db_connection_id": 35,
             "query_usecase": "Call STP Account Groups",
-            "query_loop": 15,
+            "query_loop": 1,
             "query_description": "This building block is part of a Malicious procedure story\n It can be run indivdually as part of a manual sequence with building blocks 7(Create STP Account Groups) and 9(Malicious STP Update Account Groups)  \n - The sequence is 7,8,9,8 to get the desired effect of a Malicious procedure violation\n - Execute as Jason or John\n- Call Stored Procedures",
             "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
         },
@@ -117,7 +117,7 @@
             "query_string": "DROP PROCEDURE IF EXISTS move_to_platinum;\nCREATE PROCEDURE move_to_platinum (IN user_id VARCHAR(255)) BEGIN     DROP TABLE account_groups ; END;",
             "db_connection_id": 35,
             "query_usecase": "Malicious STP Update Account Groups",
-            "query_loop": 15,
+            "query_loop": 1,
             "query_description": "This building block is part of a Malicious procedure story\n It can be run indivdually as part of a manual sequence with building blocks 7(Create STP Account Groups) and 8(Call STP Account Groups)   \n - The sequence is 7,8,9,8 to get the desired effect of a Malicious procedure violation\n - Execute as Liher\n- Replace Stored Procedures (drop table)",
             "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
         },
