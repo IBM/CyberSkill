@@ -23,4 +23,4 @@ echo "Payload db2_getDatabaseConnections.sh: $PAYLOAD"
        --header 'Content-Type: application/json' \
        --data-raw "${PAYLOAD}"
   echo -e "\n"  # neat blank line between entries
-} | tee -a /var/log/slp/mysql_db2_run_query.log
+} | tee -a /var/log/slp/getDatabaseConnections.log
