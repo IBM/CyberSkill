@@ -1,0 +1,4 @@
+INSERT INTO public.tb_content_packs (id, pack_name, version, db_type, build_date, build_version, description, author, icon, background_traffic, pack_info, pack_deployed) VALUES (5, 'sqlserver', 'v1.0', 'sqlserver', '01-Sept-2025', '139', 'A brief description of the pack contents', 'Official', 'sqlserver.png', 'yes', '{"icon": "sqlserver.png", "author": "Official", "db_type": "sqlserver", "version": "v1.0", "pack_name": "sqlserver", "build_date": "01-Sept-2025", "description": "A brief description of the pack contents", "build_version": "139", "background_traffic": "yes"}', 'false');
+
+ALTER SEQUENCE public.tb_content_packs_id_seq RESTART WITH 6;
+UPDATE public.tb_version SET version = 'v01.0012';
