@@ -55,7 +55,7 @@
             "db_version": "8.0.2",
             "db_username": "john",
             "db_password": "Password1!",
-            "db_port": "5432",
+            "db_port": "50762",
             "db_database": "CRM",
             "db_url": "10.10.9.59",
             "db_jdbcClassName": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
