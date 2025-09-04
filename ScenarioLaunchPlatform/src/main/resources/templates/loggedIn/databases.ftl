@@ -847,7 +847,7 @@ function runDatabaseQueryByDatasourceMap(result)
              let errorValue = null;
                 const containsError = Result.some((item) => {
                     return Object.values(item).some((value) => {
-                    	     if ((typeof value === "string" && value.toLowerCase().includes("error")) || (typeof value === "string" && value.toLowerCase().includes("fatal")) || (typeof value === "string" && value.toLowerCase().includes("denied")) || (typeof value === "string" && value.toLowerCase().includes("exception"))) {
+                    	     if ((typeof value === "string" && value.toLowerCase().includes("error")) || (typeof value === "string" && value.toLowerCase().includes("fatal")) || (typeof value === "string" && value.toLowerCase().includes("denied")) || (typeof value === "string" && value.toLowerCase().includes("exception")) || (typeof value === "string" && value.toLowerCase().includes("failed"))) {
                             errorValue = value;  // Capture the error value
                             return true;  // Stop once error is found
                         }
