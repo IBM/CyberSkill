@@ -49,7 +49,7 @@ public class BruteForceDBConnections {
 	        }
 	        else if(databaseType.equalsIgnoreCase("sqlserver"))
 	        {
-	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"50762"+"/"+database);       
+	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"50762"+";databaseName="+database+";"+MSSQL_ENCRYPT+";"+MSSQL_CERT);   
 	        	db_jdbcclassname = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	        }
 	        
