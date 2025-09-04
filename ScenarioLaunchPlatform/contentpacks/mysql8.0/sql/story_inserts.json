@@ -11,25 +11,25 @@
                 "video": "https://ibm.github.io/CyberSkill/?video=Malicious_Store_Procedure_SLP_To_GDP.mp4",
                 "story": [
                     {
-                        "query_id": 7,
+                        "query_id": 9,
                         "pause_in_seconds": 5000,
                         "datasource": "mysql_127.0.0.1_crm_polly",
                         "chapter": "Create STP Account Groups"
                     },
                     {
-                        "query_id": 8,
+                        "query_id": 10,
                         "pause_in_seconds": 6000,
                         "datasource": "mysql_127.0.0.1_crm_jason",
                         "chapter": "Call STP Account Groups"
                     },
                     {
-                        "query_id": 9,
+                        "query_id": 11,
                         "pause_in_seconds": 3000,
                         "datasource": "mysql_127.0.0.1_crm_liher",
                         "chapter": "Malicious STP Update Account Groups"
                     },
                     {
-                        "query_id": 8,
+                        "query_id": 10,
                         "pause_in_seconds": 2000,
                         "datasource": "mysql_127.0.0.1_crm_john",
                         "chapter": "Call STP Account Groups"
@@ -154,7 +154,7 @@
                         "chapter": "Create testTable for Policy violations"
                     },
                     {
-                        "query_id": 4,
+                        "query_id": 6,
                         "pause_in_seconds": 3000,
                         "datasource": "mysql_127.0.0.1_crm_polly",
                         "chapter": "OS Command Injection"
@@ -173,19 +173,19 @@
                 "video": "A URL to the video of the story executing",
                 "story": [
                     {
-                        "query_id": 10,
+                        "query_id": 12,
                         "pause_in_seconds": 5000,
                         "datasource": "mysql_127.0.0.1_crm_polly",
                         "chapter": "Create Multipe users"
                     },
                     {
-                        "query_id": 11,
+                        "query_id": 13,
                         "pause_in_seconds": 3000,
                         "datasource": "mysql_127.0.0.1_crm_polly",
                         "chapter": "Grant privileges to Multiple users"
                     },
 		    {
-                        "query_id": 12,
+                        "query_id": 14,
                         "pause_in_seconds": 3000,
                         "datasource": "mysql_127.0.0.1_crm_polly",
                         "chapter": " Drop Multiple users"
