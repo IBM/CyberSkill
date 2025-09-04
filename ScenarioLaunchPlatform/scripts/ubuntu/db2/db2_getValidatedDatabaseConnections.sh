@@ -23,4 +23,4 @@ echo "Payload db2_getValidatedDatabaseConnections.sh: $PAYLOAD"
        --header 'Content-Type: application/json' \
        --data-raw "${PAYLOAD}"
   echo -e "\n"  # neat blank line between entries
-} | tee -a /var/log/slp_db2_run_query.log
+} | tee -a /var/log/slp/slp_db2_run_query.log

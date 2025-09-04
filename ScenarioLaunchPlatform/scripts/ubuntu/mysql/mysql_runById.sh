@@ -45,4 +45,4 @@ EOF
        --header 'Content-Type: application/json' \
        --data-raw "${PAYLOAD}"
   echo -e "\n"  # neat blank line between entries
-} | tee -a /var/log/slp_mysql_run_query.log
+} | tee -a /var/log/slp/slp_mysql_run_query.log
