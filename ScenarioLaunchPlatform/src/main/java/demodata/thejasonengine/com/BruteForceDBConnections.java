@@ -9,6 +9,8 @@ import io.vertx.core.json.JsonObject;
 public class BruteForceDBConnections {
 	
 	private static final Logger LOGGER = LogManager.getLogger(BruteForceDBConnections.class);
+	private static final String MSSQL_ENCRYPT = "encrypt=true";
+	private static final String MSSQL_CERT = "trustServerCertificate=true";
 	
 	public JsonObject BruteForceConnectionErrors(String datasource)
 	{
@@ -44,6 +46,11 @@ public class BruteForceDBConnections {
 	        {
 	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"50000"+"/"+database);
 	        	db_jdbcclassname = "com.ibm.db2.jcc.DB2Driver";
+	        }
+	        else if(databaseType.equalsIgnoreCase("sqlserver"))
+	        {
+	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"50762"+"/"+database);       
+	        	db_jdbcclassname = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	        }
 	        
 	    	DataSource.setUsername(user);
