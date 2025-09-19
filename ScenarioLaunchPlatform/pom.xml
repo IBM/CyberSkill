@@ -12,6 +12,7 @@
     <log4j-api.version>2.25.1</log4j-api.version>
     <log4j-core.version>2.25.1</log4j-core.version>
     <postgresql.version>42.7.7</postgresql.version>
+    <mysql-connector-j.version>9.4.0</mysql-connector-j.version>
   </properties>
 
   
@@ -177,9 +178,9 @@
 
     <!-- Database Drivers -->
 	<dependency>
-	    <groupId>mysql</groupId>
-	    <artifactId>mysql-connector-java</artifactId>
-	    <version>8.0.33</version>
+	    <groupId>com.mysql</groupId>
+	    <artifactId>mysql-connector-j</artifactId>
+	    <version>${mysql-connector-j.version}</version>
 	</dependency>
 	<dependency>
 	    <groupId>io.vertx</groupId>
