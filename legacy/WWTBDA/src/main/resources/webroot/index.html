@@ -36,6 +36,48 @@
     .step.active{background:linear-gradient(90deg, rgba(255,210,74,0.12), rgba(255,210,74,0.04));color:var(--accent);box-shadow:inset 0 -1px 0 rgba(255,255,255,0.02)}
     .step.flash{background:linear-gradient(90deg, rgba(255,107,107,0.4), rgba(255,107,107,0.1));animation:flash 0.6s alternate 4}
     @keyframes flash {from {background:linear-gradient(90deg, rgba(255,107,107,0.7), rgba(255,107,107,0.2));} to {background:linear-gradient(90deg, rgba(255,210,74,0.2), rgba(255,210,74,0.05));}}
+    #lifeline-50:hover {
+  	background-color: var(--accent);
+  	color: #071428;
+  	border-color: var(--accent);
+  	box-shadow: 0 0 8px var(--accent);
+  	transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+	}
+	
+	#lifeline-phone:hover {
+  	background-color: var(--accent);
+  	color: #071428;
+  	border-color: var(--accent);
+  	box-shadow: 0 0 8px var(--accent);
+  	transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+	}
+	
+	
+	#lifeline-audience:hover {
+  	background-color: var(--accent);
+  	color: #071428;
+  	border-color: var(--accent);
+  	box-shadow: 0 0 8px var(--accent);
+  	transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+	}
+    .audience-poll {
+	  font-size: 12px;
+	  color: var(--accent);
+	  margin-top: 4px;
+	  background: rgba(255, 255, 255, 0.06);
+	  border-radius: 4px;
+	  overflow: hidden;
+	  height: 10px;
+	  position: relative;
+	}
+	
+	.audience-bar {
+	  background-color: var(--accent);
+	  height: 100%;
+	  width: 0%;
+	  transition: width 0.4s ease-in-out;
+	}
+    
   </style>
 </head>
 <body>
@@ -89,6 +131,102 @@
       const ladderEl = document.getElementById('ladder');
       const btnRestart = document.getElementById('btn-restart');
       const questionBox = document.getElementById('questionBox');
+      const lifeline50 = document.getElementById('lifeline-50');
+      const lifelineAudience = document.getElementById('lifeline-audience');
+      const lifelinePhone = document.getElementById('lifeline-phone');
+
+
+      lifelineAudience.addEventListener('click', () => {
+    	  if (lifelineAudience.getAttribute('aria-disabled') === 'true') return;
+    	  if (lockedIndex !== null) return; // prevent using after answer is locked
+
+    	  const answers = Array.from(answersEl.querySelectorAll('.answer'));
+    	  const correctAnswer = answers.find(a => a.dataset.isCorrect === 'true');
+
+    	  // Generate poll data
+    	  let remainingPercent = 100;
+    	  const pollData = [];
+
+    	  answers.forEach((el, i) => {
+    	    let percent;
+    	    if (el === correctAnswer) {
+    	      percent = Math.floor(Math.random() * 21) + 50; // 50–70%
+    	    } else {
+    	      percent = Math.floor(Math.random() * Math.min(remainingPercent, 30));
+    	    }
+    	    pollData.push({ el, percent });
+    	    remainingPercent -= percent;
+    	  });
+
+    	  // Distribute remaining percent randomly
+    	  for (let i = 0; i < pollData.length && remainingPercent > 0; i++) {
+    	    const extra = Math.min(remainingPercent, Math.floor(Math.random() * 10));
+    	    pollData[i].percent += extra;
+    	    remainingPercent -= extra;
+    	  }
+
+    	  // Display results
+    	pollData.forEach(({ el, percent }) => {
+		  const textEl = el.querySelector('.answer-text');
+		  const pollContainer = document.createElement('div');
+		  pollContainer.className = 'audience-poll';
+		  pollContainer.innerHTML = `
+		    <div class="audience-bar" style="width: ${percent}%;"></div>
+		    <span style="position:absolute;right:6px;top:-18px;font-size:12px;color:var(--muted);">${percent}%</span>
+		  `;
+		  textEl.appendChild(pollContainer);
+		});
+
+    	  // Disable the lifeline
+    	  lifelineAudience.setAttribute('aria-disabled', 'true');
+    	  lifelineAudience.style.opacity = '0.35';
+    	  lifelineAudience.style.cursor = 'not-allowed';
+    	});
+
+      
+      lifeline50.addEventListener('click', () => {
+    	  if (lifeline50.getAttribute('aria-disabled') === 'true') return;
+
+    	  const answers = Array.from(answersEl.querySelectorAll('.answer'));
+    	  const incorrectAnswers = answers.filter(a => a.dataset.isCorrect !== 'true');
+
+    	  // Randomly pick two incorrect answers to remove
+    	  const toHide = shuffleArray(incorrectAnswers).slice(0, 2);
+    	  toHide.forEach(el => {
+    	    el.style.visibility = 'hidden'; // You can also use el.remove() or add a "disabled" class
+    	  });
+
+    	  // Disable the lifeline
+    	  lifeline50.setAttribute('aria-disabled', 'true');
+    	  lifeline50.style.opacity = '0.35';
+    	  lifeline50.style.cursor = 'not-allowed';
+    	});
+      
+      lifelinePhone.addEventListener('click', () => {
+    	  if (lifelinePhone.getAttribute('aria-disabled') === 'true') return;
+    	  if (lockedIndex !== null) return;
+
+    	  const answers = Array.from(answersEl.querySelectorAll('.answer'));
+    	  const correct = answers.find(a => a.dataset.isCorrect === 'true');
+    	  const otherAnswers = answers.filter(a => a !== correct);
+
+    	  // Decide if the friend gives the right answer (~75% chance)
+    	  const friendIsCorrect = Math.random() < 0.75;
+    	  const suggested = friendIsCorrect ? correct : otherAnswers[Math.floor(Math.random() * otherAnswers.length)];
+
+    	  // Find label (A/B/C/D)
+    	  const label = suggested.querySelector('.answer-label').textContent;
+    	  const text = suggested.querySelector('.answer-text').textContent;
+
+    	  // Show the message in the status area
+    	  status.textContent = `📞 Your friend says: "I'm not totally sure, but I think it's ${label} - ${text}."`;
+
+    	  // Disable the lifeline button
+    	  lifelinePhone.setAttribute('aria-disabled', 'true');
+    	  lifelinePhone.style.opacity = '0.35';
+    	  lifelinePhone.style.cursor = 'not-allowed';
+    	});
+
 
       const masterQuestions = [
         {q:'Which planet is known for its rings?', options:['Saturn','Earth','Mars','Venus']},
