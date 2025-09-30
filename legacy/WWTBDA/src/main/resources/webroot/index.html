@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quiz — Millionaire-style Layout</title>
+  <title>Are you data aware?</title>
   <style>
     :root{--bg:#071028;--panel:#081428;--accent:#ffd24a;--muted:#9fb3c8;--correct:#3ae374;--wrong:#ff6b6b;font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
     *{box-sizing:border-box} html,body{height:100%} body{margin:0;background: radial-gradient(1200px 600px at 10% 10%, rgba(3,16,32,0.6), transparent),linear-gradient(180deg,#001026 0%, #041a30 60%);color: #e6f0f8;display:flex;align-items:center;justify-content:center;padding:24px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
@@ -106,12 +106,12 @@
         <div class="logo-like">
           <div class="logo-badge">Q</div>
           <div>
-            <div class="game-title">MILLIONAIRE — STYLE QUIZ</div>
-            <div style="font-size:12px;color:var(--muted)">Practice interface • interactive demo</div>
+            <div class="game-title">Are you data aware?</div>
+            <div style="font-size:12px;color:var(--muted)">Guardium data protection • just for fun</div>
           </div>
         </div>
         <div style="text-align:right">
-          <div style="font-size:13px;color:var(--muted)">Prize: <strong>€1,000,000</strong></div>
+          <div style="font-size:13px;color:var(--muted)">Prize: become <strong>Ascendent</strong></div>
           <div style="font-size:12px;color:var(--muted)">Question <span id="qIndex">1</span>/15</div>
         </div>
       </div>
@@ -136,7 +136,7 @@
       </section>
     </main>
     <aside class="side" aria-label="money ladder">
-      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Money Ladder</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Skills Ladder</div>
       <div class="ladder" id="ladder"></div>
     </aside>
   </div>
@@ -248,28 +248,69 @@
 
 
       const masterQuestions = [
-        {q:'Which planet is known for its rings?', options:['Saturn','Earth','Mars','Venus']},
-        {q:'What is the chemical symbol for water?', options:['H2O','O2','CO2','NaCl']},
-        {q:'Who wrote "Pride and Prejudice"?', options:['Jane Austen','Charlotte Brontë','Emily Dickinson','Mary Shelley']},
-        {q:'What is the largest mammal?', options:['Blue whale','Elephant','Giraffe','Hippopotamus']},
-        {q:'Which element has the symbol Au?', options:['Gold','Silver','Copper','Iron']},
-        {q:'What is the capital of Japan?', options:['Tokyo','Kyoto','Osaka','Nagoya']},
-        {q:'Which gas do plants absorb for photosynthesis?', options:['Carbon dioxide','Oxygen','Nitrogen','Hydrogen']},
-        {q:'Who painted the Mona Lisa?', options:['Leonardo da Vinci','Vincent van Gogh','Pablo Picasso','Claude Monet']},
-        {q:'How many continents are there?', options:['7','5','6','8']},
-        {q:'Which organ pumps blood through the body?', options:['Heart','Liver','Lungs','Kidneys']},
-        {q:'What is the boiling point of water at sea level?', options:['100°C','90°C','80°C','120°C']},
-        {q:'Who developed the theory of relativity?', options:['Albert Einstein','Isaac Newton','Galileo Galilei','Nikola Tesla']},
-        {q:'Which ocean is the largest?', options:['Pacific Ocean','Atlantic Ocean','Indian Ocean','Arctic Ocean']},
-        {q:'What is the smallest prime number?', options:['2','1','3','5']},
-        {q:'Which language has the most native speakers?', options:['Mandarin Chinese','English','Spanish','Hindi']}
+    	  {q: 'What is the primary purpose of IBM Guardium Data Activity Monitoring (DAM)?', options: ['To monitor and secure database activity','To back up databases','To replace database administrators','To optimize SQL queries']},
+    	  {q: 'Which Guardium component captures traffic directly from the database host?', options: ['S-TAP','Collector','Aggregator','Central Manager']},
+    	  {q: 'Guardium helps organizations comply with which of the following regulations?', options: ['All of the above','PCI DSS','HIPAA','GDPR']},
+    	  {q: 'In Guardium, what is the role of the Collector?', options: ['Store monitoring data from S-TAP agents','Build dashboards only','Encrypt sensitive data at rest','Perform OS patching on servers']},
+    	  {q: 'Which of these best describes Guardium’s approach compared to native DB audit logs?', options: ['Works independently and minimizes performance impact','Adds more overhead and slows performance','Only works if DB logging is turned on','Cannot track privileged users']},
+    	  {q: 'The Guardium Aggregator is mainly used for:', options: ['Consolidating and reporting data from multiple collectors','Real-time blocking of SQL traffic','Replacing a SIEM solution','Database tuning and performance']},
+    	  {q: 'Which feature allows Guardium to detect abnormal activity by privileged users?', options: ['Policy Violations','Activity Masking','Data Encryption','Network Firewalling']},
+    	  {q: 'What’s the difference between Data Activity Monitoring (DAM) and Vulnerability Assessment (VA) in Guardium?', options: ['DAM tracks real-time activity, VA scans for weaknesses','DAM prevents breaches, VA only logs them','VA is only for cloud, DAM is only for on-prem','There is no difference']},
+    	  {q: 'Which Guardium component provides centralized management for large deployments?', options: ['Central Manager','S-TAP','Aggregator','Collector']},
+    	  {q: 'If a DBA queries sensitive salary tables outside of business hours, Guardium can:', options: ['Trigger an alert or block the query based on policy','Automatically drop the database','Change the DBA’s password','Shut down the server']},
+    	  {q: 'How does Guardium integrate with SIEM solutions like QRadar?', options: ['By sending real-time events via syslog or APIs','By exporting reports only','By installing SIEM agents on the database','By replacing SIEM functionality']},
+    	  {q: 'In a cloud environment, one key challenge Guardium addresses is:', options: ['Difficulty in monitoring activity across hybrid/multi-cloud platforms','Lack of native DB encryption','Slow database queries','Cloud billing costs']},
+    	  {q: 'Which Guardium feature helps reduce “false positives” by separating normal DBA tasks from suspicious behavior?', options: ['Privileged User Control','File Activity Monitoring','Data Masking','Firewall Rules']},
+    	  {q: 'When investigating a suspected SQL injection, Guardium can:', options: ['Replay full SQL sessions to show exact queries','Only show login failures','Automatically patch the vulnerable application','Block internet access']},
+    	  {q: 'At the highest level, what does Guardium ultimately provide organizations?', options: ['Comprehensive data security and compliance assurance','Database query optimization','Backup and restore functionality','Cloud cost monitoring']},
+   		  {q: 'Which IBM solution provides Data Activity Monitoring for databases?', options: ['Guardium','QRadar','Splunk','Watson']},
+   		  {q: 'What does DAM stand for in Guardium?', options: ['Data Activity Monitoring','Database Access Management','Data Audit Mechanism','Distributed Access Module']},
+   		  {q: 'Guardium is primarily used for:', options: ['Monitoring and securing data activity','Improving query performance','Replacing database administrators','Database backups']},
+   		  {q: 'Which Guardium component is deployed on the database server to capture traffic?', options: ['S-TAP','Collector','Aggregator','Central Manager']},
+   		  {q: 'What type of data sources can Guardium monitor?', options: ['Databases and data warehouses','Only spreadsheets','Email systems only','Web browsers']},
+   		  {q: 'Guardium supports compliance with standards such as:', options: ['PCI DSS','HTML5','ISO 9001 for Manufacturing','IEEE 802.11']},
+   		  {q: 'What is the Guardium Central Manager used for?', options: ['Coordinating and managing multiple collectors','Running SQL queries directly','Encrypting database backups','Scheduling OS patches']},
+   		  {q: 'Which Guardium feature generates alerts when suspicious activity is detected?', options: ['Policies','Collectors','Aggregators','S-TAPs']},
+   		  {q: 'Which deployment mode has the least performance impact on a monitored database?', options: ['S-TAP with sniffer','Inline blocking mode','Log-based monitoring','Manual DBA reports']},
+   		  {q: 'Which of the following is an example of sensitive data Guardium can monitor?', options: ['Credit card numbers','Weather forecasts','System patch notes','Webpage titles']},
+   		  {q: 'Which Guardium component consolidates data from multiple collectors?', options: ['Aggregator','S-TAP','Central Manager','Agentless Monitor']},
+   		  {q: 'How does Guardium differentiate between normal DBA activity and suspicious activity?', options: ['Privileged User Control policies','Password complexity rules','Network firewalls','System uptime checks']},
+   		  {q: 'Guardium’s real-time monitoring is achieved primarily through:', options: ['Network sniffing and S-TAP agents','Database system logs','Weekly vulnerability scans','Manual security reviews']},
+   		  {q: 'Which Guardium feature is designed for proactive risk assessment?', options: ['Vulnerability Assessment','Privileged User Control','Data Masking','SQL Replay']},
+   		  {q: 'Guardium can integrate with which SIEM solution for centralized security monitoring?', options: ['QRadar','Excel','Tableau','Nagios']},
+   		  {q: 'If a DBA attempts to exfiltrate large amounts of sensitive data, Guardium can:', options: ['Trigger alerts or block the activity','Shut down the entire database','Encrypt all exported files','Change the DBA password']},
+   		  {q: 'Which Guardium component stores audit data locally before consolidation?', options: ['Collector','Aggregator','Central Manager','Policy Engine']},
+   		  {q: 'Guardium Vulnerability Assessment primarily checks for:', options: ['Database configuration weaknesses','User training gaps','Disk fragmentation','Operating system updates']},
+   		  {q: 'Guardium policies can be based on:', options: ['User activity, time, and SQL commands','Operating system version','Cloud billing reports','Server hardware brand']},
+   		  {q: 'Guardium’s ability to reconstruct exact SQL queries for investigation is known as:', options: ['Full Session Replay','Query Optimization','Log Summarization','Data Masking']},
+   		  {q: 'In a high-volume environment, how does Guardium minimize performance impact?', options: ['By using network sniffing and lightweight S-TAPs','By disabling database logging','By moving queries to a test server','By throttling DBA access']},
+   		  {q: 'Guardium can detect SQL injection attempts by:', options: ['Analyzing unusual SQL patterns','Blocking all user queries','Running daily malware scans','Checking system patch history']},
+   		  {q: 'Which of the following best describes Guardium’s separation of duties?', options: ['Security teams can monitor DBAs without DBAs modifying logs','DBAs monitor themselves','Managers approve all queries','End users monitor DBAs directly']},
+   		  {q: 'Which Guardium feature helps mask sensitive fields when data is exported for testing?', options: ['Data Masking','Privileged User Control','File Activity Monitoring','Collector Filtering']},
+   		  {q: 'In Guardium, an Aggregator typically communicates with:', options: ['Multiple Collectors','Only one Central Manager','End-users directly','Database CPUs']},
+   		  {q: 'When configured for blocking, Guardium can prevent:', options: ['Unauthorized SQL queries from executing','Scheduled backups','OS patch installations','Application server logs from rotating']},
+   		  {q: 'What encryption standard does Guardium support for securing collected data?', options: ['AES-256','MD5','DES','ROT13']},
+   		  {q: 'Guardium’s DAM is considered agent-based because:', options: ['S-TAP agents are installed on database servers','It requires OS kernel changes','It uses SIEM connectors','It needs user training agents']},
+   		  {q: 'How does Guardium handle heterogeneous environments (multiple DB types)?', options: ['Supports cross-platform monitoring with a unified console','Only works with Oracle DB','Requires a separate Guardium instance for each DB','Only monitors Linux databases']},
+   		  {q: 'Guardium supports cloud monitoring by:', options: ['Deploying lightweight agents and integrating with cloud-native APIs','Blocking all cloud connections by default','Moving all data back on-prem','Replacing cloud vendor security tools']},
+   		  {q: 'Which Guardium feature helps reduce storage requirements for long-term monitoring?', options: ['Data Aggregation and Compression','Uncompressed Full Logging','Database Replication','OS Journaling']},
+   		  {q: 'How does Guardium detect unauthorized schema changes?', options: ['By monitoring DDL activity through policies','By comparing nightly backups','By scanning source code','By checking network latency']},
+   		  {q: 'Guardium can block SQL statements in real time using:', options: ['Policy-based enforcement','Daily cron jobs','SIEM integrations only','Weekly admin reviews']},
+   		  {q: 'What ensures Guardium data remains admissible in forensic investigations?', options: ['Tamper-proof audit trails','Daily DBA approval','Simple text logs','User self-reporting']},
+   		  {q: 'Guardium’s integration with QRadar enhances security by:', options: ['Providing correlated insights across network, application, and database layers','Replacing QRadar’s rule engine','Exporting CSV files daily','Running anti-virus scans']},
+   		  {q: 'What is a key advantage of Guardium’s external S-TAP configuration?', options: ['It can monitor traffic without installing directly on the DB server','It doubles DB query performance','It removes the need for collectors','It only monitors encrypted traffic']},
+   		  {q: 'Which Guardium function supports continuous compliance reporting?', options: ['Automated report scheduling','Daily DBA sign-offs','On-demand query logging','Manual CSV exports']},
+   		  {q: 'What role does Guardium’s Policy Engine play?', options: ['Defines and enforces monitoring rules','Optimizes SQL queries','Updates operating systems','Schedules database backups']},
+   		  {q: 'Guardium can help mitigate insider threats by:', options: ['Monitoring and alerting on suspicious privileged user activity','Blocking all DBA access','Encrypting all data by default','Moving sensitive data offline']},
+   		  {q: 'In a hybrid deployment, Guardium ensures consistent monitoring by:', options: ['Applying uniform policies across on-prem and cloud databases','Using different consoles for each environment','Disabling monitoring in cloud databases','Allowing DBAs to define their own policies']}
+
       ];
 
       let questions = [];
       const moneySteps = [
-        '€100','€200','€300','€500','€1,000',
-        '€2,000','€4,000','€8,000','€16,000','€32,000',
-        '€64,000','€125,000','€250,000','€500,000','€1,000,000'
+        'Initiate','Novice Explorer','Apprentice','Journeyman','Disciple',
+        'Skilled','Guardian','Specialist','Champion','Knight',
+        'Master Artisan','Commander','Grandmaster','Legend','Ascendent'
       ];
 
       let current = 0;
@@ -353,7 +394,7 @@
         if (sel.dataset.isCorrect === 'true') {
         	  if (current === questions.length - 1) {
         	    // Last question correct
-        	    status.textContent = '🎉 Congratulations! You won €1,000,000!';
+        	    status.textContent = '🎉 Congratulations! Your skills are Ascendent!';
         	    btnLock.style.display = 'none';
         	    btnRestart.style.display = 'inline-block';
         	  } else {
