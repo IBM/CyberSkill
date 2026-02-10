@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLP Health Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .log-toggle-btn {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .log-toggle-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-up {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-down {
+            background: #ef4444;
+            color: white;
+        }
+
+        .status-degraded {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-loading {
+            background: #6b7280;
+            color: white;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .metric-value.success {
+            color: #10b981;
+        }
+
+        .metric-value.warning {
+            color: #f59e0b;
+        }
+
+        .metric-value.danger {
+            color: #ef4444;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .refresh-info {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .timestamp {
+            text-align: center;
+            color: white;
+            margin-top: 10px;
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .big-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #667eea;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .mini-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .mini-stat {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .mini-stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .mini-stat-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .error-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .error-item {
+            background: #fef2f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+
+        .error-type {
+            font-weight: 600;
+            color: #dc2626;
+        }
+
+        .error-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Log Panel Styles */
+        .log-panel {
+            position: fixed;
+            right: -600px;
+            top: 0;
+            width: 600px;
+            height: 100vh;
+            background: #1e293b;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .log-panel.open {
+            right: 0;
+        }
+
+        .log-panel-header {
+            background: #0f172a;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #334155;
+        }
+
+        .log-panel-title {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .log-panel-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .log-btn {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+
+        .log-btn:hover {
+            background: #64748b;
+        }
+
+        .log-btn.close {
+            background: #ef4444;
+        }
+
+        .log-btn.close:hover {
+            background: #dc2626;
+        }
+
+        .log-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+
+        .log-entry {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            border-left: 3px solid #64748b;
+            background: #334155;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .log-entry.INFO {
+            border-left-color: #3b82f6;
+            background: #1e3a5f;
+        }
+
+        .log-entry.WARN {
+            border-left-color: #f59e0b;
+            background: #4a3410;
+        }
+
+        .log-entry.ERROR {
+            border-left-color: #ef4444;
+            background: #4a1010;
+        }
+
+        .log-entry.DEBUG {
+            border-left-color: #8b5cf6;
+            background: #2e1a47;
+        }
+
+        .log-time {
+            color: #94a3b8;
+            margin-right: 10px;
+        }
+
+        .log-level {
+            font-weight: 600;
+            margin-right: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85em;
+        }
+
+        .log-level.INFO {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .log-level.WARN {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .log-level.ERROR {
+            background: #ef4444;
+            color: white;
+        }
+
+        .log-level.DEBUG {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .log-logger {
+            color: #64748b;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+
+        .log-message {
+            color: #e2e8f0;
+        }
+
+        .log-status {
+            padding: 10px 20px;
+            background: #0f172a;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.85em;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .connection-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .connection-status.connected {
+            background: #10b981;
+        }
+
+        .connection-status.disconnected {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Scenario Launch Platform</h1>
+            <p>Health & Metrics Dashboard</p>
+            <button class="log-toggle-btn" onclick="toggleLogPanel()">📋 View Logs</button>
+        </div>
+
+        <div class="dashboard">
+            <!-- System Health Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">System Health</div>
+                    <span id="health-status" class="status-badge status-loading">Loading...</span>
+                </div>
+                <div id="health-content">
+                    <div class="metric-row loading">
+                        <span class="metric-label">Loading health data...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HTTP Metrics Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📊 HTTP Requests</div>
+                    <span id="http-status" class="status-badge status-loading">Loading...</span>
+                </div>
+                <div id="http-content">
+                    <div class="metric-row loading">
+                        <span class="metric-label">Loading HTTP metrics...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Metrics Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">💾 Database</div>
+                    <span id="db-metrics-status" class="status-badge status-loading">Loading...</span>
+                </div>
+                <div id="db-metrics-content">
+                    <div class="metric-row loading">
+                        <span class="metric-label">Loading database metrics...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Metrics Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📖 Story Execution</div>
+                    <span id="story-status" class="status-badge status-loading">Loading...</span>
+                </div>
+                <div id="story-content">
+                    <div class="metric-row loading">
+                        <span class="metric-label">Loading story metrics...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Metrics Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">⚠️ Errors</div>
+                    <span id="error-status" class="status-badge status-loading">Loading...</span>
+                </div>
+                <div id="error-content">
+                    <div class="metric-row loading">
+                        <span class="metric-label">Loading error metrics...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Memory Usage Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">💻 Memory Usage</div>
+                    <span id="memory-status" class="status-badge status-loading">Loading...</span>
+                </div>
+                <div id="memory-content">
+                    <div class="metric-row loading">
+                        <span class="metric-label">Loading memory info...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Info Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🖥️ System Information</div>
+                    <span id="system-status" class="status-badge status-loading">Loading...</span>
+                </div>
+                <div id="system-content">
+                    <div class="metric-row loading">
+                        <span class="metric-label">Loading system info...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uptime Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">⏱️ Uptime & Performance</div>
+                    <span id="uptime-status" class="status-badge status-loading">Loading...</span>
+                </div>
+                <div id="uptime-content">
+                    <div class="metric-row loading">
+                        <span class="metric-label">Loading uptime info...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="refresh-info">
+            ⟳ Auto-refreshing every 5 seconds
+        </div>
+        <div class="timestamp" id="last-update">
+            Last updated: Never
+        </div>
+    </div>
+
+    <!-- Log Panel -->
+    <div class="log-panel" id="logPanel">
+        <div class="log-panel-header">
+            <div class="log-panel-title">📋 Application Logs</div>
+            <div class="log-panel-controls">
+                <button class="log-btn" onclick="clearLogs()">Clear</button>
+                <button class="log-btn" onclick="toggleAutoScroll()">
+                    <span id="autoscroll-text">Auto-scroll: ON</span>
+                </button>
+                <button class="log-btn close" onclick="toggleLogPanel()">✕ Close</button>
+            </div>
+        </div>
+        <div class="log-content" id="logContent">
+            <div class="log-entry">
+                <span class="log-time">--:--:--</span>
+                <span class="log-level INFO">INFO</span>
+                <span class="log-message">Connecting to log stream...</span>
+            </div>
+        </div>
+        <div class="log-status">
+            <div>
+                <span class="connection-status disconnected" id="connectionStatus"></span>
+                <span id="connectionText">Disconnected</span>
+            </div>
+            <div id="logCount">0 logs</div>
+        </div>
+    </div>
+
+    <script>
+        // Log Panel Management
+        let logPanelOpen = false;
+        let autoScroll = true;
+        let logSocket = null;
+        let logCount = 0;
+
+        function toggleLogPanel() {
+            logPanelOpen = !logPanelOpen;
+            document.getElementById('logPanel').classList.toggle('open', logPanelOpen);
+            
+            if (logPanelOpen && !logSocket) {
+                connectLogStream();
+            }
+        }
+
+        function toggleAutoScroll() {
+            autoScroll = !autoScroll;
+            document.getElementById('autoscroll-text').textContent = `Auto-scroll: ${autoScroll ? 'ON' : 'OFF'}`;
+        }
+
+        function clearLogs() {
+            document.getElementById('logContent').innerHTML = '';
+            logCount = 0;
+            updateLogCount();
+        }
+
+        function updateLogCount() {
+            document.getElementById('logCount').textContent = `${logCount} logs`;
+        }
+
+        function connectLogStream() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/logs/stream`;
+            
+            try {
+                logSocket = new WebSocket(wsUrl);
+                
+                logSocket.onopen = () => {
+                    console.log('Log stream connected');
+                    document.getElementById('connectionStatus').className = 'connection-status connected';
+                    document.getElementById('connectionText').textContent = 'Connected';
+                    
+                    // Send ping every 30 seconds to keep connection alive
+                    setInterval(() => {
+                        if (logSocket && logSocket.readyState === WebSocket.OPEN) {
+                            logSocket.send('ping');
+                        }
+                    }, 30000);
+                };
+                
+                logSocket.onmessage = (event) => {
+                    // Handle pong responses (keep-alive)
+                    if (event.data === 'pong') {
+                        return;
+                    }
+                    
+                    try {
+                        const data = JSON.parse(event.data);
+                        
+                        if (data.type === 'history') {
+                            // Load historical logs
+                            data.logs.forEach(log => addLogEntry(log));
+                        } else if (data.type === 'log') {
+                            // Add new log entry
+                            addLogEntry(data.data);
+                        }
+                    } catch (e) {
+                        console.error('Failed to parse log message:', e, 'Data:', event.data);
+                    }
+                };
+                
+                logSocket.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    document.getElementById('connectionStatus').className = 'connection-status disconnected';
+                    document.getElementById('connectionText').textContent = 'Error';
+                };
+                
+                logSocket.onclose = () => {
+                    console.log('Log stream disconnected');
+                    document.getElementById('connectionStatus').className = 'connection-status disconnected';
+                    document.getElementById('connectionText').textContent = 'Disconnected';
+                    logSocket = null;
+                    
+                    // Attempt to reconnect after 5 seconds if panel is still open
+                    if (logPanelOpen) {
+                        setTimeout(() => {
+                            if (logPanelOpen && !logSocket) {
+                                connectLogStream();
+                            }
+                        }, 5000);
+                    }
+                };
+            } catch (e) {
+                console.error('Failed to connect to log stream:', e);
+            }
+        }
+
+        function addLogEntry(log) {
+            const logContent = document.getElementById('logContent');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${log.level}`;
+            
+            const loggerShort = log.logger.split('.').pop();
+            
+            logEntry.innerHTML = `
+                <span class="log-time">${log.time}</span>
+                <span class="log-level ${log.level}">${log.level}</span>
+                <span class="log-logger">${loggerShort}</span>
+                <span class="log-message">${escapeHtml(log.message)}</span>
+                ${log.exception ? `<br><span class="log-message" style="color: #fca5a5;">↳ ${log.exception}: ${escapeHtml(log.exceptionMessage || '')}</span>` : ''}
+            `;
+            
+            logContent.appendChild(logEntry);
+            logCount++;
+            updateLogCount();
+            
+            // Keep only last 500 logs
+            while (logContent.children.length > 500) {
+                logContent.removeChild(logContent.firstChild);
+            }
+            
+            // Auto-scroll to bottom
+            if (autoScroll) {
+                logContent.scrollTop = logContent.scrollHeight;
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Utility functions
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function formatUptime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
+            if (hours > 0) return `${hours}h ${minutes % 60}m`;
+            if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+            return `${seconds}s`;
+        }
+
+        function formatNumber(num) {
+            return num.toLocaleString();
+        }
+
+        function getProgressClass(percent) {
+            if (percent > 80) return 'danger';
+            if (percent > 60) return 'warning';
+            return '';
+        }
+
+        function getStatusClass(rate) {
+            if (rate >= 95) return 'success';
+            if (rate >= 80) return 'warning';
+            return 'danger';
+        }
+
+        // Fetch health data
+        async function fetchHealth() {
+            try {
+                const response = await fetch('/health/detailed');
+                const data = await response.json();
+                updateHealthUI(data);
+            } catch (error) {
+                showError('health-content', 'Failed to fetch health data');
+                document.getElementById('health-status').className = 'status-badge status-down';
+                document.getElementById('health-status').textContent = 'Error';
+            }
+        }
+
+        // Fetch all metrics data
+        async function fetchAllMetrics() {
+            try {
+                const response = await fetch('/api/metrics/all');
+                const data = await response.json();
+                updateAllMetricsUI(data);
+            } catch (error) {
+                console.error('Failed to fetch metrics:', error);
+                showError('http-content', 'Metrics endpoint not available');
+                showError('db-metrics-content', 'Metrics endpoint not available');
+                showError('story-content', 'Metrics endpoint not available');
+                showError('error-content', 'Metrics endpoint not available');
+            }
+        }
+
+        // Fetch legacy metrics data
+        async function fetchMetrics() {
+            try {
+                const response = await fetch('/metrics');
+                const data = await response.json();
+                updateMetricsUI(data);
+            } catch (error) {
+                // Silently fail - not critical
+            }
+        }
+
+        // Update Health UI
+        function updateHealthUI(data) {
+            // System Health
+            const healthStatus = document.getElementById('health-status');
+            healthStatus.className = `status-badge status-${data.status.toLowerCase()}`;
+            healthStatus.textContent = data.status;
+
+            const healthContent = document.getElementById('health-content');
+            healthContent.innerHTML = `
+                <div class="metric-row">
+                    <span class="metric-label">Application</span>
+                    <span class="metric-value">${data.application}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Status</span>
+                    <span class="metric-value">${data.status}</span>
+                </div>
+            `;
+
+            // Memory Info
+            if (data.memory) {
+                const memUsed = data.memory.used;
+                const memMax = data.memory.max;
+                const memPercent = data.memory.usagePercent.toFixed(1);
+
+                const memoryContent = document.getElementById('memory-content');
+                memoryContent.innerHTML = `
+                    <div class="metric-row">
+                        <span class="metric-label">Used</span>
+                        <span class="metric-value">${formatBytes(memUsed)}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Max</span>
+                        <span class="metric-value">${formatBytes(memMax)}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Free</span>
+                        <span class="metric-value">${formatBytes(data.memory.free)}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${getProgressClass(memPercent)}" style="width: ${memPercent}%">
+                            ${memPercent}%
+                        </div>
+                    </div>
+                `;
+
+                const memStatus = document.getElementById('memory-status');
+                memStatus.className = `status-badge ${memPercent > 80 ? 'status-down' : memPercent > 60 ? 'status-degraded' : 'status-up'}`;
+                memStatus.textContent = `${memPercent}%`;
+            }
+
+            // System Info
+            if (data.system) {
+                const systemContent = document.getElementById('system-content');
+                systemContent.innerHTML = `
+                    <div class="metric-row">
+                        <span class="metric-label">OS</span>
+                        <span class="metric-value">${data.system.osName}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Version</span>
+                        <span class="metric-value">${data.system.osVersion}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Java</span>
+                        <span class="metric-value">${data.system.javaVersion}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Processors</span>
+                        <span class="metric-value">${data.system.processors}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Uptime</span>
+                        <span class="metric-value">${formatUptime(data.system.uptime)}</span>
+                    </div>
+                `;
+
+                document.getElementById('system-status').className = 'status-badge status-up';
+                document.getElementById('system-status').textContent = 'Active';
+            }
+        }
+
+        // Update All Metrics UI
+        function updateAllMetricsUI(data) {
+            // HTTP Metrics
+            if (data.http) {
+                const http = data.http;
+                const successRate = http.successRate || 0;
+                
+                const httpContent = document.getElementById('http-content');
+                httpContent.innerHTML = `
+                    <div class="big-number">${formatNumber(http.totalRequests)}</div>
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <div class="mini-stat-value success">${formatNumber(http.successfulRequests)}</div>
+                            <div class="mini-stat-label">Success</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value danger">${formatNumber(http.failedRequests)}</div>
+                            <div class="mini-stat-label">Failed</div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Success Rate</span>
+                        <span class="metric-value ${getStatusClass(successRate)}">${successRate.toFixed(1)}%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Avg Response Time</span>
+                        <span class="metric-value">${http.averageResponseTimeMs.toFixed(0)}ms</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Active Requests</span>
+                        <span class="metric-value">${http.activeRequests}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Requests/sec</span>
+                        <span class="metric-value">${http.requestsPerSecond.toFixed(2)}</span>
+                    </div>
+                `;
+
+                const httpStatus = document.getElementById('http-status');
+                httpStatus.className = `status-badge ${successRate >= 95 ? 'status-up' : successRate >= 80 ? 'status-degraded' : 'status-down'}`;
+                httpStatus.textContent = `${successRate.toFixed(0)}%`;
+            }
+
+            // Database Metrics
+            if (data.database) {
+                const db = data.database;
+                const successRate = db.successRate || 0;
+                
+                const dbContent = document.getElementById('db-metrics-content');
+                dbContent.innerHTML = `
+                    <div class="big-number">${formatNumber(db.totalQueries)}</div>
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <div class="mini-stat-value success">${formatNumber(db.successfulQueries)}</div>
+                            <div class="mini-stat-label">Success</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value danger">${formatNumber(db.failedQueries)}</div>
+                            <div class="mini-stat-label">Failed</div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Success Rate</span>
+                        <span class="metric-value ${getStatusClass(successRate)}">${successRate.toFixed(1)}%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Avg Query Time</span>
+                        <span class="metric-value">${db.averageQueryTimeMs.toFixed(0)}ms</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Active Connections</span>
+                        <span class="metric-value">${db.activeConnections}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Slow Queries</span>
+                        <span class="metric-value ${db.slowQueries > 0 ? 'warning' : ''}">${db.slowQueries}</span>
+                    </div>
+                `;
+
+                const dbStatus = document.getElementById('db-metrics-status');
+                dbStatus.className = `status-badge ${successRate >= 95 ? 'status-up' : successRate >= 80 ? 'status-degraded' : 'status-down'}`;
+                dbStatus.textContent = `${successRate.toFixed(0)}%`;
+            }
+
+            // Story Metrics
+            if (data.stories) {
+                const stories = data.stories;
+                const successRate = stories.successRate || 0;
+                
+                const storyContent = document.getElementById('story-content');
+                storyContent.innerHTML = `
+                    <div class="big-number">${formatNumber(stories.totalStories)}</div>
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <div class="mini-stat-value success">${formatNumber(stories.successfulStories)}</div>
+                            <div class="mini-stat-label">Success</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value danger">${formatNumber(stories.failedStories)}</div>
+                            <div class="mini-stat-label">Failed</div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Success Rate</span>
+                        <span class="metric-value ${getStatusClass(successRate)}">${successRate.toFixed(1)}%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Avg Execution Time</span>
+                        <span class="metric-value">${stories.averageExecutionTimeMs.toFixed(0)}ms</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Active Stories</span>
+                        <span class="metric-value">${stories.activeStories}</span>
+                    </div>
+                `;
+
+                const storyStatus = document.getElementById('story-status');
+                storyStatus.className = `status-badge ${successRate >= 95 ? 'status-up' : successRate >= 80 ? 'status-degraded' : 'status-down'}`;
+                storyStatus.textContent = `${successRate.toFixed(0)}%`;
+            }
+
+            // Error Metrics
+            if (data.errors) {
+                const errors = data.errors;
+                
+                let errorListHtml = '';
+                if (errors.recentErrors && errors.recentErrors.length > 0) {
+                    errorListHtml = '<div class="error-list">';
+                    errors.recentErrors.slice(0, 5).forEach(err => {
+                        const time = new Date(err.timestamp).toLocaleTimeString();
+                        errorListHtml += `
+                            <div class="error-item">
+                                <div class="error-type">${err.type}</div>
+                                <div class="error-time">${time}</div>
+                                <div>${err.message.substring(0, 100)}${err.message.length > 100 ? '...' : ''}</div>
+                            </div>
+                        `;
+                    });
+                    errorListHtml += '</div>';
+                }
+                
+                const errorContent = document.getElementById('error-content');
+                errorContent.innerHTML = `
+                    <div class="big-number ${errors.totalErrors > 0 ? 'danger' : 'success'}">${formatNumber(errors.totalErrors)}</div>
+                    <div class="metric-row">
+                        <span class="metric-label">Total Errors</span>
+                        <span class="metric-value ${errors.totalErrors > 0 ? 'danger' : 'success'}">${formatNumber(errors.totalErrors)}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Error Types</span>
+                        <span class="metric-value">${Object.keys(errors.errorsByType || {}).length}</span>
+                    </div>
+                    ${errorListHtml}
+                `;
+
+                const errorStatus = document.getElementById('error-status');
+                if (errors.totalErrors === 0) {
+                    errorStatus.className = 'status-badge status-up';
+                    errorStatus.textContent = 'None';
+                } else if (errors.totalErrors < 10) {
+                    errorStatus.className = 'status-badge status-degraded';
+                    errorStatus.textContent = `${errors.totalErrors}`;
+                } else {
+                    errorStatus.className = 'status-badge status-down';
+                    errorStatus.textContent = `${errors.totalErrors}`;
+                }
+            }
+        }
+
+        // Update Legacy Metrics UI
+        function updateMetricsUI(data) {
+            if (data.system) {
+                const uptimeContent = document.getElementById('uptime-content');
+                uptimeContent.innerHTML = `
+                    <div class="metric-row">
+                        <span class="metric-label">Uptime</span>
+                        <span class="metric-value">${formatUptime(data.system.uptime)}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Processors</span>
+                        <span class="metric-value">${data.system.processors}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Active Threads</span>
+                        <span class="metric-value">${data.system.threads}</span>
+                    </div>
+                `;
+
+                document.getElementById('uptime-status').className = 'status-badge status-up';
+                document.getElementById('uptime-status').textContent = 'Running';
+            }
+        }
+
+        function showError(elementId, message) {
+            document.getElementById(elementId).innerHTML = `
+                <div class="error-message">${message}</div>
+            `;
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('last-update').textContent = 
+                `Last updated: ${now.toLocaleTimeString()}`;
+        }
+
+        // Initial load
+        async function loadAll() {
+            await Promise.all([fetchHealth(), fetchAllMetrics(), fetchMetrics()]);
+            updateTimestamp();
+        }
+
+        // Load data immediately
+        loadAll();
+
+        // Refresh every 5 seconds
+        setInterval(loadAll, 5000);
+    </script>
+</body>
+</html>

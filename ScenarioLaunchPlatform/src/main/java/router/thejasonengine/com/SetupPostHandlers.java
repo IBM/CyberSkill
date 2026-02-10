@@ -8,6 +8,8 @@
 
 package router.thejasonengine.com;
 
+import metrics.thejasonengine.com.MetricsCollector;
+
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -3090,9 +3092,9 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
 			                            	LOGGER.info("closed method: " + method + " to connection pool");        
 					                        
 			                            	response.send(ja.encodePrettily());
-					                        /* Create the database connection pool for all the test databases */
-					                        DatabasePoolManager DPM = new DatabasePoolManager(context);
-					                      } 
+			                            	/* Create the database connection pool for all the test databases */
+			                            	DatabasePoolManager DPM = new DatabasePoolManager(context);
+			                           }
 					                      else 
 					                      {
 					                    	  // Handle query failure
@@ -3246,7 +3248,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
 					                          response.send(ja.encodePrettily());
 					                          /* Create the database connection pool for all the test databases */
 					                          DatabasePoolManager DPM = new DatabasePoolManager(context);
-					                        } 
+					                        }
 					                        else 
 					                        {
 					                                // Handle query failure
@@ -3399,9 +3401,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
 					                        response.send(ja.encodePrettily());
 					                                
 					                        /* Create the database connection pool for all the test databases */
-					                                
 					                        DatabasePoolManager DPM = new DatabasePoolManager(context);
-					                       } 
+					                       }
 					                       else 
 					                       {
 					                    	   // Handle query failure
@@ -4371,8 +4372,14 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                         LOGGER.debug("User allowed to execute the API");
                         response.putHeader("content-type", "application/json");
                         Ram ram = new Ram();
+                        
+                        // Declare metrics tracking variables at method scope for accessibility in callbacks
+                        final MetricsCollector metrics = MetricsCollector.getInstance();
+                        final long[] storyStartTime = new long[1]; // Use array to make it effectively final
+                        final boolean[] storyStarted = new boolean[1]; // Track if story execution started
+                        storyStarted[0] = false;
                        
-                        try 
+                        try
                         {
                             Pool pool = ram.getPostGresSystemPool();
                             HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
@@ -4423,10 +4430,34 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                                                     LOGGER.debug("RANDOM QUERY LOOP IS : " + queryLoop);
                                                 }
                                                 LOGGER.debug("QUERY LOOP IS : " + queryLoop);
+                                                
+                                                // Start metrics tracking for story execution
+                                                storyStartTime[0] = System.currentTimeMillis();
+                                                metrics.incrementActiveStories();
+                                                storyStarted[0] = true;
+                                                
                                                 StringTokenizer tokenizer = new StringTokenizer(sqlParameter, "\r\n");
                                                 DatabasePoolPOJO databasePoolPojo = new DatabasePoolPOJO();
                                                     
-                                                databasePoolPojo =  dataSourceMap.get(datasource);
+                                                databasePoolPojo = dataSourceMap.get(datasource);
+                                                
+                                                // Add null check to prevent NullPointerException
+                                                if (databasePoolPojo == null) {
+                                                    LOGGER.error("Datasource '" + datasource + "' not found in dataSourceMap. Available datasources: " + dataSourceMap.keySet());
+                                                    metrics.decrementActiveStories();
+                                                    long storyDuration = System.currentTimeMillis() - storyStartTime[0];
+                                                    metrics.recordStory(false, storyDuration);
+                                                    metrics.recordError("NullPointerException", "Datasource not found: " + datasource, "Datasource '" + datasource + "' does not exist in the connection pool");
+                                                    
+                                                    JsonObject errorResponse = new JsonObject();
+                                                    errorResponse.put("error", "Datasource not found");
+                                                    errorResponse.put("datasource", datasource);
+                                                    errorResponse.put("available_datasources", new JsonArray(dataSourceMap.keySet().stream().collect(java.util.stream.Collectors.toList())));
+                                                    response.setStatusCode(400).end(errorResponse.encodePrettily());
+                                                    systemConnection.close();
+                                                    return;
+                                                }
+                                                
                                                 BasicDataSource BDS = databasePoolPojo.getBDS();
                                                     
                                                 JSONObject joLoop;
@@ -4551,12 +4582,14 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                                 			                		catch(Exception e)
                                 			                		{
                                 			                			LOGGER.error("Unable to get connection: " + e.toString());
+                                			                			metrics.recordError("ConnectionError", "Unable to get database connection", e.toString());
                                 			                		}
                                 			                	}
                                 			                }
                                 			                catch(Exception error)
                                 			                {
-                                			                	LOGGER.error("");
+                                			                	LOGGER.error("Error running SELECT: " + error.toString());
+                                			                	metrics.recordError("SelectExecutionError", "Error running SELECT query", error.toString());
                                 			                	JsonObject jo = new JsonObject("{\"response\":\"error running SELECT: " + error +"\"}");
                                 			                	JsonResponse.add(jo);
                                 			                }
@@ -4615,15 +4648,17 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                                 			                		}
                                 			                		catch(Exception e)
                                 			                		{
-                                			                			LOGGER.error("Unable to get connection: " + e.toString());
+                                			                			LOGGER.error("Unable to get connection for update: " + e.toString());
+                                			                			metrics.recordError("ConnectionError", "Unable to get database connection for update", e.toString());
                                 			                		}
                                 			                	}
                                 			                }
                                 							catch(Exception error)
-                                			                {
-                                								LOGGER.error("");
-                                			                	JsonObject jo = new JsonObject("{\"response\":\"error running OTHER: " + error +"\"}");
-                                			                	JsonResponse.add(jo);
+                                							            {
+                                								LOGGER.error("Error running UPDATE/INSERT/DELETE: " + error.toString());
+                                								metrics.recordError("UpdateExecutionError", "Error running UPDATE/INSERT/DELETE query", error.toString());
+                                							            	JsonObject jo = new JsonObject("{\"response\":\"error running OTHER: " + error +"\"}");
+                                							            	JsonResponse.add(jo);
                                 			                }
                                 						}
                                 			        }
@@ -4634,12 +4669,28 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                                                     JsonResponse = new JsonArray();
                                                 }
                                                 response.send(LoopRun.encodePrettily());
+                                                
+                                                // Record successful story execution
+                                                if (storyStarted[0]) {
+                                                    long storyDuration = System.currentTimeMillis() - storyStartTime[0];
+                                                    metrics.recordStory(true, storyDuration);
+                                                    metrics.decrementActiveStories();
+                                                    LOGGER.debug("Story execution completed successfully in " + storyDuration + "ms");
+                                                }
                                             }
                                             LOGGER.debug("Query run successfully");
-                                        } 
-                                        else 
+                                        }
+                                        else
                                         {
                                         	LOGGER.error("Query failed: " + res.cause());
+                                        	
+                                        	// Record failed story execution
+                                        	if (storyStarted[0]) {
+                                        	    long storyDuration = System.currentTimeMillis() - storyStartTime[0];
+                                        	    metrics.recordStory(false, storyDuration);
+                                        	    metrics.decrementActiveStories();
+                                        	    metrics.recordError("QueryExecutionError", "Query failed", res.cause().toString());
+                                        	}
                                         }
                                     });
                                     
@@ -4652,9 +4703,18 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                                 }
                             });
                         } 
-                        catch (Exception e) 
+                        catch (Exception e)
                         {
                             LOGGER.error("Unable to load data sources: " + e.toString());
+                            
+                            // Record error in metrics and clean up if story was started
+                            if (storyStarted[0]) {
+                                long storyDuration = System.currentTimeMillis() - storyStartTime[0];
+                                metrics.recordStory(false, storyDuration);
+                                metrics.decrementActiveStories();
+                            }
+                            metrics.recordError("DataSourceInitError", "Failed to initialize data sources", e.toString());
+                            
                             JsonObject jo = new JsonObject();
                             jo.put("Error", "Failed to initialize data sources");
                             response.send(jo.encodePrettily());

@@ -16,6 +16,8 @@
   
   <a href="/loggedIn/storyRunner.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Story Runner"><i class="fa fa-book"></i></a>
    <a href="/loggedIn/storyCreator.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Story Creator"><i class="fa fa-wrench"></i></a>
+   <a href="/loggedIn/attackLibrary.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Attack Pattern Library"><i class="fa fa-bug"></i></a>
+   <a href="/loggedIn/outliers.ftl" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Outliers - Scheduled Scripts"><i class="fa fa-clock-o"></i></a>
   <span id="plugins">[No Active Plugins]</span>
   
  

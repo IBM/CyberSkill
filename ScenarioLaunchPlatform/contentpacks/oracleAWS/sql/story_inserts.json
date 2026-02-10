@@ -1,0 +1,59 @@
+{
+    "stories": [
+        {
+            "id": 951,
+            "story": {
+                "name": "AWS RDS Oracle story",
+                "description": "This story involves different type of commands run by the same user to generate traffic into the AWS RDS database",
+                "author": "SLP Team",
+                "outcomes": "Understand how Guardium detects traffic to Oracle",
+                "handbook": "A URL that describes the story in moire details",
+                "video": "",
+                "story": [
+                    {
+                        "query_id": 951,
+                        "pause_in_seconds": 5000,
+                        "datasource": "oracle_rdsora01.c3fr7a8bswup.us-east-1.rds.amazonaws.com_ORASALES_betauser1",
+                        "chapter": "Simple Select from HR.EMPLOYEES"
+                    },
+                    {
+                        "query_id": 952,
+                        "pause_in_seconds": 6000,
+                        "datasource": "oracle_rdsora01.c3fr7a8bswup.us-east-1.rds.amazonaws.com_ORASALES_betauser1",
+                        "chapter": "Insert into Table HR.EMPLOYEES"
+                    },
+                    {
+                        "query_id": 953,
+                        "pause_in_seconds": 3000,
+                        "datasource": "oracle_rdsora01.c3fr7a8bswup.us-east-1.rds.amazonaws.com_ORASALES_betauser1",
+                        "chapter": "Update Salary x 5"
+                    },
+                    {
+                        "query_id": 954,
+                        "pause_in_seconds": 2000,
+                        "datasource": "oracle_rdsora01.c3fr7a8bswup.us-east-1.rds.amazonaws.com_ORASALES_betauser1",
+                        "chapter": "Delete a user from HR.EMPLOYEES"
+                    },
+                    {
+                        "query_id": 955,
+                        "pause_in_seconds": 6000,
+                        "datasource": "oracle_rdsora01.c3fr7a8bswup.us-east-1.rds.amazonaws.com_ORASALES_betauser1",
+                        "chapter": "Create a clone of the HR.EMPLOYEE table"
+                    },
+                    {
+                        "query_id": 956,
+                        "pause_in_seconds": 3000,
+                        "datasource": "oracle_rdsora01.c3fr7a8bswup.us-east-1.rds.amazonaws.com_ORASALES_betauser1",
+                        "chapter": "Select from EMPLOYEES_COPY table"
+                    },
+                    {
+                        "query_id": 957,
+                        "pause_in_seconds": 2000,
+                        "datasource": "oracle_rdsora01.c3fr7a8bswup.us-east-1.rds.amazonaws.com_ORASALES_betauser1",
+                        "chapter": "Drop table EMPLOYEES_COPY"
+                    }
+                ]
+            }
+        }	
+    ]
+}

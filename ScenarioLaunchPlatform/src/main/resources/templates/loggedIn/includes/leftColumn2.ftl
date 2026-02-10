@@ -27,9 +27,11 @@
           </div>
           <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-bolt fa-fw w3-margin-right"></i> API Access</button>
           <div id="Demo2" class="w3-hide w3-container">
-           <a href="/swagger-ui/index.html" target="_blank"><i class="fa fa-link" aria-hidden="true"></i>Swagger</a>  
-          </div>
-          <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-book fa-fw w3-margin-right"></i> Documentation</button>
+           <a href="/swagger-ui/index.html" target="_blank"><i class="fa fa-link" aria-hidden="true"></i>Swagger</a>
+         </div>
+         <button onclick="window.location.href='/loggedIn/attackLibrary.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-shield fa-fw w3-margin-right"></i> Attack Library</button>
+         <button onclick="window.location.href='/loggedIn/outliers.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-clock-o fa-fw w3-margin-right"></i> Outliers</button>
+         <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-book fa-fw w3-margin-right"></i> Documentation</button>
           <div id="Demo3" class="w3-hide w3-container">
            <a href="/loggedIn/documents/SLPHandbook.pdf" target="_blank"><i class="fa fa-link" aria-hidden="true"></i>SLP handbook</a>
          <div class="w3-row-padding">

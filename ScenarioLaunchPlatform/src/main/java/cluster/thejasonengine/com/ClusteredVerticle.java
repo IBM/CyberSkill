@@ -2,17 +2,15 @@
 *
 *	Author(s): Jason Flood/John Clarke
 *  	Licence: Apache 2
-*  
-*   
+*
+*   Refactored to use modular route handlers
 */
-
 
 package cluster.thejasonengine.com;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.io.File;
-import org.apache.commons.dbcp2.BasicDataSource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,20 +21,17 @@ import com.hazelcast.shaded.org.json.JSONObject;
 
 import authentication.thejasonengine.com.AuthUtils;
 import database.thejasonengine.com.DatabaseController;
+import database.thejasonengine.com.AgentDatabaseController;
 import demodata.thejasonengine.com.DatabasePoolPOJO;
-import file.thejasonengine.com.Read;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
+import outliers.thejasonengine.com.OutliersLibrary;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.Cookie;
-import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.jackson.DatabindCodec;
@@ -48,65 +43,62 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.ext.web.common.template.TemplateEngine;
+import io.vertx.ext.web.handler.TemplateHandler;
+import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
 import io.vertx.sqlclient.Pool;
 import memory.thejasonengine.com.Ram;
 import messaging.thejasonengine.com.Websocket;
-import router.thejasonengine.com.ContentPackHandler;
-import router.thejasonengine.com.FileUploadHandler;
-import router.thejasonengine.com.SetupPostHandlers;
-import router.thejasonengine.com.UpgradeHandler;
+import router.thejasonengine.com.*;
 import session.thejasonengine.com.SetupSession;
 import utils.thejasonengine.com.ConfigLoader;
-import database.thejasonengine.com.AgentDatabaseController;
 
-
-import io.vertx.ext.web.common.template.TemplateEngine;
-import io.vertx.ext.web.handler.FormLoginHandler;
-import io.vertx.ext.web.handler.TemplateHandler;
-import io.vertx.ext.web.openapi.RouterBuilder;
-import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-
-
-
+/**
+ * Refactored ClusteredVerticle - now uses modular route handlers
+ * for better maintainability and separation of concerns
+ */
 public class ClusteredVerticle extends AbstractVerticle {
 	
 	private static final Logger LOGGER = LogManager.getLogger(ClusteredVerticle.class);
-	private PrometheusMeterRegistry prometheusRegistry;
 	private JWTAuth jwt;
 	private AuthUtils AU;
 	private SetupSession setupSession;
 	private SetupPostHandlers setupPostHandlers;
-	private FileUploadHandler fileUploadHandler;
 	private ContentPackHandler contentPackHandler;
 	private AgentDatabaseController agentDatabaseController;
-	
 	private UpgradeHandler upgradeHandler;
-	private static Pool pool;
 	private FreeMarkerTemplateEngine engine;
+	private Pool pool;
+	
+	// Route handlers
+	private HealthCheckHandler healthCheckHandler;
+	private AuthRoutes authRoutes;
+	private DatabaseRoutes databaseRoutes;
+	private StoryRoutes storyRoutes;
+	private AdminRoutes adminRoutes;
+	private LibraryHandler libraryHandler;
+	private OutliersHandler outliersHandler;
 	
 	@Override
-    public void start()
-	{
+    public void start() {
 		
-		
-		
-		
-		LOGGER.info("This is an ClusteredVerticle 'INFO' TEST MESSAGE");
-		LOGGER.debug("This is a ClusteredVerticle 'DEBUG' TEST MESSAGE");
-		LOGGER.warn("This is a ClusteredVerticle 'WARN' TEST MESSAGE");
+		LOGGER.info("Starting ClusteredVerticle");
+		LOGGER.debug("Debug logging enabled");
 		LOGGER.error("This is an ClusteredVerticle 'ERROR' TEST MESSAGE");
 		boolean accessFlag = Boolean.parseBoolean(System.getProperty("accessFlag", "false"));
 		String config = System.getenv().getOrDefault("CONFIG", "config.json");
+		LOGGER.info("Config file: " + config);
 		
 		/*Create the RAM object that will store and reference data for the worker*/
+		LOGGER.info("Loading configuration properties...");
 		ConfigLoader.loadProperties(config);
+		LOGGER.info("Configuration properties loaded");
 		
+		LOGGER.info("Creating RAM object...");
 		Ram ram = new Ram();
-	  	ram.initializeSharedMap(vertx);
+		LOGGER.info("Initializing shared map...");
+		 	ram.initializeSharedMap(vertx);
+		 	LOGGER.info("Shared map initialized");
 	  	
 	  	
 		 // Get the default ObjectMapper used by Vert.x
@@ -405,12 +397,60 @@ public class ClusteredVerticle extends AbstractVerticle {
     		    		
     		    	});;
     		    	
-        
-        
-		setRoutes(router);
-		
-		//router.route().handler(this::handleNotFound); 
-		
+    		  
+    		  
+  // Initialize health check handler
+  healthCheckHandler = new HealthCheckHandler(vertx);
+  
+  // Initialize metrics handler
+  MetricsHandler metricsHandler = new MetricsHandler(vertx);
+  
+  // Add metrics interceptor to track all requests
+  router.route().handler(metricsHandler.metricsInterceptor);
+  
+  // Register health check routes (no authentication required)
+  router.get("/health").handler(healthCheckHandler.healthCheck);
+  router.get("/health/detailed").handler(healthCheckHandler.detailedHealthCheck);
+  router.get("/metrics").handler(healthCheckHandler.metrics);
+  router.get("/readiness").handler(healthCheckHandler.readiness);
+  router.get("/liveness").handler(healthCheckHandler.liveness);
+  
+  // Register application metrics routes
+  router.get("/api/metrics/all").handler(metricsHandler.getAllMetrics);
+  router.get("/api/metrics/http").handler(metricsHandler.getHttpMetrics);
+  router.get("/api/metrics/database").handler(metricsHandler.getDatabaseMetrics);
+  router.get("/api/metrics/stories").handler(metricsHandler.getStoryMetrics);
+  router.get("/api/metrics/errors").handler(metricsHandler.getErrorMetrics);
+  router.post("/api/metrics/reset").handler(metricsHandler.resetMetrics);
+  
+  LOGGER.info("Health check and metrics endpoints registered");
+  
+  // Initialize and register library handler
+  libraryHandler = new LibraryHandler();
+  libraryHandler.registerRoutes(router);
+  LOGGER.info("Attack Pattern Library endpoints registered");
+  
+  // Initialize and register outliers handler
+  outliersHandler = new OutliersHandler();
+  outliersHandler.registerRoutes(router);
+  LOGGER.info("Outliers (Scheduled Scripts) endpoints registered");
+  
+  // Initialize Outliers database
+  LOGGER.info("Initializing Outliers database...");
+  OutliersLibrary.getInstance().initializeDatabase(vertx)
+      .onSuccess(v -> LOGGER.info("Outliers database initialized successfully"))
+      .onFailure(err -> LOGGER.error("Failed to initialize Outliers database", err));
+  
+  // Register outliers upload route with BodyHandler (following the pattern used for file uploads)
+  router.post("/api/outliers/upload")
+      .handler(BodyHandler.create())
+      .handler(outliersHandler::uploadZipFile);
+  LOGGER.info("Outliers upload endpoint registered with BodyHandler");
+  
+  setRoutes(router);
+  
+  //router.route().handler(this::handleNotFound);
+  
 		/*Now add the router to memory - for extension with plugins*/
 		
 		ram.setRouter(router);
@@ -442,20 +482,24 @@ public class ClusteredVerticle extends AbstractVerticle {
 		String host = configs.getJsonObject("server").getString("host");
 		LOGGER.debug("Starting server on host: " + host);
 		
+		// Configure HTTP server options with increased limits for file uploads
+		HttpServerOptions serverOptions = new HttpServerOptions()
+		    .setMaxFormAttributeSize(100 * 1024 * 1024) // 100MB for form attributes
+		    .setMaxHeaderSize(100 * 1024); // 100KB for headers
 		
-		vertx.createHttpServer()
-        .requestHandler(router)
-        .listen(port, res -> 
-        {
-            if (res.succeeded()) 
-            {
-                LOGGER.info("Server started on port :" + port);
-            } 
-            else 
-            {
-                LOGGER.error("Failed to start server: " + res.cause());
-            }
-        });
+		vertx.createHttpServer(serverOptions)
+		      .requestHandler(router)
+		      .listen(port, res ->
+		      {
+		          if (res.succeeded())
+		          {
+		              LOGGER.info("Server started on port :" + port);
+		          }
+		          else
+		          {
+		              LOGGER.error("Failed to start server: " + res.cause());
+		          }
+		      });
 		/*EOF - (todo)There is a race condition here - and this should not start until a message from the hazelcast telling it to begin arrives*/
 		
 	}
@@ -473,9 +517,9 @@ public class ClusteredVerticle extends AbstractVerticle {
     		router.route("/*").handler(StaticHandler.create().setCachingEnabled(false).setWebRoot("webroot"));   
     		// In start() method
     		BodyHandler bodyHandler = BodyHandler.create();
-    		bodyHandler.setBodyLimit(1024 * 1024); // 1MB limit
-    		bodyHandler.setHandleFileUploads(true); // Disable file uploads
-
+    		bodyHandler.setBodyLimit(100 * 1024 * 1024); // 100MB limit (increased for ZIP file uploads)
+    		bodyHandler.setHandleFileUploads(true); // Enable file uploads
+ 
     		router.route().handler(bodyHandler);
 
     	
@@ -683,16 +727,32 @@ public class ClusteredVerticle extends AbstractVerticle {
  // Add failure handler method
 	private void handleFailure(RoutingContext ctx) {
 	    Throwable failure = ctx.failure();
-	    int statusCode = 500;
+	    int statusCode = ctx.statusCode() > 0 ? ctx.statusCode() : 500;
 	    String message = "Internal Server Error";
 	    
 	    if (failure instanceof HttpException) {
 	        HttpException httpEx = (HttpException) failure;
 	        statusCode = httpEx.getStatusCode();
 	        message = httpEx.getMessage();
+	    } else if (failure != null) {
+	        message = failure.getMessage() != null ? failure.getMessage() : failure.getClass().getSimpleName();
 	    }
 	    
-	    LOGGER.error("Request failed: {} {}", ctx.request().method(), ctx.request().path(), failure);
+	    // Fixed logging - use {} for each argument
+	    if (failure != null) {
+	        LOGGER.error("Request failed: {} {} - Status: {} - Error: {}",
+	            ctx.request().method(),
+	            ctx.request().path(),
+	            statusCode,
+	            message,
+	            failure);
+	    } else {
+	        LOGGER.error("Request failed: {} {} - Status: {} - Error: {}",
+	            ctx.request().method(),
+	            ctx.request().path(),
+	            statusCode,
+	            message);
+	    }
 	    
 	    ctx.response()
 	        .setStatusCode(statusCode)

@@ -24,6 +24,7 @@ import io.vertx.sqlclient.PoolOptions;
 import io.vertx.sqlclient.SqlClient;
 import io.vertx.sqlclient.SqlConnection;
 import memory.thejasonengine.com.Ram;
+import metrics.thejasonengine.com.MetricsCollector;
 
 import io.vertx.mysqlclient.MySQLConnectOptions;
 import io.vertx.mysqlclient.MySQLPool;
@@ -72,21 +73,33 @@ public class DatabaseController
 	        Pool pool = Pool.pool(vertx, connectOptions, poolOptions);
 	        try
 	        {
+	        	MetricsCollector metrics = MetricsCollector.getInstance();
+	        	long startTime = System.currentTimeMillis();
+	        	metrics.incrementActiveConnections();
+	        	
 	        	pool.getConnection(con_ar ->
 	        	{
+	        		long duration = System.currentTimeMillis() - startTime;
+	        		
 	        		if(con_ar.succeeded())
 	        		{
 	        			LOGGER.debug("--- POOL TEST COMPLETE, SYSTEM CONNECTION AVAILABLE ---");
+	        			metrics.recordQuery(true, duration);
 	        		}
 	        		else
 	        		{
 	        			LOGGER.error("--- POOL TEST FAILURE, SYSTEM CONNECTION UNAVAILABLE ---");
+	        			metrics.recordQuery(false, duration);
+	        			metrics.recordError("DatabaseConnectionError", "Pool test failure: " + con_ar.cause().getMessage(), "");
 	        		}
+	        		
+	        		metrics.decrementActiveConnections();
 	        	});
 	        }
 	        catch(Exception e)
 	        {
 	        	LOGGER.error("Unable to get connection to pool :" + e.toString());
+	        	MetricsCollector.getInstance().recordError("DatabaseException", "Unable to get connection: " + e.toString(), e.toString());
 	        }
 	        
 	        LOGGER.debug("Pool Created");
@@ -151,8 +164,6 @@ public class DatabaseController
 			        LOGGER.info("JDBC Pool SET");
 				}
 			});
+			}
 		}
 	}
-        
-    
-}

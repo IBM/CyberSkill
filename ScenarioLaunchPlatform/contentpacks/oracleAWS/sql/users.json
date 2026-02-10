@@ -1,0 +1,19 @@
+{
+    "users": [
+        {
+            "id": 951,
+            "status": "inactive",
+            "db_type": "oracle",
+            "db_version": "8.0.2",
+            "db_username": "betauser1",
+            "db_password": "Data&AI-2025!",
+            "db_port": "31521",
+            "db_database": "ORASALES",
+            "db_url": "rdsora01.c3fr7a8bswup.us-east-1.rds.amazonaws.com",
+            "db_jdbcClassName": "oracle.jdbc.driver.OracleDriver",
+            "db_userIcon": "usericon",
+            "db_databaseIcon": "databaseicon",
+            "db_alias": "DB Admin",
+            "db_access": "All Privileges"
+        }    ]
+}

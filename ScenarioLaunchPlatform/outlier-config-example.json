@@ -1,0 +1,42 @@
+{
+  "outlierName": "MySQL Timed Selects",
+  "description": "Automated MySQL SELECT operations with time-based patterns",
+  "version": "1.0.0",
+  "author": "Jason Flood",
+  "scripts": [
+    {
+      "scriptName": "run_timed_selects_background.sh",
+      "scriptType": "bash",
+      "description": "Run SELECT operations with time-based pattern in background",
+      "enabled": true,
+      "schedules": [
+        {
+          "description": "Daily execution at 2 AM",
+          "cronExpression": "0 2 * * *",
+          "parameters": "localhost 3306 MyPassword123 background",
+          "enabled": true
+        },
+        {
+          "description": "Weekly execution on Sundays at 3 AM",
+          "cronExpression": "0 3 * * 0",
+          "parameters": "localhost 3306 MyPassword123 background",
+          "enabled": false
+        }
+      ]
+    },
+    {
+      "scriptName": "cleanup_old_logs.sh",
+      "scriptType": "bash",
+      "description": "Clean up log files older than 30 days",
+      "enabled": true,
+      "schedules": [
+        {
+          "description": "Daily cleanup at midnight",
+          "cronExpression": "0 0 * * *",
+          "parameters": "/var/log/mysql 30",
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}
