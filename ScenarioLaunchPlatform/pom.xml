@@ -9,7 +9,7 @@
     <vertx.verticle>service.thejasonengine.com.WebVerticle</vertx.verticle>
     <vertx-maven-plugin.version>1.0.13</vertx-maven-plugin.version>
     <log4j-api.version>2.25.1</log4j-api.version>
-    <log4j-core.version>2.25.1</log4j-core.version>
+    <log4j-core.version>2.25.3</log4j-core.version>
     <postgresql.version>42.7.7</postgresql.version>
     <mysql-connector-j.version>9.4.0</mysql-connector-j.version>
   </properties>
