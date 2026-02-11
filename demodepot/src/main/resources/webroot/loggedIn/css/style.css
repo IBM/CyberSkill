@@ -1,0 +1,44 @@
+/* Custom styles that can't be achieved with Tailwind */
+:root {
+    --primary-color: #3b82f6; /* blue-500 as default */
+    --secondary-color: #10b981; /* emerald-500 as default */
+}
+
+/* Dynamic color classes */
+.bg-primary-500 {
+    background-color: var(--primary-color);
+}
+
+.hover\:bg-primary-600:hover {
+    background-color: color-mix(in srgb, var(--primary-color), black 10%);
+}
+
+.text-primary-500 {
+    color: var(--primary-color);
+}
+
+.focus\:ring-primary-500:focus {
+    --tw-ring-color: var(--primary-color);
+    ring-color: var(--primary-color);
+}
+
+/* Smooth transitions */
+input, select, textarea, button {
+    transition: all 0.2s ease;
+}
+
+/* Form focus states */
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color), transparent 70%);
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 0.3s ease-out; }
+/* Add this to your style.css */
+.dummy-highlight {
+  background-color: #fff8c5; /* pale yellow */
+  border: 1px solid #e0c200;
+}

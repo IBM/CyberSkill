@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.jclarke</groupId>
+  <artifactId>demodepot</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <properties>
+    <vertx.version>4.5.1</vertx.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+     <slf4j.version>1.7.5</slf4j.version>
+    <log4j-api.version>2.25.1</log4j-api.version>
+    <log4j-core.version>2.25.1</log4j-core.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+      <version>${vertx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
+      <version>${vertx.version}</version>
+    </dependency>
+    <dependency>
+  <groupId>io.vertx</groupId>
+  <artifactId>vertx-pg-client</artifactId>
+  <version>5.0.5</version>
+</dependency>
+<dependency>
+  <groupId>io.vertx</groupId>
+  <artifactId>vertx-auth-jwt</artifactId>
+  <version>4.5.1</version>
+</dependency>
+<dependency>
+  <groupId>io.vertx</groupId>
+  <artifactId>vertx-auth-common</artifactId>
+  <version>4.5.1</version>
+</dependency>
+<!-- Vert.x JWT auth -->
+<dependency>
+  <groupId>io.vertx</groupId>
+  <artifactId>vertx-auth-jwt</artifactId>
+  <version>${vertx.version}</version>
+</dependency>
+
+<!-- BCrypt for password hashing -->
+<dependency>
+  <groupId>org.mindrot</groupId>
+  <artifactId>jbcrypt</artifactId>
+  <version>0.4</version>
+</dependency>
+
+<dependency>
+  <groupId>com.ongres.scram</groupId>
+  <artifactId>client</artifactId>
+  <version>2.1</version>
+</dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-config</artifactId>
+      <version>${vertx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-config-yaml</artifactId>
+      <version>${vertx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.4.11</version>
+    </dependency>
+  <dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-core</artifactId>
+    <version>4.5.1</version>
+  </dependency>
+  <dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-web</artifactId>
+    <version>${vertx.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-pg-client</artifactId>
+    <version>${vertx.version}</version>
+  </dependency>
+  	<dependency>
+	  <groupId>io.vertx</groupId>
+	  <artifactId>vertx-web-templ-freemarker</artifactId>
+	  <version>${vertx.version}</version>
+	</dependency>
+	 <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>2.3.31</version> <!-- Or the latest version -->
+    </dependency>
+  	<dependency>
+    	<groupId>org.apache.logging.log4j</groupId>
+    	<artifactId>log4j-core</artifactId>
+    	<version>${log4j-core.version}</version>
+  	</dependency>
+</dependencies>
+  <build>
+    <plugins>
+   <plugin>
+  <groupId>io.reactiverse</groupId>
+  <artifactId>vertx-maven-plugin</artifactId>
+  <version>1.0.22</version>
+  <configuration>
+    <redeploy>true</redeploy>
+    <launcher>io.vertx.core.Launcher</launcher>
+    <vertxVersion>${vertx.version}</vertxVersion>
+    <!-- REQUIRED: your main verticle class -->
+    <verticle>com.demodepot.MainVerticle</verticle>
+  </configuration>
+</plugin>
+
+
+    <plugin>
+      <groupId>io.fabric8</groupId>
+      <artifactId>docker-maven-plugin</artifactId>
+      <version>0.34.1</version>
+    </plugin>
+
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.11.0</version>
+    </plugin>
+    </plugins>
+  </build>
+</project>

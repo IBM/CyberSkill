@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Request Form</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50">
+<div id="toast-container" class="fixed top-4 right-4 space-y-2 z-50"></div>
+
+      <script>
+    class CustomNavbar extends HTMLElement {
+      connectedCallback() {
+        this.innerHTML = `
+          <nav class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="flex justify-between h-16">
+                <div class="flex">
+                  <a href="#" class="flex items-center">
+                    <span class="text-xl font-bold text-indigo-600">Demo Hub</span>
+                  </a>
+                </div>
+                <div class="flex items-center space-x-6">
+                  <a href="demodashboard.html" class="text-gray-600 hover:text-gray-900 text-sm">Dashboard</a>
+                  <a href="demorequest.html" class="text-gray-600 hover:text-gray-900 text-sm">Request Form</a>
+                  
+                </div>
+              </div>
+            </div>
+          </nav>
+        `;
+      }
+    }
+    customElements.define('custom-navbar', CustomNavbar);
+  </script>
+      <custom-navbar></custom-navbar>
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold mb-4 text-gray-800">Demo Request Form</h1>
+                <p class="text-lg text-gray-600">Submit your demo request details</p>
+            </div>
+	<!--<div id="info-banner" class="mb-6 p-4 rounded-lg bg-blue-100 border border-blue-300 text-blue-800 flex justify-between items-center">
+  <span>
+    <strong>Important:</strong> Drafts capability will come soon and then can be saved without file uploads. 
+    Full submissions require attaching files where applicable.
+  </span>
+  <button id="close-banner" class="ml-4 text-blue-800 hover:text-blue-600 font-bold">X</button>
+</div>  -->
+
+	
+            <form class="bg-white rounded-xl shadow-lg overflow-hidden p-8" id="demoRequestForm" enctype="multipart/form-data">
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">PM Owner Name*</label>
+                            <input type="text" name="pm_owner" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter PM owner name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Demo Type*</label>
+                            <input type="text" name="demo_type" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter demo type">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Date*</label>
+                            <input type="date" name="delivery_date" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Name*</label>
+                            <input type="text" name="product_name" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter product name">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Title*</label>
+                        <input type="text" name="title" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter title">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sub Title</label>
+                        <input type="text" name="subtitle" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter sub title">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Value Proposition*</label>
+                        <textarea name="value_proposition" rows="4" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Describe the value proposition"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Feature Focus*</label>
+                        <textarea name="feature_focus" rows="4" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Describe the feature focus"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Flow Sequence*</label>
+                        <textarea name="flow_sequence" rows="4" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Describe the flow sequence"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Existing Docs</label>
+                        <input type="file" name="existing_docs" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">URL For Demo System</label>
+                        <input type="url" name="demo_url" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter demo URL">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Demo Script</label>
+                        <input type="file" name="demo_script" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent">
+                    </div>
+                </div>
+
+                <button type="submit" class="mt-8 w-full bg-primary-500 hover:bg-primary-600 text-black font-medium py-3 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 shadow-md">
+                    Submit Request
+                </button>
+        <!--     <button type="button" id="saveDraftBtn" class="mt-8 w-full bg-primary-500 hover:bg-primary-600 text-black font-medium py-3 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 shadow-md">Save Draft</button>  
+              -->
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+    document.getElementById("demoRequestForm").addEventListener("submit", async (e) => {
+    	  e.preventDefault();
+    	  const form = e.target;
+    	  const formData = new FormData(form);
+
+    	  // Info toast about full submit rules
+    	  showToast("Full submits accept file uploads. Ensure required files are attached.", "info");
+
+    	  try {
+    	    const res = await fetch("/api/create-demo-requests", {
+    	      method: "POST",
+    	      body: formData
+    	    });
+
+    	    const result = await res.json();
+    	    if (res.ok) {
+    	      showToast("Demo request created with ID: " + result.id, "success");
+    	    } else {
+    	      showToast("Error: " + result.error, "error");
+    	    }
+    	  } catch (err) {
+    	    showToast("Network error: " + err.message, "error");
+    	  }
+    	});
+
+    
+    document.getElementById("saveDraftBtn").addEventListener("click", async () => {
+    	  const form = document.getElementById("demoRequestForm");
+    	  const formData = new FormData(form);
+    	  const jsonData = {};
+
+    	  formData.forEach((value, key) => {
+    	    if (!(value instanceof File)) {
+    	      jsonData[key] = typeof value === "string" ? value.trim() : value;
+    	    }
+    	  });
+
+    	  // Add dummy defaults for required fields
+    	  const defaults = {
+    	    pm_owner: "Unknown Owner",
+    	    demo_type: "Draft Type",
+    	    product_name: "Draft Product",
+    	    delivery_date: "2099-01-01",
+    	    title: "Untitled Draft",
+    	    value_proposition: "TBD",
+    	    feature_focus: "TBD",
+    	    flow_sequence: "TBD"
+    	  };
+    	  Object.keys(defaults).forEach(field => {
+    	    if (!jsonData[field] || jsonData[field].trim() === "") {
+    	      jsonData[field] = defaults[field];
+    	    }
+    	  });
+
+    	  jsonData.existing_docs_path = "";
+    	  jsonData.demo_script_path = "";
+
+    	  try {
+    	    const res = await fetch("/api/demo-requests/draft", {
+    	      method: "POST",
+    	      headers: { "Content-Type": "application/json" },
+    	      body: JSON.stringify(jsonData)
+    	    });
+    	    const result = await res.json();
+    	    if (res.ok) {
+    	      showToast("Draft saved with ID: " + result.id, "success");
+    	      localStorage.setItem("draftId", result.id);
+    	    } else {
+    	      showToast("Error: " + result.error, "error");
+    	    }
+    	  } catch (err) {
+    	    showToast("Network error: " + err.message, "error");
+    	  }
+    	});
+
+
+
+    function showToast(message, type="info") {
+    	  const container = document.getElementById("toast-container");
+    	  const toast = document.createElement("div");
+    	  const colors = {
+    	    info: "bg-blue-500",
+    	    success: "bg-green-500",
+    	    error: "bg-red-500",
+    	    warning: "bg-yellow-500"
+    	  };
+    	  toast.className = `${colors[type]} text-white px-4 py-2 rounded shadow-md animate-fade-in`;
+    	  toast.textContent = message;
+    	  container.appendChild(toast);
+
+    	  setTimeout(() => {
+    	    toast.classList.add("opacity-0", "transition-opacity", "duration-500");
+    	    setTimeout(() => toast.remove(), 500);
+    	  }, 3000);
+    	}
+    document.getElementById("close-banner").addEventListener("click", () => {
+    	  const banner = document.getElementById("info-banner");
+    	  banner.style.display = "none";
+    	});
+
+    window.addEventListener("DOMContentLoaded", async () => {
+    	  const draftId = localStorage.getItem("draftId");
+    	  if (!draftId) return; // nothing to load
+
+    	  try {
+    	    const res = await fetch(`/api/demo-requests/draft/${draftId}`);
+    	    if (!res.ok) {
+    	      console.warn("No draft found:", await res.text());
+    	      return;
+    	    }
+    	    const draft = await res.json();
+
+    	    // Fill form fields with draft data or dummy defaults
+    	    const form = document.getElementById("demoRequestForm");
+    	    const defaults = {
+    	      pm_owner: "Unknown Owner",
+    	      demo_type: "Draft Type",
+    	      product_name: "Draft Product",
+    	      delivery_date: "2099-01-01",
+    	      title: "Untitled Draft",
+    	      subtitle: "",
+    	      value_proposition: "TBD",
+    	      feature_focus: "TBD",
+    	      flow_sequence: "TBD",
+    	      demo_url: ""
+    	    };
+
+    	    Object.keys(defaults).forEach(field => {
+    	      const input = form.querySelector(`[name="${field}"]`);
+    	      if (input) {
+    	        input.value = draft[field] && draft[field].trim() !== ""
+    	          ? draft[field]
+    	          : defaults[field];
+    	      }
+    	    });
+    	  } catch (err) {
+    	    console.error("Error loading draft:", err);
+    	  }
+    	});
+
+</script>
+</body>
+</html>

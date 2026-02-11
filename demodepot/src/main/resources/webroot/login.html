@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DemoDepot — Sign up / Sign in</title>
+  <style>
+    :root{
+      --bg:#f6f8fa;
+      --card:#ffffff;
+      --accent:#2563eb;
+      --muted:#6b7280;
+      --success:#16a34a;
+      --danger:#dc2626;
+      --radius:12px;
+      --max-width:920px;
+      --gap:18px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      color:#0f172a;
+    }
+    .container{
+      width:100%;
+      max-width:var(--max-width);
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:32px;
+      align-items:center;
+    }
+
+    /* Left marketing column */
+    .hero{
+      padding:32px;
+      border-radius:var(--radius);
+      background:linear-gradient(180deg, rgba(37,99,235,0.06), rgba(99,102,241,0.02));
+      box-shadow: 0 6px 20px rgba(2,6,23,0.06);
+    }
+    .logo{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+    .logo .mark{
+      width:48px;height:48px;border-radius:10px;background:var(--accent);
+      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;
+      box-shadow: 0 6px 18px rgba(37,99,235,0.18);
+    }
+    h1{margin:0 0 8px 0;font-size:28px}
+    p.lead{margin:0;color:var(--muted);line-height:1.5}
+
+    /* Right card */
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.06);
+    }
+    .tabs{display:flex;gap:8px;margin-bottom:18px}
+    .tab{
+      flex:1;
+      text-align:center;
+      padding:10px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+      color:var(--muted);
+      background:transparent;
+      border:1px solid transparent;
+    }
+    .tab.active{
+      background:linear-gradient(90deg, rgba(37,99,235,0.08), rgba(99,102,241,0.04));
+      color:var(--accent);
+      border-color:rgba(37,99,235,0.08);
+    }
+
+    form{display:grid;gap:12px}
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    input[type="text"], input[type="password"], input[type="email"]{
+      width:100%;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #e6edf3;
+      background:#fff;
+      font-size:14px;
+      box-sizing:border-box;
+    }
+    .row{display:flex;gap:10px}
+    .row .col{flex:1}
+
+    .actions{display:flex;gap:10px;align-items:center;margin-top:6px}
+    button.primary{
+      background:var(--accent);
+      color:white;
+      border:none;
+      padding:10px 14px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    button.ghost{
+      background:transparent;
+      border:1px solid #e6edf3;
+      padding:10px 12px;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    .muted{color:var(--muted);font-size:13px}
+    .hint{font-size:13px;color:var(--muted);margin-top:6px}
+    .small{font-size:12px;color:#94a3b8}
+
+    .password-row{display:flex;gap:8px;align-items:center}
+    .toggle-pass{background:transparent;border:none;color:var(--muted);cursor:pointer;padding:6px;border-radius:6px}
+
+    .strength{
+      height:8px;border-radius:6px;background:#f1f5f9;overflow:hidden;margin-top:6px;
+    }
+    .strength > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#ef4444,#f59e0b,#10b981);transition:width .25s ease}
+
+    .toast{
+      position:fixed;right:20px;bottom:20px;background:#111827;color:white;padding:10px 14px;border-radius:8px;box-shadow:0 8px 30px rgba(2,6,23,0.3);
+      z-index:9999;font-size:13px;
+    }
+
+    .link{color:var(--accent);cursor:pointer;text-decoration:underline}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .container{grid-template-columns:1fr; padding:12px}
+      .hero{order:2}
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <div class="hero" aria-hidden="false">
+      <div class="logo">
+        <div class="mark">DD</div>
+        <div>
+          <div style="font-weight:700">DemoDepot</div>
+          <div class="small">Manage demo requests and drafts</div>
+        </div>
+      </div>
+
+      <h1>Sign in or create an account</h1>
+      <p class="lead">Securely sign up and sign in to manage your demos. Each user only sees demos they own. Tokens are stored locally for convenience.</p>
+      <div style="margin-top:18px" class="muted">
+        <div><strong>Quick tips</strong></div>
+        <ul style="margin:8px 0 0 18px;color:var(--muted)">
+          <li>Use a valid email as your username.</li>
+          <li>Passwords should be at least 8 characters.</li>
+          <li>Sign up once, then use the token to access protected endpoints.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" aria-live="polite">
+      <div class="tabs" role="tablist">
+        <div id="tab-login" class="tab active" role="tab" aria-selected="true">Sign in</div>
+        <div id="tab-signup" class="tab" role="tab" aria-selected="false">Sign up</div>
+      </div>
+
+      <!-- Login form -->
+      <form id="loginForm" style="display:block" autocomplete="on">
+        <div>
+          <label for="login-username">Email</label>
+          <input id="login-username" name="username" type="email" required placeholder="you@example.com" />
+        </div>
+
+        <div>
+          <label for="login-password">Password</label>
+          <div class="password-row">
+            <input id="login-password" name="password" type="password" required placeholder="Your password" />
+            <button type="button" class="toggle-pass" data-target="login-password" aria-label="Toggle password visibility">Show</button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="primary">Sign in</button>
+          <button type="button" id="toSignup" class="ghost">Create account</button>
+        </div>
+
+        <div class="hint">
+          <span class="muted">Don't have an account?</span>
+          <span class="link" id="switchToSignup">Create one</span>
+        </div>
+      </form>
+
+      <!-- Signup form -->
+      <form id="signupForm" style="display:none" autocomplete="on">
+        <div>
+          <label for="signup-username">Email</label>
+          <input id="signup-username" name="username" type="email" required placeholder="you@example.com" />
+        </div>
+
+        <div>
+          <label for="signup-password">Password</label>
+          <div class="password-row">
+            <input id="signup-password" name="password" type="password" required placeholder="Choose a strong password" />
+            <button type="button" class="toggle-pass" data-target="signup-password" aria-label="Toggle password visibility">Show</button>
+          </div>
+          <div class="strength" aria-hidden="true"><i id="pwBar"></i></div>
+          <div class="small muted" id="pwHint">Use at least 8 characters, mix letters and numbers.</div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="primary">Create account</button>
+          <button type="button" id="toLogin" class="ghost">Back to sign in</button>
+        </div>
+
+        <div class="hint">
+          <span class="muted">Already have an account?</span>
+          <span class="link" id="switchToLogin">Sign in</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Simple toast
+    function showToast(msg, timeout = 3500) {
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), timeout);
+    }
+
+    // Tab switching
+    const tabLogin = document.getElementById('tab-login');
+    const tabSignup = document.getElementById('tab-signup');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+
+    function showLogin() {
+      tabLogin.classList.add('active'); tabSignup.classList.remove('active');
+      loginForm.style.display = 'block'; signupForm.style.display = 'none';
+    }
+    function showSignup() {
+      tabSignup.classList.add('active'); tabLogin.classList.remove('active');
+      signupForm.style.display = 'block'; loginForm.style.display = 'none';
+    }
+
+    tabLogin.addEventListener('click', showLogin);
+    tabSignup.addEventListener('click', showSignup);
+    document.getElementById('toSignup').addEventListener('click', showSignup);
+    document.getElementById('toLogin').addEventListener('click', showLogin);
+    document.getElementById('switchToSignup').addEventListener('click', showSignup);
+    document.getElementById('switchToLogin').addEventListener('click', showLogin);
+
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-pass').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        if (target.type === 'password') {
+          target.type = 'text'; btn.textContent = 'Hide';
+        } else {
+          target.type = 'password'; btn.textContent = 'Show';
+        }
+      });
+    });
+
+    // Password strength (very simple)
+    const pwBar = document.getElementById('pwBar');
+    const signupPassword = document.getElementById('signup-password');
+    signupPassword.addEventListener('input', () => {
+      const v = signupPassword.value || '';
+      let score = 0;
+      if (v.length >= 8) score += 1;
+      if (/[A-Z]/.test(v)) score += 1;
+      if (/[0-9]/.test(v)) score += 1;
+      if (/[^A-Za-z0-9]/.test(v)) score += 1;
+      const pct = (score / 4) * 100;
+      pwBar.style.width = pct + '%';
+      if (pct < 50) pwBar.style.background = '#ef4444';
+      else if (pct < 75) pwBar.style.background = '#f59e0b';
+      else pwBar.style.background = '#10b981';
+    });
+
+    // Auth helper: store token and pm_owner
+    function saveAuth(token, pm_owner) {
+      localStorage.setItem('jwt', token);
+      if (pm_owner) localStorage.setItem('pm_owner', pm_owner);
+    }
+    function authFetch(url, options = {}) {
+      options.headers = options.headers || {};
+      const token = localStorage.getItem('jwt');
+      if (token) options.headers['Authorization'] = 'Bearer ' + token;
+      return fetch(url, options);
+    }
+
+    // Login submit
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value;
+      if (!username || !password) { showToast('Please enter username and password'); return; }
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const json = await res.json();
+        if (res.ok && json.token) {
+          saveAuth(json.token, json.pm_owner || username);
+          showToast('Signed in successfully');
+          // redirect or refresh to load protected UI
+          setTimeout(() => location.reload(), 600);
+        } else {
+          showToast('Sign in failed: ' + (json.error || res.statusText));
+        }
+      } catch (err) {
+        showToast('Network error: ' + err.message);
+      }
+    });
+
+    // Signup submit
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('signup-username').value.trim();
+      const password = document.getElementById('signup-password').value;
+      if (!username || !password) { showToast('Please enter username and password'); return; }
+      if (password.length < 8) { showToast('Password must be at least 8 characters'); return; }
+
+      try {
+        const res = await fetch('/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const json = await res.json();
+        if (res.ok && json.token) {
+          saveAuth(json.token, json.pm_owner || username);
+          showToast('Account created and signed in');
+          setTimeout(() => location.reload(), 600);
+        } else {
+          showToast('Sign up failed: ' + (json.error || res.statusText));
+        }
+      } catch (err) {
+        showToast('Network error: ' + err.message);
+      }
+    });
+
+    // If already signed in, show a small toast
+    if (localStorage.getItem('jwt')) {
+      // optional: verify token by calling a lightweight protected endpoint
+      showToast('You are signed in', 2000);
+    }
+  </script>
+</body>
+</html>

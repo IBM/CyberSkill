@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Demo Requests Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Optional: favicons/meta -->
+  <meta name="description" content="Visualization of all demo requests"/>
+</head>
+<body class="min-h-screen bg-gray-50">
+  <!-- Inline navbar web component (no external dependency) -->
+  <script>
+    class CustomNavbar extends HTMLElement {
+      connectedCallback() {
+        this.innerHTML = `
+          <nav class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="flex justify-between h-16">
+                <div class="flex">
+                  <a href="#" class="flex items-center">
+                    <span class="text-xl font-bold text-indigo-600">Demo Hub</span>
+                  </a>
+                </div>
+                <div class="flex items-center space-x-6">
+                  <a href="demodashboard.html" class="text-gray-600 hover:text-gray-900 text-sm">Dashboard</a>
+                  <a href="demorequest.html" class="text-gray-600 hover:text-gray-900 text-sm">Request Form</a>
+                  
+                </div>
+              </div>
+            </div>
+          </nav>
+        `;
+      }
+    }
+    customElements.define('custom-navbar', CustomNavbar);
+  </script>
+
+  <custom-navbar></custom-navbar>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Demo Requests Dashboard</h1>
+      <p class="text-gray-600 mt-2">Visualization of all demo requests</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Requests by Demo Type</h2>
+        <div class="h-80">
+          <canvas id="typeChart"></canvas>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Monthly Requests</h2>
+        <div class="h-80">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-gray-700">Recent Demo Requests</h2>
+        <div class="flex items-center space-x-3">
+          <button id="refreshBtn" class="px-3 py-2 text-sm font-medium bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+            Refresh
+          </button>
+          <span id="dataSourceBadge" class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">Source: Fallback</span>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200" id="requestsTable">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PM Owner</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Demo Type</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Existing Doc</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Demo Script</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr>
+              <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500" id="loadingMessage">
+                Loading demo requests...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inline script: data, AI/db call placeholder, table & charts -->
+  <script>
+    // --- 1) Static bootstrap data (fallback) ---
+    const fallbackData = {
+      demo_requests: [
+        {
+          pm_owner: "Sridhar",
+          demo_type: "Standard",
+          product_name: "GCM AI",
+          delivery_date: "2026-01-11",
+          title: "GCM AI Violatin Management",
+          subtitle: "AI Transforming violations",
+          value_proposition: "Some value prop here",
+          feature_focus: "Dashboard customization, automated insights, predictive analytics.",
+          flow_sequence: "1. Login → 2. Dashboard view → 3. Customizing widgets → 4. Generating insights",
+          existing_docs_path: "existing_docs_insightx.pdf",
+          demo_url: "https://mediacenter.ibm.com/media/IBM%20Guardium%20Quantum%20Safe/1_atorql76",
+          demo_script_path: "demo_script.docx",
+          created_at: "2025-12-01T09:00:00Z",
+        },
+        {
+          pm_owner: "Vinaya",
+          demo_type: "Feature Flash",
+          product_name: "TDE GCM",
+          delivery_date: "2025-12-10",
+          title: "GCM TDE Demo",
+          subtitle: "Enterprise-Grade Data Protection",
+          value_proposition: "TDE offers unmatched encryption performance with seamless integration into existing systems.",
+          feature_focus: "AES-256 encryption, role-based access, key rotation automation.",
+          flow_sequence: "1. User creation → 2. Assign keys → 3. Encrypt/Decrypt workflow",
+          existing_docs_path: "securevault_docs.pdf",
+          demo_url: "https://mediacenter.ibm.com/media/IBM%20Guardium%20Quantum%20Safe/1_atorql76",
+          demo_script_path: "tde_demo_script.docx",
+          created_at: "2025-12-01T14:30:00Z",
+        },
+        {
+          pm_owner: "Chloe Ramirez",
+          demo_type: "Customer Scenario",
+          product_name: "FlowTrack",
+          delivery_date: "2025-03-05",
+          title: "FlowTrack Workflow Automation Demo",
+          subtitle: "Unlock Seamless Process Automation",
+          value_proposition: "FlowTrack reduces manual work by automating routine processes with intelligent task routing.",
+          feature_focus: "Process builder, smart triggers, automation templates.",
+          flow_sequence: "1. Create workflow → 2. Set triggers → 3. Run test → 4. Deploy",
+          existing_docs_path: "flowtrack_reference.pdf",
+          demo_url: "https://demo.flowtrack.com",
+          demo_script_path: "flowtrack_demo.docx",
+          created_at: "2025-12-10T10:15:00Z",
+        },
+        {
+          pm_owner: "Daniel Wu",
+          demo_type: "Sales Enablement",
+          product_name: "CloudSync",
+          delivery_date: "2025-04-20",
+          title: "CloudSync Unified Storage Demo",
+          subtitle: "Fast. Secure. Limitless.",
+          value_proposition: "CloudSync provides seamless file synchronization across distributed teams with zero downtime.",
+          feature_focus: "Real-time sync, conflict resolution engine, multi-device support.",
+          flow_sequence: "1. Upload file → 2. Sync to devices → 3. Modify and merge changes",
+          existing_docs_path: "cloudsync_docs.pdf",
+          demo_url: "https://demo.cloudsync.com",
+          demo_script_path: "cloudsync_script.docx",
+          created_at: "2025-03-25T16:45:00Z",
+        },
+        {
+          pm_owner: "Ella Singh",
+          demo_type: "Training Demo",
+          product_name: "PulseHR",
+          delivery_date: "2025-05-10",
+          title: "PulseHR Talent Management Demo",
+          subtitle: "Empowering People Operations",
+          value_proposition: "PulseHR centralizes employee data, onboarding workflows, and performance reviews.",
+          feature_focus: "Onboarding automation, performance dashboards, employee directory.",
+          flow_sequence: "1. Create employee profile → 2. Assign onboarding tasks → 3. Review performance",
+          existing_docs_path: "pulsehr_docs.pdf",
+          demo_url: "https://demo.pulsehr.com",
+          demo_script_path: "pulsehr_script.docx",
+          created_at: "2025-04-15T11:20:00Z",
+        },
+        {
+          pm_owner: "Felix Morgan",
+          demo_type: "Executive Briefing",
+          product_name: "VisionAI",
+          delivery_date: "2025-06-01",
+          title: "VisionAI Image Recognition Suite Demo",
+          subtitle: "Smarter Vision for Modern Businesses",
+          value_proposition: "VisionAI analyzes images with high accuracy using advanced deep learning models.",
+          feature_focus: "Object detection, tagging, image categorization.",
+          flow_sequence: "1. Upload images → 2. Process recognition → 3. Review tags/categorization",
+          existing_docs_path: "visionai_docs.pdf",
+          demo_url: "https://demo.visionai.com",
+          demo_script_path: "visionai_script.docx",
+          created_at: "2025-05-01T13:00:00Z",
+        },
+        {
+          pm_owner: "Gina Alvarez",
+          demo_type: "Customer POC",
+          product_name: "LedgerPro",
+          delivery_date: "2025-07-12",
+          title: "LedgerPro Financial Compliance Demo",
+          subtitle: "Audit-Ready at Every Step",
+          value_proposition: "LedgerPro automates compliance reporting and ensures traceable audit trails.",
+          feature_focus: "Automated audit logs, compliance templates, reporting engine.",
+          flow_sequence: "1. Import transactions → 2. Apply compliance check → 3. Generate reports",
+          existing_docs_path: "ledgerpro_docs.pdf",
+          demo_url: "https://demo.ledgerpro.com",
+          demo_script_path: "ledgerpro_script.docx",
+          created_at: "2025-06-15T09:30:00Z",
+        },
+        {
+          pm_owner: "Henry Brooks",
+          demo_type: "Integration Walkthrough",
+          product_name: "ConnectHub",
+          delivery_date: "2025-08-03",
+          title: "ConnectHub API Integration Demo",
+          subtitle: "Connecting Your Digital Ecosystem",
+          value_proposition: "ConnectHub offers robust APIs to unify third-party systems effortlessly.",
+          feature_focus: "API triggers, transformation mappings, event logs.",
+          flow_sequence: "1. Create integration → 2. Map fields → 3. Trigger test data",
+          existing_docs_path: "connecthub_docs.pdf",
+          demo_url: "https://demo.connecthub.com",
+          demo_script_path: "connecthub_script.docx",
+          created_at: "2025-07-20T15:15:00Z",
+        },
+      ],
+    };
+
+    // --- 2) Placeholder: AI/database fetch (same schema as fallbackData) ---
+   // async function fetchDemoRequestsFromAI() {
+      // Replace with your actual endpoint. Must return { demo_requests: [...] }.
+      // Example:
+      // const res = await fetch("/api/demo-requests");
+      // if (!res.ok) throw new Error("Failed to fetch");
+      // return res.json();
+
+     // return null; // Use fallback until backend is ready.
+    //}
+    
+    // --- 2) Actual API fetch ---
+async function fetchDemoRequestsFromAPI() {
+  try {
+    const res = await fetch("/api/demo-requests");
+    if (!res.ok) {
+      throw new Error("Failed to fetch demo requests");
+    }
+    return await res.json(); // should be { demo_requests: [...] }
+  } catch (err) {
+    console.error("API fetch failed:", err);
+    return null; // fallback will be used
+  }
+}
+
+
+    // --- 3) Utilities ---
+    function formatDateISOToDisplay(iso) {
+      const d = new Date(iso);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function computeTypeCounts(items) {
+      const counts = {};
+      for (const r of items) {
+        counts[r.demo_type] = (counts[r.demo_type] || 0) + 1;
+      }
+      return counts;
+    }
+
+    function computeMonthlyCounts(items, field = "created_at") {
+      const counts = {};
+      for (const r of items) {
+        const d = new Date(r[field]);
+        if (isNaN(d)) continue;
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        counts[key] = (counts[key] || 0) + 1;
+      }
+      return Object.entries(counts)
+        .sort(([a], [b]) => (a > b ? 1 : a < b ? -1 : 0))
+        .reduce((acc, [k, v]) => {
+          acc[k] = v;
+          return acc;
+        }, {});
+    }
+
+    
+
+    // --- 5) Table rendering ---
+   function renderTable(items) {
+  const tbody = document.querySelector("#requestsTable tbody");
+  const loadingRow = document.getElementById("loadingMessage");
+  if (loadingRow) loadingRow.parentElement.remove();
+
+  const fragment = document.createDocumentFragment();
+
+  for (const r of items) {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${r.pm_owner}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${r.demo_type}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${r.product_name}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${formatDateISOToDisplay(r.delivery_date)}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+        <a href="${r.demo_url}" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline">${r.title}</a>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${status.class}">
+          ${r.status}
+        </span>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+        ${r.existing_docs_path 
+          ? `<a href="uploads/${r.existing_docs_path}" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline">Download Docs</a>` 
+          : "—"}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+        ${r.demo_script_path 
+          ? `<a href="uploads/${r.demo_script_path}" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline">Download Script</a>` 
+          : "—"}
+      </td>
+    `;
+    fragment.appendChild(tr);
+  }
+
+  tbody.appendChild(fragment);
+}
+
+    // --- 6) Charts ---
+    let typeChart, monthlyChart;
+
+    function renderTypeChart(ctx, items) {
+      const typeCounts = computeTypeCounts(items);
+      const labels = Object.keys(typeCounts);
+      const data = Object.values(typeCounts);
+
+      if (typeChart) typeChart.destroy();
+
+      typeChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels,
+          datasets: [
+            {
+              data,
+              backgroundColor: [
+                "#6366F1",
+                "#22C55E",
+                "#F59E0B",
+                "#EF4444",
+                "#06B6D4",
+                "#A855F7",
+                "#84CC16",
+                "#F97316",
+              ],
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: "bottom" },
+            tooltip: { enabled: true },
+          },
+        },
+      });
+    }
+
+    function renderMonthlyChart(ctx, items) {
+      const monthlyCounts = computeMonthlyCounts(items, "created_at");
+      const labels = Object.keys(monthlyCounts);
+      const data = Object.values(monthlyCounts);
+
+      if (monthlyChart) monthlyChart.destroy();
+
+      monthlyChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Requests",
+              data,
+              backgroundColor: "#6366F1",
+              borderRadius: 6,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { grid: { display: false } },
+            y: { beginAtZero: true, ticks: { precision: 0 } },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true },
+          },
+        },
+      });
+    }
+
+    // --- 7) Bootstrap flow + UI wiring ---
+  async function loadDataAndRender() {
+  const badge = document.getElementById("dataSourceBadge");
+  let data;
+
+  try {
+    const apiData = await fetchDemoRequestsFromAPI();
+    if (apiData && Array.isArray(apiData.demo_requests) && apiData.demo_requests.length) {
+      data = apiData;
+      if (badge) {
+        badge.textContent = "Source: API";
+        badge.className = "px-2 py-1 text-xs rounded bg-green-100 text-green-800";
+      }
+    } else {
+      data = fallbackData;
+      if (badge) {
+        badge.textContent = "Source: Fallback";
+        badge.className = "px-2 py-1 text-xs rounded bg-blue-100 text-blue-800";
+      }
+    }
+  } catch (e) {
+    data = fallbackData;
+    if (badge) {
+      badge.textContent = "Source: Fallback";
+      badge.className = "px-2 py-1 text-xs rounded bg-blue-100 text-blue-800";
+    }
+  }
+
+  const items = data.demo_requests;
+
+  // Clear table body before re-render
+  const tbody = document.querySelector("#requestsTable tbody");
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Loading demo requests...</td>
+    </tr>
+  `;
+
+  // Render table
+  renderTable(items);
+
+  // Render charts
+  const typeCtx = document.getElementById("typeChart");
+  const monthlyCtx = document.getElementById("monthlyChart");
+  renderTypeChart(typeCtx, items);
+  renderMonthlyChart(monthlyCtx, items);
+}
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadDataAndRender();
+
+      const refreshBtn = document.getElementById("refreshBtn");
+      refreshBtn.addEventListener("click", () => {
+        loadDataAndRender();
+      });
+    });
+  </script>
+</body>
+</html>
