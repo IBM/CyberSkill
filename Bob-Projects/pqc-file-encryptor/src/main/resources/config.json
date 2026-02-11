@@ -1,0 +1,42 @@
+{
+  "http": {
+    "port": 9999,
+    "host": "0.0.0.0"
+  },
+  "storage": {
+    "type": "file",
+    "directory": "data"
+  },
+  "encryption": {
+    "defaultKemAlgorithm": "Kyber1024",
+    "defaultAesKeySize": 256,
+    "uploadDirectory": "uploads",
+    "encryptedDirectory": "uploads/encrypted",
+    "maxFileSize": 104857600
+  },
+  "kyber": {
+    "variants": [
+      {
+        "name": "Kyber512",
+        "securityLevel": 1,
+        "publicKeySize": 800,
+        "privateKeySize": 1632,
+        "ciphertextSize": 768
+      },
+      {
+        "name": "Kyber768",
+        "securityLevel": 3,
+        "publicKeySize": 1184,
+        "privateKeySize": 2400,
+        "ciphertextSize": 1088
+      },
+      {
+        "name": "Kyber1024",
+        "securityLevel": 5,
+        "publicKeySize": 1568,
+        "privateKeySize": 3168,
+        "ciphertextSize": 1568
+      }
+    ]
+  }
+}

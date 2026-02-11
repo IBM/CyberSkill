@@ -1,0 +1,38 @@
+# Compiled class files
+*.class
+target/
+
+# Log files
+*.log
+logs/
+
+# Maven
+.mvn/
+mvn.cmd
+mvnw
+mvnw.cmd
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Application specific
+uploads/
+uploads/temp/
+uploads/encrypted/
+
+# Database
+*.db
+
+# Sensitive
+config-local.json
+*.key
+*.pem

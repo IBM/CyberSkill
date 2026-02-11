@@ -1,0 +1,22 @@
+[ {
+  "algorithm" : "Kyber768",
+  "total_uses" : 2,
+  "avg_public_key_size" : 1206,
+  "avg_private_key_size" : 2428,
+  "avg_encapsulated_key_size" : 1088,
+  "last_used" : "2026-02-03T16:54:12.687553800Z"
+}, {
+  "algorithm" : "Kyber1024",
+  "total_uses" : 3,
+  "avg_public_key_size" : 1590,
+  "avg_private_key_size" : 3196,
+  "avg_encapsulated_key_size" : 1568,
+  "last_used" : "2026-02-03T17:05:50.108100700Z"
+}, {
+  "algorithm" : "Kyber512",
+  "total_uses" : 1,
+  "avg_public_key_size" : 822,
+  "avg_private_key_size" : 1660,
+  "avg_encapsulated_key_size" : 768,
+  "last_used" : "2026-02-03T16:30:53.623246800Z"
+} ]

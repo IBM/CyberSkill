@@ -1,0 +1,43 @@
+{
+  "http": {
+    "port": 8080,
+    "host": "0.0.0.0"
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "pqc_scanner",
+    "user": "postgres",
+    "password": "postgres",
+    "maxPoolSize": 10
+  },
+  "scanner": {
+    "timeout": 10000,
+    "maxConcurrentScans": 5,
+    "retryAttempts": 3,
+    "tlsVersions": ["TLSv1.2", "TLSv1.3"],
+    "quantumSafeAlgorithms": [
+      "KYBER",
+      "DILITHIUM",
+      "FALCON",
+      "SPHINCS",
+      "NTRU",
+      "SABER",
+      "CRYSTALS",
+      "ML-KEM",
+      "ML-DSA",
+      "SLH-DSA"
+    ],
+    "vulnerableAlgorithms": [
+      "RSA",
+      "ECDSA",
+      "DSA",
+      "DH",
+      "ECDH"
+    ]
+  },
+  "security": {
+    "quantumThreatYear": 2030,
+    "certLifetimeYears": 1
+  }
+}

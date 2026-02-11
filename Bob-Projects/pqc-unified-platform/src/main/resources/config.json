@@ -1,0 +1,37 @@
+{
+  "http.port": 8082,
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "pqc_unified",
+    "user": "postgres",
+    "password": "postgres",
+    "maxPoolSize": 10
+  },
+  "pqc": {
+    "algorithm": "ML-KEM-768",
+    "keySize": 768
+  },
+  "encryption": {
+    "algorithm": "AES/GCM/NoPadding",
+    "keySize": 256,
+    "ivSize": 12,
+    "tagSize": 128
+  },
+  "scanner": {
+    "timeout": 10000,
+    "maxConcurrent": 5,
+    "retryAttempts": 3
+  },
+  "fileStorage": {
+    "uploadDir": "uploads",
+    "encryptedDir": "uploads/encrypted",
+    "maxFileSize": 104857600,
+    "allowedExtensions": [".pdf", ".docx", ".txt", ".jpg", ".png", ".zip"]
+  },
+  "chat": {
+    "maxSessions": 100,
+    "sessionTimeout": 3600000,
+    "maxMessagesPerSession": 1000
+  }
+}
