@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import database.thejasonengine.com.DatabaseController;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -25,22 +26,22 @@ import io.vertx.sqlclient.Pool;
 import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Tuple;
 import utils.thejasonengine.com.FolderCopier;
-import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.file.AsyncFile;
-import io.vertx.core.file.OpenOptions;
-import io.vertx.core.parsetools.RecordParser;
 
-public class ContentPackHandler 
+/**
+ * FIXED VERSION: This version properly coordinates all async operations using CompositeFuture
+ * before sending the HTTP response. This ensures all database inserts complete successfully
+ * before the client receives a success response.
+ */
+public class ContentPackHandler
 {
 	private static final Logger LOGGER = LogManager.getLogger(ContentPackHandler.class);
 
 	public Handler<RoutingContext> installContentPack;
 	public Handler<RoutingContext> uninstallContentPack;
 	
-	/******************************************************************************************/
 	public ContentPackHandler(Vertx vertx)
-    {
+	   {
 		installContentPack = ContentPackHandler.this::handleInstallContentPack;
 		uninstallContentPack = ContentPackHandler.this::handleUninstallContentPack;
 	}
@@ -52,582 +53,762 @@ public class ContentPackHandler
 		JsonObject result = new JsonObject();
 		HttpServerResponse response = routingContext.response();
 		JsonObject JSONpayload = routingContext.getBodyAsJson();
-		String pack_name = "tmp";
 		
 		if (JSONpayload.getString("jwt") == null || JSONpayload.getString("pack_name") == null) 
 	    {
 	    	LOGGER.info("handleInstallContentPack required fields not detected (jwt or pack_name)");
-	    	routingContext.fail(400); //THIS IS AN UNGRACEFUL ERROR - should be fixed.
+	    	routingContext.fail(400);
+	    	return;
 	    } 
-		else
-		{
-			if(SetupPostHandlers.validateJWTToken(JSONpayload))
-			{
-				LOGGER.info("User permitted to access handleInstallContentPack (JWT Check PASS)");
-				result.put("jwt_response", "User permitted to access handleInstallContentPack (JWT Check PASS)");
-				
-				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-				String [] chunks = JSONpayload.getString("jwt").split("\\.");
-				JsonObject payload = new JsonObject(SetupPostHandlers.decode(chunks[1]));
-				LOGGER.info("Payload: " + payload );
-				
-				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-				
-				LOGGER.info("Accessible Level is : " + authlevel);
-			       
-				if(authlevel >= 1)
-		        {
-					LOGGER.debug("User has correct access level");
-					result.put("access_response", "User has correct access level (Access Check PASS");
-		        
-					/*read the json file*/
-					pack_name = JSONpayload.getString("pack_name");
-					LOGGER.debug("Attempting install process for pack_name: " + pack_name);
-					
-					Path currRelativePath = Paths.get("");
-			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
-			        
-			        
-			        String filePath = currAbsolutePathString + "/contentpacks/" + pack_name + "/sql/query_inserts.json";
-			        LOGGER.debug("System execution path is: " + filePath);
-			        
-			       
-			        readJsonFile(routingContext.vertx(), filePath)
-			        .onComplete(ar -> 
-			        {
-			        	LOGGER.debug("All lines have been read");
-			        	JsonObject jo = ar.result();
-			            Pool pool = context.get("pool");
-			            if (pool == null)
-			        	{
-			        		LOGGER.debug("pool is null - restarting");
-			        		DatabaseController DB = new DatabaseController(routingContext.vertx());
-			        		LOGGER.debug("Taking the refreshed context pool object");
-			        		pool = context.get("pool");
-			        	}
-			            pool.getConnection(asyncreq -> 
-						{	
-								if (asyncreq.succeeded()) 
-						        {
-						         	SqlConnection connection = asyncreq.result();
-						           	JsonArray ja_queries = jo.getJsonArray("queries");
-			        			
-						           	for(int i = 0; i < ja_queries.size(); i++)
-						           	{
-						           		/*
-						           		 This needs to be a composit future as its an asyn call in a for loop. 
-						           		 until that's done, this wont return an accurate completion state.
-						           		 */
-						           		Map<String,Object> map = new HashMap<String, Object>();
-										
-						           		JsonObject queryObject = ja_queries.getJsonObject(i);
-						           		
-						           		utils.thejasonengine.com.Encodings Encodings = new utils.thejasonengine.com.Encodings();
-										
-						           		String query_string = queryObject.getString("query_string");
-										String encoded_query = Encodings.EscapeString(query_string);
-										
-										/*
-										LOGGER.debug("Query recieved: " + query_string);
-										LOGGER.debug("Query encoded: " + encoded_query);
-										
-										LOGGER.debug("id: " + queryObject.getInteger("id"));
-										LOGGER.debug("query_db_type" + queryObject.getString("query_db_type"));
-										LOGGER.debug("query_type", queryObject.getString("query_type"));
-										LOGGER.debug("query_usecase" + queryObject.getString("query_usecase"));
-										LOGGER.debug("encoded_query" +  encoded_query);
-										LOGGER.debug("db_connection_id" +  queryObject.getInteger("db_connection_id"));
-										LOGGER.debug("query_loop"+ queryObject.getInteger("query_loop"));
-										LOGGER.debug("video_link"+ queryObject.getString("video_link"));
-										*/
-										
-										map.put("id", queryObject.getInteger("id"));
-										map.put("query_db_type", queryObject.getString("query_db_type"));
-										map.put("query_type", queryObject.getString("query_type"));
-										map.put("query_usecase", queryObject.getString("query_usecase"));
-										map.put("encoded_query", encoded_query);
-										map.put("db_connection_id", queryObject.getInteger("db_connection_id"));
-										map.put("query_loop", queryObject.getInteger("query_loop"));
-										map.put("query_description", queryObject.getString("query_description"));
-										map.put("video_link", queryObject.getString("video_link"));
-						           		
-										
-										connection.preparedQuery("Insert into public.tb_query(id, query_db_type, query_string, query_usecase, query_type, fk_tb_databaseConnections_id,query_loop, query_description, video_link) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9);")
-				                        .execute(Tuple.of(map.get("id"), map.get("query_db_type"), map.get("encoded_query"), map.get("query_usecase"), map.get("query_type"), map.get("db_connection_id"), map.get("query_loop"), map.get("query_description"),  map.get("video_link")),
-				                        res -> {
-				                            if (res.succeeded()) 
-					                            {
-					                                // Process the query result
-					                                LOGGER.info("Successfully added json object to query array ["+ map.get("id") +"]: " + res.toString());
-			                                    } 
-					                            else 
-					                            {
-					                                // Handle query failure
-					                            	LOGGER.error("error: " + res.cause() );
-					                            	result.put("database_write", "Error writting query to database: " + res.cause().getLocalizedMessage().replaceAll("\"", "") );
-					                            }
-					                            //connection.close();
-					                        });
-						           	}
-						           	result.put("database_write", "All queries install processed");
-						           	
-			    		        }
-								else
-								{
-									LOGGER.error("User has incorrect access level");
-									result.put("access_response", "User has incorrect access level (Access Check FAIL");
-								}
-						});
-			
-			        });
-			        
-			        
-			        
-			        
-			        
-			        /**********************************************************************************************************/
-			        filePath = currAbsolutePathString + "/contentpacks/" + pack_name + "/sql/users.json";
-			        LOGGER.debug("System execution path is: " + filePath);
-			        
-			       
-			        readJsonFile(routingContext.vertx(), filePath)
-			        .onComplete(ar -> 
-			        {
-			        	LOGGER.debug("All user lines have been read");
-			        	JsonObject jo = ar.result();
-			            Pool pool = context.get("pool");
-			            if (pool == null)
-			        	{
-			        		LOGGER.debug("pull is null - restarting");
-			        		DatabaseController DB = new DatabaseController(routingContext.vertx());
-			        		LOGGER.debug("Taking the refreshed context pool object");
-			        		pool = context.get("pool");
-			        	}
-			            pool.getConnection(asyncreq -> 
-						{	
-								if (asyncreq.succeeded()) 
-						        {
-						         	SqlConnection connection = asyncreq.result();
-						           	JsonArray ja_users = jo.getJsonArray("users");
-			        			
-						           	for(int i = 0; i < ja_users.size(); i++)
-						           	{
-						           		
-						           		
-						           		JsonObject JsonOb = ja_users.getJsonObject(i);
-						           		/*
-						           		 This needs to be a composit future as its an asyn call in a for loop. 
-						           		 until that's done, this wont return an accurate completion state.
-						           		 */
-						           		Integer id = JsonOb.getInteger("id");
-						           		String status = JsonOb.getString("status");
-										String db_type = JsonOb.getString("db_type");
-										String db_version = JsonOb.getString("db_version");
-										String db_username = JsonOb.getString("db_username");
-										String db_password = JsonOb.getString("db_password");
-										String db_port = JsonOb.getString("db_port");
-										String db_database= JsonOb.getString("db_database");
-										String db_url = JsonOb.getString("db_url");
-										String db_jdbcClassName = JsonOb.getString("db_jdbcClassName");
-										String db_userIcon = JsonOb.getString("db_userIcon");
-										String db_databaseIcon = JsonOb.getString("db_databaseIcon");
-										String db_alias = JsonOb.getString("db_alias");
-										String db_access = JsonOb.getString("db_access");
-										
-										
-										String db_connection_id = db_type+"_"+db_url+"_"+db_database+"_"+db_username;
-										/*
-										LOGGER.debug("id recieved: " + id);
-										LOGGER.debug("db_type recieved: " + db_type);
-										LOGGER.debug("db_connection_id recieved: " + db_connection_id);
-										LOGGER.debug("db_version recieved: " + db_version);
-										LOGGER.debug("db_username recieved: " + db_username);
-										LOGGER.debug("db_password recieved: " + db_password);
-										LOGGER.debug("db_port recieved: " + db_port);
-										LOGGER.debug("db_database recieved: " + db_database);
-										LOGGER.debug("db_url recieved: " + db_url);
-										LOGGER.debug("db_jdbcClassName recieved: " + db_jdbcClassName);
-										LOGGER.debug("db_userIcon recieved: " + db_userIcon);
-										LOGGER.debug("db_databaseIcon recieved: " + db_databaseIcon);
-										LOGGER.debug("db_alias recieved: " + db_alias);
-										LOGGER.debug("db_access recieved: " + db_access);
-										*/
-										connection.preparedQuery("Insert into public.tb_databaseConnections(id, status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon,db_alias,db_access) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)")
-				                        .execute(Tuple.of(id, status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon,db_alias,db_access),
-				                        res -> {
-				                            if (res.succeeded()) 
-				                            {
-				                                
-				                            	
-				                            	LOGGER.info("Successfully added json object to connection db ["+ id +"]");
-				                            	
-		                                    } 
-				                            else 
-				                            {
-				                            	LOGGER.info("Unable to add json object to db connection : [ " +id + "] " + res.toString());
-		                                    }
-				                        });
-										result.put("database_write", "All queries install processed");
-							        }
-						        }
-								else
-								{
-									LOGGER.error("User has incorrect access level");
-									result.put("access_response", "User has incorrect access level (Access Check FAIL");
-								}
-						});
-			
-			            
-			        });
-			        
-			        
-			        
-			        
-			        /**********************************************************************************************************/
-			        filePath = currAbsolutePathString + "/contentpacks/" + pack_name + "/sql/story_inserts.json";
-			        LOGGER.debug("System execution path is: " + filePath);
-			        
-			       
-			        readJsonFile(routingContext.vertx(), filePath)
-			        .onComplete(ar -> 
-			        {
-			        	LOGGER.debug("All story lines have been read");
-			        	JsonObject jo = ar.result();
-			            Pool pool = context.get("pool");
-			            if (pool == null)
-			        	{
-			        		LOGGER.debug("pull is null - restarting");
-			        		DatabaseController DB = new DatabaseController(routingContext.vertx());
-			        		LOGGER.debug("Taking the refreshed context pool object");
-			        		pool = context.get("pool");
-			        	}
-			            pool.getConnection(asyncreq -> 
-						{	
-								if (asyncreq.succeeded()) 
-						        {
-						         	SqlConnection connection = asyncreq.result();
-						           	JsonArray ja_stories = jo.getJsonArray("stories");
-			        			
-						           	for(int i = 0; i < ja_stories.size(); i++)
-						           	{
-						           		
-						           		
-						           		JsonObject JsonOb = ja_stories.getJsonObject(i);
-						           		Integer id = JsonOb.getInteger("id");
-						           		JsonObject story = JsonOb.getJsonObject("story");
-						           		String sql = "insert into public.tb_stories(id, story) VALUES ($1, $2)";
-				                            
-				                            connection.preparedQuery(sql)
-				                            .execute(Tuple.of(id, story))
-				                            .onSuccess(res3 -> {
-				                            	LOGGER.debug("JSON story Inserted Successfully!");
-				                            })
-				                            .onFailure(err -> {
-				                            	LOGGER.error("Failed to insert JSON story: " + err.getMessage());
-				                            });
-				                         }
-						        }
-								else
-								{
-									LOGGER.error("User has incorrect access level");
-									result.put("access_response", "User has incorrect access level (Access Check FAIL");
-								}
-						});
-			            
-			        });
-			        
-		        }
-				
-			}
-			
-		}  
 		
-		/*Now lets move the chron tasks to the right folder*/
-		boolean enableContentPackCronActivity = true;
-		if(enableContentPackCronActivity)
+		if(!SetupPostHandlers.validateJWTToken(JSONpayload))
 		{
-			LOGGER.debug("****************************** Enabling content pack cron activity **************************************");
-			try
-			{
-				String jarDir = new File(getClass()
-				        .getProtectionDomain()
-				        .getCodeSource()
-				        .getLocation()
-				        .toURI())
-				        .getParent();
-	
-				    // Folder path relative to the JAR
-				    Path srcfolderPath = Paths.get(jarDir, "/contentpacks/" + pack_name + "/scripts");
-				    String sourceFolder = srcfolderPath.toString();
-				    LOGGER.debug("Creating content in: " + sourceFolder);
-				    
-				    Path dstfolderPath = Paths.get(jarDir, "/scripts/" + pack_name);
-				   	String destinationFolder = dstfolderPath.toString();
-				   	LOGGER.debug("Creating content in: " + destinationFolder);
-				   	
-				    FolderCopier.copyFolder(routingContext.vertx(), sourceFolder, destinationFolder, res -> 
-				    {
-				      if (res.succeeded()) 
-				      {
-				    	  LOGGER.debug("Folder copied successfully!");
-				      } 
-				      else 
-				      {
-				    	  LOGGER.error("Failed to copy folder: " + res.cause());
-				      }
-				    });
-			}
-			catch(Exception e)
-			{
-				LOGGER.error("Unable to calculate system path: " + e.getLocalizedMessage());
-			}
+			LOGGER.error("JWT validation failed");
+			routingContext.fail(401);
+			return;
 		}
-		else
+		
+		LOGGER.info("User permitted to access handleInstallContentPack (JWT Check PASS)");
+		String [] chunks = JSONpayload.getString("jwt").split("\\.");
+		JsonObject payload = new JsonObject(SetupPostHandlers.decode(chunks[1]));
+		int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+		
+		if(authlevel < 1)
 		{
-			LOGGER.debug("************************** Not enabling content pack cron activity *******************************************");
+			LOGGER.error("User has insufficient access level: " + authlevel);
+			routingContext.fail(403);
+			return;
 		}
-		/***************************/
-        Pool pool = context.get("pool");
-        if (pool == null)
-    	{
-    		LOGGER.debug("poll is null - restarting");
-    		DatabaseController DB = new DatabaseController(routingContext.vertx());
-    		LOGGER.debug("Taking the refreshed context pool object");
-    		pool = context.get("pool");
-    	}
-        pool.getConnection(asyncreq -> 
-		{	
-				if (asyncreq.succeeded()) 
-		        {
-					SqlConnection connection = asyncreq.result();
-					String sql = "UPDATE public.tb_content_packs SET pack_deployed = 'true' WHERE pack_name = $1";
-                    connection.preparedQuery(sql)
-                    .execute(Tuple.of(JSONpayload.getString("pack_name")))
-                        .onSuccess(res3 -> {
-                        	LOGGER.debug("Pack_name: " + JSONpayload.getString("pack_name")+ " tb_content_packs deployment updated to true");
-                        })
-                        .onFailure(err -> {
-                        	LOGGER.error("Pack_name: " + JSONpayload.getString("pack_name")+ " tb_content_packs deployment status failed to update" + err.getLocalizedMessage());
-                        });
-		        }
-		});
-		response.send("{\"result\":\"Operation submitted\"}");
+		
+		String pack_name = JSONpayload.getString("pack_name");
+		LOGGER.debug("Attempting install process for pack_name: " + pack_name);
+		
+		Path currRelativePath = Paths.get("");
+        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
+        
+        // Start the installation process with proper async coordination
+        installContentPackAsync(routingContext, context, pack_name, currAbsolutePathString)
+        	.onSuccess(installResult -> {
+        		LOGGER.info("Content pack installation completed successfully: " + pack_name);
+        		response.putHeader("content-type", "application/json")
+        			.end(new JsonObject()
+        				.put("result", "success")
+        				.put("message", "Content pack installed successfully")
+        				.put("pack_name", pack_name)
+        				.encode());
+        	})
+        	.onFailure(err -> {
+        		LOGGER.error("Content pack installation failed: " + err.getMessage(), err);
+        		if (!response.ended()) {
+        			response.setStatusCode(500)
+        				.putHeader("content-type", "application/json")
+        				.end(new JsonObject()
+        					.put("result", "error")
+        					.put("message", "Installation failed: " + err.getMessage())
+        					.encode());
+        		}
+        	});
 	}
+	
+	/**
+	 * Coordinates all async operations for content pack installation
+	 */
+	private Future<Void> installContentPackAsync(RoutingContext routingContext, Context context, 
+			String pack_name, String basePath)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		// Create futures for all three file operations
+		String queriesPath = basePath + "/contentpacks/" + pack_name + "/sql/query_inserts.json";
+		String usersPath = basePath + "/contentpacks/" + pack_name + "/sql/users.json";
+		String storiesPath = basePath + "/contentpacks/" + pack_name + "/sql/story_inserts.json";
+		
+		Future<Void> queriesFuture = processQueries(routingContext, context, queriesPath);
+		Future<Void> usersFuture = processUsers(routingContext, context, usersPath);
+		Future<Void> storiesFuture = processStories(routingContext, context, storiesPath);
+		
+		// Wait for all three operations to complete
+		CompositeFuture.all(queriesFuture, usersFuture, storiesFuture)
+			.onSuccess(compositResult -> {
+				LOGGER.debug("All database operations completed successfully");
+				
+				// Now copy scripts folder (non-critical operation)
+				copyScriptsFolder(routingContext, pack_name);
+				
+				// Update pack deployment status
+				updatePackDeploymentStatus(context, pack_name)
+					.onSuccess(v -> promise.complete())
+					.onFailure(promise::fail);
+			})
+			.onFailure(err -> {
+				LOGGER.error("One or more database operations failed: " + err.getMessage());
+				promise.fail(err);
+			});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Process query inserts
+	 */
+	private Future<Void> processQueries(RoutingContext routingContext, Context context, String filePath)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		LOGGER.debug("Processing queries from: " + filePath);
+		
+		readJsonFile(routingContext.vertx(), filePath)
+			.compose(jo -> {
+				JsonArray ja_queries = jo.getJsonArray("queries");
+				if (ja_queries == null || ja_queries.isEmpty()) {
+					LOGGER.warn("No queries found in file");
+					return Future.succeededFuture();
+				}
+				
+				Pool pool = context.get("pool");
+				if (pool == null) {
+					LOGGER.debug("Pool is null - initializing");
+					new DatabaseController(routingContext.vertx());
+					pool = context.get("pool");
+				}
+				
+				return insertQueries(pool, ja_queries);
+			})
+			.onSuccess(v -> {
+				LOGGER.debug("All queries processed successfully");
+				promise.complete();
+			})
+			.onFailure(err -> {
+				LOGGER.error("Failed to process queries: " + err.getMessage());
+				promise.fail(err);
+			});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Insert all queries using CompositeFuture
+	 */
+	private Future<Void> insertQueries(Pool pool, JsonArray ja_queries)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		pool.getConnection(ar -> {
+			if (ar.failed()) {
+				promise.fail("Failed to get database connection: " + ar.cause().getMessage());
+				return;
+			}
+			
+			SqlConnection connection = ar.result();
+			List<Future> queryFutures = new ArrayList<>();
+			
+			for(int i = 0; i < ja_queries.size(); i++)
+			{
+				JsonObject queryObject = ja_queries.getJsonObject(i);
+				utils.thejasonengine.com.Encodings encodings = new utils.thejasonengine.com.Encodings();
+				
+				String query_string = queryObject.getString("query_string");
+				String encoded_query = encodings.EscapeString(query_string);
+				
+				Integer id = queryObject.getInteger("id");
+				String query_db_type = queryObject.getString("query_db_type");
+				String query_type = queryObject.getString("query_type");
+				String query_usecase = queryObject.getString("query_usecase");
+				Integer db_connection_id = queryObject.getInteger("db_connection_id");
+				Integer query_loop = queryObject.getInteger("query_loop");
+				String query_description = queryObject.getString("query_description");
+				String video_link = queryObject.getString("video_link");
+				
+				Promise<Void> queryPromise = Promise.promise();
+				
+				connection.preparedQuery("INSERT INTO public.tb_query(id, query_db_type, query_string, query_usecase, query_type, fk_tb_databaseConnections_id, query_loop, query_description, video_link) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)")
+					.execute(Tuple.of(id, query_db_type, encoded_query, query_usecase, query_type, db_connection_id, query_loop, query_description, video_link))
+					.onSuccess(res -> {
+						LOGGER.info("Successfully added query [" + id + "]");
+						queryPromise.complete();
+					})
+					.onFailure(err -> {
+						LOGGER.error("Failed to insert query [" + id + "]: " + err.getMessage());
+						queryPromise.fail(err);
+					});
+				
+				queryFutures.add(queryPromise.future());
+			}
+			
+			CompositeFuture.all(queryFutures)
+				.onComplete(result -> {
+					connection.close();
+					if (result.succeeded()) {
+						promise.complete();
+					} else {
+						promise.fail(result.cause());
+					}
+				});
+		});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Process user/connection inserts
+	 */
+	private Future<Void> processUsers(RoutingContext routingContext, Context context, String filePath)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		LOGGER.debug("Processing users from: " + filePath);
+		
+		readJsonFile(routingContext.vertx(), filePath)
+			.compose(jo -> {
+				JsonArray ja_users = jo.getJsonArray("users");
+				if (ja_users == null || ja_users.isEmpty()) {
+					LOGGER.warn("No users found in file");
+					return Future.succeededFuture();
+				}
+				
+				Pool pool = context.get("pool");
+				if (pool == null) {
+					LOGGER.debug("Pool is null - initializing");
+					new DatabaseController(routingContext.vertx());
+					pool = context.get("pool");
+				}
+				
+				return insertUsers(pool, ja_users);
+			})
+			.onSuccess(v -> {
+				LOGGER.debug("All users processed successfully");
+				promise.complete();
+			})
+			.onFailure(err -> {
+				LOGGER.error("Failed to process users: " + err.getMessage());
+				promise.fail(err);
+			});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Insert all users using CompositeFuture
+	 */
+	private Future<Void> insertUsers(Pool pool, JsonArray ja_users)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		pool.getConnection(ar -> {
+			if (ar.failed()) {
+				promise.fail("Failed to get database connection: " + ar.cause().getMessage());
+				return;
+			}
+			
+			SqlConnection connection = ar.result();
+			List<Future> userFutures = new ArrayList<>();
+			
+			for(int i = 0; i < ja_users.size(); i++)
+			{
+				JsonObject userObj = ja_users.getJsonObject(i);
+				
+				Integer id = userObj.getInteger("id");
+				String status = userObj.getString("status");
+				String db_type = userObj.getString("db_type");
+				String db_version = userObj.getString("db_version");
+				String db_username = userObj.getString("db_username");
+				String db_password = userObj.getString("db_password");
+				String db_port = userObj.getString("db_port");
+				String db_database = userObj.getString("db_database");
+				String db_url = userObj.getString("db_url");
+				String db_jdbcClassName = userObj.getString("db_jdbcClassName");
+				String db_userIcon = userObj.getString("db_userIcon");
+				String db_databaseIcon = userObj.getString("db_databaseIcon");
+				String db_alias = userObj.getString("db_alias");
+				String db_access = userObj.getString("db_access");
+				String db_connection_id = db_type + "_" + db_url + "_" + db_database + "_" + db_username;
+				
+				Promise<Void> userPromise = Promise.promise();
+				
+				connection.preparedQuery("INSERT INTO public.tb_databaseConnections(id, status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon, db_alias, db_access) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)")
+					.execute(Tuple.of(id, status, db_connection_id, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcClassName, db_userIcon, db_databaseIcon, db_alias, db_access))
+					.onSuccess(res -> {
+						LOGGER.info("Successfully added user connection [" + id + "]");
+						userPromise.complete();
+					})
+					.onFailure(err -> {
+						// Duplicate key is acceptable (connection already exists)
+						if (err.getMessage().contains("duplicate key")) {
+							LOGGER.info("User connection [" + id + "] already exists (acceptable)");
+							userPromise.complete();
+						} else {
+							LOGGER.error("Failed to insert user connection [" + id + "]: " + err.getMessage());
+							userPromise.fail(err);
+						}
+					});
+				
+				userFutures.add(userPromise.future());
+			}
+			
+			CompositeFuture.all(userFutures)
+				.onComplete(result -> {
+					connection.close();
+					if (result.succeeded()) {
+						promise.complete();
+					} else {
+						promise.fail(result.cause());
+					}
+				});
+		});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Process story inserts
+	 */
+	private Future<Void> processStories(RoutingContext routingContext, Context context, String filePath)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		LOGGER.debug("Processing stories from: " + filePath);
+		
+		readJsonFile(routingContext.vertx(), filePath)
+			.compose(jo -> {
+				JsonArray ja_stories = jo.getJsonArray("stories");
+				if (ja_stories == null || ja_stories.isEmpty()) {
+					LOGGER.warn("No stories found in file");
+					return Future.succeededFuture();
+				}
+				
+				Pool pool = context.get("pool");
+				if (pool == null) {
+					LOGGER.debug("Pool is null - initializing");
+					new DatabaseController(routingContext.vertx());
+					pool = context.get("pool");
+				}
+				
+				return insertStories(pool, ja_stories);
+			})
+			.onSuccess(v -> {
+				LOGGER.debug("All stories processed successfully");
+				promise.complete();
+			})
+			.onFailure(err -> {
+				LOGGER.error("Failed to process stories: " + err.getMessage());
+				promise.fail(err);
+			});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Insert all stories using CompositeFuture
+	 */
+	private Future<Void> insertStories(Pool pool, JsonArray ja_stories)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		pool.getConnection(ar -> {
+			if (ar.failed()) {
+				promise.fail("Failed to get database connection: " + ar.cause().getMessage());
+				return;
+			}
+			
+			SqlConnection connection = ar.result();
+			List<Future> storyFutures = new ArrayList<>();
+			
+			for(int i = 0; i < ja_stories.size(); i++)
+			{
+				JsonObject storyObj = ja_stories.getJsonObject(i);
+				Integer id = storyObj.getInteger("id");
+				JsonObject story = storyObj.getJsonObject("story");
+				
+				Promise<Void> storyPromise = Promise.promise();
+				
+				connection.preparedQuery("INSERT INTO public.tb_stories(id, story) VALUES ($1, $2)")
+					.execute(Tuple.of(id, story))
+					.onSuccess(res -> {
+						LOGGER.info("Successfully added story [" + id + "]");
+						storyPromise.complete();
+					})
+					.onFailure(err -> {
+						LOGGER.error("Failed to insert story [" + id + "]: " + err.getMessage());
+						storyPromise.fail(err);
+					});
+				
+				storyFutures.add(storyPromise.future());
+			}
+			
+			CompositeFuture.all(storyFutures)
+				.onComplete(result -> {
+					connection.close();
+					if (result.succeeded()) {
+						promise.complete();
+					} else {
+						promise.fail(result.cause());
+					}
+				});
+		});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Copy scripts folder (non-critical operation)
+	 */
+	private void copyScriptsFolder(RoutingContext routingContext, String pack_name)
+	{
+		try
+		{
+			String jarDir = new File(getClass()
+			        .getProtectionDomain()
+			        .getCodeSource()
+			        .getLocation()
+			        .toURI())
+			        .getParent();
+
+			Path srcfolderPath = Paths.get(jarDir, "/contentpacks/" + pack_name + "/scripts");
+			String sourceFolder = srcfolderPath.toString();
+			
+			Path dstfolderPath = Paths.get(jarDir, "/scripts/" + pack_name);
+		   	String destinationFolder = dstfolderPath.toString();
+		   	
+		   	LOGGER.debug("Copying scripts from: " + sourceFolder + " to: " + destinationFolder);
+		   	
+		    FolderCopier.copyFolder(routingContext.vertx(), sourceFolder, destinationFolder, res -> 
+		    {
+		      if (res.succeeded()) {
+		    	  LOGGER.debug("Scripts folder copied successfully");
+		      } else {
+		    	  LOGGER.warn("Failed to copy scripts folder (non-critical): " + res.cause().getMessage());
+		      }
+		    });
+		}
+		catch(Exception e)
+		{
+			LOGGER.warn("Unable to copy scripts folder (non-critical): " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Update pack deployment status
+	 */
+	private Future<Void> updatePackDeploymentStatus(Context context, String pack_name)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		Pool pool = context.get("pool");
+		if (pool == null) {
+			LOGGER.debug("Pool is null - initializing");
+			new DatabaseController(null);
+			pool = context.get("pool");
+		}
+		
+		pool.getConnection(ar -> {
+			if (ar.failed()) {
+				promise.fail("Failed to get database connection: " + ar.cause().getMessage());
+				return;
+			}
+			
+			SqlConnection connection = ar.result();
+			String sql = "UPDATE public.tb_content_packs SET pack_deployed = 'true' WHERE pack_name = $1";
+			
+			connection.preparedQuery(sql)
+				.execute(Tuple.of(pack_name))
+				.onComplete(result -> {
+					connection.close();
+					if (result.succeeded()) {
+						LOGGER.debug("Pack deployment status updated for: " + pack_name);
+						promise.complete();
+					} else {
+						LOGGER.error("Failed to update pack deployment status: " + result.cause().getMessage());
+						promise.fail(result.cause());
+					}
+				});
+		});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Uninstall handler with proper async coordination
+	 */
 	public void handleUninstallContentPack(RoutingContext routingContext)
 	{
 		LOGGER.debug("inside: handleUninstallContentPack ");
 		Context context = routingContext.vertx().getOrCreateContext();
-		JsonObject result = new JsonObject();
 		HttpServerResponse response = routingContext.response();
 		JsonObject JSONpayload = routingContext.getBodyAsJson();
 		
-		if (JSONpayload.getString("jwt") == null || JSONpayload.getString("pack_name") == null) 
+		if (JSONpayload.getString("jwt") == null || JSONpayload.getString("pack_name") == null)
 	    {
-	    	LOGGER.info("handleInstallContentPack required fields not detected (jwt or pack_name)");
-	    	routingContext.fail(400); //THIS IS AN UNGRACEFUL ERROR - should be fixed.
-	    } 
-		else
-		{
-			if(SetupPostHandlers.validateJWTToken(JSONpayload))
-			{
-				LOGGER.info("User permitted to access handleInstallContentPack (JWT Check PASS)");
-				result.put("jwt_response", "User permitted to access handleInstallContentPack (JWT Check PASS)");
-				
-				LOGGER.info("jwt: " + JSONpayload.getString("jwt") );
-				String [] chunks = JSONpayload.getString("jwt").split("\\.");
-				JsonObject payload = new JsonObject(SetupPostHandlers.decode(chunks[1]));
-				LOGGER.info("Payload: " + payload );
-				
-				int authlevel  = Integer.parseInt(payload.getString("authlevel"));
-				
-				LOGGER.info("Accessible Level is : " + authlevel);
-			       
-				if(authlevel >= 1)
-		        {
-					LOGGER.debug("User has correct access level");
-					result.put("access_response", "User has correct access level (Access Check PASS");
-		        
-					/*read the json file*/
-					String pack_name = JSONpayload.getString("pack_name");
-					LOGGER.debug("Attempting uninstall process for pack_name: " + pack_name);
-					
-					Path currRelativePath = Paths.get("");
-			        String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
-			        
-			        
-			        String filePath = currAbsolutePathString + "/contentpacks/" + pack_name + "/sql/uninstall.json";
-			        LOGGER.debug("System execution path is: " + filePath);
-			        
-			       
-			        readJsonFile(routingContext.vertx(), filePath)
-			        .onComplete(ar -> 
-			        {
-			        	JsonObject jo = ar.result();
-			        	JsonArray users = jo.getJsonArray("users");
-			        	JsonArray queries = jo.getJsonArray("queries");
-			        	JsonArray stories = jo.getJsonArray("stories");
-			        	
-			        	Pool pool = context.get("pool");
-			            if (pool == null)
-			        	{
-			        		LOGGER.debug("poll is null - restarting");
-			        		DatabaseController DB = new DatabaseController(routingContext.vertx());
-			        		LOGGER.debug("Taking the refreshed context pool object");
-			        		pool = context.get("pool");
-			        	}
-			            pool.getConnection(asyncreq -> 
-						{	
-								if (asyncreq.succeeded()) 
-						        {
-									SqlConnection connection = asyncreq.result();
-									
-									for(int i = 0; i < users.size(); i++ )
-									{
-										JsonObject user = users.getJsonObject(i);
-										
-										String sql = "delete from public.tb_databaseconnections where id = $1";
-			                            connection.preparedQuery(sql)
-			                            .execute(Tuple.of(user.getInteger("id")))
-			                            .onSuccess(res3 -> {
-			                            	LOGGER.debug("user id: " + user.getInteger("id") + " tb_databaseconnections removed from database");
-			                            })
-			                            .onFailure(err -> {
-			                            	LOGGER.error("user id: " + user.getInteger("id") + " tb_databaseconnections not removed from database " + err.getLocalizedMessage());
-			                            });
-			                         }
-									
-									for(int i = 0; i < queries.size(); i++ )
-									{
-										JsonObject query = queries.getJsonObject(i);
-										
-										String sql = "delete from public.tb_query where id = $1";
-			                            connection.preparedQuery(sql)
-			                            .execute(Tuple.of(query.getInteger("id")))
-			                            .onSuccess(res3 -> {
-			                            	LOGGER.debug("query id: " + query.getInteger("id") + " tb_query removed from database");
-			                            })
-			                            .onFailure(err -> {
-			                            	LOGGER.error("query id: " + query.getInteger("id") + " tb_query not removed from database " + err.getLocalizedMessage());
-			                            });
-									}
-									for(int i = 0; i < stories.size(); i++ )
-									{
-										JsonObject story = stories.getJsonObject(i);
-										
-										String sql = "delete from public.tb_stories where id = $1";
-			                            connection.preparedQuery(sql)
-			                            .execute(Tuple.of(story.getInteger("id")))
-			                            .onSuccess(res3 -> {
-			                            	LOGGER.debug("story id: " + story.getInteger("id") + " tb_stories removed from database");
-			                            })
-			                            .onFailure(err -> {
-			                            	LOGGER.error("story id: " + story.getInteger("id") + " tb_stories not removed from database " + err.getLocalizedMessage());
-			                            });	
-									}
-									
-						        }
-						});
-			        });
-			        
-			        try
-					{
-						String jarDir = new File(getClass()
-						        .getProtectionDomain()
-						        .getCodeSource()
-						        .getLocation()
-						        .toURI())
-						        .getParent();
-			
-			        Path dstfolderPath = Paths.get(jarDir, "/scripts/" + pack_name);
-				   	String destinationFolder = dstfolderPath.toString();
-				   	LOGGER.debug("Creating content in: " + destinationFolder);
-				   	
-				  
-				        utils.thejasonengine.com.FolderDelete.deleteDirectory(routingContext.vertx(), destinationFolder, res -> 
-				        {
-				        	if (res.succeeded()) 
-						    {
-						    	  LOGGER.debug("Folder deleted successfully: " + destinationFolder );
-						    } 
-						    else 
-						    {
-						    	  LOGGER.error("Failed to delete folder: " + res.cause());
-						    }
-				        });
-					}
-			        catch(Exception e)
-			        {
-			        	LOGGER.error("Unable to delete directory: " + e.toString());
-			        }
-			        
-			        /***************************/
-			        Pool pool = context.get("pool");
-		            if (pool == null)
-		        	{
-		        		LOGGER.debug("poll is null - restarting");
-		        		DatabaseController DB = new DatabaseController(routingContext.vertx());
-		        		LOGGER.debug("Taking the refreshed context pool object");
-		        		pool = context.get("pool");
-		        	}
-		            pool.getConnection(asyncreq -> 
-					{	
-							if (asyncreq.succeeded()) 
-					        {
-								SqlConnection connection = asyncreq.result();
-								String sql = "UPDATE public.tb_content_packs SET pack_deployed = 'false' WHERE pack_name = $1";
-		                        connection.preparedQuery(sql)
-		                        .execute(Tuple.of(pack_name))
-		                            .onSuccess(res3 -> {
-		                            	LOGGER.debug("Pack_name: " + pack_name+ " tb_content_packs deployment updated to false");
-		                            })
-		                            .onFailure(err -> {
-		                            	LOGGER.error("Pack_name: " + pack_name+ " tb_content_packs deployment status failed to update" + err.getLocalizedMessage());
-		                            });
-					        }
-					});
-			        
-			        
-		        }
-			}
-		}
-		response.send("{\"result\":\"Operation submitted\"}");
-	}
-	/******************************************************************************/
-	 public static Future<List<String>> readLines(Vertx vertx, String filePath) 
-	 {
-	        Promise<List<String>> promise = Promise.promise();
-	        List<String> lines = new ArrayList<>();
-
-	        vertx.fileSystem().open(filePath, new OpenOptions(), result -> {
-	            if (result.succeeded()) {
-	                AsyncFile file = result.result();
-	                RecordParser parser = RecordParser.newDelimited("\n", file);
-
-	                parser.handler(buffer -> {
-	                    String line = buffer.toString().trim();
-	                    lines.add(line);
-	                });
-
-	                parser.endHandler(v -> {
-	                    file.close();
-	                    promise.complete(lines);
-	                });
-
-	                parser.exceptionHandler(err -> {
-	                    file.close();
-	                    promise.fail(err);
-	                });
-
-	            } else {
-	                promise.fail(result.cause());
-	            }
-	        });
-
-	        return promise.future();
+	    	LOGGER.info("handleUninstallContentPack required fields not detected (jwt or pack_name)");
+	    	routingContext.fail(400);
+	    	return;
 	    }
-	 public static Future<JsonObject> readJsonFile(Vertx vertx, String filePath) 
-	 {
-	     LOGGER.debug("Reading JSON File: ", filePath); 
+		
+		if(!SetupPostHandlers.validateJWTToken(JSONpayload))
+		{
+			LOGGER.error("JWT validation failed");
+			routingContext.fail(401);
+			return;
+		}
+		
+		LOGGER.info("User permitted to access handleUninstallContentPack (JWT Check PASS)");
+		String [] chunks = JSONpayload.getString("jwt").split("\\.");
+		JsonObject payload = new JsonObject(SetupPostHandlers.decode(chunks[1]));
+		int authlevel  = Integer.parseInt(payload.getString("authlevel"));
+		
+		if(authlevel < 1)
+		{
+			LOGGER.error("User has insufficient access level: " + authlevel);
+			routingContext.fail(403);
+			return;
+		}
+		
+		String pack_name = JSONpayload.getString("pack_name");
+		LOGGER.debug("Attempting uninstall process for pack_name: " + pack_name);
+		
+		Path currRelativePath = Paths.get("");
+	       String currAbsolutePathString = currRelativePath.toAbsolutePath().toString();
+	       String uninstallFilePath = currAbsolutePathString + "/contentpacks/" + pack_name + "/sql/uninstall.json";
+	       
+	       // Start the uninstallation process with proper async coordination
+	       uninstallContentPackAsync(routingContext, context, pack_name, uninstallFilePath)
+	       	.onSuccess(uninstallResult -> {
+	       		LOGGER.info("Content pack uninstallation completed successfully: " + pack_name);
+	       		response.putHeader("content-type", "application/json")
+	       			.end(new JsonObject()
+	       				.put("result", "success")
+	       				.put("message", "Content pack uninstalled successfully")
+	       				.put("pack_name", pack_name)
+	       				.encode());
+	       	})
+	       	.onFailure(err -> {
+	       		LOGGER.error("Content pack uninstallation failed: " + err.getMessage(), err);
+	       		if (!response.ended()) {
+	       			response.setStatusCode(500)
+	       				.putHeader("content-type", "application/json")
+	       				.end(new JsonObject()
+	       					.put("result", "error")
+	       					.put("message", "Uninstallation failed: " + err.getMessage())
+	       					.encode());
+	       		}
+	       	});
+	}
+	
+	/**
+	 * Coordinates all async operations for content pack uninstallation
+	 */
+	private Future<Void> uninstallContentPackAsync(RoutingContext routingContext, Context context,
+			String pack_name, String uninstallFilePath)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		// Read uninstall.json to get IDs to remove
+		readJsonFile(routingContext.vertx(), uninstallFilePath)
+			.compose(uninstallData -> {
+				// Delete scripts folder
+				deleteScriptsFolder(routingContext, pack_name);
+				
+				// Remove from database
+				return removePackFromDatabase(context, pack_name, uninstallData);
+			})
+			.compose(v -> {
+				// Update pack deployment status
+				return updatePackDeploymentStatus(context, pack_name, false);
+			})
+			.onSuccess(v -> {
+				LOGGER.debug("All uninstall operations completed successfully");
+				promise.complete();
+			})
+			.onFailure(err -> {
+				LOGGER.error("Uninstall operations failed: " + err.getMessage());
+				promise.fail(err);
+			});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Remove pack data from database
+	 */
+	private Future<Void> removePackFromDatabase(Context context, String pack_name, JsonObject uninstallData)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		Pool pool = context.get("pool");
+		if (pool == null) {
+			LOGGER.debug("Pool is null - initializing");
+			new DatabaseController(null);
+			pool = context.get("pool");
+		}
+		
+		pool.getConnection(ar -> {
+			if (ar.failed()) {
+				promise.fail("Failed to get database connection: " + ar.cause().getMessage());
+				return;
+			}
+			
+			SqlConnection connection = ar.result();
+			List<Future> deleteFutures = new ArrayList<>();
+			
+			// Delete users/connections
+			JsonArray ja_users = uninstallData.getJsonArray("users");
+			if (ja_users != null) {
+				for(int i = 0; i < ja_users.size(); i++) {
+					JsonObject userObj = ja_users.getJsonObject(i);
+					Integer id = userObj.getInteger("id");
+					
+					Promise<Void> deletePromise = Promise.promise();
+					connection.preparedQuery("DELETE FROM public.tb_databaseConnections WHERE id = $1")
+						.execute(Tuple.of(id))
+						.onSuccess(res -> {
+							LOGGER.debug("user id: " + id + " tb_databaseconnections removed from database");
+							deletePromise.complete();
+						})
+						.onFailure(err -> {
+							LOGGER.warn("Failed to delete user connection [" + id + "]: " + err.getMessage());
+							deletePromise.complete(); // Continue even if delete fails
+						});
+					deleteFutures.add(deletePromise.future());
+				}
+			}
+			
+			// Delete queries
+			JsonArray ja_queries = uninstallData.getJsonArray("queries");
+			if (ja_queries != null) {
+				for(int i = 0; i < ja_queries.size(); i++) {
+					JsonObject queryObj = ja_queries.getJsonObject(i);
+					Integer id = queryObj.getInteger("id");
+					
+					Promise<Void> deletePromise = Promise.promise();
+					connection.preparedQuery("DELETE FROM public.tb_query WHERE id = $1")
+						.execute(Tuple.of(id))
+						.onSuccess(res -> {
+							LOGGER.debug("query id: " + id + " tb_query removed from database");
+							deletePromise.complete();
+						})
+						.onFailure(err -> {
+							LOGGER.warn("Failed to delete query [" + id + "]: " + err.getMessage());
+							deletePromise.complete(); // Continue even if delete fails
+						});
+					deleteFutures.add(deletePromise.future());
+				}
+			}
+			
+			// Delete stories
+			JsonArray ja_stories = uninstallData.getJsonArray("stories");
+			if (ja_stories != null) {
+				for(int i = 0; i < ja_stories.size(); i++) {
+					JsonObject storyObj = ja_stories.getJsonObject(i);
+					Integer id = storyObj.getInteger("id");
+					
+					Promise<Void> deletePromise = Promise.promise();
+					connection.preparedQuery("DELETE FROM public.tb_stories WHERE id = $1")
+						.execute(Tuple.of(id))
+						.onSuccess(res -> {
+							LOGGER.debug("story id: " + id + " tb_stories removed from database");
+							deletePromise.complete();
+						})
+						.onFailure(err -> {
+							LOGGER.warn("Failed to delete story [" + id + "]: " + err.getMessage());
+							deletePromise.complete(); // Continue even if delete fails
+						});
+					deleteFutures.add(deletePromise.future());
+				}
+			}
+			
+			CompositeFuture.all(deleteFutures)
+				.onComplete(result -> {
+					connection.close();
+					if (result.succeeded()) {
+						promise.complete();
+					} else {
+						promise.fail(result.cause());
+					}
+				});
+		});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Delete scripts folder (non-critical operation)
+	 */
+	private void deleteScriptsFolder(RoutingContext routingContext, String pack_name)
+	{
+		try
+		{
+			String jarDir = new File(getClass()
+			        .getProtectionDomain()
+			        .getCodeSource()
+			        .getLocation()
+			        .toURI())
+			        .getParent();
+
+			Path dstfolderPath = Paths.get(jarDir, "/scripts/" + pack_name);
+		   	String destinationFolder = dstfolderPath.toString();
+		   	
+		   	LOGGER.debug("Deleting scripts folder: " + destinationFolder);
+		   	
+		    utils.thejasonengine.com.FolderDelete.deleteDirectory(routingContext.vertx(), destinationFolder, res ->
+		    {
+		      if (res.succeeded()) {
+		    	  LOGGER.debug("Folder deleted successfully: " + destinationFolder);
+		      } else {
+		    	  LOGGER.warn("Failed to delete scripts folder (non-critical): " + res.cause().getMessage());
+		      }
+		    });
+		}
+		catch(Exception e)
+		{
+			LOGGER.warn("Unable to delete scripts folder (non-critical): " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Update pack deployment status (overloaded for uninstall)
+	 */
+	private Future<Void> updatePackDeploymentStatus(Context context, String pack_name, boolean deployed)
+	{
+		Promise<Void> promise = Promise.promise();
+		
+		Pool pool = context.get("pool");
+		if (pool == null) {
+			LOGGER.debug("Pool is null - initializing");
+			new DatabaseController(null);
+			pool = context.get("pool");
+		}
+		
+		pool.getConnection(ar -> {
+			if (ar.failed()) {
+				promise.fail("Failed to get database connection: " + ar.cause().getMessage());
+				return;
+			}
+			
+			SqlConnection connection = ar.result();
+			String sql = "UPDATE public.tb_content_packs SET pack_deployed = $1 WHERE pack_name = $2";
+			
+			connection.preparedQuery(sql)
+				.execute(Tuple.of(String.valueOf(deployed), pack_name))
+				.onComplete(result -> {
+					connection.close();
+					if (result.succeeded()) {
+						LOGGER.debug("Pack_name: " + pack_name + " tb_content_packs deployment updated to " + deployed);
+						promise.complete();
+					} else {
+						LOGGER.error("Failed to update pack deployment status: " + result.cause().getMessage());
+						promise.fail(result.cause());
+					}
+				});
+		});
+		
+		return promise.future();
+	}
+	
+	/**
+	 * Read JSON file helper
+	 */
+	public static Future<JsonObject> readJsonFile(Vertx vertx, String filePath) 
+	{
+	     LOGGER.debug("Reading JSON File: " + filePath); 
 		 Promise<JsonObject> promise = Promise.promise();
 	      vertx.fileSystem().readFile(filePath, ar -> 
 	      {
@@ -635,15 +816,14 @@ public class ContentPackHandler
 	   	   	{
 	       	    Buffer buffer = ar.result();
 	       	    JsonObject json = buffer.toJsonObject();
-	       	    //LOGGER.debug("JSON: " + json.encodePrettily());
 	       	    promise.complete(json);
 	   	   	} 
 	   	   	else 
 	   	   	{
-	   	   		LOGGER.error("Failed to read file: " +filePath+" - "+ ar.cause().getMessage());
-	   	   		promise.fail("Failed to read file: " +filePath+" - "+ ar.cause().getMessage());
+	   	   		LOGGER.error("Failed to read file: " + filePath + " - " + ar.cause().getMessage());
+	   	   		promise.fail("Failed to read file: " + filePath + " - " + ar.cause().getMessage());
 	   	   	}
 	      });
 		  return promise.future();
-	 }
+	}
 }

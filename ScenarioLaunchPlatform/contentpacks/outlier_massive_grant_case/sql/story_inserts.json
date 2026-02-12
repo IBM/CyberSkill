@@ -1,0 +1,154 @@
+{
+  "stories": [
+    {
+      "id": 1501,
+      "story": {
+        "name": "MySQL Massive GRANT Anomaly - Time-Based Pattern (5 Hours)",
+        "description": "Simulates normal GRANT baseline (1 grant/hour for 4 hours) followed by massive GRANT spike (21 grants in hour 5) to detect privilege escalation. Pattern: 1 GRANT \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 1 GRANT \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 1 GRANT \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 1 GRANT \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 21 GRANT SPIKE",
+        "story": [
+          {
+            "query_id": 1501,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1502,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Database and Objects 1-5"
+          },
+          {
+            "query_id": 1503,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Objects 6-25"
+          },
+          {
+            "query_id": 1504,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Test Users"
+          },
+          {
+            "query_id": 1505,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 1 - GRANT on Object 1"
+          },
+          {
+            "query_id": 1506,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 2 - GRANT on Object 2"
+          },
+          {
+            "query_id": 1507,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 3 - GRANT on Object 3"
+          },
+          {
+            "query_id": 1508,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 4 - GRANT on Object 4"
+          },
+          {
+            "query_id": 1509,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 21 GRANTs on Multiple Objects"
+          },
+          {
+            "query_id": 1510,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Verify GRANT Operations"
+          },
+          {
+            "query_id": 1511,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    },
+    {
+      "id": 1502,
+      "story": {
+        "name": "MySQL Massive GRANT Anomaly - Quick Demo (5 sec pauses)",
+        "description": "Quick demonstration version with 5-second pauses. Same pattern: 1 grant per hour baseline followed by 21-grant spike to detect privilege escalation.",
+        "story": [
+          {
+            "query_id": 1501,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1502,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Database and Objects 1-5"
+          },
+          {
+            "query_id": 1503,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Objects 6-25"
+          },
+          {
+            "query_id": 1504,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Test Users"
+          },
+          {
+            "query_id": 1505,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 1 - GRANT on Object 1"
+          },
+          {
+            "query_id": 1506,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 2 - GRANT on Object 2"
+          },
+          {
+            "query_id": 1507,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 3 - GRANT on Object 3"
+          },
+          {
+            "query_id": 1508,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 4 - GRANT on Object 4"
+          },
+          {
+            "query_id": 1509,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 21 GRANTs on Multiple Objects"
+          },
+          {
+            "query_id": 1510,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Verify GRANT Operations"
+          },
+          {
+            "query_id": 1511,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    }
+  ]
+}

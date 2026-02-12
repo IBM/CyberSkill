@@ -1,0 +1,142 @@
+{
+  "stories": [
+    {
+      "id": 1601,
+      "story": {
+        "name": "MySQL Data Leak Command Anomaly - Time-Based Pattern (5 Hours)",
+        "description": "Simulates normal SELECT baseline (50/hour for 4 hours) followed by massive SELECT spike (1000 operations in hour 5) to detect data exfiltration. Pattern: Setup \u00e2\u2020\u2019 50 SELECTs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 50 SELECTs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 50 SELECTs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 50 SELECTs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 1000 SELECT SPIKE",
+        "story": [
+          {
+            "query_id": 1601,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1602,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Table"
+          },
+          {
+            "query_id": 1603,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Insert 10000 Test Records"
+          },
+          {
+            "query_id": 1604,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 SELECTs"
+          },
+          {
+            "query_id": 1605,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 SELECTs"
+          },
+          {
+            "query_id": 1606,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 SELECTs"
+          },
+          {
+            "query_id": 1607,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 SELECTs"
+          },
+          {
+            "query_id": 1608,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 1000 Rapid SELECTs (Data Exfiltration)"
+          },
+          {
+            "query_id": 1609,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Verify Table Statistics"
+          },
+          {
+            "query_id": 1610,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    },
+    {
+      "id": 1602,
+      "story": {
+        "name": "MySQL Data Leak Command Anomaly - Quick Demo (5 sec pauses)",
+        "description": "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline SELECTs followed by massive spike to detect data exfiltration attempts.",
+        "story": [
+          {
+            "query_id": 1601,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1602,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Table"
+          },
+          {
+            "query_id": 1603,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Insert 10000 Test Records"
+          },
+          {
+            "query_id": 1604,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 SELECTs"
+          },
+          {
+            "query_id": 1605,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 SELECTs"
+          },
+          {
+            "query_id": 1606,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 SELECTs"
+          },
+          {
+            "query_id": 1607,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 SELECTs"
+          },
+          {
+            "query_id": 1608,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 1000 Rapid SELECTs (Data Exfiltration)"
+          },
+          {
+            "query_id": 1609,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Verify Table Statistics"
+          },
+          {
+            "query_id": 1610,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    }
+  ]
+}

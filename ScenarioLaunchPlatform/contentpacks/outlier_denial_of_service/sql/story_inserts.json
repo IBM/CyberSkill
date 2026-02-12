@@ -1,0 +1,142 @@
+{
+  "stories": [
+    {
+      "id": 1801,
+      "story": {
+        "name": "MySQL Denial of Service (DoS) - Time-Based Pattern (5 Hours)",
+        "description": "Simulates normal query baseline (1001 queries/hour for 4 hours) followed by massive DoS spike (205000 queries in hour 5) to detect resource exhaustion attacks. Pattern: 1001 queries \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 1001 queries \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 1001 queries \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 1001 queries \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 205000 QUERY SPIKE",
+        "story": [
+          {
+            "query_id": 1801,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1802,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Table"
+          },
+          {
+            "query_id": 1803,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Insert 10000 Test Records"
+          },
+          {
+            "query_id": 1804,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 1 - 1001 Queries"
+          },
+          {
+            "query_id": 1805,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 2 - 1001 Queries"
+          },
+          {
+            "query_id": 1806,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 3 - 1001 Queries"
+          },
+          {
+            "query_id": 1807,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 4 - 1001 Queries"
+          },
+          {
+            "query_id": 1808,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_127.0.0.1_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 205000 Queries (DoS Attack)"
+          },
+          {
+            "query_id": 1809,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Verify Table Statistics"
+          },
+          {
+            "query_id": 1810,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    },
+    {
+      "id": 1802,
+      "story": {
+        "name": "MySQL Denial of Service (DoS) - Quick Demo (5 sec pauses)",
+        "description": "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline (1001 queries each) followed by massive 205000-query spike to detect DoS attacks.",
+        "story": [
+          {
+            "query_id": 1801,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1802,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Create Table"
+          },
+          {
+            "query_id": 1803,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Insert 10000 Test Records"
+          },
+          {
+            "query_id": 1804,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 1 - 1001 Queries"
+          },
+          {
+            "query_id": 1805,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 2 - 1001 Queries"
+          },
+          {
+            "query_id": 1806,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 3 - 1001 Queries"
+          },
+          {
+            "query_id": 1807,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_127.0.0.1_crm_polly",
+            "chapter": "Baseline Hour 4 - 1001 Queries"
+          },
+          {
+            "query_id": 1808,
+            "pause_in_seconds": 30000,
+            "datasource": "mysql_127.0.0.1_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 205000 Queries (DoS Attack)"
+          },
+          {
+            "query_id": 1809,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Verify Table Statistics"
+          },
+          {
+            "query_id": 1810,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_127.0.0.1_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    }
+  ]
+}

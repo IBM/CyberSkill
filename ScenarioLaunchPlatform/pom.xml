@@ -5,16 +5,22 @@
   <version>0.0.1-SNAPSHOT</version>
   
   <properties>
-    <vertx.version>4.5.24</vertx.version>
+    <vertx.version>4.5.11</vertx.version>
     <vertx.verticle>service.thejasonengine.com.WebVerticle</vertx.verticle>
     <vertx-maven-plugin.version>1.0.13</vertx-maven-plugin.version>
     <log4j-api.version>2.25.1</log4j-api.version>
-    <log4j-core.version>2.25.3</log4j-core.version>
+    <log4j-core.version>2.25.1</log4j-core.version>
     <postgresql.version>42.7.7</postgresql.version>
     <mysql-connector-j.version>9.4.0</mysql-connector-j.version>
   </properties>
 
-  
+  <repositories>
+    <repository>
+        <id>jboss-public</id>
+        <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+    </repository>
+</repositories>
+
   
   
   
@@ -35,11 +41,21 @@
       <artifactId>postgresql</artifactId>
       <version>${postgresql.version}</version>
     </dependency>
-	<dependency>
-	 <groupId>com.ongres.scram</groupId>
-	 <artifactId>client</artifactId>
-	 <version>2.1</version>
-	</dependency>
+	<!-- Source: https://mvnrepository.com/artifact/com.ongres.scram/scram-common -->
+<dependency>
+    <groupId>com.ongres.scram</groupId>
+    <artifactId>common</artifactId>
+    <version>2.1</version>
+    <scope>compile</scope>
+</dependency>
+<!-- Source: https://mvnrepository.com/artifact/com.ongres.scram/scram-client -->
+<dependency>
+    <groupId>com.ongres.scram</groupId>
+    <artifactId>client</artifactId>
+    <version>2.1</version>
+    <scope>compile</scope>
+</dependency>
+
     <!-- Vert.x Core dependency -->
     <dependency>
         <groupId>io.vertx</groupId>
@@ -80,7 +96,7 @@
 	<dependency>
 	    <groupId>com.microsoft.sqlserver</groupId>
 	    <artifactId>mssql-jdbc</artifactId>
-	    <version>12.6.5.jre11</version> <!-- or match your JDK version -->
+	    <version>12.6.1.jre11</version> <!-- or match your JDK version -->
   	</dependency>
 	
  <dependency>
@@ -230,6 +246,126 @@
         </configuration>
       </plugin>
      
+      <!-- Maven AntRun Plugin for SSH Deployment -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>deploy-to-remote</id>
+            <phase>deploy</phase>
+            <configuration>
+              <target>
+                <!-- Stop running application -->
+                <sshexec
+                  host="${deploy.host}"
+                  username="${deploy.username}"
+                  password="${deploy.password}"
+                  trust="true"
+                  command="pkill -9 -f slp-0.0.1-SNAPSHOT.jar || true" />
+                
+                <!-- Create backup of existing JAR -->
+                <sshexec
+                  host="${deploy.host}"
+                  username="${deploy.username}"
+                  password="${deploy.password}"
+                  trust="true"
+                  command="mkdir -p ${deploy.path}/backups &amp;&amp; if [ -f ${deploy.path}/slp-0.0.1-SNAPSHOT.jar ]; then cp ${deploy.path}/slp-0.0.1-SNAPSHOT.jar ${deploy.path}/backups/slp-0.0.1-SNAPSHOT_$(date +%Y%m%d_%H%M%S).jar; fi" />
+                
+                <!-- Deploy JAR file -->
+                <scp
+                  file="target/slp-0.0.1-SNAPSHOT.jar"
+                  todir="${deploy.username}@${deploy.host}:${deploy.path}"
+                  trust="true"
+                  password="${deploy.password}" />
+                
+                <!-- Deploy configuration and supporting files -->
+                <scp
+                  todir="${deploy.username}@${deploy.host}:${deploy.path}"
+                  trust="true"
+                  password="${deploy.password}">
+                  <fileset dir=".">
+                    <include name="config.json"/>
+                    <include name="outlier-config-example.json"/>
+                  </fileset>
+                </scp>
+                
+                <!-- Deploy database folder -->
+                <scp
+                  todir="${deploy.username}@${deploy.host}:${deploy.path}"
+                  trust="true"
+                  password="${deploy.password}">
+                  <fileset dir="database">
+                    <include name="**/*"/>
+                  </fileset>
+                </scp>
+                
+                <!-- Deploy scripts folder -->
+                <scp
+                  todir="${deploy.username}@${deploy.host}:${deploy.path}"
+                  trust="true"
+                  password="${deploy.password}">
+                  <fileset dir="scripts">
+                    <include name="**/*"/>
+                  </fileset>
+                </scp>
+                
+                <!-- Deploy contentpacks folder -->
+                <scp
+                  todir="${deploy.username}@${deploy.host}:${deploy.path}"
+                  trust="true"
+                  password="${deploy.password}">
+                  <fileset dir="contentpacks">
+                    <include name="**/*"/>
+                  </fileset>
+                </scp>
+                
+                <!-- Deploy outliers folder -->
+                <scp
+                  todir="${deploy.username}@${deploy.host}:${deploy.path}"
+                  trust="true"
+                  password="${deploy.password}">
+                  <fileset dir="outliers">
+                    <include name="**/*"/>
+                  </fileset>
+                </scp>
+                
+                <!-- Create necessary directories and set permissions -->
+                <sshexec
+                  host="${deploy.host}"
+                  username="${deploy.username}"
+                  password="${deploy.password}"
+                  trust="true"
+                  command="cd ${deploy.path} &amp;&amp; mkdir -p uploads file-uploads outliers-uploads logs &amp;&amp; chmod 755 uploads file-uploads outliers-uploads logs &amp;&amp; if [ -d scripts ]; then chmod +x scripts/*.sh 2>/dev/null || true; fi" />
+                
+                <!-- Start application if auto-start is enabled -->
+                <sshexec
+                  host="${deploy.host}"
+                  username="${deploy.username}"
+                  password="${deploy.password}"
+                  trust="true"
+                  command="if [ '${deploy.autostart}' = 'true' ]; then cd ${deploy.path} &amp;&amp; nohup java -jar slp-0.0.1-SNAPSHOT.jar > /dev/null 2>&amp;1 &amp; sleep 3 &amp;&amp; if pgrep -f slp-0.0.1-SNAPSHOT.jar > /dev/null; then echo 'Application started successfully'; else echo 'Warning: Application may not have started'; fi; fi" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-jsch</artifactId>
+            <version>1.10.14</version>
+          </dependency>
+          <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.55</version>
+          </dependency>
+        </dependencies>
+      </plugin>
       
     </plugins>
   </build>
