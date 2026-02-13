@@ -341,12 +341,19 @@ function installPack()
           success: function(response) 
           {
     		console.log('Success:', response);
-    		showToast('Pack install invoked successfully!', 3500);
+      var msg = (response && response.message) ? response.message : 'Pack install completed successfully!';
+      showToast(msg, 3500);
+      // close modal and refresh list
+      document.getElementById('id_edit_modal').style.display='none';
+      getPacks();
 		  },
 		  error: function(xhr, status, error) 
 		  {
 	    	console.error('Error:', xhr.responseText);
-    	  }
+      var errMsg = 'Pack install failed.';
+      try { if(xhr.responseJSON && xhr.responseJSON.message) errMsg = 'Pack install failed: ' + xhr.responseJSON.message; else if(xhr.responseText) errMsg = 'Pack install failed: ' + xhr.responseText; } catch(e){}
+      showToast(errMsg, 5000);
+    }
      });
 }
 
@@ -369,12 +376,19 @@ function uninstallPack()
           success: function(response) 
           {
     		console.log('Success:', response);
-    		showToast('Pack uninstall invoked successfully!', 3500);
+      var msg = (response && response.message) ? response.message : 'Pack uninstall completed successfully!';
+      showToast(msg, 3500);
+      // close modal and refresh list
+      document.getElementById('id_edit_modal').style.display='none';
+      getPacks();
 		  },
 		  error: function(xhr, status, error) 
 		  {
 	    	console.error('Error:', xhr.responseText);
-    	  }
+      var errMsg = 'Pack uninstall failed.';
+      try { if(xhr.responseJSON && xhr.responseJSON.message) errMsg = 'Pack uninstall failed: ' + xhr.responseJSON.message; else if(xhr.responseText) errMsg = 'Pack uninstall failed: ' + xhr.responseText; } catch(e){}
+      showToast(errMsg, 5000);
+    }
      });
 }
 
@@ -506,6 +520,7 @@ function getPacks() {
         const packVersion = item.pack_info && item.pack_info.version ? item.pack_info.version : 'n/a';
         const dbType = item.pack_info && item.pack_info.db_type ? item.pack_info.db_type : 'n/a';
         
+        
         // Build tooltip HTML using string concatenation
         const tooltipHtml = 
           '<div class="tooltip-content">' +
@@ -538,12 +553,24 @@ function getPacks() {
               '<div class="tooltip-label">Uploaded:</div>' +
               '<div class="tooltip-value">' + (formatTimestamp(item.uploaded_date) || 'n/a') + '</div>' +
             '</div>' +
+             '<div class="tooltip-row">' +
+              '<div class="tooltip-label">Deplyed:</div>' +
+              '<div class="tooltip-value">' + (item.build_version || 'n/a')+ '</div>' +
+            '</div>'
           '</div>';
 
-        // Build the pack name cell
+
+        // Add icon: large green D for deployed, large red ND for not deployed
+        let deployedIcon = '';
+        if (item.pack_deployed === true || item.pack_deployed === 'true') {
+          deployedIcon = '<span title="Deployed" style="color:green;font-size:24px;font-weight:bold;margin-left:10px;vertical-align:middle;">D</span>';
+        } else {
+          deployedIcon = '<span title="Not Deployed" style="color:red;font-size:24px;font-weight:bold;margin-left:10px;vertical-align:middle;">ND</span>';
+        }
+        // Build the pack name cell with icon
         const packNameCell = 
           '<div class="pack-tooltip">' +
-            packName +
+            packName + deployedIcon +
             tooltipHtml +
           '</div>';
 

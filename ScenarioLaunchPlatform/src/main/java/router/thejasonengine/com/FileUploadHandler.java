@@ -58,7 +58,10 @@ public class FileUploadHandler
 		  // 2️  Must end with .zip (case‑insensitive)
 		  if (!original.toLowerCase().endsWith(".zip")) 
 		  {
-		   routingContext.vertx().fileSystem().deleteBlocking(f.uploadedFileName());   // clean temp
+		   // clean temp asynchronously
+		   routingContext.vertx().fileSystem().delete(f.uploadedFileName(), del -> {
+		       // ignore result
+		   });
 		   routingContext.response()
 		       .setStatusCode(415)
 		       .putHeader("content-type", "application/json")
@@ -66,19 +69,34 @@ public class FileUploadHandler
 		    return;
 		  }
 
-		  String uploadsFolder = "uploads";
-		  Path uploadsDir = Path.of(uploadsFolder);
-		  // 3️  Move to final uploads/ dir
-		  String target = uploadsDir.resolve(original).toString();
-		  routingContext.vertx().fileSystem().moveBlocking(f.uploadedFileName(), target);
-
-		  // 4️  Success JSON
-		  routingContext.response()
-		     .putHeader("content-type", "application/json")
-		     .end(new JsonObject()
-		            .put("stored", target)
-		            .put("size",   f.size())
-		            .encode());
+		String uploadsFolder = "uploads";
+		Path uploadsDir = Path.of(uploadsFolder);
+		// 3️  Move to final uploads/ dir (non-blocking)
+		String target = uploadsDir.resolve(original).toString();
+		FileSystem fs = routingContext.vertx().fileSystem();
+		fs.move(f.uploadedFileName(), target, moveRes -> {
+		    if (moveRes.succeeded()) {
+		        // 4️  Success JSON
+		        routingContext.response()
+		           .putHeader("content-type", "application/json")
+		           .end(new JsonObject()
+		                  .put("stored", target)
+		                  .put("size",   f.size())
+		                  .encode());
+		    } else {
+		        // Attempt to clean temp and return error
+		        fs.delete(f.uploadedFileName(), del -> {
+		            // ignore
+		        });
+		        routingContext.response()
+		           .setStatusCode(500)
+		           .putHeader("content-type", "application/json")
+		           .end(new JsonObject()
+		                  .put("error", "failed to store file")
+		                  .put("detail", moveRes.cause() != null ? moveRes.cause().getMessage() : "unknown")
+		                  .encode());
+		    }
+		});
 	}	
 }
 

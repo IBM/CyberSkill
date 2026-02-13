@@ -1832,7 +1832,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
 					            {
 					            	SqlConnection connection = ar.result();
 					                JsonArray ja = new JsonArray();
-					            	connection.preparedQuery("SELECT id, pack_name, version, db_type, build_date, build_version, uploaded_date, pack_info FROM tb_content_packs")
+					            	connection.preparedQuery("SELECT id, pack_name, version, db_type, build_date, build_version, uploaded_date, pack_info, pack_deployed FROM tb_content_packs")
 			                        .execute(
 			                        res -> 
 			                        {
@@ -1840,22 +1840,21 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
 			                            {
 			                                // Process the query result
 			                                RowSet<Row> rows = res.result();
-			                                rows.forEach(row -> 
-			                                {
-			                                    // Print out each row
-			                                    LOGGER.info("Row: " + row.toJson());
-			                                    try
-			                                    {
-			                                    	JsonObject jo = new JsonObject(row.toJson().encode());
-			                                    	ja.add(jo);
-			                                    	LOGGER.info("Successfully added json object to array");
-			                                    }
-			                                    catch(Exception e)
-			                                    {
-			                                    	LOGGER.error("Unable to add JSON Object to array: " + e.toString());
-			                                    }
-			                                    
-			                                });
+											rows.forEach(row -> {
+												LOGGER.info("Row: " + row.toJson());
+												try {
+													JsonObject jo = new JsonObject(row.toJson().encode());
+													// Normalize pack_deployed to string 'true' or 'false'
+													if (jo.containsKey("pack_deployed")) {
+														String val = String.valueOf(jo.getValue("pack_deployed"));
+														jo.put("pack_deployed", val.equalsIgnoreCase("true") ? "true" : "false");
+													}
+													ja.add(jo);
+													LOGGER.info("Successfully added json object to array");
+												} catch(Exception e) {
+													LOGGER.error("Unable to add JSON Object to array: " + e.toString());
+												}
+											});
 			                                response.send(ja.encodePrettily());
 			                                connection.close();
 			                                LOGGER.info("closed method: " + method + " to connection pool");
