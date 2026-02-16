@@ -15,6 +15,7 @@ import io.vertx.core.Future;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.sqlclient.Pool;
 import io.vertx.sqlclient.PoolOptions;
+import memory.thejasonengine.com.Ram;
 
 import java.io.*;
 import java.nio.file.*;
@@ -63,16 +64,27 @@ public class OutliersLibrary {
         
         logger.info("Initializing OutliersLibrary database connection...");
         
-        // Create PostgreSQL connection pool
-        PgConnectOptions connectOptions = new PgConnectOptions()
-            .setHost("localhost")
-            .setPort(5432)
-            .setDatabase("slp")
-            .setUser("postgres")
-            .setPassword("postgres");
+        // Get configuration from Ram
+        Ram ram = new Ram();
+        JsonObject configs = ram.getSystemConfig();
         
-        PoolOptions poolOptions = new PoolOptions().setMaxSize(10);
+        // Create PostgreSQL connection pool using config values
+        PgConnectOptions connectOptions = new PgConnectOptions()
+            .setHost(configs.getJsonObject("systemDatabaseController").getString("host"))
+            .setPort(configs.getJsonObject("systemDatabaseController").getInteger("port"))
+            .setDatabase(configs.getJsonObject("systemDatabaseController").getString("database"))
+            .setUser(configs.getJsonObject("systemDatabaseController").getString("user"))
+            .setPassword(configs.getJsonObject("systemDatabaseController").getString("password"));
+        
+        PoolOptions poolOptions = new PoolOptions()
+            .setMaxSize(configs.getJsonObject("systemDatabaseController").getInteger("maxConnections"));
+        
         Pool dbPool = Pool.pool(vertx, connectOptions, poolOptions);
+        
+        logger.info("Database pool created with host: {}, port: {}, database: {}",
+            configs.getJsonObject("systemDatabaseController").getString("host"),
+            configs.getJsonObject("systemDatabaseController").getInteger("port"),
+            configs.getJsonObject("systemDatabaseController").getString("database"));
         
         database = new OutliersDatabase(dbPool);
         logger.info("Database pool created");

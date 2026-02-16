@@ -653,8 +653,18 @@ public class ContentPackHandler
 			JsonArray ja_users = uninstallData.getJsonArray("users");
 			if (ja_users != null) {
 				for(int i = 0; i < ja_users.size(); i++) {
-					JsonObject userObj = ja_users.getJsonObject(i);
-					Integer id = userObj.getInteger("id");
+					final Integer id;
+					Object item = ja_users.getValue(i);
+					
+					// Handle both formats: plain integer or object with "id" property
+					if (item instanceof Integer) {
+						id = (Integer) item;
+					} else if (item instanceof JsonObject) {
+						id = ((JsonObject) item).getInteger("id");
+					} else {
+						LOGGER.warn("Unexpected user entry format at index " + i + ": " + item);
+						continue;
+					}
 					
 					Promise<Void> deletePromise = Promise.promise();
 					connection.preparedQuery("DELETE FROM public.tb_databaseConnections WHERE id = $1")
@@ -675,8 +685,18 @@ public class ContentPackHandler
 			JsonArray ja_queries = uninstallData.getJsonArray("queries");
 			if (ja_queries != null) {
 				for(int i = 0; i < ja_queries.size(); i++) {
-					JsonObject queryObj = ja_queries.getJsonObject(i);
-					Integer id = queryObj.getInteger("id");
+					final Integer id;
+					Object item = ja_queries.getValue(i);
+					
+					// Handle both formats: plain integer or object with "id" property
+					if (item instanceof Integer) {
+						id = (Integer) item;
+					} else if (item instanceof JsonObject) {
+						id = ((JsonObject) item).getInteger("id");
+					} else {
+						LOGGER.warn("Unexpected query entry format at index " + i + ": " + item);
+						continue;
+					}
 					
 					Promise<Void> deletePromise = Promise.promise();
 					connection.preparedQuery("DELETE FROM public.tb_query WHERE id = $1")
@@ -697,8 +717,18 @@ public class ContentPackHandler
 			JsonArray ja_stories = uninstallData.getJsonArray("stories");
 			if (ja_stories != null) {
 				for(int i = 0; i < ja_stories.size(); i++) {
-					JsonObject storyObj = ja_stories.getJsonObject(i);
-					Integer id = storyObj.getInteger("id");
+					final Integer id;
+					Object item = ja_stories.getValue(i);
+					
+					// Handle both formats: plain integer or object with "id" property
+					if (item instanceof Integer) {
+						id = (Integer) item;
+					} else if (item instanceof JsonObject) {
+						id = ((JsonObject) item).getInteger("id");
+					} else {
+						LOGGER.warn("Unexpected story entry format at index " + i + ": " + item);
+						continue;
+					}
 					
 					Promise<Void> deletePromise = Promise.promise();
 					connection.preparedQuery("DELETE FROM public.tb_stories WHERE id = $1")
