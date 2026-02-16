@@ -1,0 +1,88 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
+    <id>distribution</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    
+    <fileSets>
+        <!-- Include the JAR file from target directory -->
+        <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>slp-0.0.1-SNAPSHOT.jar</include>
+            </includes>
+        </fileSet>
+        
+        <!-- Include database folder -->
+        <fileSet>
+            <directory>${project.basedir}/database</directory>
+            <outputDirectory>/database</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        
+        <!-- Include contentpacks folder -->
+        <fileSet>
+            <directory>${project.basedir}/contentpacks</directory>
+            <outputDirectory>/contentpacks</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        
+        <!-- Include scripts folder -->
+        <fileSet>
+            <directory>${project.basedir}/scripts</directory>
+            <outputDirectory>/scripts</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        
+        <!-- Include config.json -->
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>config.json</include>
+            </includes>
+        </fileSet>
+        
+        <!-- Include connectionValidator.sh -->
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>connectionValidator.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        
+        <!-- Include restartSLP.sh from database/ScenarioLaunchPlatform_CORE -->
+        <fileSet>
+            <directory>${project.basedir}/database/ScenarioLaunchPlatform_CORE</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>restartSLP.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        
+        <!-- Include restartSLP.bat for Windows -->
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>restartSLP.bat</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>
+
+<!-- Made with Bob -->
