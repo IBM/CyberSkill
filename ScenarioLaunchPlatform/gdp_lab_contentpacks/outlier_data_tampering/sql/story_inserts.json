@@ -1,0 +1,150 @@
+{
+  "stories": [
+    {
+      "id": 1101,
+      "story": {
+        "name": "MySQL Data Tampering - Time-Based Anomaly (5 Hours)",
+        "description": "Simulates data tampering attack with time-based anomaly pattern in DELETE operations. Establishes normal baseline (50 DELETEs/hour for 4 hours) followed by massive spike (1000 DELETEs in hour 5) to detect unauthorized bulk data deletion. Pattern: Pre-cleanup → Create table → Insert 2000 records → 50 DELETEs → 1 hour → 50 DELETEs → 1 hour → 50 DELETEs → 1 hour → 50 DELETEs → 1 hour → 1000 DELETE SPIKE",
+        "author": "SLP Team",
+        "outcomes": "Understand how Guardium detects time-based anomalies in data deletion patterns, specifically identifying sudden spikes in DELETE operations that deviate from established baselines. Learn to recognize data tampering attacks through temporal analysis of DML operations.",
+        "handbook": "https://www.ibm.com/docs/en/guardium",
+        "video": "VideoURL",
+        "story": [
+          {
+            "query_id": 1101,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Drop Table from Previous Run"
+          },
+          {
+            "query_id": 1102,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Test Table for Data Tampering"
+          },
+          {
+            "query_id": 1103,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Insert 2000 Test Records"
+          },
+          {
+            "query_id": 1104,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 DELETE Operations"
+          },
+          {
+            "query_id": 1105,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 DELETE Operations"
+          },
+          {
+            "query_id": 1106,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 DELETE Operations"
+          },
+          {
+            "query_id": 1107,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 DELETE Operations"
+          },
+          {
+            "query_id": 1108,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 1000 Rapid DELETEs (Data Tampering)"
+          },
+          {
+            "query_id": 1109,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify Data Deletion Impact"
+          },
+          {
+            "query_id": 1110,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    },
+    {
+      "id": 1102,
+      "story": {
+        "name": "MySQL Data Tampering - Quick Demo (5 sec pauses)",
+        "description": "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline DELETEs (50 each) followed by massive 1000-DELETE spike to detect data tampering.",
+        "author": "SLP Team",
+        "outcomes": "Quick demonstration of data tampering detection for testing and validation purposes. Same detection patterns as the full story but compressed into a short timeframe.",
+        "handbook": "https://www.ibm.com/docs/en/guardium",
+        "video": "VideoURL",
+        "story": [
+          {
+            "query_id": 1101,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Drop Table from Previous Run"
+          },
+          {
+            "query_id": 1102,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Test Table"
+          },
+          {
+            "query_id": 1103,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Insert 2000 Test Records"
+          },
+          {
+            "query_id": 1104,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 DELETEs"
+          },
+          {
+            "query_id": 1105,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 DELETEs"
+          },
+          {
+            "query_id": 1106,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 DELETEs"
+          },
+          {
+            "query_id": 1107,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 DELETEs"
+          },
+          {
+            "query_id": 1108,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 SPIKE - 1000 Rapid DELETEs"
+          },
+          {
+            "query_id": 1109,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify Deletion"
+          },
+          {
+            "query_id": 1110,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    }
+  ]
+}

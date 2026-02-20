@@ -1,0 +1,94 @@
+{
+  "queries": [
+    {
+      "id": 1601,
+      "query": {
+        "name": "Pre-Cleanup - Remove Previous Test Data",
+        "description": "Ensures clean state by removing any leftover objects from previous failed runs",
+        "query": "DROP TABLE IF EXISTS data_leak_test",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1602,
+      "query": {
+        "name": "Create Data Leak Test Table",
+        "description": "Creates table with 10000 records for SELECT anomaly testing",
+        "query": "CREATE TABLE IF NOT EXISTS data_leak_test (id INT AUTO_INCREMENT PRIMARY KEY, customer_name VARCHAR(100), email VARCHAR(100), ssn VARCHAR(11), credit_card VARCHAR(16), address TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, INDEX idx_customer (customer_name))",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1603,
+      "query": {
+        "name": "Insert Test Data",
+        "description": "Insert 10000 test records with sensitive data",
+        "query": "INSERT INTO data_leak_test (customer_name, email, ssn, credit_card, address) VALUES (CONCAT('Customer_', FLOOR(RAND() * 10000)), CONCAT('user', FLOOR(RAND() * 10000), '@example.com'), CONCAT(LPAD(FLOOR(RAND() * 1000000000), 9, '0'), '-', LPAD(FLOOR(RAND() * 100), 2, '0')), LPAD(FLOOR(RAND() * 10000000000000000), 16, '0'), CONCAT(FLOOR(RAND() * 9999), ' Main St, City, State'))",
+        "query_loop": 10000
+      }
+    },
+    {
+      "id": 1604,
+      "query": {
+        "name": "Baseline SELECT Hour 1",
+        "description": "Hour 1 baseline - 50 SELECT operations with varied queries",
+        "query": "SELECT * FROM data_leak_test WHERE id = FLOOR(1 + RAND() * 10000) LIMIT 1",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1605,
+      "query": {
+        "name": "Baseline SELECT Hour 2",
+        "description": "Hour 2 baseline - 50 SELECT operations with WHERE clause",
+        "query": "SELECT customer_name, email FROM data_leak_test WHERE id BETWEEN FLOOR(RAND() * 5000) AND FLOOR(RAND() * 5000) + 10 LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1606,
+      "query": {
+        "name": "Baseline SELECT Hour 3",
+        "description": "Hour 3 baseline - 50 SELECT operations with aggregation",
+        "query": "SELECT COUNT(*) as total, AVG(id) as avg_id FROM data_leak_test WHERE id < FLOOR(RAND() * 10000)",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1607,
+      "query": {
+        "name": "Baseline SELECT Hour 4",
+        "description": "Hour 4 baseline - 50 SELECT operations with ORDER BY",
+        "query": "SELECT id, customer_name, email FROM data_leak_test ORDER BY id DESC LIMIT 20",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1608,
+      "query": {
+        "name": "ANOMALY SPIKE - Massive SELECT Operations",
+        "description": "HOUR 5 ANOMALY: 1000 rapid SELECT operations - 20x normal rate indicating data exfiltration attempt",
+        "query": "SELECT * FROM data_leak_test WHERE id = FLOOR(1 + RAND() * 10000) LIMIT 100",
+        "query_loop": 1000
+      }
+    },
+    {
+      "id": 1609,
+      "query": {
+        "name": "Verify SELECT Operations",
+        "description": "Verify table statistics",
+        "query": "SELECT COUNT(*) as total_records, MIN(id) as min_id, MAX(id) as max_id FROM data_leak_test",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1610,
+      "query": {
+        "name": "Cleanup Data Leak Test Table",
+        "description": "Remove test table after verification",
+        "query": "DROP TABLE IF EXISTS data_leak_test",
+        "query_loop": 1
+      }
+    }
+  ]
+}

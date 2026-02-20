@@ -1,0 +1,79 @@
+{
+  "connections": [
+    {
+      "status": "active",
+      "db_type": "mysql",
+      "db_version": "8.0",
+      "db_username": "root",
+      "db_password": "password123",
+      "db_port": "3306",
+      "db_database": "testdb",
+      "db_url": "jdbc:mysql://192.168.100.13:3306/testdb",
+      "db_jdbcClassName": "com.mysql.cj.jdbc.Driver",
+      "db_userIcon": "fa-user",
+      "db_databaseIcon": "fa-database",
+      "db_alias": "MySQL Test Database",
+      "db_access": "public"
+    },
+    {
+      "status": "active",
+      "db_type": "postgresql",
+      "db_version": "14",
+      "db_username": "postgres",
+      "db_password": "postgres123",
+      "db_port": "5432",
+      "db_database": "postgres",
+      "db_url": "jdbc:postgresql://192.168.100.12:5432/postgres",
+      "db_jdbcClassName": "org.postgresql.Driver",
+      "db_userIcon": "fa-user",
+      "db_databaseIcon": "fa-database",
+      "db_alias": "PostgreSQL Production",
+      "db_access": "admin"
+    },
+    {
+      "status": "active",
+      "db_type": "db2",
+      "db_version": "11.5",
+      "db_username": "db2admin",
+      "db_password": "db2pass",
+      "db_port": "50000",
+      "db_database": "SAMPLE",
+      "db_url": "jdbc:db2://192.168.100.15:50000/SAMPLE",
+      "db_jdbcClassName": "com.ibm.db2.jcc.DB2Driver",
+      "db_userIcon": "fa-user",
+      "db_databaseIcon": "fa-database",
+      "db_alias": "DB2 Sample Database",
+      "db_access": "public"
+    },
+    {
+      "status": "active",
+      "db_type": "sqlserver",
+      "db_version": "2019",
+      "db_username": "sa",
+      "db_password": "SqlServer123!",
+      "db_port": "1433",
+      "db_database": "master",
+      "db_url": "jdbc:sqlserver://192.168.100.16:1433;databaseName=master",
+      "db_jdbcClassName": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+      "db_userIcon": "fa-user",
+      "db_databaseIcon": "fa-database",
+      "db_alias": "SQL Server Master",
+      "db_access": "admin"
+    },
+    {
+      "status": "active",
+      "db_type": "oracle",
+      "db_version": "19c",
+      "db_username": "system",
+      "db_password": "oracle123",
+      "db_port": "1521",
+      "db_database": "ORCL",
+      "db_url": "jdbc:oracle:thin:@192.168.100.14:1521:ORCL",
+      "db_jdbcClassName": "oracle.jdbc.driver.OracleDriver",
+      "db_userIcon": "fa-user",
+      "db_databaseIcon": "fa-database",
+      "db_alias": "Oracle Production",
+      "db_access": "public"
+    }
+  ]
+}

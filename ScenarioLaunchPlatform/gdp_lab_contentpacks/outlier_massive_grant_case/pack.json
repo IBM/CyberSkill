@@ -1,0 +1,7 @@
+{
+  "pack_name": "outlier_massive_grant_case",
+  "pack_description": "MySQL Massive GRANT Anomaly Detection - Simulates normal GRANT baseline (1 grant/hour for 4 hours) followed by massive GRANT spike (21 grants in hour 5) to detect privilege escalation attacks",
+  "pack_version": "1.0.0",
+  "author": "Security Team",
+  "created_date": "2026-02-11"
+}

@@ -1,0 +1,114 @@
+{
+    "queries": [
+        {
+            "id": 1201,
+            "query_type": "mysql",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE IF EXISTS data_update_test;",
+            "db_connection_id": 35,
+            "query_usecase": "Pre-Cleanup - Drop Test Table from Previous Run",
+            "query_loop": 1,
+            "query_description": "Ensures clean state by dropping the test table from any previous failed run. This prevents conflicts when running the test multiple times.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1202,
+            "query_type": "mysql",
+            "query_db_type": "Create",
+            "query_string": "CREATE TABLE IF NOT EXISTS data_update_test (id INT AUTO_INCREMENT PRIMARY KEY, record_number INT NOT NULL, counter INT DEFAULT 0, status VARCHAR(50) DEFAULT 'pending', data VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, INDEX idx_record_number (record_number), INDEX idx_status (status));",
+            "db_connection_id": 35,
+            "query_usecase": "Create Table for Update Anomaly Test",
+            "query_loop": 1,
+            "query_description": "Creates the test table for update anomaly detection. This table will hold 10,000 records that will be updated in a time-based anomaly pattern to simulate unauthorized data modification attacks.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1203,
+            "query_type": "mysql",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO data_update_test (record_number, data, status) VALUES ({INT}, 'Initial data for record {INT}', 'pending');",
+            "db_connection_id": 35,
+            "query_usecase": "Insert Test Data - 10000 Records",
+            "query_loop": 10000,
+            "query_description": "Inserts 10,000 test records into the data_update_test table. These records will be used to demonstrate the update anomaly pattern with baseline and spike modification patterns.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1204,
+            "query_type": "mysql",
+            "query_db_type": "Update",
+            "query_string": "UPDATE data_update_test SET counter = counter + 1 WHERE record_number <= 50 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "Baseline Hour 1 - 50 UPDATE Operations",
+            "query_loop": 50,
+            "query_description": "Executes 50 UPDATE commands as part of normal baseline activity (Hour 1). This represents typical data modification behavior that should not trigger anomaly detection. Updates counter field for records 1-50.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1205,
+            "query_type": "mysql",
+            "query_db_type": "Update",
+            "query_string": "UPDATE data_update_test SET status = 'processing', data = CONCAT('Updated at ', NOW()) WHERE record_number BETWEEN 51 AND 100 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "Baseline Hour 2 - 50 UPDATE Operations",
+            "query_loop": 50,
+            "query_description": "Executes 50 UPDATE commands as part of normal baseline activity (Hour 2). Updates status and data fields for records 51-100.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1206,
+            "query_type": "mysql",
+            "query_db_type": "Update",
+            "query_string": "UPDATE data_update_test SET counter = counter + 1, data = CONCAT('Hour 3 update at ', NOW()) WHERE record_number BETWEEN 101 AND 150 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "Baseline Hour 3 - 50 UPDATE Operations",
+            "query_loop": 50,
+            "query_description": "Executes 50 UPDATE commands as part of normal baseline activity (Hour 3). Updates counter and data fields for records 101-150.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1207,
+            "query_type": "mysql",
+            "query_db_type": "Update",
+            "query_string": "UPDATE data_update_test SET status = 'active', data = CONCAT('Hour 4 update at ', NOW()) WHERE record_number BETWEEN 151 AND 200 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "Baseline Hour 4 - 50 UPDATE Operations",
+            "query_loop": 50,
+            "query_description": "Executes 50 UPDATE commands as part of normal baseline activity (Hour 4). Combined with Hours 1-3, this establishes a baseline of 50 UPDATE operations per hour. Updates status and data fields for records 151-200.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1208,
+            "query_type": "mysql",
+            "query_db_type": "Update",
+            "query_string": "UPDATE data_update_test SET counter = counter + 1, status = 'completed', data = CONCAT('Bulk update at ', NOW()) WHERE record_number >= 201 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "HOUR 5 ANOMALY SPIKE - 1000 Rapid UPDATE Operations",
+            "query_loop": 1000,
+            "query_description": "Executes 1000 UPDATE commands in rapid succession, creating an anomalous spike in data modification activity. This simulates an update anomaly attack or unauthorized bulk data modification that should trigger outlier detection. Updates multiple fields for records 201-1200.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1209,
+            "query_type": "mysql",
+            "query_db_type": "Select",
+            "query_string": "SELECT status, COUNT(*) as count, AVG(counter) as avg_counter, MAX(updated_at) as last_update FROM data_update_test GROUP BY status;",
+            "db_connection_id": 35,
+            "query_usecase": "Verify Data Updates",
+            "query_loop": 1,
+            "query_description": "Queries the table to verify the updates performed during the anomaly test. Shows statistics by status including count, average counter value, and last update time. Useful for confirming that UPDATE operations were executed successfully.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1210,
+            "query_type": "mysql",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE IF EXISTS data_update_test;",
+            "db_connection_id": 35,
+            "query_usecase": "Cleanup - Drop Test Table",
+            "query_loop": 1,
+            "query_description": "Removes the test table created during the update anomaly test. This cleanup operation resets the database to its original state and can be run after completing the outlier detection test.",
+            "video_link": "VideoURL"
+        }
+    ]
+}

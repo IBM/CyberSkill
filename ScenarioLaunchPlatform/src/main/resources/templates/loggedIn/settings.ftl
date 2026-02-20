@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="css/w3.css">
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="css/settings-modern.css">
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
 <link rel="stylesheet" href="css/font-awesome.min.css">
 <link rel="stylesheet" href="css/datatables.min.css">
@@ -16,6 +17,44 @@
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 </style>
+
+<script>
+// Dark Mode Toggle Functionality - Must be defined before button
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Add a subtle animation feedback
+    const toggleBtn = document.querySelector('.theme-toggle');
+    if (toggleBtn) {
+        toggleBtn.style.transform = 'rotate(360deg) scale(1.1)';
+        setTimeout(() => {
+            toggleBtn.style.transform = '';
+        }, 300);
+    }
+}
+
+// Initialize theme on page load
+(function initTheme() {
+    // Check for saved theme preference or default to 'light'
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+})();
+
+// Listen for system theme changes (optional)
+if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        // Only auto-switch if user hasn't manually set a preference
+        if (!localStorage.getItem('theme')) {
+            const newTheme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+        }
+    });
+}
+</script>
 
 
 <script>
@@ -140,6 +179,21 @@ function refreshConnections()
 
 </head>
 <body class="w3-theme-l5">
+
+
+<!-- Dark Mode Toggle Button -->
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark/light mode">
+    <div class="theme-toggle-icon sun-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z"/>
+        </svg>
+    </div>
+    <div class="theme-toggle-icon moon-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z"/>
+        </svg>
+    </div>
+</button>
 
 <div id="navbar"></div>
 
@@ -342,9 +396,88 @@ function refreshConnections()
 				</div>
 			
 			</div>
-		 </div>
-      
-    <!-- Card -->
+			</div>
+			   
+			   <!-- Bulk Upload Connections Card -->
+			   <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+			     <i class="fa fa-upload" onclick="toggleBulkUploadDiv()" style="color: gray; transition: color 0.3s ease;"
+			onmouseover="this.style.color='blue'"
+			onmouseout="this.style.color='gray'"></i> Bulk Upload Connections
+			     <span class="w3-right w3-opacity"></span>
+			     <br>
+			      <hr class="w3-clear">
+			     <div class ="BulkUploadConnection" id="BulkUploadConnection" style="display: none;">
+			      
+				        
+				<h2>Bulk Upload Database Connections</h2>
+				<p>Upload a JSON file containing multiple database connections. All connections in the file will be added to the system.</p>
+				
+				<!-- Response Modal -->
+				<div id="bulkUploadResponseModal" class="w3-modal">
+				    <div class="w3-modal-content">
+				      <div class="w3-container">
+				        <span onclick="document.getElementById('bulkUploadResponseModal').style.display='none';" class="w3-button w3-display-topright">&times;</span>
+				        <h3>Bulk Upload Results</h3>
+				        <div id="bulkUploadResponse"></div>
+				      </div>
+				    </div>
+				  </div>
+				<!-- End Response Modal -->
+				
+				<div class="container">
+				    <div class="row">
+				      <div class="col-25">
+				        <label for="bulkConnectionFile">JSON File</label>
+				      </div>
+				      <div class="col-75">
+				        <input type="file" id="bulkConnectionFile" name="bulkConnectionFile" accept=".json" />
+				      </div>
+				    </div>
+				    
+				    <div class="row">
+				      <div class="col-25">
+				        <label>JSON Format Example:</label>
+				      </div>
+				      <div class="col-75">
+				        <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px; font-size: 12px;">
+{
+		"connections": [
+			 {
+			   "status": "active",
+			   "db_type": "mysql",
+			   "db_version": "8.0",
+			   "db_username": "root",
+			   "db_password": "password",
+			   "db_port": "3306",
+			   "db_database": "testdb",
+			   "db_url": "jdbc:mysql://192.168.100.13:3306/testdb",
+			   "db_jdbcClassName": "com.mysql.cj.jdbc.Driver",
+			   "db_userIcon": "fa-user",
+			   "db_databaseIcon": "fa-database",
+			   "db_alias": "MySQL Test",
+			   "db_access": "public"
+			 }
+		]
+}
+				        </pre>
+				      </div>
+				    </div>
+				    
+				    <div class="row">
+				     <div class="col-25">
+				        
+				      </div>
+				     <div class="col-75">
+				        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align"  onclick="uploadBulkConnections();"><i class="fa fa-upload"></i>  Upload & Add Connections</button>
+				      </div>
+				    </div>
+				</div>
+			
+			</div>
+			</div>
+			   <!-- End Bulk Upload Card -->
+			   
+			 <!-- Card -->
     
     		<!-- Modal -->
 			
@@ -814,9 +947,217 @@ function openNav() {
             } else {
                 div.style.display = 'none'; // Hide the div
             }
+        
+
+        // Toggle bulk upload div visibility
+        function toggleBulkUploadDiv()
+        {
+            var x = document.getElementById("BulkUploadConnection");
+            if (x.style.display === "none" || x.style.display === "")
+            {
+                x.style.display = "block";
+            }
+            else
+            {
+                x.style.display = "none";
+            }
         }
         
     </script>
+
+
+<script>
+// Upload and process bulk connections from JSON file
+function uploadBulkConnections() 
+{
+    const fileInput = document.getElementById('bulkConnectionFile');
+    const file = fileInput.files[0];
+    
+    if (!file) 
+    {
+        alert('Please select a JSON file to upload.');
+        return;
+    }
+    
+    if (!file.name.endsWith('.json')) 
+    {
+        alert('Please select a valid JSON file.');
+        return;
+    }
+    
+    const reader = new FileReader();
+    
+    reader.onload = function(e) 
+    {
+        try 
+        {
+            const jsonData = JSON.parse(e.target.result);
+            
+            // Validate JSON structure
+            if (!jsonData.connections || !Array.isArray(jsonData.connections)) 
+            {
+                alert('Invalid JSON format. Expected a "connections" array.');
+                return;
+            }
+            
+            if (jsonData.connections.length === 0) 
+            {
+                alert('No connections found in the JSON file.');
+                return;
+            }
+            
+            // Process each connection
+            processBulkConnections(jsonData.connections);
+            
+        } 
+        catch (error) 
+        {
+            alert('Error parsing JSON file: ' + error.message);
+            console.error('JSON parse error:', error);
+        }
+    };
+    
+    reader.onerror = function() 
+    {
+        alert('Error reading file.');
+    };
+    
+    reader.readAsText(file);
+}
+
+// Process multiple connections sequentially
+function processBulkConnections(connections) 
+{
+    const jwtToken = '${tokenObject.jwt}';
+    let successCount = 0;
+    let failCount = 0;
+    let results = [];
+    
+    // Show processing message
+    document.getElementById('bulkUploadResponse').innerHTML = '<p>Processing ' + connections.length + ' connections...</p>';
+    document.getElementById('bulkUploadResponseModal').style.display = 'block';
+    
+    // Process connections sequentially
+    let currentIndex = 0;
+    
+    function processNext() 
+    {
+        if (currentIndex >= connections.length) 
+        {
+            // All done - show final results
+            displayBulkUploadResults(successCount, failCount, results);
+            return;
+        }
+        
+        const conn = connections[currentIndex];
+        currentIndex++;
+        
+        // Validate required fields
+        const requiredFields = ['db_type', 'db_username', 'db_password', 'db_port', 'db_database', 'db_url', 'db_jdbcClassName'];
+        const missingFields = requiredFields.filter(field => !conn[field]);
+        
+        if (missingFields.length > 0) 
+        {
+            failCount++;
+            results.push({
+                index: currentIndex,
+                alias: conn.db_alias || 'Unknown',
+                status: 'Failed',
+                message: 'Missing required fields: ' + missingFields.join(', ')
+            });
+            processNext();
+            return;
+        }
+        
+        // Prepare connection data with defaults
+        const connectionData = {
+            jwt: jwtToken,
+            status: conn.status || 'active',
+            db_type: conn.db_type,
+            db_version: conn.db_version || '',
+            db_username: conn.db_username,
+            db_password: conn.db_password,
+            db_port: conn.db_port,
+            db_database: conn.db_database,
+            db_url: conn.db_url,
+            db_jdbcClassName: conn.db_jdbcClassName,
+            db_userIcon: conn.db_userIcon || '',
+            db_databaseIcon: conn.db_databaseIcon || '',
+            db_alias: conn.db_alias || '',
+            db_access: conn.db_access || ''
+        };
+        
+        // Send to API
+        $.ajax({
+            url: '/api/setDatabaseConnections',
+            type: 'POST',
+            data: JSON.stringify(connectionData),
+            contentType: 'application/json; charset=utf-8',
+            success: function(response) 
+            {
+                successCount++;
+                results.push({
+                    index: currentIndex,
+                    alias: conn.db_alias || conn.db_database,
+                    status: 'Success',
+                    message: response[0]?.response || 'Connection added successfully'
+                });
+                processNext();
+            },
+            error: function(xhr, status, error) 
+            {
+                failCount++;
+                results.push({
+                    index: currentIndex,
+                    alias: conn.db_alias || conn.db_database,
+                    status: 'Failed',
+                    message: 'Error: ' + error
+                });
+                processNext();
+            }
+        });
+    }
+    
+    // Start processing
+    processNext();
+}
+
+// Display bulk upload results
+function displayBulkUploadResults(successCount, failCount, results) 
+{
+    let html = '<div style="padding: 10px;">';
+    html += '<h4>Upload Complete</h4>';
+    html += '<p><strong>Total:</strong> ' + results.length + ' connections</p>';
+    html += '<p><strong>Successful:</strong> <span style="color: green;">' + successCount + '</span></p>';
+    html += '<p><strong>Failed:</strong> <span style="color: red;">' + failCount + '</span></p>';
+    html += '<hr>';
+    html += '<h5>Details:</h5>';
+    html += '<div style="max-height: 400px; overflow-y: auto;">';
+    html += '<table class="w3-table w3-bordered w3-striped" style="font-size: 12px;">';
+    html += '<thead><tr><th>#</th><th>Alias/Database</th><th>Status</th><th>Message</th></tr></thead>';
+    html += '<tbody>';
+    
+    results.forEach(function(result) 
+    {
+        const statusColor = result.status === 'Success' ? 'green' : 'red';
+        html += '<tr>';
+        html += '<td>' + result.index + '</td>';
+        html += '<td>' + result.alias + '</td>';
+        html += '<td style="color: ' + statusColor + ';">' + result.status + '</td>';
+        html += '<td>' + result.message + '</td>';
+        html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    html += '</div>';
+    html += '<br>';
+    html += '<button class="w3-button w3-theme" onclick="document.getElementById(\'bulkUploadResponseModal\').style.display=\'none\'; toggleBulkUploadDiv(); getConnections();">Close & Refresh</button>';
+    html += '</div>';
+    
+    document.getElementById('bulkUploadResponse').innerHTML = html;
+}
+
+</script>
 
 
 <script>

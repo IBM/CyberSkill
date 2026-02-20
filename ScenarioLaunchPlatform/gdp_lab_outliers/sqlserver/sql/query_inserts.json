@@ -1,0 +1,312 @@
+{
+    "queries": [
+        {
+            "id": 1201,
+            "query_type": "sqlserver",
+            "query_db_type": "Create",
+            "query_string": "IF OBJECT_ID('dbo.testTable','U') IS NOT NULL DROP TABLE dbo.testTable; CREATE TABLE dbo.testTable ([text] NVARCHAR(100),id INT);",
+            "db_connection_id": 35,
+            "query_usecase": "Create testTable for Policy violations",
+            "query_loop": 1,
+            "query_description": "In this building block a user creates a testTable to perform actions on the table that will cause a policy violation",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1202,
+            "query_type": "sqlserver",
+            "query_db_type": "Policy Violation",
+            "query_string": "INSERT INTO dbo.testTable ([text]) VALUES (N'xxx');\nINSERT INTO dbo.testTable ([text]) VALUES (N'yyy');\nINSERT INTO dbo.testTable ([text], id) VALUES (N'<IMG SRC=javascript:alert(\\\"XSS\\\")>', 3);\nDELETE FROM dbo.testTable WHERE [text] = N'<BODY onload!#$%&()*~+-_.,:;?@[/|\\]^`=alert(\\\"XSS\\\")>';\nSELECT * FROM dbo.testTable WHERE [text] = /*'<IMG SRC=javascript:alert(\"XSS\")>'*/ N'xxx';\nSELECT * FROM dbo.testTable WHERE [text] = /*'<IMG SR*//*C=javascri/*pt:ale*//*rt(\"XSS\")>'*/ N'xxx';",
+            "db_connection_id": 35,
+            "query_usecase": "Cross-Site Scripting (XSS)",
+            "query_loop": 1,
+            "query_description": "In this building block a user runs multiple queries associated with XSS, where the user inserts Javascript into the database dbo.testTable, then selects and deletes rows\n - If running individually, user must run the Create dbo.testTable for Policy violations building block first. It has an ID of 1",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=policyViolation.mp4"
+        },
+        {
+            "id": 1203,
+            "query_type": "sqlserver",
+            "query_db_type": "Policy Violation",
+            "query_string": "INSERT INTO dbo.testTable ([text]) VALUES (N'xxx');\nINSERT INTO dbo.testTable ([text]) VALUES (N'yyy');\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or 15=15';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or (1 and 1 = 1)';\nSELECT [text] FROM dbo.testTable WHERE [text] = N''' or 1=1 or '''';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or 2-1=3-2';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or 1!=2';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or (''SQLi'' = ''SQL''+''i'')';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or (''SQLi'' > ''S'')';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or (20 > 1)';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or (5 between 1 and 10)';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or (''SQLi'' = N''SQLi'')';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or (1 || 1 = 1)';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or (1 && 1 = 1)';\nSELECT * FROM dbo.testTable WHERE [text] = N'xxx'' or 2/*just trying to be annoying*/=2';",
+            "db_connection_id": 35,
+            "query_usecase": "SQL Injection - Tautology",
+            "query_loop": 1,
+            "query_description": "In this building block a user runs multiple queries associated with SQL Injection. The user tries to return rows from the database by manipulating the WHERE clause of an SQL query to create a condition that is always true\n - If running individually, user must run the Create dbo.testTable for Policy violations building block first. It has an ID of 1",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1204,
+            "query_type": "sqlserver",
+            "query_db_type": "Policy Violation",
+            "query_string": "IF OBJECT_ID('dbo.testTable','U') IS NOT NULL DROP TABLE dbo.testTable; CREATE TABLE dbo.testTable ([text] NVARCHAR(100),id INT);\ninsert into testTable (text) values ('xxx');\ninsert into testTable (text) values ('yyy');\ninsert into testTable (text) values ('sleep(5)--');\nselect * from testTable where text='sleep(12)#';\nselect * from testTable where text='xxx';-- sleep(5);",
+            "db_connection_id": 35,
+            "query_usecase": "SQL Injection - Side Channel",
+            "query_loop": 1,
+            "query_description": "In this building block a user runs multiple queries associated with SQL Injection. The user tries to return rows from the database by manipulating the WHERE clause of an SQL query to create a condition that is always true\n - If running individually, user must run the Create testTable for Policy violations building block first. It has an ID of 1",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1205,
+            "query_type": "sqlserver",
+            "query_db_type": "Policy Violation",
+            "query_string": "IF OBJECT_ID('dbo.testTable','U') IS NOT NULL DROP TABLE dbo.testTable; CREATE TABLE dbo.testTable ([text] NVARCHAR(100),id INT);\ninsert into testTable (text) values ('xxx');\ninsert into testTable (text) values ('yyy');\ninsert into testTable(text) values('benchmark(123456)');\nselect * from testTable where text='),(select%20if(count(*)!=-1,benchmark(3000000,MD5(1)),benchmark(3000000)))/*';\nselect * from testTable where text='),(select%20if(count(*)!=-1,benchmark(3000000,MD5(1)),benchmark(3000000,MD5(1))))/*';\nselect * from testTable where text='),(select%20if(count(*)!=-1,benchmark(3000000,MD5(1)),benchmark(3000000,MD5(1))))%23';",
+            "db_connection_id": 35,
+            "query_usecase": "SQL Injection - Denial Of Service",
+            "query_loop": 1,
+            "query_description": "In this building block a user runs multiple queries associated with SQL Injection. The user tries to return rows from the database by manipulating the WHERE clause of an SQL query to create a condition that is always true\n - If running individually, user must run the Create testTable for Policy violations building block first. It has an ID of 1",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1206,
+            "query_type": "sqlserver",
+            "query_db_type": "Policy Violation",
+            "query_string": "select * from dbo.testTable where text='&lt;!--#exec%20cmd=&quot;/usr/bin/id;--&gt;';\n\\select * from dbo.testTable where text='& ping -n 30 192.168.100.16 &';\n\\select * from dbo.testTable where text='$;/usr/bin/id';\n\\select * from dbo.testTable where text='cat /etc/passwd';\n\\select * from dbo.testTable where text='<?php system(\"sleep 10\");?>';\n\\insert into dbo.testTable(text, id) values ('ifconfig', 333);\n\\insert into dbo.testTable(text, id) values ('ls -l /etc/', 444);\n\\select * from dbo.testTable where text='| netstat -an';\n\\select * from dbo.testTable where text='which python';\n\\select * from dbo.testTable where text='&& whoami';",
+            "db_connection_id": 35,
+            "query_usecase": "OS Command Injection",
+            "query_loop": 1,
+            "query_description": "In this building block the user will run some OS commands injected into SQL queries to create a policy violation for OS Command injection\n - If running individually, user must run the Create dbo.testTable for Policy violations building block first. It has an ID of 1 ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1207,
+            "query_type": "sqlserver",
+            "query_db_type": "Brute-Force Attack",
+            "query_string": "{bruteforce:MYUSER{i}}",
+            "db_connection_id": 35,
+            "query_usecase": "Many failed attempts by multiple DB users from the same client IP",
+            "query_loop": 100,
+            "query_description": "In this building block the user will run multiple connection attempts with multiple different users\n ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1208,
+            "query_type": "sqlserver",
+            "query_db_type": "Brute-Force Attack",
+            "query_string": "{bruteforce:JUMP}",
+            "db_connection_id": 35,
+            "query_usecase": "Failed login attempts by dormant user",
+            "query_loop": 15,
+            "query_description": "In this building block the user will run multiple connection attempts with a dormant user\n - Change username to match a dormant user in the databse",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1209,
+            "query_type": "sqlserver",
+            "query_db_type": "Malicious Procedure",
+            "query_string": "IF OBJECT_ID('dbo.account_groups','U') IS NOT NULL DROP TABLE dbo.account_groups;\nCREATE TABLE dbo.account_groups (ssn VARCHAR(40),first_name VARCHAR(40),last_name VARCHAR(40),group_name VARCHAR(50));\nINSERT INTO dbo.account_groups (ssn, first_name, last_name, group_name) VALUES('345278446','Thu', 'Lett','Gold'),('543987556','Leah', 'Calvo','Silver'),('778524395','Boris', 'Fay','Platinum'),('125948637','Johana', 'Relyea','Blue'),('6544932875','Debi','Winford', 'Silver'),('193756824','Vernice','Corbin','Gold'),('485266791','Perry','Silver'),('5978824631','Bella','Gastelum','Blue'),('164959728','Jordon','Polito','Silver'),('346596782','Irena','Bach','Blue'),('862495377','Ofir','Levy','Gold'),('953463735','Mara','Sherrard','Blue'),('613249578','Craig','Fullmer','Blue'),('555196666','Mary', 'Popkins', 'Gold');\nSELECT * FROM dbo.account_groups;\nIF OBJECT_ID('dbo.move_to_silver','P') IS NOT NULL DROP PROCEDURE dbo.move_to_silver;\nIF OBJECT_ID('dbo.move_to_gold','P') IS NOT NULL DROP PROCEDURE dbo.move_to_gold;\nIF OBJECT_ID('dbo.move_to_platinum','P') IS NOT NULL DROP PROCEDURE dbo.move_to_platinum;\nCREATE PROCEDURE dbo.move_to_silver @user_id VARCHAR(255) AS BEGIN UPDATE dbo.account_groups SET group_name = 'Silver' WHERE ssn = @user_id; END;\nCREATE PROCEDURE dbo.move_to_gold @user_id VARCHAR(255) AS BEGIN UPDATE dbo.account_groups SET group_name = 'Gold' WHERE ssn = @user_id; END;\nCREATE PROCEDURE dbo.move_to_platinum @user_id VARCHAR(255) AS BEGIN UPDATE dbo.account_groups SET group_name = 'Platinum' WHERE ssn = @user_id; END;",
+            "db_connection_id": 35,
+            "query_usecase": "Create STP Account Groups",
+            "query_loop": 1,
+            "query_description": "This building block is part of a Malicious procedure story\n It can be run indivdually as part of a manual sequence with building blocks 1210(Call STP Account Groups) and 1211(Malicious STP Update Account Groups) \n - The sequence is 1209,1210,1211,1210 to get the desired effect of a Malicious procedure violation  \n - Execute as Polly\n- Create Table\n- Insert values\n- Create Stored Procedures",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
+        },
+        {
+            "id": 1210,
+            "query_type": "sqlserver",
+            "query_db_type": "Malicious Procedure",
+            "query_string": "SELECT * FROM dbo.account_groups;\nEXEC dbo.move_to_gold @user_id = '345278446';\nEXEC dbo.move_to_silver @user_id = '485266791';\nEXEC dbo.move_to_silver @user_id = '543987556';\nEXEC dbo.move_to_platinum @user_id = '555196666';\nEXEC dbo.move_to_gold @user_id = '193756824';\nEXEC dbo.move_to_platinum @user_id = '555196666';\nSELECT * FROM dbo.account_groups;",
+            "db_connection_id": 35,
+            "query_usecase": "Call STP Account Groups",
+            "query_loop": 15,
+            "query_description": "This building block is part of a Malicious procedure story\n It can be run indivdually as part of a manual sequence with building blocks 1209(Create STP Account Groups) and 1211(Malicious STP Update Account Groups)  \n - The sequence is 1209,1210,1211,1210 to get the desired effect of a Malicious procedure violation\n - Execute as Jason or John\n- Call Stored Procedures",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
+        },
+        {
+            "id": 1211,
+            "query_type": "sqlserver",
+            "query_db_type": "Malicious Procedure",
+            "query_string": "IF OBJECT_ID('dbo.move_to_platinum','P') IS NOT NULL DROP PROCEDURE dbo.move_to_platinum;\nCREATE PROCEDURE dbo.move_to_platinum @user_id VARCHAR(255) AS BEGIN IF OBJECT_ID('dbo.account_groups','U') IS NOT NULL DROP TABLE dbo.account_groups; END;",
+            "db_connection_id": 35,
+            "query_usecase": "Malicious STP Update Account Groups",
+            "query_loop": 15,
+            "query_description": "This building block is part of a Malicious procedure story\n It can be run indivdually as part of a manual sequence with building blocks 7(Create STP Account Groups) and 8(Call STP Account Groups)   \n - The sequence is 1209,1210,1211,1210 to get the desired effect of a Malicious procedure violation\n - Execute as Liher\n- Replace Stored Procedures (drop table)",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
+        },
+        {
+            "id": 1212,
+            "query_type": "sqlserver",
+            "query_db_type": "Create",
+            "query_string": "CREATE LOGIN MYUSER{i} WITH PASSWORD = 'guardium';",
+            "db_connection_id": 35,
+            "query_usecase": "Create Multipe users",
+            "query_loop": 30,
+            "query_description": "In this building block the user will create multiple users in the database. This can be run as an individual block or in sequence with building block 1213(Grant privileges to Multiple users) and 1214(Delete Multiple users) to clean up and reset.\n\n The mentioned blocks can also be run in story mode as Massive grants violation ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1213,
+            "query_type": "sqlserver",
+            "query_db_type": "Grant",
+            "query_string": "ALTER SERVER ROLE sysadmin ADD MEMBER MYUSER{i};",
+            "db_connection_id": 35,
+            "query_usecase": "Grant privileges to Multiple users",
+            "query_loop": 30,
+            "query_description": "In this building block the user will grant privileges to  multiple users in the database. This can be run in sequence with building block 1212(Create Multipe users) and 1214(Delete Multiple users) to clean up and reset.\n\n The mentioned blocks can also be run in story mode as Massive grants violation ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1214,
+            "query_type": "sqlserver",
+            "query_db_type": "Drop",
+            "query_string": "IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'MYUSER{i}') DROP LOGIN MYUSER{i};",
+            "db_connection_id": 35,
+            "query_usecase": "Drop Multiple users",
+            "query_loop": 30,
+            "query_description": "In this building block the user will drop multiple users in the database. This can be run in sequence with building block 1212(Create Multipe users) and 1213(Grant privileges to Multiple users).\n\n The mentioned blocks can also be run in story mode as Massive grants violation",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1215,
+            "query_type": "sqlserver",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO dbo.tbl_bugs (id,name,date_entered,date_modified,created_by,modified_user_id,assigned_user_id,bug_number,type,status,priority,resolution,product_category)VALUES ('{STRING}-auto-auto-{STRING}','{STRING}fails to {STRING}',GETDATE(),GETDATE(),'{STRING}-auto-auto-{STRING}','{STRING}-auto-auto-{STRING}','{STRING}-auto-auto-{STRING}',{INT},'Dept-{STRING}','Open','High', NULL,'Hardware');",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into dbo.tbl_bugs",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_bugs",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1216,
+            "query_type": "sqlserver",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO dbo.tbl_calls (id,name,date_entered,date_modified,created_by,modified_user_id,assigned_user_id,duration_hours,duration_minutes,date_start,date_end,status,direction,parent_id, parent_type) VALUES (NEWID(),N'Intro Call',GETDATE(),GETDATE(),'{STRING}-auto-auto-{STRING}','{STRING}-auto-auto-{STRING}','{STRING}-auto-auto-{STRING}',0,9,'2025-06-18T10:00:00','2025-06-18T10:30:00', N'Held',N'Outbound','{STRING}-auto-auto-{STRING}',N'Accounts');",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into dbo.tbl_calls",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_calls",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1217,
+            "query_type": "sqlserver",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO dbo.tbl_crm_accounts (Id, Name, Date_entered, Date_modified, Modified_user_id, Created_by, Description, Deleted, Assigned_user_id, Account_type, Industry, Annual_revenue, Phone_fax, Billing_address_street, Billing_address_city, Billing_address_state, Billing_address_postalcode, Billing_address_country, Rating, Phone_office, Phone_alternate, Website, Ownership, Employees, Ticker_symbol, Shipping_address_street, Shipping_address_city, Shipping_address_state, Shipping_address_postalcode, Shipping_address_country, Parent_id, Sic_code, Campaign_id, Status) VALUES (NEWID(), '{STRING}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'seed_will_id', '1', NULL, 0, 'seed_max_id', 'Customer', 'Technology', NULL, NULL, '1715 Scott Dr', 'Alabama', 'CA', '{INT}', 'USA', NULL, '({INT}) {INT}-{INT}', NULL, 'www.devim.edu', NULL, NULL, NULL, '{INT} Scott Dr', 'Alabama', 'CA', '14882', 'USA', NULL, NULL, NULL, '1');",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into crm.tbl_accounts",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_accounts",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1218,
+            "query_type": "sqlserver",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO dbo.tbl_email_lists (id,email_address,email_address_caps,date_created) VALUES ('{STRING}-auto-auto-{STRING}','{STRING}@{STRING}.COM', '{STRING}@{STRING}.COM',CURRENT_TIMESTAMP);",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into dbo.tbl_email_lists",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_email_lists",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1219,
+            "query_type": "sqlserver",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO dbo.tbl_product (id,name,description,price,quantity) VALUES ('P-{STRING}', 'Product Description {STRING}', ' {STRING}',{INT}.{INT},{INT});",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into dbo.tbl_product",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_product",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1220,
+            "query_type": "sqlserver",
+            "query_db_type": "Select",
+            "query_string": "SELECT TOP {INT} id, name, bug_number, status, priority FROM dbo.tbl_bugs WHERE bug_number BETWEEN {INT} AND {INT} AND status = 'Open';",
+            "db_connection_id": 35,
+            "query_usecase": "Select from dbo.tbl_bugs",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_bugs",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1221,
+            "query_type": "sqlserver",
+            "query_db_type": "Select",
+            "query_string": "SELECT TOP {INT} id, name, duration_hours, duration_minutes, date_start FROM dbo.tbl_calls WHERE duration_hours >= {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from dbo.tbl_calls",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_calls",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1222,
+            "query_type": "sqlserver",
+            "query_db_type": "Select",
+            "query_string": "SELECT TOP {INT} id, status FROM dbo.tbl_crm_accounts_status WHERE id > {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from dbo.tbl_crm_accounts_status",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_crm_accounts_status",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1223,
+            "query_type": "sqlserver",
+            "query_db_type": "Select",
+            "query_string": "SELECT TOP {INT} id, name, status, date_entered FROM dbo.tbl_crm_accounts WHERE status < {INT} ORDER BY date_entered DESC;",
+            "db_connection_id": 35,
+            "query_usecase": "Select from dbo.tbl_crm_accounts",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_crm_accounts",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1224,
+            "query_type": "sqlserver",
+            "query_db_type": "Select",
+            "query_string": "SELECT TOP {INT} id, email_address, date_created FROM dbo.tbl_email_lists WHERE opt_out <= {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from dbo.tbl_email_lists",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_email_lists",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1225,
+            "query_type": "sqlserver",
+            "query_db_type": "Select",
+            "query_string": "SELECT TOP {INT} id, email_id, template_id, campaign_date FROM dbo.tbl_marketing_campaign WHERE id >= {INT} ORDER BY campaign_date DESC;",
+            "db_connection_id": 35,
+            "query_usecase": "Select from dbo.tbl_marketing_campaign",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_marketing_campaign",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1226,
+            "query_type": "sqlserver",
+            "query_db_type": "Select",
+            "query_string": "SELECT TOP {INT} id, subject FROM dbo.tbl_marketing_template;",
+            "db_connection_id": 35,
+            "query_usecase": "Select from dbo.tbl_marketing_template",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_marketing_template",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1227,
+            "query_type": "sqlserver",
+            "query_db_type": "Select",
+            "query_string": "SELECT TOP {INT} id, name, quantity, price FROM dbo.tbl_product WHERE quantity < {INT} ORDER BY quantity ASC;",
+            "db_connection_id": 35,
+            "query_usecase": "Select from dbo.tbl_product",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_product",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1228,
+            "query_type": "sqlserver",
+            "query_db_type": "Update",
+            "query_string": "UPDATE p SET p.quantity = p.quantity + 1 FROM dbo.tbl_product AS p WHERE p.id = (SELECT TOP 1 id FROM dbo.tbl_product ORDER BY NEWID());",
+            "db_connection_id": 35,
+            "query_usecase": "Update from dbo.tbl_product",
+            "query_loop": 1,
+            "query_description": "In this query we Update a rows in tbl_product",
+            "video_link": "VideoURL"
+        }
+    ]
+}

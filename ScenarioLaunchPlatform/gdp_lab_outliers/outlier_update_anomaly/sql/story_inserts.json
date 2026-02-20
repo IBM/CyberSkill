@@ -1,0 +1,150 @@
+{
+  "stories": [
+    {
+      "id": 1201,
+      "story": {
+        "name": "MySQL Update Anomaly - Time-Based Pattern (5 Hours)",
+        "description": "Simulates update anomaly attack with time-based pattern in UPDATE operations. Establishes normal baseline (50 UPDATEs/hour for 4 hours) followed by massive spike (1000 UPDATEs in hour 5) to detect unauthorized bulk data modification. Pattern: Pre-cleanup → Create table → Insert 10000 records → 50 UPDATEs → 1 hour → 50 UPDATEs → 1 hour → 50 UPDATEs → 1 hour → 50 UPDATEs → 1 hour → 1000 UPDATE SPIKE",
+        "author": "SLP Team",
+        "outcomes": "Understand how Guardium detects time-based anomalies in data modification patterns, specifically identifying sudden spikes in UPDATE operations that deviate from established baselines. Learn to recognize update anomaly attacks through temporal analysis of DML operations.",
+        "handbook": "https://www.ibm.com/docs/en/guardium",
+        "video": "VideoURL",
+        "story": [
+          {
+            "query_id": 1201,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Drop Table from Previous Run"
+          },
+          {
+            "query_id": 1202,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Test Table for Update Anomaly"
+          },
+          {
+            "query_id": 1203,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Insert 10000 Test Records"
+          },
+          {
+            "query_id": 1204,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 UPDATE Operations"
+          },
+          {
+            "query_id": 1205,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 UPDATE Operations"
+          },
+          {
+            "query_id": 1206,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 UPDATE Operations"
+          },
+          {
+            "query_id": 1207,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 UPDATE Operations"
+          },
+          {
+            "query_id": 1208,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 1000 Rapid UPDATEs (Data Modification)"
+          },
+          {
+            "query_id": 1209,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify Data Modification Impact"
+          },
+          {
+            "query_id": 1210,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    },
+    {
+      "id": 1202,
+      "story": {
+        "name": "MySQL Update Anomaly - Quick Demo (5 sec pauses)",
+        "description": "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline UPDATEs (50 each) followed by massive 1000-UPDATE spike to detect data modification attacks.",
+        "author": "SLP Team",
+        "outcomes": "Quick demonstration of update anomaly detection for testing and validation purposes. Same detection patterns as the full story but compressed into a short timeframe.",
+        "handbook": "https://www.ibm.com/docs/en/guardium",
+        "video": "VideoURL",
+        "story": [
+          {
+            "query_id": 1201,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Drop Table from Previous Run"
+          },
+          {
+            "query_id": 1202,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Test Table"
+          },
+          {
+            "query_id": 1203,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Insert 10000 Test Records"
+          },
+          {
+            "query_id": 1204,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 UPDATEs"
+          },
+          {
+            "query_id": 1205,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 UPDATEs"
+          },
+          {
+            "query_id": 1206,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 UPDATEs"
+          },
+          {
+            "query_id": 1207,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 UPDATEs"
+          },
+          {
+            "query_id": 1208,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 SPIKE - 1000 Rapid UPDATEs"
+          },
+          {
+            "query_id": 1209,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify Modification"
+          },
+          {
+            "query_id": 1210,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    }
+  ]
+}

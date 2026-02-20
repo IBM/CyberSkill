@@ -387,6 +387,21 @@
               <tarLongFileMode>posix</tarLongFileMode>
             </configuration>
           </execution>
+          <execution>
+            <id>create-gdp-lab-distribution</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/assembly/gdp-lab-distribution.xml</descriptor>
+              </descriptors>
+              <finalName>slp-gdp-lab-${project.version}</finalName>
+              <outputDirectory>${project.basedir}/gdp_lab_latest</outputDirectory>
+              <tarLongFileMode>posix</tarLongFileMode>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       

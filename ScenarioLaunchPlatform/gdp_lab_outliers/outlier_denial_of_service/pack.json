@@ -1,0 +1,7 @@
+{
+  "pack_name": "outlier_denial_of_service",
+  "pack_description": "MySQL Denial of Service (DoS) Detection - Simulates normal query baseline (1001 queries for 4 hours) followed by massive DoS spike (205000 queries) to detect resource exhaustion attacks",
+  "pack_version": "1.0.0",
+  "author": "Security Team",
+  "created_date": "2026-02-11"
+}

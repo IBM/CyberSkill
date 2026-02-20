@@ -1,0 +1,80 @@
+{
+    "queries": [
+        {
+            "id": 951,
+            "query_type": "oracle",
+            "query_db_type": "Select",
+            "query_string": "SELECT * FROM HR.EMPLOYEES;",
+            "db_connection_id": 35,
+            "query_usecase": "Simple Select from HR.EMPLOYEES",
+            "query_loop": 1,
+            "query_description": "In this building block a user selects from a table",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 952,
+            "query_type": "oracle",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO HR.EMPLOYEES (EMPLOYEE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER,HIRE_DATE, JOB_ID, SALARY, COMMISSION_PCT, MANAGER_ID, DEPARTMENT_ID) VALUES (349,'Polly','Pocket','pollyp@gmail.com','416.612.1234',SYSDATE, 'IT_PROG', 5000, NULL, 103, 60);",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into Table HR.EMPLOYEES",
+            "query_loop": 1,
+            "query_description": "In this building block a user inserts into a table HR.EMPLOYEES",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=policyViolation.mp4"
+        },
+        {
+            "id": 953,
+            "query_type": "oracle",
+            "query_db_type": "Update",
+            "query_string": "UPDATE HR.EMPLOYEES SET SALARY = SALARY * 5 WHERE EMPLOYEE_ID = 349;",
+            "db_connection_id": 35,
+            "query_usecase": "Update Salary x 5",
+            "query_loop": 1,
+            "query_description": "In this building block a user updates a row in the HR.EMPLOYEE table that increases a salary x 5.\n Requires building block query 952 to be run beforehand",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 954,
+            "query_type": "oracle",
+            "query_db_type": "Delete",
+            "query_string": "DELETE FROM HR.EMPLOYEES WHERE EMPLOYEE_ID = 349;",
+            "db_connection_id": 35,
+            "query_usecase": "Delete a user from HR.EMPLOYEES",
+            "query_loop": 1,
+            "query_description": "In this building block the user will a user from the HR.EMPLOYEE table with an ID of 349. \n - Requires building block query 953 to be run beforehand ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 955,
+            "query_type": "oracle",
+            "query_db_type": "Create",
+            "query_string": "CREATE TABLE EMPLOYEES_COPY AS (SELECT * FROM HR.EMPLOYEES);",
+            "db_connection_id": 35,
+            "query_usecase": "Create a clone of the HR.EMPLOYEE table",
+            "query_loop": 1,
+            "query_description": "In this building block the user will create a clone f the HR.EMPLOYEE table\n ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 956,
+            "query_type": "oracle",
+            "query_db_type": "Select",
+            "query_string": "SELECT * FROM EMPLOYEES_COPY;",
+            "db_connection_id": 35,
+            "query_usecase": "Select from EMPLOYEES_COPY table",
+            "query_loop": 15,
+            "query_description": "In this building block the user will Select from EMPLOYEES_COPY table\n - Requires building block query 955 to be run beforehand",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 957,
+            "query_type": "oracle",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE EMPLOYEES_COPY;",
+            "db_connection_id": 35,
+            "query_usecase": "Drop table EMPLOYEES_COPY",
+            "query_loop": 1,
+            "query_description": "In this building block the user will drop the table EMPLOYEES_COPY \n - Requires building block query 955 to be run beforehand ",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
+        }    ]
+}

@@ -1,0 +1,408 @@
+{
+    "queries": [
+        {
+            "id": 601,
+            "query_type": "db2",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_crm_accounts (Id, Name, Date_entered, Date_modified, Modified_user_id, Created_by, Description, Deleted, Assigned_user_id, Account_type, Industry, Annual_revenue, Phone_fax, Billing_address_street, Billing_address_city, Billing_address_state, Billing_address_postalcode, Billing_address_country, Rating, Phone_office, Phone_alternate, Website, Ownership, Employees, Ticker_symbol, Shipping_address_street, Shipping_address_city, Shipping_address_state, Shipping_address_postalcode, Shipping_address_country, Parent_id, Sic_code, Campaign_id, Status) VALUES ('df61978a-f4cc-ff64-8de0-53e90f19a52a', 'B.H. Edwards Inc', '2024-09-22 03:11:33', '2024-09-24 03:11:33', 'seed_will_id', '1', NULL, 0, 'seed_max_id', 'Customer', 'Technology', NULL, NULL, '1715 Scott Dr', 'Alabama', 'CA', '14882', 'USA', NULL, '(847) 706-6877', NULL, 'www.devim.edu', NULL, NULL, NULL, '1715 Scott Dr', 'Alabama', 'CA', '14882', 'USA', NULL, NULL, NULL, '1');",
+            "db_connection_id": 35,
+            "query_usecase": "db2_insert_into_crm.tbl_crm_accounts",
+            "query_loop": 1,
+            "query_description": "In this building block a user inserts data into a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 602,
+            "query_type": "db2",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_email_lists (id,email_address,email_address_caps,date_created) VALUES ('{STRING}-auto-auto-{STRING}','{STRING}@{STRING}.COM', '{STRING}@{STRING}.COM',CURRENT_TIMESTAMP);",
+            "db_connection_id": 35,
+            "query_usecase": "db2_insert_into_crm.tbl_crm_accounts",
+            "query_loop": 1,
+            "query_description": "In this building block a user inserts data into a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 603,
+            "query_type": "db2",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_marketing_campaign (email_id,template_id,campaign_date) VALUES ('{STRING}-auto-auto-{STRING}', '{STRING}-auto-auto-{STRING}', CURRENT_TIMESTAMP);",
+            "db_connection_id": 35,
+            "query_usecase": "db2_insert_into_crm.tbl_marketing_campaign",
+            "query_loop": 1,
+            "query_description": "In this building block a user inserts data into a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 604,
+            "query_type": "db2",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_product (id,name,description,price,quantity) VALUES ('P-{STRING}', 'Product Description {STRING}', ' {STRING}',{INT}.{INT},{INT});",
+            "db_connection_id": 35,
+            "query_usecase": "db2_insert_into_crm.tbl_product",
+            "query_loop": 1,
+            "query_description": "In this building block a user inserts data into a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 605,
+            "query_type": "db2",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_bugs (id,name,date_entered,date_modified,created_by, modified_user_id,assigned_user_id,bug_number,type,status,priority,resolution, product_category) VALUES ('b1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1','Trap fails to spring', CURRENT_DATE,CURRENT_DATE, 'user‑aaaa‑aaaa‑aaaa‑aaaa‑aaaaaaaaaaaa', 'user‑aaaa‑aaaa‑aaaa‑aaaa‑aaaaaaaaaaaa', 'user‑aaaa‑aaaa‑aaaa‑aaaa‑aaaaaaaaaaaa', 1001,'Mechanical','Open','High',NULL,'Hardware');",
+            "db_connection_id": 35,
+            "query_usecase": "db2_insert_into_crm.tbl_bugs",
+            "query_loop": 1,
+            "query_description": "In this building block a user inserts data into a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 606,
+            "query_type": "db2",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_calls (id,name,date_entered,date_modified,created_by, modified_user_id,assigned_user_id,duration_hours,duration_minutes, date_start,date_end,status,direction,parent_id,parent_type) VALUES ('{STRING}-auto-auto-{STRING}','Intro Call', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '{STRING}-auto-auto-{STRING}', '{STRING}-auto-auto-{STRING}',  '{STRING}-auto-auto-{STRING}', 0, {INT}, '2025-06-18 10:00','2025-06-18 10:30', 'Held', 'Outbound', '{STRING}-auto-auto-{STRING}','Accounts');",
+            "db_connection_id": 35,
+            "query_usecase": "db2_insert_into_crm.tbl_calls",
+            "query_loop": 1,
+            "query_description": "In this building block a user inserts data into a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 607,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, status FROM crm.tbl_crm_accounts_status WHERE id > {INT} FETCH FIRST {INT} ROWS ONLY;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_from_crm.tbl_crm_accounts_status",
+            "query_loop": 1,
+            "query_description": "In this building block a user selects data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 608,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, name, status, date_entered FROM crm.tbl_crm_accounts WHERE status < {INT} ORDER BY date_entered DESC FETCH FIRST {INT} ROWS ONLY;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_from_crm.tbl_crm_accounts",
+            "query_loop": 1,
+            "query_description": "In this building block a user selects data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 609,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, name, duration_hours, duration_minutes, date_start FROM crm.tbl_calls WHERE duration_hours >= {INT} FETCH FIRST {INT} ROWS ONLY;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_from_crm.tbl_calls",
+            "query_loop": 1,
+            "query_description": "In this building block a user selects data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 610,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, email_address, date_created FROM crm.tbl_email_lists WHERE opt_out <= {INT} FETCH FIRST {INT} ROWS ONLY;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_from_crm.tbl_email_lists",
+            "query_loop": 1,
+            "query_description": "In this building block a user selects data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 611,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, subject FROM crm.tbl_marketing_template FETCH FIRST {INT} ROWS ONLY;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_from_crm.tbl_marketing_template",
+            "query_loop": 1,
+            "query_description": "In this building block a user selects data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 612,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, email_id, template_id, campaign_date FROM crm.tbl_marketing_campaign WHERE id >= {INT} ORDER BY campaign_date DESC FETCH FIRST {INT} ROWS ONLY;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_from_crm.tbl_marketing_campaign",
+            "query_loop": 30,
+            "query_description": "In this building block a user selects data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 613,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, name, bug_number, status, priority FROM crm.tbl_bugs WHERE bug_number BETWEEN {INT} AND {INT} AND status = 'Open' FETCH FIRST {INT} ROWS ONLY;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_from_crm.tbl_bugs",
+            "query_loop": 1,
+            "query_description": "In this building block a user selects data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 614,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, name, quantity, price FROM crm.tbl_product WHERE quantity < {INT} ORDER BY quantity ASC FETCH FIRST {INT} ROWS ONLY;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_from_crm.tbl_product",
+            "query_loop": 1,
+            "query_description": "In this building block a user selects data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 615,
+            "query_type": "db2",
+            "query_db_type": "Update",
+            "query_string": "UPDATE crm.tbl_product SET quantity = quantity + 1 WHERE id = (SELECT id FROM (SELECT id FROM crm.tbl_product ORDER BY RAND() FETCH FIRST 1 ROW ONLY) AS r);",
+            "db_connection_id": 35,
+            "query_usecase": "db2_update_crm.tbl_product",
+            "query_loop": 1,
+            "query_description": "In this building block a user updates data in a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        },
+        {
+            "id": 616,
+            "query_type": "db2",
+            "query_db_type": "Create",
+            "query_string": "CREATE SCHEMA HR AUTHORIZATION db2inst1;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_create_schema",
+            "query_loop": 1,
+            "query_description": "In this building block a user creates a schema",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 617,
+            "query_type": "db2",
+            "query_db_type": "Create",
+            "query_string": "-- Clone the Existing Employees Table into the New Schema\nCREATE TABLE HR.EMPLOYEES AS (SELECT * FROM db2inst1.EMP) WITH DATA;\n-- Alter the Cloned Table: Add a New Column\nALTER TABLE HR.EMPLOYEES ADD COLUMN DEPARTMENT VARCHAR(50) DEFAULT 'General';",
+            "db_connection_id": 35,
+            "query_usecase": "db2_create_tables",
+            "query_loop": 1,
+            "query_description": "In this building block a user creates tables",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 618,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT * FROM HR.EMPLOYEES WHERE EMPNO = '000010';",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_HR.EMPLOYEES",
+            "query_loop": 1,
+            "query_description": "In this building block a user selects data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 619,
+            "query_type": "db2",
+            "query_db_type": "Update",
+            "query_string": "UPDATE HR.EMPLOYEES SET SALARY = 190000  WHERE EMPNO = '000010';",
+            "db_connection_id": 35,
+            "query_usecase": "db2_update_HR.EMPLOYEES",
+            "query_loop": 1,
+            "query_description": "In this building block a user updates data in a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 620,
+            "query_type": "db2",
+            "query_db_type": "Delete",
+            "query_string": "DELETE FROM HR.EMPLOYEES WHERE EMPNO = '000010';",
+            "db_connection_id": 35,
+            "query_usecase": "db2_delete_HR.EMPLOYEES",
+            "query_loop": 1,
+            "query_description": "In this building block a user deletes data in a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 621,
+            "query_type": "db2",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE HR.EMPLOYEES;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_drop_HR.EMPLOYEES;",
+            "query_loop": 1,
+            "query_description": "In this building block a user drops a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 622,
+            "query_type": "db2",
+            "query_db_type": "Drop",
+            "query_string": "DROP SCHEMA HR RESTRICT;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_drop_schema_HR",
+            "query_loop": 1,
+            "query_description": "In this building block a user drops a schema",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 623,
+            "query_type": "db2",
+            "query_db_type": "Create",
+            "query_string": "CREATE TABLE crm.CUSTOMER_CREDITCARDS (CUSTOMER_ID INTEGER NOT NULL ,NAME VARCHAR(100) NOT NULL, EMAIL VARCHAR(100) UNIQUE NOT NULL, PHONE VARCHAR(20), CREDIT_CARD_NUMBER CHAR(16) NOT NULL, EXPIRY_DATE DATE NOT NULL);",
+            "db_connection_id": 35,
+            "query_usecase": "db2_create_CUSTOMER_CREDITCARDS",
+            "query_loop": 1,
+            "query_description": "In this building block a user creates a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 624,
+            "query_type": "db2",
+            "query_db_type": "Alter",
+            "query_string": "ALTER TABLE crm.CUSTOMER_CREDITCARDS ADD COLUMN CVV SMALLINT CHECK (CVV BETWEEN 100 AND 999);",
+            "db_connection_id": 35,
+            "query_usecase": "db2_alter_CUSTOMER_CREDITCARDS",
+            "query_loop": 1,
+            "query_description": "In this building block a user alters a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 625,
+            "query_type": "db2",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.CUSTOMER_CREDITCARDS (CUSTOMER_ID, NAME, EMAIL, PHONE, CREDIT_CARD_NUMBER, EXPIRY_DATE, CVV) VALUES (1, 'Alice Johnson', 'alice@gdemo.com', '555-1234', '4111111111111111', '2026-06-30', 123), (2, 'Bob Smith', 'bob@gdemo.com', '555-5678', '5500000000000004', '2027-09-15', 456), (3, 'Charlie Brown', 'charlie@gdemo.com', '555-9876', '340000000000009', '2028-12-10', 789);",
+            "db_connection_id": 35,
+            "query_usecase": "db2_insert_CUSTOMER_CREDITCARDS",
+            "query_loop": 1,
+            "query_description": "In this building block a user inserts data into a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 626,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "SELECT * FROM crm.CUSTOMER_CREDITCARDS;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_CUSTOMER_CREDITCARDS;",
+            "query_loop": 1,
+            "query_description": "In this building block a user select data from a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 627,
+            "query_type": "db2",
+            "query_db_type": "Delete",
+            "query_string": "DELETE FROM crm.CUSTOMER_CREDITCARDS WHERE CUSTOMER_ID = 2;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_delete_CUSTOMER_CREDITCARDS",
+            "query_loop": 1,
+            "query_description": "In this building block a user deletes data in a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 628,
+            "query_type": "db2",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE crm.CUSTOMER_CREDITCARDS;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_drop_CUSTOMER_CREDITCARDS",
+            "query_loop": 1,
+            "query_description": "In this building block a user drops a table",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 629,
+            "query_type": "db2",
+            "query_db_type": "Update",
+            "query_string": "UPDATE crm.employees SET salary = salary + 100 WHERE emp_id = 1;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_update_employees",
+            "query_loop": 1,
+            "query_description": "In this building block a user updates data in a table that does not exist",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 630,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "select name, industry, account_type from crm.tbl_crm_accounts where id = '1' or '1'='1';",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_crm.tbl_crm_accounts",
+            "query_loop": 1,
+            "query_description": "In this building block a user performs basic sql injection",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 631,
+            "query_type": "db2",
+            "query_db_type": "Select",
+            "query_string": "select name, industry, account_type from crm.tbl_crm_accounts where status =  9",
+            "db_connection_id": 35,
+            "query_usecase": "db2_select_crm.tbl_crm_accounts",
+            "query_loop": 1,
+            "query_description": "In this building block a user performs a select with bad where clause",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 632,
+            "query_type": "db2",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE crm.CUSTOMERS;;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_drop_customers",
+            "query_loop": 1,
+            "query_description": "In this building block a user performs a bad drop",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 633,
+            "query_type": "db2",
+            "query_db_type": "Revoke",
+            "query_string": "REVOKE DBADM ON DATABASE FROM USER liher;\nREVOKE DBADM ON DATABASE FROM USER jason;\nREVOKE DBADM ON DATABASE FROM USER john;\nREVOKE DBADM ON DATABASE FROM USER ian;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_revoke",
+            "query_loop": 1,
+            "query_description": "In this building block a user performs a revoke command",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 634,
+            "query_type": "db2",
+            "query_db_type": "Grant",
+            "query_string": "GRANT DBADM ON DATABASE TO USER polly;\nGRANT DBADM ON DATABASE TO USER liher;\nGRANT DBADM ON DATABASE TO USER jason;\nGRANT DBADM ON DATABASE TO USER john;\nGRANT DBADM ON DATABASE TO USER ian;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_grant",
+            "query_loop": 1,
+            "query_description": "In this building block a user performs a grant command",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+        ,
+        {
+            "id": 635,
+            "query_type": "db2",
+            "query_db_type": "Grant",
+            "query_string": "GRANT SECADM, DBADM, DATAACCESS, ACCESSCTRL ON DATABASE TO USER polly;\nGRANT SECADM, DBADM, DATAACCESS, ACCESSCTRL ON DATABASE TO USER liher;\nGRANT SECADM, DBADM, DATAACCESS, ACCESSCTRL ON DATABASE TO USER jason;\nGRANT SECADM, DBADM, DATAACCESS, ACCESSCTRL ON DATABASE TO USER john;\nGRANT SECADM, DBADM, DATAACCESS, ACCESSCTRL ON DATABASE TO USER ian;",
+            "db_connection_id": 35,
+            "query_usecase": "db2_grant_super",
+            "query_loop": 1,
+            "query_description": "In this building block a user performs a grant with extra permissions",
+            "video_link": "https://ibm.github.io/CyberSkill/"
+        }
+    ]
+}

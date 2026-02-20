@@ -184,17 +184,18 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
               <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="getPacks();" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='purple'" onmouseout="this.style.color='gray'"></i> Refresh available content packs </h6>
               
               <table id="example" class="display" style="width:100%">
-			  <thead>
-			    <tr>
-			    	<th>id</th> 
-			      	<th>pack_name</th>      	
-			      	<th>version</th>
-			      	<th>db_type</th>
-			      	<th>build_date</th>
-			      	<th>build_version</th>
-			      	<th>uploaded_date</th>
-			    </tr>
-			  </thead>
+     <thead>
+       <tr>
+        <th>id</th>
+          <th>pack_name</th>
+          <th>version</th>
+          <th>db_type</th>
+          <th>build_date</th>
+          <th>build_version</th>
+          <th>uploaded_date</th>
+          <th>deployment_status</th>
+       </tr>
+     </thead>
 			  <tbody>
 			    <!-- Data will be inserted here by DataTables -->
 			  </tbody>
@@ -483,14 +484,17 @@ let table; //
 $(document).ready(function () {
  table = $('#example').DataTable({
   columns: [
-    null,                      // id
-   null,         // pack_name with tooltip - removed for issues need to figure out
-    null,                      // version
-    null,                      // db_type
-    null,                      // build_date
-    null,                      // build_version
-    null                       // uploaded_date
-  ]
+    { width: "5%" },           // id
+    { width: "25%" },          // pack_name with tooltip
+    { width: "10%" },          // version
+    { width: "10%" },          // db_type
+    { width: "12%" },          // build_date
+    { width: "10%" },          // build_version
+    { width: "18%" },          // uploaded_date
+    { width: "10%" }           // deployment_status
+  ],
+  autoWidth: false,
+  scrollX: false
 });
 
 
@@ -563,14 +567,15 @@ function getPacks() {
         // Add icon: large green D for deployed, large red ND for not deployed
         let deployedIcon = '';
         if (item.pack_deployed === true || item.pack_deployed === 'true') {
-          deployedIcon = '<span title="Deployed" style="color:green;font-size:24px;font-weight:bold;margin-left:10px;vertical-align:middle;">D</span>';
+          deployedIcon = '<span title="Deployed" style="color:green;font-size:24px;font-weight:bold;">D</span>';
         } else {
-          deployedIcon = '<span title="Not Deployed" style="color:red;font-size:24px;font-weight:bold;margin-left:10px;vertical-align:middle;">ND</span>';
+          deployedIcon = '<span title="Not Deployed" style="color:red;font-size:24px;font-weight:bold;">ND</span>';
         }
-        // Build the pack name cell with icon
-        const packNameCell = 
+        
+        // Build the pack name cell with tooltip (without deployment icon)
+        const packNameCell =
           '<div class="pack-tooltip">' +
-            packName + deployedIcon +
+            packName +
             tooltipHtml +
           '</div>';
 
@@ -581,7 +586,8 @@ function getPacks() {
           item.db_type,
           item.build_date,
           item.build_version,
-          formatTimestamp(item.uploaded_date)
+          formatTimestamp(item.uploaded_date),
+          deployedIcon
         ]);
       });
 

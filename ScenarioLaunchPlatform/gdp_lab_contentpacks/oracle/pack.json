@@ -1,0 +1,11 @@
+{
+    "pack_name": "oracle",
+    "version": "v1.0",
+    "db_type": "oracle",
+    "build_date": "08-Jul-2025",
+    "build_version": "139",
+    "description": "A brief description of the pack contents",
+    "author": "Official",
+    "icon": "oracle.png",
+    "background_traffic": "yes"
+}

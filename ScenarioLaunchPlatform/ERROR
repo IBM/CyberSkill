@@ -1,0 +1,7 @@
+Running story: ID=1001 Name=MySQL Schema Tampering - Time-Based Anomaly (5 Hours)
+  - 1001 execution started successfully
+Skipping Quick Demo story: ID=1002 Name=MySQL Schema Tampering - Quick Demo (5 sec pauses)
+
+Summary:
+  Stories executed: 1
+  Stories skipped (Quick Demo): 1

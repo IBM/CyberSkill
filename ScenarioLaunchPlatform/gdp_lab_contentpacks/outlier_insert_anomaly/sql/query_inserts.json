@@ -1,0 +1,85 @@
+{
+  "queries": [
+    {
+      "id": 1301,
+      "query": {
+        "name": "Pre-Cleanup - Remove Previous Test Data",
+        "description": "Ensures clean state by removing any leftover objects from previous failed runs",
+        "query": "DROP TABLE IF EXISTS data_insert_test",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1302,
+      "query": {
+        "name": "Create Insert Test Table",
+        "description": "Creates table for INSERT anomaly testing with multiple columns and indexes",
+        "query": "CREATE TABLE IF NOT EXISTS data_insert_test (id INT AUTO_INCREMENT PRIMARY KEY, category VARCHAR(50), amount DECIMAL(10,2), status VARCHAR(20), data TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, INDEX idx_category (category), INDEX idx_status (status))",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1303,
+      "query": {
+        "name": "Baseline INSERT Hour 1",
+        "description": "Hour 1 baseline - 50 INSERT operations with varied data",
+        "query": "INSERT INTO data_insert_test (category, amount, status, data) VALUES ('Category_A', ROUND(RAND() * 1000, 2), 'active', CONCAT('Baseline Hour 1 - ', UUID()))",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1304,
+      "query": {
+        "name": "Baseline INSERT Hour 2",
+        "description": "Hour 2 baseline - 50 INSERT operations with varied data",
+        "query": "INSERT INTO data_insert_test (category, amount, status, data) VALUES ('Category_B', ROUND(RAND() * 2000, 2), 'pending', CONCAT('Baseline Hour 2 - ', UUID()))",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1305,
+      "query": {
+        "name": "Baseline INSERT Hour 3",
+        "description": "Hour 3 baseline - 50 INSERT operations with varied data",
+        "query": "INSERT INTO data_insert_test (category, amount, status, data) VALUES ('Category_C', ROUND(RAND() * 1500, 2), 'active', CONCAT('Baseline Hour 3 - ', UUID()))",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1309,
+      "query": {
+        "name": "Baseline INSERT Hour 4",
+        "description": "Hour 4 baseline - 50 INSERT operations with varied data",
+        "query": "INSERT INTO data_insert_test (category, amount, status, data) VALUES ('Category_D', ROUND(RAND() * 2500, 2), 'completed', CONCAT('Baseline Hour 4 - ', UUID()))",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1306,
+      "query": {
+        "name": "ANOMALY SPIKE - Massive INSERT Operations",
+        "description": "HOUR 5 ANOMALY: 1000 rapid INSERT operations - 20x normal rate indicating potential data injection attack",
+        "query": "INSERT INTO data_insert_test (category, amount, status, data) VALUES (CONCAT('Spike_', FLOOR(RAND() * 10)), ROUND(RAND() * 5000, 2), 'anomaly', CONCAT('SPIKE INSERT - Potential data injection - ', UUID()))",
+        "query_loop": 1000
+      }
+    },
+    {
+      "id": 1307,
+      "query": {
+        "name": "Verify INSERT Operations",
+        "description": "Verify total records inserted and categorize by type",
+        "query": "SELECT COUNT(*) as total_records, SUM(CASE WHEN status = 'anomaly' THEN 1 ELSE 0 END) as spike_records, SUM(CASE WHEN status IN ('active', 'pending', 'completed') THEN 1 ELSE 0 END) as baseline_records FROM data_insert_test",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1308,
+      "query": {
+        "name": "Cleanup Insert Test Table",
+        "description": "Remove test table after verification",
+        "query": "DROP TABLE IF EXISTS data_insert_test",
+        "query_loop": 1
+      }
+    }
+  ]
+}

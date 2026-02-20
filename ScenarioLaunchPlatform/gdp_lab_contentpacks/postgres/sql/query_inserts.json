@@ -1,0 +1,290 @@
+{
+    "queries": [
+        {
+            "id": 301,
+            "query_type": "postgres",
+            "query_db_type": "Create",
+            "query_string": "create table if not exists testTable (text varchar(100), id int);",
+            "db_connection_id": 35,
+            "query_usecase": "Create testTable for Policy violations",
+            "query_loop": 1,
+            "query_description": "In this building block a user creates a testTable to perform actions on the table that will cause a policy violation",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 302,
+            "query_type": "postgres",
+            "query_db_type": "Policy Violation",
+            "query_string": "insert into testTable (text) values ('xxx');\ninsert into testTable (text) values ('yyy');\ninsert into testTable(text, id) values ('<IMG SRC=javascript:alert(&quot;XSS&quot;)>', 3);\ninsert into testTable(text,id) values('<BODY onload!#$%&()*~+-_.,:;?@[/|\\]^`=alert(\"XSS\")>',7);\nselect * from testTable where text='<IMG SRC=javascript:alert(&quot;XSS&quot;)>';\ndelete from testTable where text='<BODY onload!#$%&()*~+-_.,:;?@[/|\\]^`=alert(\"XSS\")>';\nselect * from testTable where text=/*'<IMG SRC=javascript:alert(&quot;XSS&quot;)>'*/'xxx';\nselect * from testTable where text=/*'<IMG SR*//*C=javascri/*pt:ale*//*rt(&qu*//*ot;X/*SS&q*//*uot;)>'*/'xxx';",
+            "db_connection_id": 35,
+            "query_usecase": "Cross-Site Scripting (XSS)",
+            "query_loop": 1,
+            "query_description": "In this building block a user runs multiple queries associated with XSS, where the user inserts Javascript into the database testTable, then selects and deletes rows\n - If running individually, user must run the Create testTable for Policy violations building block first. It has an ID of 1",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=policyViolation.mp4"
+        },
+        {
+            "id": 303,
+            "query_type": "postgres",
+            "query_db_type": "Policy Violation",
+            "query_string": "insert into testTable (text) values ('xxx');\ninsert into testTable (text) values ('yyy');\nselect * from testTable where text='xxx' or 15=15;\nselect * from testTable where text='xxx' or (1 and 1 = 1);\nselect text from testTable where text=' or 1=1 or ''=';\nselect * from testTable where text='xxx' or 2-1=3-2;\nselect * from testTable where text='xxx' or 1!=2;\nselect * from testTable where text='xxx' or ('SQLi' = 'SQL'+'i');\nselect * from testTable where text='xxx' or ('SQLi' > 'S');\nselect * from testTable where text='xxx' or (20 > 1);\nselect * from testTable where text='xxx' or (5 between 1 and 10);\nselect * from testTable where text='xxx' or ('SQLi' = N'SQLi');\nselect * from testTable where text='xxx' or (1 || 1 = 1);\nselect * from testTable where text='xxx' or (1 && 1 = 1);\nselect * from testTable where text='xxx' or 2/*just trying to be annoying*/=2;",
+            "db_connection_id": 35,
+            "query_usecase": "SQL Injection - Tautology",
+            "query_loop": 1,
+            "query_description": "In this building block a user runs multiple queries associated with SQL Injection. The user tries to return rows from the database by manipulating the WHERE clause of an SQL query to create a condition that is always true\n - If running individually, user must run the Create testTable for Policy violations building block first. It has an ID of 1",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 304,
+            "query_type": "postgres",
+            "query_db_type": "Policy Violation",
+            "query_string": "select * from testTable where text='&lt;!--#exec%20cmd=&quot;/usr/bin/id;--&gt;';\n\\select * from testTable where text='& ping -n 30 192.168.100.13 &';\n\\select * from testTable where text='$;/usr/bin/id';\n\\select * from testTable where text='cat /etc/passwd';\n\\select * from testTable where text='<?php system(\"sleep 10\");?>';\n\\insert into testTable(text, id) values ('ifconfig', 333);\n\\insert into testTable(text, id) values ('ls -l /etc/', 444);\n\\select * from testTable where text='| netstat -an';\n\\select * from testTable where text='which python';\n\\select * from testTable where text='&& whoami';",
+            "db_connection_id": 35,
+            "query_usecase": "OS Command Injection",
+            "query_loop": 1,
+            "query_description": "In this building block the user will run some OS commands injected into SQL queries to create a policy violation for OS Command injection\n - If running individually, user must run the Create testTable for Policy violations building block first. It has an ID of 1 ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 305,
+            "query_type": "postgres",
+            "query_db_type": "Brute-Force Attack",
+            "query_string": "{bruteforce:MYUSER{i}}",
+            "db_connection_id": 35,
+            "query_usecase": "Many failed attempts by multiple DB users from the same client IP",
+            "query_loop": 100,
+            "query_description": "In this building block the user will run multiple connection attempts with multiple different users\n ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 306,
+            "query_type": "postgres",
+            "query_db_type": "Brute-Force Attack",
+            "query_string": "{bruteforce:JUMP}",
+            "db_connection_id": 35,
+            "query_usecase": "Failed login attempts by dormant user",
+            "query_loop": 15,
+            "query_description": "In this building block the user will run multiple connection attempts with a dormant user\n - Change username to match a dormant user in the databse",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 307,
+            "query_type": "postgres",
+            "query_db_type": "Malicious Procedure",
+            "query_string": "drop table if exists account_groups;\ncreate table account_groups(ssn varchar(40), first_name varchar(40),  last_name varchar(40), group_name varchar(50));\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('345278446','Thu', 'Lett','Gold');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('543987556','Leah', 'Calvo','Silver');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('778524395','Boris', 'Fay','Platinum');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('125948637','Johana', 'Relyea','Blue');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('6544932875','Debi','Winford', 'Silver');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('193756824','Vernice', 'Corbin','Gold'); \ninsert into account_groups(ssn , first_name, last_name, group_name) values ('485266791','Perry','Silver');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('5978824631','Bella','Gastelum','Blue');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('164959728','Jordon','Polito','Silver');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('346596782','Irena','Bach','Blue');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('862495377','Ofir','Levy','Gold');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('953463735','Mara','Sherrard','Blue');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('613249578','Craig','Fullmer','Blue');\ninsert into account_groups(ssn , first_name, last_name, group_name) values ('555196666','Mary', 'Popkins', 'Gold');\nselect * from account_groups;\nDROP PROCEDURE IF EXISTS move_to_silver;\nCREATE PROCEDURE move_to_silver (IN user_id VARCHAR(255)) BEGIN     UPDATE account_groups      SET group_name = 'Silver'      WHERE ssn = user_id; END;\nDROP PROCEDURE IF EXISTS move_to_gold;\nCREATE PROCEDURE move_to_gold (IN user_id VARCHAR(255)) BEGIN     UPDATE account_groups      SET group_name = 'Gold'      WHERE ssn = user_id; END;\nDROP PROCEDURE IF EXISTS move_to_platinum;\nCREATE PROCEDURE move_to_platinum (IN user_id VARCHAR(255)) BEGIN     UPDATE account_groups      SET group_name = 'Platinum'      WHERE ssn = user_id; END;",
+            "db_connection_id": 35,
+            "query_usecase": "Create STP Account Groups",
+            "query_loop": 1,
+            "query_description": "This building block is part of a Malicious procedure story\n It can be run indivdually as part of a manual sequence with building blocks 8(Call STP Account Groups) and 9(Malicious STP Update Account Groups) \n - The sequence is 7,8,9,8 to get the desired effect of a Malicious procedure violation  \n - Execute as Polly\n- Create Table\n- Insert values\n- Create Stored Procedures",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
+        },
+        {
+            "id": 308,
+            "query_type": "postgres",
+            "query_db_type": "Malicious Procedure",
+            "query_string": "select * from account_groups;\nCALL move_to_gold('345278446');\nCALL move_to_silver('485266791');\nCALL move_to_silver('543987556');\nCALL move_to_platinum('555196666');\nCALL move_to_gold('193756824');\nCALL move_to_platinum('555196666');\nselect * from account_groups;",
+            "db_connection_id": 35,
+            "query_usecase": "Call STP Account Groups",
+            "query_loop": 15,
+            "query_description": "This building block is part of a Malicious procedure story\n It can be run indivdually as part of a manual sequence with building blocks 7(Create STP Account Groups) and 9(Malicious STP Update Account Groups)  \n - The sequence is 7,8,9,8 to get the desired effect of a Malicious procedure violation\n - Execute as Jason or John\n- Call Stored Procedures",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
+        },
+        {
+            "id": 309,
+            "query_type": "postgres",
+            "query_db_type": "Malicious Procedure",
+            "query_string": "DROP PROCEDURE IF EXISTS move_to_platinum;\nCREATE PROCEDURE move_to_platinum (IN user_id VARCHAR(255)) BEGIN     DROP TABLE account_groups ; END;",
+            "db_connection_id": 35,
+            "query_usecase": "Malicious STP Update Account Groups",
+            "query_loop": 15,
+            "query_description": "This building block is part of a Malicious procedure story\n It can be run indivdually as part of a manual sequence with building blocks 7(Create STP Account Groups) and 8(Call STP Account Groups)   \n - The sequence is 7,8,9,8 to get the desired effect of a Malicious procedure violation\n - Execute as Liher\n- Replace Stored Procedures (drop table)",
+            "video_link": "https://ibm.github.io/CyberSkill/?video=maliciousProcedures.mp4"
+        },
+        {
+            "id": 310,
+            "query_type": "postgres",
+            "query_db_type": "Create",
+            "query_string": "CREATE USER 'MYUSER{i}'@'%' IDENTIFIED BY 'guardium';",
+            "db_connection_id": 35,
+            "query_usecase": "Create Multipe users",
+            "query_loop": 30,
+            "query_description": "In this building block the user will create multiple users in the database. This can be run as an individual block or in sequence with building block 11(Grant privileges to Multiple users) and 12(Delete Multiple users) to clean up and reset.\n\n The mentioned blocks can also be run in story mode as Massive grants violation ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 311,
+            "query_type": "postgres",
+            "query_db_type": "Grant",
+            "query_string": "GRANT ALL PRIVILEGES ON *.* TO 'MYUSER{i}'@'%';",
+            "db_connection_id": 35,
+            "query_usecase": "Grant privileges to Multiple users",
+            "query_loop": 30,
+            "query_description": "In this building block the user will grant privileges to  multiple users in the database. This can be run in sequence with building block 10(Create Multipe users) and 12(Delete Multiple users) to clean up and reset.\n\n The mentioned blocks can also be run in story mode as Massive grants violation ",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 312,
+            "query_type": "postgres",
+            "query_db_type": "Drop",
+            "query_string": "DROP USER 'MYUSER{i}'@'%';",
+            "db_connection_id": 35,
+            "query_usecase": "Drop Multiple users",
+            "query_loop": 30,
+            "query_description": "In this building block the user will drop multiple users in the database. This can be run in sequence with building block 10(Create Multipe users) and 11(Grant privileges to Multiple users).\n\n The mentioned blocks can also be run in story mode as Massive grants violation",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 313,
+            "query_type": "postgres",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_bugs (id,name,date_entered,date_modified,created_by, modified_user_id,assigned_user_id,bug_number,type,status,priority,resolution, product_category) VALUES ('{STRING}-auto-auto-{STRING}','{STRING}fails to {STRING}', CURRENT_DATE,CURRENT_DATE, '{STRING}-auto-auto-{STRING}', '{STRING}-auto-auto-{STRING}', '{STRING}-auto-auto-{STRING}', {INT},'Dept-{STRING}','Open','High',NULL,'Hardware');",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into crm.tbl_bugs",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_bugs",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 314,
+            "query_type": "postgres",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_calls (id,name,date_entered,date_modified,created_by, modified_user_id,assigned_user_id,duration_hours,duration_minutes, date_start,date_end,status,direction,parent_id,parent_type) VALUES ('{STRING}-auto-auto-{STRING}','Intro Call', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '{STRING}-auto-auto-{STRING}', '{STRING}-auto-auto-{STRING}',  '{STRING}-auto-auto-{STRING}', 0, {INT}, '2025-06-18 10:00','2025-06-18 10:30', 'Held', 'Outbound', '{STRING}-auto-auto-{STRING}','Accounts');",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into crm.tbl_calls",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_calls",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 315,
+            "query_type": "postgres",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_crm_accounts (Id, Name, Date_entered, Date_modified, Modified_user_id, Created_by, Description, Deleted, Assigned_user_id, Account_type, Industry, Annual_revenue, Phone_fax, Billing_address_street, Billing_address_city, Billing_address_state, Billing_address_postalcode, Billing_address_country, Rating, Phone_office, Phone_alternate, Website, Ownership, Employees, Ticker_symbol, Shipping_address_street, Shipping_address_city, Shipping_address_state, Shipping_address_postalcode, Shipping_address_country, Parent_id, Sic_code, Campaign_id, Status) VALUES ('{STRING}-auto-auto-{STRING}', '{STRING}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'seed_will_id', '1', NULL, 0, 'seed_max_id', 'Customer', 'Technology', NULL, NULL, '1715 Scott Dr', 'Alabama', 'CA', '{INT}', 'USA', NULL, '({INT}) {INT}-{INT}', NULL, 'www.devim.edu', NULL, NULL, NULL, '{INT} Scott Dr', 'Alabama', 'CA', '14882', 'USA', NULL, NULL, NULL, '1');",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into crm.tbl_accounts",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_accounts",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 316,
+            "query_type": "postgres",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_email_lists (id,email_address,email_address_caps,date_created) VALUES ('{STRING}-auto-auto-{STRING}','{STRING}@{STRING}.COM', '{STRING}@{STRING}.COM',CURRENT_TIMESTAMP);",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into crm.tbl_email_lists",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_email_lists",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 317,
+            "query_type": "postgres",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO crm.tbl_product (id,name,description,price,quantity) VALUES ('P-{STRING}', 'Product Description {STRING}', ' {STRING}',{INT}.{INT},{INT});",
+            "db_connection_id": 35,
+            "query_usecase": "Insert into crm.tbl_product",
+            "query_loop": 1,
+            "query_description": "In this query we insert a random row into tbl_product",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 318,
+            "query_type": "postgres",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, name, bug_number, status, priority FROM crm.tbl_bugs WHERE bug_number BETWEEN {INT} AND {INT} AND status = 'Open' LIMIT {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from crm.tbl_bugs",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_bugs",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 319,
+            "query_type": "postgres",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, name, duration_hours, duration_minutes, date_start FROM crm.tbl_calls WHERE duration_hours >= {INT} LIMIT {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from crm.tbl_calls",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_calls",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 320,
+            "query_type": "postgres",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, status FROM crm.tbl_crm_accounts_status WHERE id > {INT} LIMIT {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from crm.tbl_crm_accounts_status",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_crm_accounts_status",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 321,
+            "query_type": "postgres",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, name, status, date_entered FROM crm.tbl_crm_accounts WHERE status < {INT} ORDER BY date_entered DESC LIMIT {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from crm.tbl_crm_accounts",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_crm_accounts",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 322,
+            "query_type": "postgres",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, email_address, date_created FROM crm.tbl_email_lists WHERE opt_out <= {INT} LIMIT {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from crm.tbl_email_lists",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_email_lists",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 323,
+            "query_type": "postgres",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, email_id, template_id, campaign_date FROM crm.tbl_marketing_campaign WHERE id >= {INT} ORDER BY campaign_date DESC LIMIT {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from crm.tbl_marketing_campaign",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_marketing_campaign",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 324,
+            "query_type": "postgres",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, subject FROM crm.tbl_marketing_template LIMIT {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from crm.tbl_marketing_template",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_marketing_template",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 325,
+            "query_type": "postgres",
+            "query_db_type": "Select",
+            "query_string": "SELECT id, name, quantity, price FROM crm.tbl_product WHERE quantity < {INT} ORDER BY quantity ASC LIMIT {INT};",
+            "db_connection_id": 35,
+            "query_usecase": "Select from crm.tbl_product",
+            "query_loop": 1,
+            "query_description": "In this query we select a random number of rows from tbl_product",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 326,
+            "query_type": "postgres",
+            "query_db_type": "Update",
+            "query_string": "UPDATE crm.tbl_product SET quantity = quantity + 1 WHERE id = (SELECT id FROM (SELECT id FROM crm.tbl_product ORDER BY RAND() LIMIT 1) AS r);",
+            "db_connection_id": 35,
+            "query_usecase": "Update from crm.tbl_product",
+            "query_loop": 1,
+            "query_description": "In this query we Update a rows in tbl_product",
+            "video_link": "VideoURL"
+        }
+    ]
+}

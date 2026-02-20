@@ -1,0 +1,7 @@
+{
+  "pack_name": "outlier_revoke_anomaly",
+  "pack_description": "MySQL REVOKE Command Anomaly Detection - Simulates normal privilege revocation baseline (50/hour) followed by massive REVOKE spike (1000 rapid operations) to detect privilege escalation attacks or insider threats",
+  "pack_version": "1.0.0",
+  "author": "Security Team",
+  "created_date": "2026-02-11"
+}

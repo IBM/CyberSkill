@@ -1,0 +1,130 @@
+{
+  "queries": [
+    {
+      "id": 1701,
+      "query": {
+        "name": "Pre-Cleanup - Drop ATO Test Database",
+        "description": "Ensures clean state by dropping database from any previous failed run",
+        "query": "DROP DATABASE IF EXISTS ato_test_db",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1702,
+      "query": {
+        "name": "Create ATO Test Database and 5 Objects",
+        "description": "Creates test database and 5 objects (tables) for Account Takeover testing",
+        "query": "CREATE DATABASE IF NOT EXISTS ato_test_db; USE ato_test_db; CREATE TABLE IF NOT EXISTS object1 (id INT AUTO_INCREMENT PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP); CREATE TABLE IF NOT EXISTS object2 (id INT AUTO_INCREMENT PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP); CREATE TABLE IF NOT EXISTS object3 (id INT AUTO_INCREMENT PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP); CREATE TABLE IF NOT EXISTS object4 (id INT AUTO_INCREMENT PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP); CREATE TABLE IF NOT EXISTS object5 (id INT AUTO_INCREMENT PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1703,
+      "query": {
+        "name": "Insert Test Data into All Objects",
+        "description": "Insert 1000 records into each of the 5 objects",
+        "query": "USE ato_test_db; INSERT INTO object1 (data) VALUES (CONCAT('Object1 Data ', UUID())); INSERT INTO object2 (data) VALUES (CONCAT('Object2 Data ', UUID())); INSERT INTO object3 (data) VALUES (CONCAT('Object3 Data ', UUID())); INSERT INTO object4 (data) VALUES (CONCAT('Object4 Data ', UUID())); INSERT INTO object5 (data) VALUES (CONCAT('Object5 Data ', UUID()))",
+        "query_loop": 1000
+      }
+    },
+    {
+      "id": 1704,
+      "query": {
+        "name": "Baseline Hour 1 - Access Object1 Only",
+        "description": "Hour 1 baseline - 50 SELECTs on object1 (normal user behavior)",
+        "query": "SELECT * FROM ato_test_db.object1 WHERE id = FLOOR(1 + RAND() * 1000) LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1705,
+      "query": {
+        "name": "Baseline Hour 2 - Access Object1 Only",
+        "description": "Hour 2 baseline - 50 SELECTs on object1 (normal user behavior)",
+        "query": "SELECT * FROM ato_test_db.object1 WHERE id = FLOOR(1 + RAND() * 1000) LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1706,
+      "query": {
+        "name": "Baseline Hour 3 - Access Object1 Only",
+        "description": "Hour 3 baseline - 50 SELECTs on object1 (normal user behavior)",
+        "query": "SELECT * FROM ato_test_db.object1 WHERE id = FLOOR(1 + RAND() * 1000) LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1707,
+      "query": {
+        "name": "Baseline Hour 4 - Access Object1 Only",
+        "description": "Hour 4 baseline - 50 SELECTs on object1 (normal user behavior)",
+        "query": "SELECT * FROM ato_test_db.object1 WHERE id = FLOOR(1 + RAND() * 1000) LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1708,
+      "query": {
+        "name": "ANOMALY SPIKE - Access All 5 Objects",
+        "description": "HOUR 5 ANOMALY: Sudden access to all 5 objects (50 SELECTs each = 250 total) - Account Takeover pattern",
+        "query": "SELECT * FROM ato_test_db.object1 WHERE id = FLOOR(1 + RAND() * 1000) LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1709,
+      "query": {
+        "name": "ANOMALY - Access Object2",
+        "description": "Part of ATO spike - accessing object2 (never accessed before)",
+        "query": "SELECT * FROM ato_test_db.object2 WHERE id = FLOOR(1 + RAND() * 1000) LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1710,
+      "query": {
+        "name": "ANOMALY - Access Object3",
+        "description": "Part of ATO spike - accessing object3 (never accessed before)",
+        "query": "SELECT * FROM ato_test_db.object3 WHERE id = FLOOR(1 + RAND() * 1000) LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1711,
+      "query": {
+        "name": "ANOMALY - Access Object4",
+        "description": "Part of ATO spike - accessing object4 (never accessed before)",
+        "query": "SELECT * FROM ato_test_db.object4 WHERE id = FLOOR(1 + RAND() * 1000) LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1712,
+      "query": {
+        "name": "ANOMALY - Access Object5",
+        "description": "Part of ATO spike - accessing object5 (never accessed before)",
+        "query": "SELECT * FROM ato_test_db.object5 WHERE id = FLOOR(1 + RAND() * 1000) LIMIT 10",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1713,
+      "query": {
+        "name": "Verify ATO Pattern",
+        "description": "Verify record counts in all 5 objects",
+        "query": "SELECT 'object1' as table_name, COUNT(*) as record_count FROM ato_test_db.object1 UNION SELECT 'object2', COUNT(*) FROM ato_test_db.object2 UNION SELECT 'object3', COUNT(*) FROM ato_test_db.object3 UNION SELECT 'object4', COUNT(*) FROM ato_test_db.object4 UNION SELECT 'object5', COUNT(*) FROM ato_test_db.object5",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1714,
+      "query": {
+        "name": "Cleanup ATO Test Database",
+        "description": "Remove test database after verification",
+        "query": "DROP DATABASE IF EXISTS ato_test_db",
+        "query_loop": 1
+      }
+    }
+  ]
+}

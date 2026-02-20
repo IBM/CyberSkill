@@ -1,0 +1,138 @@
+{
+  "stories": [
+    {
+      "id": 1001,
+      "story": {
+        "name": "MySQL Schema Tampering - Time-Based Anomaly (5 Hours)",
+        "description": "Simulates schema tampering attack with time-based anomaly pattern in ALTER TABLE operations. Establishes normal baseline (5 ALTERs/hour for 4 hours) followed by massive spike (100 ALTERs in hour 5) to detect unauthorized bulk schema changes. Pattern: Pre-cleanup → Create tables → 5 ALTERs → 1 hour → 5 ALTERs → 1 hour → 5 ALTERs → 1 hour → 5 ALTERs → 1 hour → 100 ALTER SPIKE",
+        "author": "SLP Team",
+        "outcomes": "Understand how Guardium detects time-based anomalies in schema modification patterns, specifically identifying sudden spikes in ALTER TABLE operations that deviate from established baselines. Learn to recognize schema tampering attacks through temporal analysis of DDL operations.",
+        "handbook": "https://www.ibm.com/docs/en/guardium",
+        "video": "VideoURL",
+        "story": [
+          {
+            "query_id": 1001,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Drop Tables from Previous Run"
+          },
+          {
+            "query_id": 1002,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Base Tables for Schema Tampering Test"
+          },
+          {
+            "query_id": 1003,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 5 ALTER Operations"
+          },
+          {
+            "query_id": 1004,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 5 ALTER Operations"
+          },
+          {
+            "query_id": 1003,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 5 ALTER Operations"
+          },
+          {
+            "query_id": 1004,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 5 ALTER Operations"
+          },
+          {
+            "query_id": 1007,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 100 Rapid ALTER Operations"
+          },
+          {
+            "query_id": 1005,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify Schema Changes"
+          },
+          {
+            "query_id": 1006,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    },
+    {
+      "id": 1002,
+      "story": {
+        "name": "MySQL Schema Tampering - Quick Demo (5 sec pauses)",
+        "description": "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline ALTERs (5 each) followed by massive 100-ALTER spike to detect schema tampering.",
+        "author": "SLP Team",
+        "outcomes": "Quick demonstration of schema tampering detection for testing and validation purposes. Same detection patterns as the full story but compressed into a short timeframe.",
+        "handbook": "https://www.ibm.com/docs/en/guardium",
+        "video": "VideoURL",
+        "story": [
+          {
+            "query_id": 1001,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Drop Tables from Previous Run"
+          },
+          {
+            "query_id": 1002,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Base Tables"
+          },
+          {
+            "query_id": 1003,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 5 ALTERs"
+          },
+          {
+            "query_id": 1004,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 5 ALTERs"
+          },
+          {
+            "query_id": 1003,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 5 ALTERs"
+          },
+          {
+            "query_id": 1004,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 5 ALTERs"
+          },
+          {
+            "query_id": 1007,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 SPIKE - 100 Rapid ALTERs"
+          },
+          {
+            "query_id": 1005,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify Changes"
+          },
+          {
+            "query_id": 1006,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    }
+  ]
+}
