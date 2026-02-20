@@ -947,7 +947,7 @@ function openNav() {
             } else {
                 div.style.display = 'none'; // Hide the div
             }
-        
+        }
 
         // Toggle bulk upload div visibility
         function toggleBulkUploadDiv()
