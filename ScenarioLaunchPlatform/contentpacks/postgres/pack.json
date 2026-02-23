@@ -4,7 +4,7 @@
     "db_type": "postgres",
     "build_date": "08-Jul-2025",
     "build_version": "139",
-    "description": "A brief description of the pack contents",
+    "description": "PostgreSQL content pack with building blocks and stories for policy violations, SQL injection, malicious procedures, and brute-force attacks",
     "author": "Official",
     "icon": "postgres.png",
     "background_traffic": "yes"
