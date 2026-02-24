@@ -1,0 +1,94 @@
+{
+  "queries": [
+    {
+      "id": 1801,
+      "query": {
+        "name": "Pre-Cleanup - Drop DoS Test Table",
+        "description": "Ensures clean state by dropping table from any previous failed run",
+        "query": "DROP TABLE IF EXISTS dos_test_table",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1802,
+      "query": {
+        "name": "Create DoS Test Table",
+        "description": "Creates table for Denial of Service testing with indexes",
+        "query": "CREATE TABLE IF NOT EXISTS dos_test_table (id INT SERIAL PRIMARY KEY, query_data VARCHAR(255), query_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, INDEX idx_query_time (query_time))",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1803,
+      "query": {
+        "name": "Insert Initial Test Data",
+        "description": "Insert 10000 initial records for DoS testing",
+        "query": "INSERT INTO dos_test_table (query_data) VALUES (CONCAT('DoS Test Data ', gen_random_uuid()::text))",
+        "query_loop": 10000
+      }
+    },
+    {
+      "id": 1804,
+      "query": {
+        "name": "Baseline Hour 1 - 1001 Queries",
+        "description": "Hour 1 baseline - 1001 resource-intensive queries",
+        "query": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
+        "query_loop": 1001
+      }
+    },
+    {
+      "id": 1805,
+      "query": {
+        "name": "Baseline Hour 2 - 1001 Queries",
+        "description": "Hour 2 baseline - 1001 resource-intensive queries",
+        "query": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
+        "query_loop": 1001
+      }
+    },
+    {
+      "id": 1806,
+      "query": {
+        "name": "Baseline Hour 3 - 1001 Queries",
+        "description": "Hour 3 baseline - 1001 resource-intensive queries",
+        "query": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
+        "query_loop": 1001
+      }
+    },
+    {
+      "id": 1807,
+      "query": {
+        "name": "Baseline Hour 4 - 1001 Queries",
+        "description": "Hour 4 baseline - 1001 resource-intensive queries",
+        "query": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
+        "query_loop": 1001
+      }
+    },
+    {
+      "id": 1808,
+      "query": {
+        "name": "ANOMALY SPIKE - Massive DoS Attack",
+        "description": "HOUR 5 ANOMALY: 205000 rapid queries - 200x normal rate indicating Denial of Service attack",
+        "query": "SELECT * FROM dos_test_table WHERE id = FLOOR(1 + RANDOMOM() * 10000) LIMIT 1",
+        "query_loop": 205000
+      }
+    },
+    {
+      "id": 1809,
+      "query": {
+        "name": "Verify DoS Pattern",
+        "description": "Verify table statistics after DoS attack",
+        "query": "SELECT COUNT(*) as total_records, MIN(id) as min_id, MAX(id) as max_id FROM dos_test_table",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1810,
+      "query": {
+        "name": "Cleanup DoS Test Table",
+        "description": "Remove test table after verification",
+        "query": "DROP TABLE IF EXISTS dos_test_table",
+        "query_loop": 1
+      }
+    }
+  ]
+}

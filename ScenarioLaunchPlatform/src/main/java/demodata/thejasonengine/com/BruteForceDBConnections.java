@@ -37,9 +37,10 @@ public class BruteForceDBConnections {
 	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"3306"+"/"+database+"?allowPublicKeyRetrieval=true&useSSL=false");
 	        	db_jdbcclassname = "com.mysql.cj.jdbc.Driver";
 	        }
-	        else if(databaseType.equalsIgnoreCase("postgresql"))
+	        else if(databaseType.equalsIgnoreCase("postgresql") || databaseType.equalsIgnoreCase("postgres"))
 	        {
-	        	DataSource.setUrl("jdbc:"+databaseType+"://"+host+":"+"5432"+"/"+database);
+	        	LOGGER.debug("Setting Datasource URL for postgres/postgresql - using postgresql in JDBC URL");
+	        	DataSource.setUrl("jdbc:postgresql://"+host+":"+"5432"+"/"+database);
 	        	db_jdbcclassname = "org.postgresql.Driver";
 	        }
 	        else if(databaseType.equalsIgnoreCase("db2"))

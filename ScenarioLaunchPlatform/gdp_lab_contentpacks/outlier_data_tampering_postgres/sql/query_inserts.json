@@ -1,0 +1,114 @@
+{
+    "queries": [
+        {
+            "id": 1101,
+            "query_type": "mysql",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE IF EXISTS data_delete_test;",
+            "db_connection_id": 35,
+            "query_usecase": "Pre-Cleanup - Drop Test Table from Previous Run",
+            "query_loop": 1,
+            "query_description": "Ensures clean state by dropping the test table from any previous failed run. This prevents conflicts when running the test multiple times.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1102,
+            "query_type": "mysql",
+            "query_db_type": "Create",
+            "query_string": "CREATE TABLE IF NOT EXISTS data_delete_test (id INT SERIAL PRIMARY KEY, record_number INT NOT NULL, data VARCHAR(255), category VARCHAR(50), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, INDEX idx_record_number (record_number), INDEX idx_category (category));",
+            "db_connection_id": 35,
+            "query_usecase": "Create Table for Data Tampering Test",
+            "query_loop": 1,
+            "query_description": "Creates the test table for data tampering detection. This table will hold 2000 records that will be deleted in a time-based anomaly pattern to simulate unauthorized data deletion attacks.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1103,
+            "query_type": "mysql",
+            "query_db_type": "Insert",
+            "query_string": "INSERT INTO data_delete_test (record_number, data, category) VALUES ({INT}, 'Test data for record {INT}', 'category_{INT}');",
+            "db_connection_id": 35,
+            "query_usecase": "Insert Test Data - 2000 Records",
+            "query_loop": 2000,
+            "query_description": "Inserts 2000 test records into the data_delete_test table. These records will be used to demonstrate the data tampering anomaly pattern with baseline and spike deletion patterns.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1104,
+            "query_type": "mysql",
+            "query_db_type": "Delete",
+            "query_string": "DELETE FROM data_delete_test WHERE record_number BETWEEN 1 AND 50 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "Baseline Hour 1 - 50 DELETE Operations",
+            "query_loop": 50,
+            "query_description": "Executes 50 DELETE commands as part of normal baseline activity (Hour 1). This represents typical data deletion behavior that should not trigger anomaly detection. Deletes records 1-50.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1105,
+            "query_type": "mysql",
+            "query_db_type": "Delete",
+            "query_string": "DELETE FROM data_delete_test WHERE record_number BETWEEN 51 AND 100 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "Baseline Hour 2 - 50 DELETE Operations",
+            "query_loop": 50,
+            "query_description": "Executes 50 DELETE commands as part of normal baseline activity (Hour 2). Deletes records 51-100.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1106,
+            "query_type": "mysql",
+            "query_db_type": "Delete",
+            "query_string": "DELETE FROM data_delete_test WHERE record_number BETWEEN 101 AND 150 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "Baseline Hour 3 - 50 DELETE Operations",
+            "query_loop": 50,
+            "query_description": "Executes 50 DELETE commands as part of normal baseline activity (Hour 3). Deletes records 101-150.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1107,
+            "query_type": "mysql",
+            "query_db_type": "Delete",
+            "query_string": "DELETE FROM data_delete_test WHERE record_number BETWEEN 151 AND 200 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "Baseline Hour 4 - 50 DELETE Operations",
+            "query_loop": 50,
+            "query_description": "Executes 50 DELETE commands as part of normal baseline activity (Hour 4). Combined with Hours 1-3, this establishes a baseline of 50 DELETE operations per hour. Deletes records 151-200.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1108,
+            "query_type": "mysql",
+            "query_db_type": "Delete",
+            "query_string": "DELETE FROM data_delete_test WHERE record_number >= 201 LIMIT 1;",
+            "db_connection_id": 35,
+            "query_usecase": "HOUR 5 ANOMALY SPIKE - 1000 Rapid DELETE Operations",
+            "query_loop": 1000,
+            "query_description": "Executes 1000 DELETE commands in rapid succession, creating an anomalous spike in data deletion activity. This simulates a data tampering attack or unauthorized bulk data deletion that should trigger outlier detection. Deletes records 201-1200.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1109,
+            "query_type": "mysql",
+            "query_db_type": "Select",
+            "query_string": "SELECT COUNT(*) as remaining_records, MIN(record_number) as min_record, MAX(record_number) as max_record FROM data_delete_test;",
+            "db_connection_id": 35,
+            "query_usecase": "Verify Data Deletion",
+            "query_loop": 1,
+            "query_description": "Queries the table to verify the number of records remaining after the data tampering test. Useful for confirming that DELETE operations were executed successfully and understanding the impact of the anomaly.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1110,
+            "query_type": "mysql",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE IF EXISTS data_delete_test;",
+            "db_connection_id": 35,
+            "query_usecase": "Cleanup - Drop Test Table",
+            "query_loop": 1,
+            "query_description": "Removes the test table created during the data tampering test. This cleanup operation resets the database to its original state and can be run after completing the outlier detection test.",
+            "video_link": "VideoURL"
+        }
+    ]
+}

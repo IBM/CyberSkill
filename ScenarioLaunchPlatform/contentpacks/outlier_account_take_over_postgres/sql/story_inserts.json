@@ -1,0 +1,190 @@
+{
+  "stories": [
+    {
+      "id": 2701,
+      "story": {
+        "name": "MySQL Account Takeover (ATO) - Time-Based Pattern (5 Hours)",
+        "description": "Simulates normal access pattern (50 SELECTs on object1 for 4 hours) followed by sudden access to all 5 objects (250 SELECTs total in hour 5) to detect account takeover. Pattern: Object1 only \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 Object1 only \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 Object1 only \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 Object1 only \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 ALL 5 OBJECTS SPIKE",
+        "story": [
+          {
+            "query_id": 2701,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 2702,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Database and 5 Objects"
+          },
+          {
+            "query_id": 2703,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Insert 1000 Records into Each Object"
+          },
+          {
+            "query_id": 2704,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - Access Object1 Only (50 SELECTs)"
+          },
+          {
+            "query_id": 2705,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - Access Object1 Only (50 SELECTs)"
+          },
+          {
+            "query_id": 2706,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - Access Object1 Only (50 SELECTs)"
+          },
+          {
+            "query_id": 2707,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - Access Object1 Only (50 SELECTs)"
+          },
+          {
+            "query_id": 2708,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 ATO SPIKE - Access Object1 (50 SELECTs)"
+          },
+          {
+            "query_id": 2709,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "ATO SPIKE - Access Object2 (50 SELECTs - NEW!)"
+          },
+          {
+            "query_id": 2710,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "ATO SPIKE - Access Object3 (50 SELECTs - NEW!)"
+          },
+          {
+            "query_id": 2711,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "ATO SPIKE - Access Object4 (50 SELECTs - NEW!)"
+          },
+          {
+            "query_id": 2712,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "ATO SPIKE - Access Object5 (50 SELECTs - NEW!)"
+          },
+          {
+            "query_id": 2713,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify ATO Pattern"
+          },
+          {
+            "query_id": 2714,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2702,
+      "story": {
+        "name": "MySQL Account Takeover (ATO) - Quick Demo (5 sec pauses)",
+        "description": "Quick demonstration version with 5-second pauses. Same pattern: 4 hours accessing only object1, then sudden access to all 5 objects indicating account takeover.",
+        "story": [
+          {
+            "query_id": 2701,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 2702,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Database and 5 Objects"
+          },
+          {
+            "query_id": 2703,
+            "pause_in_seconds": 10000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Insert 1000 Records into Each Object"
+          },
+          {
+            "query_id": 2704,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - Access Object1 Only (50 SELECTs)"
+          },
+          {
+            "query_id": 2705,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - Access Object1 Only (50 SELECTs)"
+          },
+          {
+            "query_id": 2706,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - Access Object1 Only (50 SELECTs)"
+          },
+          {
+            "query_id": 2707,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - Access Object1 Only (50 SELECTs)"
+          },
+          {
+            "query_id": 2708,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 ATO SPIKE - Access Object1 (50 SELECTs)"
+          },
+          {
+            "query_id": 2709,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "ATO SPIKE - Access Object2 (50 SELECTs - NEW!)"
+          },
+          {
+            "query_id": 2710,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "ATO SPIKE - Access Object3 (50 SELECTs - NEW!)"
+          },
+          {
+            "query_id": 2711,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "ATO SPIKE - Access Object4 (50 SELECTs - NEW!)"
+          },
+          {
+            "query_id": 2712,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "ATO SPIKE - Access Object5 (50 SELECTs - NEW!)"
+          },
+          {
+            "query_id": 2713,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify ATO Pattern"
+          },
+          {
+            "query_id": 2714,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    }
+  ]
+}

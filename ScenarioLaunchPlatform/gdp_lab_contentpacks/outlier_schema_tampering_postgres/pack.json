@@ -1,0 +1,11 @@
+{
+    "pack_name": "outlier_schema_tampering_postgres",
+    "version": "v1.0",
+    "db_type": "PostgreSQL",
+    "build_date": "11-Feb-2026",
+    "build_version": "140",
+    "description": "Schema Tampering Outlier Detection - Simulates time-based anomaly patterns in ALTER TABLE operations. Establishes normal baseline (10 ALTERs) followed by anomalous spike (100 rapid ALTERs) to test detection of unauthorized bulk schema modifications and compromised account activity.",
+    "author": "Official",
+    "icon": "PostgreSQL.png",
+    "background_traffic": "yes"
+}

@@ -34,15 +34,54 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Dashboard Selection</h6>
-              <p contenteditable="true" class="w3-border w3-padding">Select Dashboard</p>
-              <button type="button" class="w3-button w3-theme"><i class="fa fa-pencil"></i>  Post</button> 
+              <h6 class="w3-opacity"><i class="fa fa-dashboard"></i> Available Dashboards</h6>
+              <p>Select a dashboard to view detailed metrics and system health information.</p>
+              
+              <div class="w3-row-padding" style="margin-top:20px">
+                <div class="w3-col m6 l4">
+                  <div class="w3-card w3-round w3-white w3-hover-shadow" style="cursor:pointer" onclick="window.location.href='/loggedIn/health-dashboard.ftl'">
+                    <div class="w3-container w3-padding" style="text-align:center">
+                      <h3><i class="fa fa-heartbeat w3-text-red"></i></h3>
+                      <h5><b>Health Dashboard</b></h5>
+                      <p class="w3-text-grey">Real-time system health, metrics, and performance monitoring</p>
+                      <button class="w3-button w3-theme w3-margin-top">
+                        <i class="fa fa-arrow-right"></i> Open Dashboard
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Placeholder for future dashboards -->
+                <div class="w3-col m6 l4">
+                  <div class="w3-card w3-round w3-white" style="opacity:0.5">
+                    <div class="w3-container w3-padding" style="text-align:center">
+                      <h3><i class="fa fa-database w3-text-blue"></i></h3>
+                      <h5><b>Database Dashboard</b></h5>
+                      <p class="w3-text-grey">Coming soon...</p>
+                      <button class="w3-button w3-grey w3-margin-top" disabled>
+                        <i class="fa fa-lock"></i> Coming Soon
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="w3-col m6 l4">
+                  <div class="w3-card w3-round w3-white" style="opacity:0.5">
+                    <div class="w3-container w3-padding" style="text-align:center">
+                      <h3><i class="fa fa-line-chart w3-text-green"></i></h3>
+                      <h5><b>Analytics Dashboard</b></h5>
+                      <p class="w3-text-grey">Coming soon...</p>
+                      <button class="w3-button w3-grey w3-margin-top" disabled>
+                        <i class="fa fa-lock"></i> Coming Soon
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
-      
       
     <!-- End Middle Column -->
     </div>
@@ -91,7 +130,7 @@ function openNav() {
 </script>
 
 <script>
- $(document).ready(function() 
+ $(document).ready(function()
  {
  	 $.ajax({
 	       url: '/loggedIn/includes/navbar.ftl',  // The URL where the FreeMarker template is rendered

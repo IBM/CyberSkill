@@ -84,6 +84,11 @@ public class DatabasePoolManager
 		        	LOGGER.debug("ORACLE:" + connectionString);
 		        	DataSource.setUrl(connectionString);
 		        }
+		        else if (jo.getString("db_type").equals("postgres"))
+		        {
+		        	LOGGER.debug("Setting Datasource URL for postgres - using postgresql in JDBC URL");
+		        	DataSource.setUrl("jdbc:postgresql://"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database"));
+		        }
 		        else
 		        {
 		        	DataSource.setUrl("jdbc:"+jo.getString("db_type")+"://"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database"));
@@ -224,6 +229,11 @@ public class DatabasePoolManager
 		        	LOGGER.debug("ORACLE:" + connectionString);
 		        	DataSource.setUrl(connectionString);
 		        }
+	        else if (jo.getString("db_type").equals("postgres"))
+	        {
+	        	LOGGER.debug("Setting Datasource URL for postgres - using postgresql in JDBC URL");
+	        	DataSource.setUrl("jdbc:postgresql://"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database"));
+	        }
 	        else
 	        {
 	        	DataSource.setUrl("jdbc:"+jo.getString("db_type")+"://"+jo.getString("db_url")+":"+jo.getString("db_port")+"/"+jo.getString("db_database"));

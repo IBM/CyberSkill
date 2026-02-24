@@ -1,0 +1,81 @@
+{
+    "queries": [
+        {
+            "id": 1001,
+            "query_type": "mysql",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE IF EXISTS schema_alter_table_1;\nDROP TABLE IF EXISTS schema_alter_table_2;\nDROP TABLE IF EXISTS schema_alter_table_3;\nDROP TABLE IF EXISTS schema_alter_table_4;\nDROP TABLE IF EXISTS schema_alter_table_5;\nDROP TABLE IF EXISTS schema_alter_table_6;\nDROP TABLE IF EXISTS schema_alter_table_7;\nDROP TABLE IF EXISTS schema_alter_table_8;\nDROP TABLE IF EXISTS schema_alter_table_9;\nDROP TABLE IF EXISTS schema_alter_table_10;",
+            "db_connection_id": 35,
+            "query_usecase": "Pre-Cleanup - Drop Test Tables from Previous Run",
+            "query_loop": 1,
+            "query_description": "Ensures clean state by dropping all test tables from any previous failed run. This prevents 'duplicate column' errors when running the test multiple times.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1002,
+            "query_type": "mysql",
+            "query_db_type": "Create",
+            "query_string": "CREATE TABLE IF NOT EXISTS schema_alter_table_1 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\nCREATE TABLE IF NOT EXISTS schema_alter_table_2 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\nCREATE TABLE IF NOT EXISTS schema_alter_table_3 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\nCREATE TABLE IF NOT EXISTS schema_alter_table_4 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\nCREATE TABLE IF NOT EXISTS schema_alter_table_5 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\nCREATE TABLE IF NOT EXISTS schema_alter_table_6 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\nCREATE TABLE IF NOT EXISTS schema_alter_table_7 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\nCREATE TABLE IF NOT EXISTS schema_alter_table_8 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\nCREATE TABLE IF NOT EXISTS schema_alter_table_9 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\nCREATE TABLE IF NOT EXISTS schema_alter_table_10 (id INT SERIAL PRIMARY KEY, data VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);",
+            "db_connection_id": 35,
+            "query_usecase": "Create Base Tables for Schema Tampering",
+            "query_loop": 1,
+            "query_description": "Creates 10 base tables that will be used for ALTER operations in the schema tampering outlier detection test. These tables provide the foundation for demonstrating anomalous schema modification patterns.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1003,
+            "query_type": "mysql",
+            "query_db_type": "Alter",
+            "query_string": "ALTER TABLE schema_alter_table_1 ADD COLUMN baseline_col_1 VARCHAR(50);\nALTER TABLE schema_alter_table_2 ADD COLUMN baseline_col_2 VARCHAR(50);\nALTER TABLE schema_alter_table_3 ADD COLUMN baseline_col_3 VARCHAR(50);\nALTER TABLE schema_alter_table_4 ADD COLUMN baseline_col_4 VARCHAR(50);\nALTER TABLE schema_alter_table_5 ADD COLUMN baseline_col_5 VARCHAR(50);",
+            "db_connection_id": 35,
+            "query_usecase": "Normal Baseline ALTER Operations - Batch 1",
+            "query_loop": 1,
+            "query_description": "Executes 5 ALTER TABLE commands as part of normal baseline activity. This represents typical schema modification behavior that should not trigger anomaly detection.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1004,
+            "query_type": "mysql",
+            "query_db_type": "Alter",
+            "query_string": "ALTER TABLE schema_alter_table_6 ADD COLUMN baseline_col_6 VARCHAR(50);\nALTER TABLE schema_alter_table_7 ADD COLUMN baseline_col_7 VARCHAR(50);\nALTER TABLE schema_alter_table_8 ADD COLUMN baseline_col_8 VARCHAR(50);\nALTER TABLE schema_alter_table_9 ADD COLUMN baseline_col_9 VARCHAR(50);\nALTER TABLE schema_alter_table_10 ADD COLUMN baseline_col_10 VARCHAR(50);",
+            "db_connection_id": 35,
+            "query_usecase": "Normal Baseline ALTER Operations - Batch 2",
+            "query_loop": 1,
+            "query_description": "Executes 5 more ALTER TABLE commands as part of normal baseline activity. Combined with Batch 1, this establishes a baseline of 10 ALTER operations per time period.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1007,
+            "query_type": "mysql",
+            "query_db_type": "Alter",
+            "query_string": "ALTER TABLE schema_alter_table_1 ADD COLUMN spike_col_{INT} VARCHAR(50);",
+            "db_connection_id": 35,
+            "query_usecase": "Anomaly SPIKE - Rapid ALTER Operations",
+            "query_loop": 100,
+            "query_description": "Executes 100 ALTER TABLE commands in rapid succession, creating an anomalous spike in schema modification activity. This simulates a schema tampering attack or unauthorized bulk schema changes that should trigger outlier detection. The {INT} placeholder generates unique column names for each iteration.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1005,
+            "query_type": "mysql",
+            "query_db_type": "Select",
+            "query_string": "SELECT table_name, COUNT(*) as column_count FROM columns WHERE table_schema = DATABASE() AND table_name LIKE 'schema_alter_table_%' GROUP BY table_name ORDER BY table_name;",
+            "db_connection_id": 35,
+            "query_usecase": "Verify Schema Changes",
+            "query_loop": 1,
+            "query_description": "Queries the information_schema to verify the number of columns added to each table during the schema tampering test. Useful for confirming that ALTER operations were executed successfully.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1006,
+            "query_type": "mysql",
+            "query_db_type": "Drop",
+            "query_string": "DROP TABLE IF EXISTS schema_alter_table_1;\nDROP TABLE IF EXISTS schema_alter_table_2;\nDROP TABLE IF EXISTS schema_alter_table_3;\nDROP TABLE IF EXISTS schema_alter_table_4;\nDROP TABLE IF EXISTS schema_alter_table_5;\nDROP TABLE IF EXISTS schema_alter_table_6;\nDROP TABLE IF EXISTS schema_alter_table_7;\nDROP TABLE IF EXISTS schema_alter_table_8;\nDROP TABLE IF EXISTS schema_alter_table_9;\nDROP TABLE IF EXISTS schema_alter_table_10;",
+            "db_connection_id": 35,
+            "query_usecase": "Cleanup - Drop Test Tables",
+            "query_loop": 1,
+            "query_description": "Removes all test tables created during the schema tampering test. This cleanup operation resets the database to its original state and can be run after completing the outlier detection test.",
+            "video_link": "VideoURL"
+        }
+    ]
+}

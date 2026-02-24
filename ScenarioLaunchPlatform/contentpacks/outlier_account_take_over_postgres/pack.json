@@ -1,0 +1,7 @@
+{
+  "pack_name": "outlier_account_take_over_postgres",
+  "pack_description": "PostgreSQL Account Takeover (ATO) Detection - Simulates normal access pattern (50 SELECTs on object1 for 4 hours) followed by sudden access to all 5 objects (250 SELECTs) to detect account takeover attacks",
+  "pack_version": "1.0.0",
+  "author": "Security Team",
+  "created_date": "2026-02-11"
+}

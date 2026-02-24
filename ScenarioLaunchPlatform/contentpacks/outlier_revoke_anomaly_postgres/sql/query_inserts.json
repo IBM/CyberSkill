@@ -1,0 +1,94 @@
+{
+  "queries": [
+    {
+      "id": 1401,
+      "query": {
+        "name": "Pre-Cleanup - Remove Previous Test Data",
+        "description": "Ensures clean state by removing any leftover objects from previous failed runs",
+        "query": "DROP USER IF EXISTS 'test_user_1'@'%'; DROP DATABASE IF EXISTS revoke_test_db",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1402,
+      "query": {
+        "name": "Create Test Database and Users",
+        "description": "Creates test database and 100 test users for REVOKE testing",
+        "query": "CREATE DATABASE revoke_test_db;  CREATE TABLE IF NOT EXISTS test_table (id INT PRIMARY KEY, data VARCHAR(100))",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1403,
+      "query": {
+        "name": "Grant Initial Privileges to Test Users",
+        "description": "Grant SELECT, INSERT, UPDATE privileges to test users for baseline testing",
+        "query": "GRANT SELECT, INSERT, UPDATE ON revoke_test_db.* TO 'test_user_1'@'%' IDENTIFIED BY 'TestPass123'; FLUSH PRIVILEGES",
+        "query_loop": 100
+      }
+    },
+    {
+      "id": 1404,
+      "query": {
+        "name": "Baseline REVOKE Hour 1",
+        "description": "Hour 1 baseline - 50 REVOKE operations on SELECT privilege",
+        "query": "REVOKE SELECT ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT SELECT ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1405,
+      "query": {
+        "name": "Baseline REVOKE Hour 2",
+        "description": "Hour 2 baseline - 50 REVOKE operations on INSERT privilege",
+        "query": "REVOKE INSERT ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT INSERT ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1410,
+      "query": {
+        "name": "Baseline REVOKE Hour 3",
+        "description": "Hour 3 baseline - 50 REVOKE operations on UPDATE privilege",
+        "query": "REVOKE UPDATE ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT UPDATE ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1406,
+      "query": {
+        "name": "Baseline REVOKE Hour 4",
+        "description": "Hour 4 baseline - 50 REVOKE operations on DELETE privilege",
+        "query": "REVOKE DELETE ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT DELETE ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 50
+      }
+    },
+    {
+      "id": 1407,
+      "query": {
+        "name": "ANOMALY SPIKE - Massive REVOKE Operations",
+        "description": "HOUR 5 ANOMALY: 1000 rapid REVOKE operations - 20x normal rate indicating privilege escalation attack or insider threat",
+        "query": "REVOKE ALL PRIVILEGES ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT SELECT, INSERT, UPDATE ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 1000
+      }
+    },
+    {
+      "id": 1408,
+      "query": {
+        "name": "Verify REVOKE Operations",
+        "description": "Verify user privileges after REVOKE operations",
+        "query": "SELECT user, host FROM user WHERE user LIKE 'test_user_%' LIMIT 10",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1409,
+      "query": {
+        "name": "Cleanup Test Users and Database",
+        "description": "Remove test users and database after verification",
+        "query": "DROP USER IF EXISTS 'test_user_1'@'%'; DROP DATABASE IF EXISTS revoke_test_db",
+        "query_loop": 1
+      }
+    }
+  ]
+}

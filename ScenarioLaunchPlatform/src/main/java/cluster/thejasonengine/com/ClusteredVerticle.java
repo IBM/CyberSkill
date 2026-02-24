@@ -423,6 +423,59 @@ public class ClusteredVerticle extends AbstractVerticle {
   router.get("/api/metrics/errors").handler(metricsHandler.getErrorMetrics);
   router.post("/api/metrics/reset").handler(metricsHandler.resetMetrics);
   
+  
+  // Register health dashboard page route (with authentication)
+  router.get("/health-dashboard").handler(ctx -> {
+      LOGGER.info("Health dashboard page requested");
+      
+      Cookie cookie = ctx.getCookie("JWT");
+      if (cookie != null && verifyCookie(cookie)) {
+          LOGGER.info("Valid JWT cookie found for health dashboard");
+          
+          String tokenObjectString = cookie.getValue();
+          JWT jwtToken = new JWT();
+          JsonObject JWT_Validation_Test = new JsonObject();
+          JWT_Validation_Test.put("jwt", tokenObjectString);
+          
+          if (setupPostHandlers.validateJWTToken(JWT_Validation_Test)) {
+              JsonObject JSON_JWT = jwtToken.parse(tokenObjectString);
+              JsonObject tokenObject = new JsonObject();
+              JsonObject hold = (JsonObject) JSON_JWT.getValue("payload");
+              
+              tokenObject.put("username", hold.getString("username"));
+              tokenObject.put("authlevel", hold.getString("authlevel"));
+              tokenObject.put("jwt", tokenObjectString);
+              
+              Map<String, String> memoryMap = ram.getRamSharedMap();
+              HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
+              JSONObject jsonObject = new JSONObject(memoryMap);
+              JsonObject jsonMemoryObject = new JsonObject(jsonObject.toString());
+              
+              ctx.put("ValidatedConnectionData", dataSourceMap);
+              ctx.put("jsonMemoryObject", jsonMemoryObject);
+              ctx.put("tokenObject", tokenObject);
+              ctx.put("accessFlag", accessFlag);
+              
+              engine.render(ctx.data(), "templates/loggedIn/health-dashboard.ftl",
+                  res -> {
+                      if (res.succeeded()) {
+                          LOGGER.info("Successfully rendered health dashboard");
+                          ctx.response().end(res.result());
+                      } else {
+                          LOGGER.error("Failed to render health dashboard", res.cause());
+                          ctx.fail(res.cause());
+                      }
+                  });
+          } else {
+              LOGGER.error("JWT validation failed for health dashboard");
+              ctx.redirect("/index.html");
+          }
+      } else {
+          LOGGER.error("No valid JWT cookie found for health dashboard");
+          ctx.redirect("/index.html");
+      }
+  });
+  LOGGER.info("Health dashboard page route registered");
   LOGGER.info("Health check and metrics endpoints registered");
   
   // Initialize and register library handler

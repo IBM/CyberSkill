@@ -1,0 +1,68 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "status": "active",
+            "db_type": "postgres",
+            "db_version": "8.0.2",
+            "db_username": "polly",
+            "db_password": "Password1!",
+            "db_port": "3306",
+            "db_database": "crm",
+            "db_url": "localhost",
+            "db_jdbcClassName": "org.postgresql.Driver",
+            "db_userIcon": "usericon",
+            "db_databaseIcon": "databaseicon",
+            "db_alias": "DB Admin",
+            "db_access": "All Privileges"
+        },
+        {
+            "id": 2,
+            "status": "active",
+            "db_type": "postgres",
+            "db_version": "8.0.2",
+            "db_username": "liher",
+            "db_password": "Password1!",
+            "db_port": "3306",
+            "db_database": "crm",
+            "db_url": "localhost",
+            "db_jdbcClassName": "org.postgresql.Driver",
+            "db_userIcon": "usericon",
+            "db_databaseIcon": "databaseicon",
+            "db_alias": "Bad Guy",
+            "db_access": "All Privileges"
+        },
+        {
+            "id": 3,
+            "status": "active",
+            "db_type": "postgres",
+            "db_version": "8.0.2",
+            "db_username": "jason",
+            "db_password": "Password1!",
+            "db_port": "3306",
+            "db_database": "crm",
+            "db_url": "localhost",
+            "db_jdbcClassName": "org.postgresql.Driver",
+            "db_userIcon": "usericon",
+            "db_databaseIcon": "databaseicon",
+            "db_alias": "Standard User",
+            "db_access": "Select,Update,Insert,Delete,Execute"
+        },
+        {
+            "id": 4,
+            "status": "active",
+            "db_type": "postgres",
+            "db_version": "8.0.2",
+            "db_username": "john",
+            "db_password": "Password1!",
+            "db_port": "3306",
+            "db_database": "crm",
+            "db_url": "localhost",
+            "db_jdbcClassName": "org.postgresql.Driver",
+            "db_userIcon": "usericon",
+            "db_databaseIcon": "databaseicon",
+            "db_alias": "Standard User",
+            "db_access": "Select,Update,Insert,Delete,Execute"
+        }
+    ]
+}

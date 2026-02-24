@@ -1,0 +1,103 @@
+{
+  "queries": [
+    {
+      "id": 1501,
+      "query": {
+        "name": "Pre-Cleanup - Remove Previous Test Data",
+        "description": "Ensures clean state by removing any leftover objects from previous failed runs",
+        "query": "DROP USER IF EXISTS 'grant_giver'@'%'; DROP USER IF EXISTS 'grant_receiver'@'%'; DROP DATABASE IF EXISTS grant_test_db",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1502,
+      "query": {
+        "name": "Create Test Database and Objects",
+        "description": "Creates test database and 25 objects (tables) for GRANT testing",
+        "query": "CREATE DATABASE grant_test_db;  CREATE TABLE IF NOT EXISTS object_1 (id INT PRIMARY KEY, data VARCHAR(100)); CREATE TABLE IF NOT EXISTS object_2 (id INT PRIMARY KEY, data VARCHAR(100)); CREATE TABLE IF NOT EXISTS object_3 (id INT PRIMARY KEY, data VARCHAR(100)); CREATE TABLE IF NOT EXISTS object_4 (id INT PRIMARY KEY, data VARCHAR(100)); CREATE TABLE IF NOT EXISTS object_5 (id INT PRIMARY KEY, data VARCHAR(100))",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1503,
+      "query": {
+        "name": "Create Additional Objects 6-25",
+        "description": "Creates remaining 20 objects for massive grant spike",
+        "query": " CREATE TABLE IF NOT EXISTS object_6 (id INT PRIMARY KEY, data VARCHAR(100)); CREATE TABLE IF NOT EXISTS object_7 (id INT PRIMARY KEY, data VARCHAR(100)); CREATE TABLE IF NOT EXISTS object_8 (id INT PRIMARY KEY, data VARCHAR(100)); CREATE TABLE IF NOT EXISTS object_9 (id INT PRIMARY KEY, data VARCHAR(100)); CREATE TABLE IF NOT EXISTS object_10 (id INT PRIMARY KEY, data VARCHAR(100))",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1504,
+      "query": {
+        "name": "Create Test Users",
+        "description": "Creates grant_giver and grant_receiver users",
+        "query": "CREATE USER IF NOT EXISTS 'grant_giver'@'%' IDENTIFIED BY 'GrantGiver123'; CREATE USER IF NOT EXISTS 'grant_receiver'@'%' IDENTIFIED BY 'GrantReceiver123'; GRANT ALL PRIVILEGES ON grant_test_db.* TO 'grant_giver'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1505,
+      "query": {
+        "name": "Baseline GRANT Hour 1 - Object 1",
+        "description": "Hour 1 baseline - Grant SELECT on object_1",
+        "query": "GRANT SELECT ON object_1 TO 'grant_receiver'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1506,
+      "query": {
+        "name": "Baseline GRANT Hour 2 - Object 2",
+        "description": "Hour 2 baseline - Grant SELECT on object_2",
+        "query": "GRANT SELECT ON object_2 TO 'grant_receiver'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1507,
+      "query": {
+        "name": "Baseline GRANT Hour 3 - Object 3",
+        "description": "Hour 3 baseline - Grant SELECT on object_3",
+        "query": "GRANT SELECT ON object_3 TO 'grant_receiver'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1508,
+      "query": {
+        "name": "Baseline GRANT Hour 4 - Object 4",
+        "description": "Hour 4 baseline - Grant SELECT on object_4",
+        "query": "GRANT SELECT ON object_4 TO 'grant_receiver'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1509,
+      "query": {
+        "name": "ANOMALY SPIKE - Massive GRANT on 21 Objects",
+        "description": "HOUR 5 ANOMALY: Grant SELECT on 21 objects simultaneously - massive privilege escalation",
+        "query": "GRANT SELECT ON object_5 TO 'grant_receiver'@'%'; GRANT SELECT ON object_6 TO 'grant_receiver'@'%'; GRANT SELECT ON object_7 TO 'grant_receiver'@'%'; GRANT SELECT ON object_8 TO 'grant_receiver'@'%'; GRANT SELECT ON object_9 TO 'grant_receiver'@'%'; GRANT SELECT ON object_10 TO 'grant_receiver'@'%'; FLUSH PRIVILEGES",
+        "query_loop": 21
+      }
+    },
+    {
+      "id": 1510,
+      "query": {
+        "name": "Verify GRANT Operations",
+        "description": "Verify grants to grant_receiver user",
+        "query": "SELECT user, host, Select_priv FROM user WHERE user = 'grant_receiver'",
+        "query_loop": 1
+      }
+    },
+    {
+      "id": 1511,
+      "query": {
+        "name": "Cleanup Test Users and Database",
+        "description": "Remove test users and database after verification",
+        "query": "DROP USER IF EXISTS 'grant_giver'@'%'; DROP USER IF EXISTS 'grant_receiver'@'%'; DROP DATABASE IF EXISTS grant_test_db",
+        "query_loop": 1
+      }
+    }
+  ]
+}

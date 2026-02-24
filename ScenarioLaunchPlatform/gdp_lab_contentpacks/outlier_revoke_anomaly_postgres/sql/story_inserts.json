@@ -1,0 +1,142 @@
+{
+  "stories": [
+    {
+      "id": 1401,
+      "story": {
+        "name": "MySQL REVOKE Anomaly - Time-Based Attack Pattern (5 Hours)",
+        "description": "Simulates normal REVOKE baseline (50/hour for 4 hours) followed by massive REVOKE spike (1000 operations in hour 5) to detect privilege escalation attacks. Pattern: Setup \u00e2\u2020\u2019 50 REVOKEs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 50 REVOKEs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 50 REVOKEs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 50 REVOKEs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 1000 REVOKE SPIKE",
+        "story": [
+          {
+            "query_id": 1401,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1402,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Database and Table"
+          },
+          {
+            "query_id": 1403,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Grant Initial Privileges to 100 Users"
+          },
+          {
+            "query_id": 1404,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 REVOKEs"
+          },
+          {
+            "query_id": 1405,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 REVOKEs"
+          },
+          {
+            "query_id": 1410,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 REVOKEs"
+          },
+          {
+            "query_id": 1406,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 REVOKEs"
+          },
+          {
+            "query_id": 1407,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 1000 Rapid REVOKEs"
+          },
+          {
+            "query_id": 1408,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify User Privileges"
+          },
+          {
+            "query_id": 1409,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    },
+    {
+      "id": 1402,
+      "story": {
+        "name": "MySQL REVOKE Anomaly - Quick Demo (5 sec pauses)",
+        "description": "Quick demonstration version with 5-second pauses instead of hours. Same pattern: 4 hours baseline REVOKEs followed by massive spike to detect privilege escalation attacks.",
+        "story": [
+          {
+            "query_id": 1401,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1402,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Database and Table"
+          },
+          {
+            "query_id": 1403,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Grant Initial Privileges to 100 Users"
+          },
+          {
+            "query_id": 1404,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 REVOKEs"
+          },
+          {
+            "query_id": 1405,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 REVOKEs"
+          },
+          {
+            "query_id": 1410,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 REVOKEs"
+          },
+          {
+            "query_id": 1406,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 REVOKEs"
+          },
+          {
+            "query_id": 1407,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 1000 Rapid REVOKEs"
+          },
+          {
+            "query_id": 1408,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify User Privileges"
+          },
+          {
+            "query_id": 1409,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    }
+  ]
+}

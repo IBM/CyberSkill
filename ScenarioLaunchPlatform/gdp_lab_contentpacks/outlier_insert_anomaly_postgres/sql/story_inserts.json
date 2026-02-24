@@ -1,0 +1,130 @@
+{
+  "stories": [
+    {
+      "id": 1301,
+      "story": {
+        "name": "MySQL INSERT Anomaly - Time-Based Attack Pattern (5 Hours)",
+        "description": "Simulates normal INSERT baseline (50/hour for 4 hours) followed by massive INSERT spike (1000 operations in hour 5) to detect data injection attacks. Pattern: 50 INSERTs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 50 INSERTs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 50 INSERTs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 50 INSERTs \u00e2\u2020\u2019 1 hour \u00e2\u2020\u2019 1000 INSERT SPIKE",
+        "story": [
+          {
+            "query_id": 1301,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1302,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Table"
+          },
+          {
+            "query_id": 1303,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 INSERTs"
+          },
+          {
+            "query_id": 1304,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 INSERTs"
+          },
+          {
+            "query_id": 1305,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 INSERTs"
+          },
+          {
+            "query_id": 1309,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 INSERTs"
+          },
+          {
+            "query_id": 1306,
+            "pause_in_seconds": 3600000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 1000 Rapid INSERTs"
+          },
+          {
+            "query_id": 1307,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify Records"
+          },
+          {
+            "query_id": 1308,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    },
+    {
+      "id": 1302,
+      "story": {
+        "name": "MySQL INSERT Anomaly - Quick Demo (5 sec pauses)",
+        "description": "Quick demonstration version with 5-second pauses instead of hours. Same pattern: 4 hours baseline INSERTs followed by massive spike to detect data injection attacks.",
+        "story": [
+          {
+            "query_id": 1301,
+            "pause_in_seconds": 500,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Pre-Cleanup - Ensure Clean State"
+          },
+          {
+            "query_id": 1302,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Create Table"
+          },
+          {
+            "query_id": 1303,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 1 - 50 INSERTs"
+          },
+          {
+            "query_id": 1304,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 2 - 50 INSERTs"
+          },
+          {
+            "query_id": 1305,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 3 - 50 INSERTs"
+          },
+          {
+            "query_id": 1309,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_polly",
+            "chapter": "Baseline Hour 4 - 50 INSERTs"
+          },
+          {
+            "query_id": 1306,
+            "pause_in_seconds": 5000,
+            "datasource": "mysql_192.168.100.13_crm_liher",
+            "chapter": "HOUR 5 ANOMALY SPIKE - 1000 Rapid INSERTs"
+          },
+          {
+            "query_id": 1307,
+            "pause_in_seconds": 2000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Verify Records"
+          },
+          {
+            "query_id": 1308,
+            "pause_in_seconds": 1000,
+            "datasource": "mysql_192.168.100.13_crm_jason",
+            "chapter": "Cleanup"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,449 @@
+/* Health Dashboard Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.health-dashboard-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.health-dashboard-inner {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.health-header {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.health-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.health-header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+.log-toggle-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 2px solid white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.log-toggle-btn:hover {
+    background: white;
+    color: #667eea;
+}
+
+.health-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.health-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.health-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+.health-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.health-card-title {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #333;
+}
+
+.health-status-badge {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.health-status-up {
+    background: #10b981;
+    color: white;
+}
+
+.health-status-down {
+    background: #ef4444;
+    color: white;
+}
+
+.health-status-degraded {
+    background: #f59e0b;
+    color: white;
+}
+
+.health-status-loading {
+    background: #6b7280;
+    color: white;
+}
+
+.health-metric-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.health-metric-row:last-child {
+    border-bottom: none;
+}
+
+.health-metric-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.health-metric-value {
+    color: #333;
+    font-weight: 600;
+}
+
+.health-metric-value.success {
+    color: #10b981;
+}
+
+.health-metric-value.warning {
+    color: #f59e0b;
+}
+
+.health-metric-value.danger {
+    color: #ef4444;
+}
+
+.health-progress-bar {
+    width: 100%;
+    height: 25px;
+    background: #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.health-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.health-progress-fill.warning {
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+
+.health-progress-fill.danger {
+    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+}
+
+.health-refresh-info {
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.health-error-message {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.health-timestamp {
+    text-align: center;
+    color: white;
+    margin-top: 10px;
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+@keyframes health-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.health-loading {
+    animation: health-pulse 1.5s ease-in-out infinite;
+}
+
+.health-big-number {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #667eea;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.health-mini-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.health-mini-stat {
+    background: #f9fafb;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.health-mini-stat-value {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #333;
+}
+
+.health-mini-stat-label {
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.health-error-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.health-error-item {
+    background: #fef2f2;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 0.85em;
+}
+
+.health-error-type {
+    font-weight: 600;
+    color: #dc2626;
+}
+
+.health-error-time {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Log Panel Styles */
+.health-log-panel {
+    position: fixed;
+    right: -600px;
+    top: 0;
+    width: 600px;
+    height: 100vh;
+    background: #1e293b;
+    box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+    transition: right 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.health-log-panel.open {
+    right: 0;
+}
+
+.health-log-panel-header {
+    background: #0f172a;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #334155;
+}
+
+.health-log-panel-title {
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.health-log-panel-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.health-log-btn {
+    background: #475569;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.2s;
+}
+
+.health-log-btn:hover {
+    background: #64748b;
+}
+
+.health-log-btn.close {
+    background: #ef4444;
+}
+
+.health-log-btn.close:hover {
+    background: #dc2626;
+}
+
+.health-log-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+}
+
+.health-log-entry {
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    border-left: 3px solid #64748b;
+    background: #334155;
+    color: #e2e8f0;
+    line-height: 1.5;
+}
+
+.health-log-entry.INFO {
+    border-left-color: #3b82f6;
+    background: #1e3a5f;
+}
+
+.health-log-entry.WARN {
+    border-left-color: #f59e0b;
+    background: #4a3410;
+}
+
+.health-log-entry.ERROR {
+    border-left-color: #ef4444;
+    background: #4a1010;
+}
+
+.health-log-entry.DEBUG {
+    border-left-color: #8b5cf6;
+    background: #2e1a47;
+}
+
+.health-log-time {
+    color: #94a3b8;
+    margin-right: 10px;
+}
+
+.health-log-level {
+    font-weight: 600;
+    margin-right: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.health-log-level.INFO {
+    background: #3b82f6;
+    color: white;
+}
+
+.health-log-level.WARN {
+    background: #f59e0b;
+    color: white;
+}
+
+.health-log-level.ERROR {
+    background: #ef4444;
+    color: white;
+}
+
+.health-log-level.DEBUG {
+    background: #8b5cf6;
+    color: white;
+}
+
+.health-log-logger {
+    color: #64748b;
+    font-size: 0.9em;
+    margin-right: 10px;
+}
+
+.health-log-message {
+    color: #e2e8f0;
+}
+
+.health-log-status {
+    padding: 10px 20px;
+    background: #0f172a;
+    border-top: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 0.85em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.health-connection-status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.health-connection-status.connected {
+    background: #10b981;
+}
+
+.health-connection-status.disconnected {
+    background: #ef4444;
+}
+
+/* Made with Bob */

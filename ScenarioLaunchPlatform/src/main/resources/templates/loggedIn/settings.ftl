@@ -212,26 +212,131 @@ function refreshConnections()
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
-            <div class="w3-container w3-padding">
-              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='purple'" onmouseout="this.style.color='gray'"></i> kill all active database connections 
+            <div class="w3-container w3-padding" style="overflow-x: auto;">
+              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='purple'" onmouseout="this.style.color='gray'"></i> kill all active database connections
               <div class="tooltip">
-  						Read how this works.
-  						<span class="tooltiptext">This process will destroy all current database connections, and will perform a database lookup to see what connections are set to active. It will then create new connections from this updated list. This is different to verifying connections, which uses the in memory objects to recreate the connections. A brief warning - depending on the speed of the database, rapidly calling this function, can attempt to create connections before the previous connections have fully closed, potentially meaning the database will refuse new connections. In such a case - just wait a minute and try again. Let the database chill baby! </span>
-				</div></h6>
+      		Read how this works.
+      		<span class="tooltiptext">This process will destroy all current database connections, and will perform a database lookup to see what connections are set to active. It will then create new connections from this updated list. This is different to verifying connections, which uses the in memory objects to recreate the connections. A brief warning - depending on the speed of the database, rapidly calling this function, can attempt to create connections before the previous connections have fully closed, potentially meaning the database will refuse new connections. In such a case - just wait a minute and try again. Let the database chill baby! </span>
+    </div></h6>
               
-	              <table id="connectionsTable" class="display" style="width:100%">
-				  <thead>
-				    <tr>
-				      <th>Connection id</th>
-				      <th>Alias</th>
-				      <th>Access</th>
-				      <th>Status</th>
-				    </tr>
-				  </thead>
-				  <tbody>
-				    <!-- Data will be inserted here by DataTables -->
-				  </tbody>
-				</table>
+               <table id="connectionsTable" class="display nowrap" style="width:100%">
+	    <thead>
+	      <tr>
+	        <th>ID</th>
+	        <th>Connection</th>
+	        <th>Type</th>
+	        <th>Database</th>
+	        <th>Username</th>
+	        <th>Alias</th>
+	        <th>Status</th>
+	        <th>Connected</th>
+	        <th>Actions</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      <!-- Data will be inserted here by DataTables -->
+	    </tbody>
+	  </table>
+	  
+	  <!-- Edit Connection Modal -->
+	  <div id="editConnectionModal" class="w3-modal">
+	      <div class="w3-modal-content w3-animate-zoom" style="max-width:600px">
+	        <div class="w3-container w3-theme-d1">
+	          <span onclick="closeEditModal()" class="w3-button w3-display-topright">&times;</span>
+	          <h2><i class="fa fa-edit"></i> Edit Connection</h2>
+	        </div>
+	        <div class="w3-container" style="padding:16px">
+	          <form id="editConnectionForm">
+	            <input type="hidden" id="modal_edit_id">
+	            
+	            <div class="w3-row w3-section">
+	              <div class="w3-col" style="width:150px"><label><b>Connection ID:</b></label></div>
+	              <div class="w3-rest">
+	                <input class="w3-input w3-border" type="text" id="modal_edit_connection_id" readonly style="background-color:#f1f1f1">
+	              </div>
+	            </div>
+	            
+	            <div class="w3-row w3-section">
+	              <div class="w3-col" style="width:150px"><label><b>Status:</b></label></div>
+	              <div class="w3-rest">
+	                <select class="w3-select w3-border" id="modal_edit_status">
+	                  <option value="active">Active</option>
+	                  <option value="inactive">Inactive</option>
+	                </select>
+	              </div>
+	            </div>
+	            
+	            <div class="w3-row w3-section">
+	              <div class="w3-col" style="width:150px"><label><b>Username:</b></label></div>
+	              <div class="w3-rest">
+	                <input class="w3-input w3-border" type="text" id="modal_edit_username">
+	              </div>
+	            </div>
+	            
+	            <div class="w3-row w3-section">
+	              <div class="w3-col" style="width:150px"><label><b>Password:</b></label></div>
+	              <div class="w3-rest">
+	                <div style="position:relative">
+	                  <input class="w3-input w3-border" type="password" id="modal_edit_password">
+	                  <button type="button" onclick="togglePasswordVisibility()" class="w3-button" style="position:absolute;right:0;top:0;bottom:0">
+	                    <i class="fa fa-eye" id="passwordToggleIcon"></i>
+	                  </button>
+	                </div>
+	              </div>
+	            </div>
+	            
+	            <div class="w3-row w3-section">
+	              <div class="w3-col" style="width:150px"><label><b>Port:</b></label></div>
+	              <div class="w3-rest">
+	                <input class="w3-input w3-border" type="text" id="modal_edit_port">
+	              </div>
+	            </div>
+	            
+	            <div class="w3-row w3-section">
+	              <div class="w3-col" style="width:150px"><label><b>Database:</b></label></div>
+	              <div class="w3-rest">
+	                <input class="w3-input w3-border" type="text" id="modal_edit_database">
+	              </div>
+	            </div>
+	            
+	            <div class="w3-row w3-section">
+	              <div class="w3-col" style="width:150px"><label><b>Host/URL:</b></label></div>
+	              <div class="w3-rest">
+	                <input class="w3-input w3-border" type="text" id="modal_edit_url">
+	              </div>
+	            </div>
+	            
+	            <div class="w3-row w3-section">
+	              <div class="w3-col" style="width:150px"><label><b>Alias:</b></label></div>
+	              <div class="w3-rest">
+	                <input class="w3-input w3-border" type="text" id="modal_edit_alias">
+	              </div>
+	            </div>
+	            
+	            <div class="w3-row w3-section">
+	              <div class="w3-col" style="width:150px"><label><b>Access:</b></label></div>
+	              <div class="w3-rest">
+	                <input class="w3-input w3-border" type="text" id="modal_edit_access" placeholder="e.g., Select,Update,Insert,Delete">
+	              </div>
+	            </div>
+	            
+	            <div id="editConnectionFeedback" class="w3-panel" style="display:none"></div>
+	            
+	            <div class="w3-row w3-section">
+	              <button type="button" onclick="testConnection()" class="w3-button w3-blue w3-margin-right">
+	                <i class="fa fa-plug"></i> Test Connection
+	              </button>
+	              <button type="button" onclick="saveConnectionChanges()" class="w3-button w3-green w3-margin-right">
+	                <i class="fa fa-save"></i> Save Changes
+	              </button>
+	              <button type="button" onclick="closeEditModal()" class="w3-button w3-grey">
+	                <i class="fa fa-times"></i> Cancel
+	              </button>
+	            </div>
+	          </form>
+	        </div>
+	      </div>
+	  </div>
               
               
               <button type="button" class="w3-button w3-theme" onclick="getConnections();"><i class="fa fa-check"></i> Verify all active connections</button> 
@@ -1414,65 +1519,169 @@ function deleteQueryTypesByID()
   function getConnections()
   {
   	const jwtToken = '${tokenObject.jwt}';
-   	
+   	const select_editConnections = document.getElementById("editConnections");
+   	const var_editConnectionCounter = document.getElementById("editConnectionCounter");
+    
+    // Clear existing options before adding new ones
+    select_editConnections.innerHTML = '';
     
   	const jsonData = JSON.stringify({
           jwt: jwtToken,
         });
   
   	$.ajax({
-          url: '/api/getAllDatabaseConnections', 
+          url: '/api/getAllDatabaseConnections',
           type: 'POST',
           data: jsonData,
           contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
+          success: function(response)
           {
              	var i = 0;
-             	response.forEach((item) => 
+             	response.forEach((item) =>
              	{
-	            	var option = document.createElement("option");
+            	var option = document.createElement("option");
   					option.text = item.db_connection_id;
   					option.value = item.id;
   					select_editConnections.add(option);
   					i = i+1;
   					
-	            });
-	            var_editConnectionCounter.textContent = i + " connections";
+            });
+            var_editConnectionCounter.textContent = i + " connections";
            		
           },
-          error: function(xhr, status, error) 
+          error: function(xhr, status, error)
           {
             $('#response').text('Error: ' + error);
           }
         });
-  
- 	 const select_editConnections = document.getElementById("editConnections");
-   	 const var_editConnectionCounter = document.getElementById("editConnectionCounter");
    
    
-   	const connectionsTable = $('#connectionsTable').DataTable();
+   	// Check if DataTable is already initialized
+   	let connectionsTable;
+   	if ($.fn.DataTable.isDataTable('#connectionsTable')) {
+   	    // If already initialized, get the existing instance
+   	    connectionsTable = $('#connectionsTable').DataTable();
+   	} else {
+   	    // Initialize DataTable for the first time
+   	    connectionsTable = $('#connectionsTable').DataTable({
+   	        scrollX: true,
+   	        autoWidth: false,
+   	        columnDefs: [
+   	            { width: "50px", targets: 0 },  // ID
+   	            { width: "200px", targets: 1 }, // Connection
+   	            { width: "80px", targets: 2 },  // Type
+   	            { width: "100px", targets: 3 }, // Database
+   	            { width: "100px", targets: 4 }, // Username
+   	            { width: "100px", targets: 5 }, // Alias
+   	            { width: "80px", targets: 6 },  // Status
+   	            { width: "120px", targets: 7 }, // Connected
+   	            { width: "200px", targets: 8 }  // Actions
+   	        ]
+   	    });
+   	}
    	
    
+    // First get all connections
     $.ajax({
-          url: '/api/getValidatedDatabaseConnections', 
+          url: '/api/getAllDatabaseConnections',
           type: 'POST',
           data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
+          contentType: 'application/json; charset=utf-8',
+          success: function(allConnections)
           {
-             	var i = 0;
-             	connectionsTable.clear();
-             	
-             	response.forEach((item) => 
-             	{
-	            	
-  					connectionsTable.row.add([item.connection, item.alias, item.access, item.status]);
-  					
-	            });
-	            connectionsTable.draw();
-           		
+             	// Then get validated connections to check which are actually connected
+             	$.ajax({
+             	    url: '/api/getValidatedDatabaseConnections',
+             	    type: 'POST',
+             	    data: jsonData,
+             	    contentType: 'application/json; charset=utf-8',
+             	    success: function(validatedConnections) {
+             	        connectionsTable.clear();
+             	        
+             	        allConnections.forEach((item) => {
+             	            // Check if this connection is validated (actually connected)
+             	            const validated = validatedConnections.find(v => v.connection === item.db_connection_id);
+             	            
+             	            // Create status badge with color
+             	            let statusBadge = '';
+             	            if (item.status === 'active') {
+             	                statusBadge = '<span class="w3-tag w3-green w3-round" title="Active">Active</span>';
+             	            } else {
+             	                statusBadge = '<span class="w3-tag w3-grey w3-round" title="Inactive">Inactive</span>';
+             	            }
+             	            
+             	            // Create connected badge
+             	            let connectedBadge = '';
+             	            if (validated && validated.status === 'connected') {
+             	                connectedBadge = '<span class="w3-tag w3-green w3-round" title="Connected to database">✓ Connected</span>';
+             	            } else if (item.status === 'active') {
+             	                connectedBadge = '<span class="w3-tag w3-red w3-round" title="Not connected">✗ Not Connected</span>';
+             	            } else {
+             	                connectedBadge = '<span class="w3-tag w3-grey w3-round" title="Inactive">-</span>';
+             	            }
+             	            
+             	            // Create action buttons
+             	            const actions = '<button onclick="openEditModal(' + item.id + ')" class="w3-button w3-small w3-blue w3-round" title="Edit">' +
+             	                '<i class="fa fa-edit"></i></button>' +
+             	                '<button onclick="toggleConnectionStatusById(' + item.id + ')" class="w3-button w3-small w3-orange w3-round" title="Toggle Status">' +
+             	                '<i class="fa fa-toggle-on"></i></button>' +
+             	                '<button onclick="testConnectionById(' + item.id + ')" class="w3-button w3-small w3-teal w3-round" title="Test Connection">' +
+             	                '<i class="fa fa-plug"></i></button>' +
+             	                '<button onclick="deleteConnectionById(' + item.id + ')" class="w3-button w3-small w3-red w3-round" title="Delete">' +
+             	                '<i class="fa fa-trash"></i></button>';
+             	            
+             	 connectionsTable.row.add([
+             	     item.id,
+             	     item.db_connection_id,
+             	     item.db_type,
+             	     item.db_database,
+             	     item.db_username,
+             	     item.db_alias || '-',
+             	     statusBadge,
+             	     connectedBadge,
+             	     actions
+             	 ]);
+             	          });
+                        connectionsTable.draw();
+             	    },
+             	    error: function(xhr, status, error) {
+             	        // If validation fails, still show the connections
+             	        console.warn('Could not validate connections:', error);
+             	        connectionsTable.clear();
+             	        
+             	        allConnections.forEach((item) => {
+             	            const statusBadge = item.status === 'active'
+             	                ? '<span class="w3-tag w3-green w3-round" title="Active">Active</span>'
+             	                : '<span class="w3-tag w3-grey w3-round">Inactive</span>';
+             	            
+             	            const connectedBadge = '<span class="w3-tag w3-yellow w3-round" title="Validation failed">? Unknown</span>';
+             	            
+             	            const actions = '<button onclick="openEditModal(' + item.id + ')" class="w3-button w3-small w3-blue w3-round" title="Edit">' +
+             	                '<i class="fa fa-edit"></i></button>' +
+             	                '<button onclick="toggleConnectionStatusById(' + item.id + ')" class="w3-button w3-small w3-orange w3-round" title="Toggle Status">' +
+             	                '<i class="fa fa-toggle-on"></i></button>' +
+             	                '<button onclick="testConnectionById(' + item.id + ')" class="w3-button w3-small w3-teal w3-round" title="Test Connection">' +
+             	                '<i class="fa fa-plug"></i></button>' +
+             	                '<button onclick="deleteConnectionById(' + item.id + ')" class="w3-button w3-small w3-red w3-round" title="Delete">' +
+             	                '<i class="fa fa-trash"></i></button>';
+             	            
+             	 connectionsTable.row.add([
+             	     item.id,
+             	     item.db_connection_id,
+             	     item.db_type,
+             	     item.db_database,
+             	     item.db_username,
+             	     item.db_alias || '-',
+             	     statusBadge,
+             	     connectedBadge,
+             	     actions
+             	 ]);
+             	          });
+                        connectionsTable.draw();
+             	    }
+             	});
           },
-          error: function(xhr, status, error) 
+          error: function(xhr, status, error)
           {
             $('#response').text('Error: ' + error);
           }
@@ -1481,6 +1690,257 @@ function deleteQueryTypesByID()
         
         
   }
+  /*****************************************************/
+  
+  // Modal Management Functions
+  function openEditModal(connectionId) {
+      const jwtToken = '${tokenObject.jwt}';
+      const jsonData = JSON.stringify({
+          jwt: jwtToken,
+          id: connectionId
+      });
+      
+      $.ajax({
+          url: '/api/getDatabaseConnectionsById',
+          type: 'POST',
+          data: jsonData,
+          contentType: 'application/json; charset=utf-8',
+          success: function(response) {
+              if (response && response.length > 0) {
+                  const conn = response[0];
+                  $('#modal_edit_id').val(conn.id);
+                  $('#modal_edit_connection_id').val(conn.db_connection_id);
+                  $('#modal_edit_status').val(conn.status);
+                  $('#modal_edit_username').val(conn.db_username);
+                  $('#modal_edit_password').val(conn.db_password);
+                  $('#modal_edit_port').val(conn.db_port);
+                  $('#modal_edit_database').val(conn.db_database);
+                  $('#modal_edit_url').val(conn.db_url);
+                  $('#modal_edit_alias').val(conn.db_alias);
+                  $('#modal_edit_access').val(conn.db_access);
+                  
+                  $('#editConnectionModal').show();
+                  $('body').addClass('modal-open');
+              }
+          },
+          error: function(xhr, status, error) {
+              showFeedback('Error loading connection: ' + error, 'error');
+          }
+      });
+  }
+  
+  function closeEditModal() {
+      $('#editConnectionModal').hide();
+      $('#editConnectionFeedback').hide();
+      $('body').removeClass('modal-open');
+  }
+  
+  function togglePasswordVisibility() {
+      const passwordField = $('#modal_edit_password');
+      const icon = $('#passwordToggleIcon');
+      
+      if (passwordField.attr('type') === 'password') {
+          passwordField.attr('type', 'text');
+          icon.removeClass('fa-eye').addClass('fa-eye-slash');
+      } else {
+          passwordField.attr('type', 'password');
+          icon.removeClass('fa-eye-slash').addClass('fa-eye');
+      }
+  }
+  
+  function showFeedback(message, type) {
+      const feedbackDiv = $('#editConnectionFeedback');
+      feedbackDiv.removeClass('w3-pale-green w3-pale-red w3-pale-yellow');
+      
+      if (type === 'success') {
+          feedbackDiv.addClass('w3-pale-green');
+      } else if (type === 'error') {
+          feedbackDiv.addClass('w3-pale-red');
+      } else {
+          feedbackDiv.addClass('w3-pale-yellow');
+      }
+      
+      feedbackDiv.html('<p>' + message + '</p>').show();
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+          feedbackDiv.fadeOut();
+      }, 5000);
+  }
+  
+  function saveConnectionChanges() {
+      const jwtToken = '${tokenObject.jwt}';
+      const connectionData = {
+          jwt: jwtToken,
+          id: $('#modal_edit_id').val(),
+          status: $('#modal_edit_status').val(),
+          db_username: $('#modal_edit_username').val(),
+          db_password: $('#modal_edit_password').val(),
+          db_port: $('#modal_edit_port').val(),
+          db_database: $('#modal_edit_database').val(),
+          db_url: $('#modal_edit_url').val(),
+          db_alias: $('#modal_edit_alias').val(),
+          db_access: $('#modal_edit_access').val()
+      };
+      
+      $.ajax({
+          url: '/api/updateDatabaseConnectionsById',
+          type: 'POST',
+          data: JSON.stringify(connectionData),
+          contentType: 'application/json; charset=utf-8',
+          success: function(response) {
+              showFeedback('Connection updated successfully!', 'success');
+              setTimeout(() => {
+                  closeEditModal();
+                  getConnections(); // Refresh the table
+              }, 1500);
+          },
+          error: function(xhr, status, error) {
+              showFeedback('Error updating connection: ' + error, 'error');
+          }
+      });
+  }
+  
+  function testConnection() {
+      const jwtToken = '${tokenObject.jwt}';
+      const connectionId = $('#modal_edit_id').val();
+      const connectionName = $('#modal_edit_connection_id').val();
+      
+      showFeedback('Testing connection...', 'info');
+      
+      // Use the BruteForceDBConnections API to validate connection
+      $.ajax({
+          url: '/api/getValidatedDatabaseConnections',
+          type: 'POST',
+          data: JSON.stringify({
+              jwt: jwtToken
+          }),
+          contentType: 'application/json; charset=utf-8',
+          success: function(response) {
+              console.log('Validation response:', response);
+              
+              // The API returns an array of validated connections
+              // Each has: {connection: "name", alias: "...", status: "connected", access: "..."}
+              const conn = response.find(c => c.connection === connectionName);
+              
+              if (conn && conn.status === 'connected') {
+                  showFeedback('✓ Connection validated successfully!\n\nAlias: ' + conn.alias + '\nAccess: ' + conn.access, 'success');
+              } else {
+                  showFeedback('✗ Connection validation failed.\n\nThe connection is not in the active pool. Check credentials, network, and ensure status is "active".', 'error');
+              }
+          },
+          error: function(xhr, status, error) {
+              showFeedback('✗ Connection test failed: ' + error, 'error');
+          }
+      });
+  }
+  
+  function testConnectionById(connectionId) {
+      const jwtToken = '${tokenObject.jwt}';
+      
+      // First get the connection details to find the connection name
+      $.ajax({
+          url: '/api/getDatabaseConnectionsById',
+          type: 'POST',
+          data: JSON.stringify({
+              jwt: jwtToken,
+              id: connectionId
+          }),
+          contentType: 'application/json; charset=utf-8',
+          success: function(connDetails) {
+              if (connDetails && connDetails.length > 0) {
+                  const connectionName = connDetails[0].db_connection_id;
+                  
+                  // Now validate it
+                  $.ajax({
+                      url: '/api/getValidatedDatabaseConnections',
+                      type: 'POST',
+                      data: JSON.stringify({
+                          jwt: jwtToken
+                      }),
+                      contentType: 'application/json; charset=utf-8',
+                      success: function(response) {
+                          console.log('Validation response:', response);
+                          
+                          const conn = response.find(c => c.connection === connectionName);
+                          
+                          if (conn && conn.status === 'connected') {
+                              alert('✓ Connection validated successfully!\n\n' +
+                                    'Connection: ' + conn.connection + '\n' +
+                                    'Alias: ' + conn.alias + '\n' +
+                                    'Status: ' + conn.status + '\n' +
+                                    'Access: ' + conn.access);
+                          } else {
+                              alert('✗ Connection validation failed.\n\n' +
+                                    'Connection: ' + connectionName + '\n\n' +
+                                    'The connection is not in the active pool.\n' +
+                                    'Please check:\n' +
+                                    '- Status is set to "active"\n' +
+                                    '- Credentials are correct\n' +
+                                    '- Database is accessible\n' +
+                                    '- Network connectivity');
+                          }
+                      },
+                      error: function(xhr, status, error) {
+                          alert('✗ Connection test failed: ' + error);
+                      }
+                  });
+              }
+          },
+          error: function(xhr, status, error) {
+              alert('✗ Could not retrieve connection details: ' + error);
+          }
+      });
+  }
+  
+  function toggleConnectionStatusById(connectionId) {
+      if (!confirm('Are you sure you want to toggle the status of this connection?')) {
+          return;
+      }
+      
+      const jwtToken = '${tokenObject.jwt}';
+      
+      $.ajax({
+          url: '/api/toggleDatabaseConnectionStatusByID',
+          type: 'POST',
+          data: JSON.stringify({
+              jwt: jwtToken,
+              id: connectionId
+          }),
+          contentType: 'application/json; charset=utf-8',
+          success: function(response) {
+              getConnections(); // Refresh the table
+          },
+          error: function(xhr, status, error) {
+              alert('Error toggling connection status: ' + error);
+          }
+      });
+  }
+  
+  function deleteConnectionById(connectionId) {
+      if (!confirm('Are you sure you want to delete this connection? This action cannot be undone.')) {
+          return;
+      }
+      
+      const jwtToken = '${tokenObject.jwt}';
+      
+      $.ajax({
+          url: '/api/deleteDatabaseConnectionsById',
+          type: 'POST',
+          data: JSON.stringify({
+              jwt: jwtToken,
+              id: connectionId
+          }),
+          contentType: 'application/json; charset=utf-8',
+          success: function(response) {
+              getConnections(); // Refresh the table
+          },
+          error: function(xhr, status, error) {
+              alert('Error deleting connection: ' + error);
+          }
+      });
+  }
+  
   /*****************************************************/
   
    $(document).ready(function() 
