@@ -2,93 +2,113 @@
   "queries": [
     {
       "id": 1401,
-      "query": {
-        "name": "Pre-Cleanup - Remove Previous Test Data",
-        "description": "Ensures clean state by removing any leftover objects from previous failed runs",
-        "query": "DROP USER IF EXISTS 'test_user_1'@'%'; DROP DATABASE IF EXISTS revoke_test_db",
-        "query_loop": 1
-      }
+      "query_type": "postgres",
+      "query_db_type": "Drop",
+      "query_string": "DROP USER IF EXISTS 'test_user_1'@'%'; DROP DATABASE IF EXISTS revoke_test_db",
+      "db_connection_id": 35,
+      "query_usecase": "Pre-Cleanup - Remove Previous Test Data",
+      "query_loop": 1,
+      "query_description": "Ensures clean state by removing any leftover objects from previous failed runs",
+      "video_link": "VideoURL"
     },
     {
       "id": 1402,
-      "query": {
-        "name": "Create Test Database and Users",
-        "description": "Creates test database and 100 test users for REVOKE testing",
-        "query": "CREATE DATABASE revoke_test_db;  CREATE TABLE IF NOT EXISTS test_table (id INT PRIMARY KEY, data VARCHAR(100))",
-        "query_loop": 1
-      }
+      "query_type": "postgres",
+      "query_db_type": "Create",
+      "query_string": "CREATE DATABASE revoke_test_db;  CREATE TABLE IF NOT EXISTS test_table (id INT PRIMARY KEY, data VARCHAR(100))",
+      "db_connection_id": 35,
+      "query_usecase": "Create Test Database and Users",
+      "query_loop": 1,
+      "query_description": "Creates test database and 100 test users for REVOKE testing",
+      "video_link": "VideoURL"
     },
     {
       "id": 1403,
-      "query": {
-        "name": "Grant Initial Privileges to Test Users",
-        "description": "Grant SELECT, INSERT, UPDATE privileges to test users for baseline testing",
-        "query": "GRANT SELECT, INSERT, UPDATE ON revoke_test_db.* TO 'test_user_1'@'%' IDENTIFIED BY 'TestPass123'; FLUSH PRIVILEGES",
-        "query_loop": 100
-      }
+      "query_type": "postgres",
+      "query_db_type": "Grant",
+      "query_string": "GRANT SELECT, INSERT, UPDATE ON revoke_test_db.* TO 'test_user_1'@'%' IDENTIFIED BY 'TestPass123'; FLUSH PRIVILEGES",
+      "db_connection_id": 35,
+      "query_usecase": "Grant Initial Privileges to Test Users",
+      "query_loop": 100,
+      "query_description": "Grant SELECT, INSERT, UPDATE privileges to test users for baseline testing",
+      "video_link": "VideoURL"
     },
     {
       "id": 1404,
-      "query": {
-        "name": "Baseline REVOKE Hour 1",
-        "description": "Hour 1 baseline - 50 REVOKE operations on SELECT privilege",
-        "query": "REVOKE SELECT ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT SELECT ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
-        "query_loop": 50
-      }
+      "query_type": "postgres",
+      "query_db_type": "Revoke",
+      "query_string": "REVOKE SELECT ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT SELECT ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+      "db_connection_id": 35,
+      "query_usecase": "Baseline REVOKE Hour 1",
+      "query_loop": 50,
+      "query_description": "Hour 1 baseline - 50 REVOKE operations on SELECT privilege",
+      "video_link": "VideoURL"
     },
     {
       "id": 1405,
-      "query": {
-        "name": "Baseline REVOKE Hour 2",
-        "description": "Hour 2 baseline - 50 REVOKE operations on INSERT privilege",
-        "query": "REVOKE INSERT ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT INSERT ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
-        "query_loop": 50
-      }
+      "query_type": "postgres",
+      "query_db_type": "Revoke",
+      "query_string": "REVOKE INSERT ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT INSERT ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+      "db_connection_id": 35,
+      "query_usecase": "Baseline REVOKE Hour 2",
+      "query_loop": 50,
+      "query_description": "Hour 2 baseline - 50 REVOKE operations on INSERT privilege",
+      "video_link": "VideoURL"
     },
     {
       "id": 1410,
-      "query": {
-        "name": "Baseline REVOKE Hour 3",
-        "description": "Hour 3 baseline - 50 REVOKE operations on UPDATE privilege",
-        "query": "REVOKE UPDATE ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT UPDATE ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
-        "query_loop": 50
-      }
+      "query_type": "postgres",
+      "query_db_type": "Revoke",
+      "query_string": "REVOKE UPDATE ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT UPDATE ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+      "db_connection_id": 35,
+      "query_usecase": "Baseline REVOKE Hour 3",
+      "query_loop": 50,
+      "query_description": "Hour 3 baseline - 50 REVOKE operations on UPDATE privilege",
+      "video_link": "VideoURL"
     },
     {
       "id": 1406,
-      "query": {
-        "name": "Baseline REVOKE Hour 4",
-        "description": "Hour 4 baseline - 50 REVOKE operations on DELETE privilege",
-        "query": "REVOKE DELETE ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT DELETE ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
-        "query_loop": 50
-      }
+      "query_type": "postgres",
+      "query_db_type": "Revoke",
+      "query_string": "REVOKE DELETE ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT DELETE ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+      "db_connection_id": 35,
+      "query_usecase": "Baseline REVOKE Hour 4",
+      "query_loop": 50,
+      "query_description": "Hour 4 baseline - 50 REVOKE operations on DELETE privilege",
+      "video_link": "VideoURL"
     },
     {
       "id": 1407,
-      "query": {
-        "name": "ANOMALY SPIKE - Massive REVOKE Operations",
-        "description": "HOUR 5 ANOMALY: 1000 rapid REVOKE operations - 20x normal rate indicating privilege escalation attack or insider threat",
-        "query": "REVOKE ALL PRIVILEGES ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT SELECT, INSERT, UPDATE ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
-        "query_loop": 1000
-      }
+      "query_type": "postgres",
+      "query_db_type": "Revoke",
+      "query_string": "REVOKE ALL PRIVILEGES ON revoke_test_db.* FROM 'test_user_1'@'%'; GRANT SELECT, INSERT, UPDATE ON revoke_test_db.* TO 'test_user_1'@'%'; FLUSH PRIVILEGES",
+      "db_connection_id": 35,
+      "query_usecase": "ANOMALY SPIKE - Massive REVOKE Operations",
+      "query_loop": 1000,
+      "query_description": "HOUR 5 ANOMALY: 1000 rapid REVOKE operations - 20x normal rate indicating privilege escalation attack or insider threat",
+      "video_link": "VideoURL"
     },
     {
       "id": 1408,
-      "query": {
-        "name": "Verify REVOKE Operations",
-        "description": "Verify user privileges after REVOKE operations",
-        "query": "SELECT user, host FROM user WHERE user LIKE 'test_user_%' LIMIT 10",
-        "query_loop": 1
-      }
+      "query_type": "postgres",
+      "query_db_type": "Select",
+      "query_string": "SELECT user, host FROM user WHERE user LIKE 'test_user_%' LIMIT 10",
+      "db_connection_id": 35,
+      "query_usecase": "Verify REVOKE Operations",
+      "query_loop": 1,
+      "query_description": "Verify user privileges after REVOKE operations",
+      "video_link": "VideoURL"
     },
     {
       "id": 1409,
-      "query": {
-        "name": "Cleanup Test Users and Database",
-        "description": "Remove test users and database after verification",
-        "query": "DROP USER IF EXISTS 'test_user_1'@'%'; DROP DATABASE IF EXISTS revoke_test_db",
-        "query_loop": 1
-      }
+      "query_type": "postgres",
+      "query_db_type": "Drop",
+      "query_string": "DROP USER IF EXISTS 'test_user_1'@'%'; DROP DATABASE IF EXISTS revoke_test_db",
+      "db_connection_id": 35,
+      "query_usecase": "Cleanup Test Users and Database",
+      "query_loop": 1,
+      "query_description": "Remove test users and database after verification",
+      "video_link": "VideoURL"
     }
   ]
 }

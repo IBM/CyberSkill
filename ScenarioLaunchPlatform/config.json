@@ -1,7 +1,7 @@
 {
     "config.version": "1.00",
     "server": {
-        "port": 8888,
+        "port": 80,
         "host": "localhost",
         "schema":"1.0010"
     },

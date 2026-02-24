@@ -2,93 +2,113 @@
   "queries": [
     {
       "id": 1801,
-      "query": {
-        "name": "Pre-Cleanup - Drop DoS Test Table",
-        "description": "Ensures clean state by dropping table from any previous failed run",
-        "query": "DROP TABLE IF EXISTS dos_test_table",
-        "query_loop": 1
-      }
+      "query_type": "postgres",
+      "query_db_type": "Drop",
+      "query_string": "DROP TABLE IF EXISTS dos_test_table",
+      "db_connection_id": 35,
+      "query_usecase": "Pre-Cleanup - Drop DoS Test Table",
+      "query_loop": 1,
+      "query_description": "Ensures clean state by dropping table from any previous failed run",
+      "video_link": "VideoURL"
     },
     {
       "id": 1802,
-      "query": {
-        "name": "Create DoS Test Table",
-        "description": "Creates table for Denial of Service testing with indexes",
-        "query": "CREATE TABLE IF NOT EXISTS dos_test_table (id INT SERIAL PRIMARY KEY, query_data VARCHAR(255), query_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, INDEX idx_query_time (query_time))",
-        "query_loop": 1
-      }
+      "query_type": "postgres",
+      "query_db_type": "Create",
+      "query_string": "CREATE TABLE IF NOT EXISTS dos_test_table (id INT SERIAL PRIMARY KEY, query_data VARCHAR(255), query_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, INDEX idx_query_time (query_time))",
+      "db_connection_id": 35,
+      "query_usecase": "Create DoS Test Table",
+      "query_loop": 1,
+      "query_description": "Creates table for Denial of Service testing with indexes",
+      "video_link": "VideoURL"
     },
     {
       "id": 1803,
-      "query": {
-        "name": "Insert Initial Test Data",
-        "description": "Insert 10000 initial records for DoS testing",
-        "query": "INSERT INTO dos_test_table (query_data) VALUES (CONCAT('DoS Test Data ', gen_random_uuid()::text))",
-        "query_loop": 10000
-      }
+      "query_type": "postgres",
+      "query_db_type": "Insert",
+      "query_string": "INSERT INTO dos_test_table (query_data) VALUES (CONCAT('DoS Test Data ', gen_random_uuid()::text))",
+      "db_connection_id": 35,
+      "query_usecase": "Insert Initial Test Data",
+      "query_loop": 10000,
+      "query_description": "Insert 10000 initial records for DoS testing",
+      "video_link": "VideoURL"
     },
     {
       "id": 1804,
-      "query": {
-        "name": "Baseline Hour 1 - 1001 Queries",
-        "description": "Hour 1 baseline - 1001 resource-intensive queries",
-        "query": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
-        "query_loop": 1001
-      }
+      "query_type": "postgres",
+      "query_db_type": "Select",
+      "query_string": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
+      "db_connection_id": 35,
+      "query_usecase": "Baseline Hour 1 - 1001 Queries",
+      "query_loop": 1001,
+      "query_description": "Hour 1 baseline - 1001 resource-intensive queries",
+      "video_link": "VideoURL"
     },
     {
       "id": 1805,
-      "query": {
-        "name": "Baseline Hour 2 - 1001 Queries",
-        "description": "Hour 2 baseline - 1001 resource-intensive queries",
-        "query": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
-        "query_loop": 1001
-      }
+      "query_type": "postgres",
+      "query_db_type": "Select",
+      "query_string": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
+      "db_connection_id": 35,
+      "query_usecase": "Baseline Hour 2 - 1001 Queries",
+      "query_loop": 1001,
+      "query_description": "Hour 2 baseline - 1001 resource-intensive queries",
+      "video_link": "VideoURL"
     },
     {
       "id": 1806,
-      "query": {
-        "name": "Baseline Hour 3 - 1001 Queries",
-        "description": "Hour 3 baseline - 1001 resource-intensive queries",
-        "query": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
-        "query_loop": 1001
-      }
+      "query_type": "postgres",
+      "query_db_type": "Select",
+      "query_string": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
+      "db_connection_id": 35,
+      "query_usecase": "Baseline Hour 3 - 1001 Queries",
+      "query_loop": 1001,
+      "query_description": "Hour 3 baseline - 1001 resource-intensive queries",
+      "video_link": "VideoURL"
     },
     {
       "id": 1807,
-      "query": {
-        "name": "Baseline Hour 4 - 1001 Queries",
-        "description": "Hour 4 baseline - 1001 resource-intensive queries",
-        "query": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
-        "query_loop": 1001
-      }
+      "query_type": "postgres",
+      "query_db_type": "Select",
+      "query_string": "SELECT COUNT(*), AVG(id), MAX(id), MIN(id) FROM dos_test_table WHERE id > FLOOR(RANDOM() * 5000)",
+      "db_connection_id": 35,
+      "query_usecase": "Baseline Hour 4 - 1001 Queries",
+      "query_loop": 1001,
+      "query_description": "Hour 4 baseline - 1001 resource-intensive queries",
+      "video_link": "VideoURL"
     },
     {
       "id": 1808,
-      "query": {
-        "name": "ANOMALY SPIKE - Massive DoS Attack",
-        "description": "HOUR 5 ANOMALY: 205000 rapid queries - 200x normal rate indicating Denial of Service attack",
-        "query": "SELECT * FROM dos_test_table WHERE id = FLOOR(1 + RANDOMOM() * 10000) LIMIT 1",
-        "query_loop": 205000
-      }
+      "query_type": "postgres",
+      "query_db_type": "Select",
+      "query_string": "SELECT * FROM dos_test_table WHERE id = FLOOR(1 + RANDOMOM() * 10000) LIMIT 1",
+      "db_connection_id": 35,
+      "query_usecase": "ANOMALY SPIKE - Massive DoS Attack",
+      "query_loop": 205000,
+      "query_description": "HOUR 5 ANOMALY: 205000 rapid queries - 200x normal rate indicating Denial of Service attack",
+      "video_link": "VideoURL"
     },
     {
       "id": 1809,
-      "query": {
-        "name": "Verify DoS Pattern",
-        "description": "Verify table statistics after DoS attack",
-        "query": "SELECT COUNT(*) as total_records, MIN(id) as min_id, MAX(id) as max_id FROM dos_test_table",
-        "query_loop": 1
-      }
+      "query_type": "postgres",
+      "query_db_type": "Select",
+      "query_string": "SELECT COUNT(*) as total_records, MIN(id) as min_id, MAX(id) as max_id FROM dos_test_table",
+      "db_connection_id": 35,
+      "query_usecase": "Verify DoS Pattern",
+      "query_loop": 1,
+      "query_description": "Verify table statistics after DoS attack",
+      "video_link": "VideoURL"
     },
     {
       "id": 1810,
-      "query": {
-        "name": "Cleanup DoS Test Table",
-        "description": "Remove test table after verification",
-        "query": "DROP TABLE IF EXISTS dos_test_table",
-        "query_loop": 1
-      }
+      "query_type": "postgres",
+      "query_db_type": "Drop",
+      "query_string": "DROP TABLE IF EXISTS dos_test_table",
+      "db_connection_id": 35,
+      "query_usecase": "Cleanup DoS Test Table",
+      "query_loop": 1,
+      "query_description": "Remove test table after verification",
+      "video_link": "VideoURL"
     }
   ]
 }
