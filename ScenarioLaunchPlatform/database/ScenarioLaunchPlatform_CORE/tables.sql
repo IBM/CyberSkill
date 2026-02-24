@@ -176,7 +176,23 @@ CREATE TABLE IF NOT EXISTS public.tb_databaseconnections
     PRIMARY KEY (id)
 );
 
+
+TRUNCATE TABLE public.tb_databaseconnections;
+
+ALTER SEQUENCE tb_databaseconnections_id_seq RESTART WITH 1;
+INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (1, 'postgresql_127.0.0.1_crm_john', 'active', 'postgresql', '14', 'john', 'Password1!', '5432', 'crm', '127.0.0.1', 'org.postgresql.Driver', '', '', 'Standard User', 'Select,Update,Insert,Delete,Usage');
+INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (2, 'postgresql_127.0.0.1_crm_jason', 'active', 'postgresql', '14', 'jason', 'Password1!', '5432', 'crm', '127.0.0.1', 'org.postgresql.Driver', '', '', 'Standard User', 'Select,Update,Insert,Delete,Usage');
+INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (3, 'postgresql_127.0.0.1_crm_liher', 'active', 'postgresql', '14', 'liher', 'Password1!', '5432', 'crm', '127.0.0.1', 'org.postgresql.Driver', '', '', 'Badguy', 'Superuser');
+INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (4, 'postgresql_127.0.0.1_crm_polly', 'active', 'postgresql', '14', 'polly', 'Password1!', '5432', 'crm', '127.0.0.1', 'org.postgresql.Driver', '', '', 'DB Admin', 'Superuser');
+INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (5, 'mysql_127.0.0.1_crm_john', 'active', 'mysql', '10', 'john', 'Password1!', '3306', 'crm', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', '', '', 'Standard User', 'Select,Update,Insert,Delete,Execute');
+INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (6, 'mysql_127.0.0.1_crm_jason', 'active', 'mysql', '10', 'jason', 'Password1!', '3306', 'crm', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', '', '', 'Standard User', 'Select,Update,Insert,Delete,Execute');
+INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (7, 'mysql_127.0.0.1_crm_polly', 'active', 'mysql', '10', 'polly', 'Password1!', '3306', 'crm', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', '', '', 'DB Admin', 'All Privileges');
+INSERT INTO public.tb_databaseconnections (id, db_connection_id, status, db_type, db_version, db_username, db_password, db_port, db_database, db_url, db_jdbcclassname, db_usericon, db_databaseicon, db_alias, db_access) VALUES (8, 'mysql_127.0.0.1_crm_liher', 'active', 'mysql', '10', 'liher', 'Password1!', '3306', 'crm', '127.0.0.1', 'com.mysql.cj.jdbc.Driver', '', '', 'Badguy', 'All Privileges');
+
+
 ALTER SEQUENCE tb_databaseconnections_id_seq RESTART WITH 5000;
+ALTER SEQUENCE tb_stories_id_seq RESTART WITH 5000;
+
 
 /************************************************************************************/
 CREATE TABLE IF NOT EXISTS public.tb_admin_functions
@@ -193,6 +209,7 @@ CREATE TABLE IF NOT EXISTS public.tb_admin_functions
 );
 
 RAISE NOTICE 'Created tb_admin_functions';
+
 
 INSERT INTO public.tb_admin_functions (id,function_name,function_description,function_script,function_api_call,function_file_path,function_os_type) VALUES (1,'Restart SLP system','This function call will restart the SLP application. This should only be utilised in cases of emergency where the application hangs.','restartSLP.sh','getRestartSLP()','/opt/slp/scripts','Linux');
 ALTER SEQUENCE tb_admin_functions_id_seq RESTART WITH 2;
