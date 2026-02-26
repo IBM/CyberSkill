@@ -35,13 +35,13 @@
             "chapter": "Baseline Hour 2 - 5 ALTER Operations"
           },
           {
-            "query_id": 1003,
+            "query_id": 1008,
             "pause_in_seconds": 3600000,
             "datasource": "mysql_192.168.100.13_crm_polly",
             "chapter": "Baseline Hour 3 - 5 ALTER Operations"
           },
           {
-            "query_id": 1004,
+            "query_id": 1009,
             "pause_in_seconds": 3600000,
             "datasource": "mysql_192.168.100.13_crm_polly",
             "chapter": "Baseline Hour 4 - 5 ALTER Operations"
@@ -102,13 +102,13 @@
             "chapter": "Baseline Hour 2 - 5 ALTERs"
           },
           {
-            "query_id": 1003,
+            "query_id": 1008,
             "pause_in_seconds": 5000,
             "datasource": "mysql_192.168.100.13_crm_polly",
             "chapter": "Baseline Hour 3 - 5 ALTERs"
           },
           {
-            "query_id": 1004,
+            "query_id": 1009,
             "pause_in_seconds": 5000,
             "datasource": "mysql_192.168.100.13_crm_polly",
             "chapter": "Baseline Hour 4 - 5 ALTERs"

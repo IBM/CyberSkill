@@ -45,6 +45,28 @@
             "video_link": "VideoURL"
         },
         {
+            "id": 1008,
+            "query_type": "mysql",
+            "query_db_type": "Alter",
+            "query_string": "ALTER TABLE schema_alter_table_1 ADD COLUMN baseline_col_11 VARCHAR(50);\nALTER TABLE schema_alter_table_2 ADD COLUMN baseline_col_12 VARCHAR(50);\nALTER TABLE schema_alter_table_3 ADD COLUMN baseline_col_13 VARCHAR(50);\nALTER TABLE schema_alter_table_4 ADD COLUMN baseline_col_14 VARCHAR(50);\nALTER TABLE schema_alter_table_5 ADD COLUMN baseline_col_15 VARCHAR(50);",
+            "db_connection_id": 35,
+            "query_usecase": "Normal Baseline ALTER Operations - Batch 3",
+            "query_loop": 1,
+            "query_description": "Executes 5 ALTER TABLE commands as part of normal baseline activity for Hour 3. Uses different column names to avoid conflicts with previous hours.",
+            "video_link": "VideoURL"
+        },
+        {
+            "id": 1009,
+            "query_type": "mysql",
+            "query_db_type": "Alter",
+            "query_string": "ALTER TABLE schema_alter_table_6 ADD COLUMN baseline_col_16 VARCHAR(50);\nALTER TABLE schema_alter_table_7 ADD COLUMN baseline_col_17 VARCHAR(50);\nALTER TABLE schema_alter_table_8 ADD COLUMN baseline_col_18 VARCHAR(50);\nALTER TABLE schema_alter_table_9 ADD COLUMN baseline_col_19 VARCHAR(50);\nALTER TABLE schema_alter_table_10 ADD COLUMN baseline_col_20 VARCHAR(50);",
+            "db_connection_id": 35,
+            "query_usecase": "Normal Baseline ALTER Operations - Batch 4",
+            "query_loop": 1,
+            "query_description": "Executes 5 more ALTER TABLE commands as part of normal baseline activity for Hour 4. Uses different column names to avoid conflicts with previous hours.",
+            "video_link": "VideoURL"
+        },
+        {
             "id": 1007,
             "query_type": "mysql",
             "query_db_type": "Alter",
