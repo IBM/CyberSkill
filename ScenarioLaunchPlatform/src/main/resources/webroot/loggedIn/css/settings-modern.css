@@ -171,7 +171,7 @@ table.display {
 }
 
 table.display thead {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    background: #4d636f !important;
     color: white;
 }
 
@@ -181,6 +181,7 @@ table.display thead th {
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 0.05em;
+    background: #4d636f !important;
 }
 
 table.display tbody tr {
@@ -475,6 +476,40 @@ html {
 .fab:hover {
     transform: scale(1.1) rotate(90deg);
     box-shadow: var(--shadow-xl);
+}
+
+/* Kill Connections Button Enhancement */
+#killConnectionsBtn {
+    position: relative;
+    overflow: hidden;
+}
+
+#killConnectionsBtn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 12px rgba(239, 68, 68, 0.4) !important;
+}
+
+#killConnectionsBtn:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+}
+
+#killConnectionsBtn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+#killConnectionsBtn:hover::before {
+    width: 300px;
+    height: 300px;
 }
 
 /* Made with Bob */

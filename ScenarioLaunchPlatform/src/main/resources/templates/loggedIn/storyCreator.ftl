@@ -1,915 +1,455 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>SLP Content Packs</title>
+<title>Story Creator</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel="stylesheet" href="css/datatables.min.css">
-<link rel='stylesheet' href='css/fonts.css'>
-<script src="js/jquery.min.js"></script>
-<script src="js/datatables.js"></script>
-
- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/loggedIn/css/w3.css">
+<link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
+<link rel="stylesheet" href="/loggedIn/css/fonts.css">
+<script src="/loggedIn/js/jquery.min.js"></script>
 <style>
-html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
-</style>
-<style>
-.city {
-	display:none
-	height: 800px;
-	background-color:white;
+:root {
+  --primary: #4d636f;
+  --primary-dark: #3a4f5a;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --bg: #f0f4f7;
+  --card-bg: #ffffff;
+  --border: #d1dde3;
+  --text: #1e293b;
+  --text-muted: #64748b;
 }
+html, body { font-family: "Roboto", "Open Sans", sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+.page-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white; padding: 28px 32px 20px; margin-bottom: 0; border-radius: 0 0 12px 12px;
+}
+.page-header h2 { margin: 0 0 6px; font-size: 1.6rem; font-weight: 700; }
+.page-header p { margin: 0; opacity: 0.85; font-size: 0.95rem; }
+.breadcrumb-bar {
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 10px 32px; font-size: 0.85rem; color: var(--text-muted);
+}
+.breadcrumb-bar a { color: var(--primary); text-decoration: none; }
+.breadcrumb-bar a:hover { text-decoration: underline; }
+.breadcrumb-bar span { margin: 0 6px; }
+.form-card {
+  background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);
+  margin-bottom: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.form-card-header {
+  padding: 16px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.form-card-header h4 { margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 10px; }
+.form-card-header h4 i { color: var(--primary); }
+.form-card-body { padding: 24px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid-1 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.form-group { margin-bottom: 0; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.form-label .required { color: var(--danger); margin-left: 2px; }
+.form-input {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 0.9rem; color: var(--text); background: white; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box;
+}
+.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(77,99,111,0.1); }
+.form-input::placeholder { color: #94a3b8; }
+textarea.form-input { resize: vertical; min-height: 80px; }
+.form-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+/* Chapter Card */
+.chapter-card {
+  background: white; border: 1px solid var(--border); border-radius: 10px;
+  margin-bottom: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border-left: 4px solid var(--primary);
+  animation: fadeIn 0.3s ease-out forwards;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.chapter-card-header {
+  padding: 14px 20px; background: #f8fafc; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.chapter-card-header h5 { margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--text); }
+.chapter-card-actions { display: flex; gap: 8px; }
+.chapter-card-body { padding: 20px; }
+/* Pause Slider */
+.pause-row { display: flex; align-items: center; gap: 12px; }
+.pause-row input[type="range"] { flex: 1; accent-color: var(--primary); }
+.pause-row input[type="number"] { width: 100px; }
+/* JSON Output */
+.json-output {
+  background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 20px;
+  font-family: 'Courier New', monospace; font-size: 0.82rem; line-height: 1.6;
+  min-height: 200px; max-height: 400px; overflow-y: auto; white-space: pre-wrap;
+  word-wrap: break-word;
+}
+/* Buttons */
+.btn { padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.88rem; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.btn-success { background: var(--success); color: white; }
+.btn-success:hover { background: #059669; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover { background: #dc2626; }
+.btn-info { background: var(--info); color: white; }
+.btn-info:hover { background: #2563eb; }
+.btn-secondary { background: #e2e8f0; color: var(--text); }
+.btn-secondary:hover { background: #cbd5e1; }
+.btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+.btn-icon { background: none; border: none; cursor: pointer; padding: 6px 8px; border-radius: 6px; transition: background 0.2s; }
+.btn-icon:hover { background: #f1f5f9; }
+.btn-icon.danger:hover { background: #fef2f2; color: var(--danger); }
+.btn-icon.info:hover { background: #eff6ff; color: var(--info); }
+/* Form Actions Bar */
+.form-actions {
+  display: flex; justify-content: flex-end; gap: 12px;
+  padding: 16px 24px; border-top: 1px solid var(--border); background: #f8fafc;
+}
+/* Toast */
+.toast {
+  position: fixed; top: 20px; right: 20px; padding: 14px 22px;
+  border-radius: 8px; color: white; font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999;
+  transform: translateX(200%); transition: transform 0.3s ease-out;
+  display: flex; align-items: center; gap: 10px;
+}
+.toast.show { transform: translateX(0); }
+.toast.success { background: linear-gradient(135deg, var(--success), #059669); }
+.toast.error { background: linear-gradient(135deg, var(--danger), #dc2626); }
+/* Section divider */
+.section-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 </style>
-
-<style>
-  .custom-modal {
-    width: 70%;
-    height: 800px;
-  }
-
-
-   .full-height-textarea {
-      width: 100%;         /* Ensure textarea takes full width */
-      height: 500px;        /* Make textarea fill the parent's height */
-      resize: none;        /* Optional: Prevent resizing the textarea */
-    }
-
-
-</style>
-<style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-        
-        .chapter-card {
-            transition: all 0.3s ease;
-        }
-        
-        .chapter-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        #json-output {
-            min-height: 200px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            background-color: #1e293b;
-            color: #f1f5f9;
-        }
-        
-        .form-section {
-            background-color: #f8fafc;
-            border-radius: 0.75rem;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
-            transform: translateX(200%);
-            transition: transform 0.3s ease-out;
-            display: flex;
-            align-items: center;
-        }
-        
-        .toast.show {
-            transform: translateX(0);
-        }
-        
-        .toast.success {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-        
-        .toast.error {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-        }
-        
-        .toast i {
-            margin-right: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.4);
-        }
-        
-        .btn-secondary {
-            background: #e2e8f0;
-            color: #334155;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-secondary:hover {
-            background: #cbd5e1;
-        }
-        
-        .header-gradient {
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
 </head>
 <body class="w3-theme-l5">
 
 <div id="navbar"></div>
-<!-- Page Container -->
-<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
-  <!-- The Grid -->
+
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <div class="w3-row">
-    <!-- Left Column -->
     <div id="leftColumn"></div>
-    
-    <!-- End Left Column -->
-    
-    
-    <!-- Middle Column -->
     <div class="w3-col m9">
-    
-      <div class="container mx-auto px-4 py-8 max-w-4xl">
-     <!-- Toast Notification -->
-        <div id="toast" class="toast hidden">
-            <i class="fas fa-info-circle"></i>
-            <span id="toast-message"></span>
-        </div>
-      
-        <!-- Main Form -->
-        <div class="bg-white rounded-xl shadow-lg p-8 mb-8 border border-slate-200">
-            <form id="story-form">
-                <!-- Story Metadata -->
-                <div class="mb-8">
-                    <h2 class="text-2xl font-semibold text-slate-800 mb-6 pb-2 border-b border-slate-200">Story Information</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-slate-700 mb-2">Story Name*</label>
-                            <input type="text" id="name" name="name" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., Polly Sees Violations" required>
-                        </div>
-                        <div>
-                            <label for="author" class="block text-sm font-medium text-slate-700 mb-2">Author*</label>
-                            <input type="text" id="author" name="author" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., Polly" required>
-                        </div>
-                        <div>
-                            <label for="handbook" class="block text-sm font-medium text-slate-700 mb-2">Handbook Path</label>
-                            <input type="text" id="handbook" name="handbook" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., /handbooks/PollySeesViolations.pdf">
-                        </div>
-                        <div>
-                            <label for="video" class="block text-sm font-medium text-slate-700 mb-2">Video URL</label>
-                            <input type="url" id="video" name="video" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., https://example.com/video.mp4">
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <label for="description" class="block text-sm font-medium text-slate-700 mb-2">Description*</label>
-                        <textarea id="description" name="description" rows="3" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Describe the story..." required></textarea>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <label for="outcomes" class="block text-sm font-medium text-slate-700 mb-2">Learning Outcomes*</label>
-                        <textarea id="outcomes" name="outcomes" rows="2" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="What will users learn from this story?" required></textarea>
-                    </div>
-                </div>
-                
-                <!-- Chapters Section -->
-                <div class="mb-8">
-                    <div class="flex justify-between items-center mb-6 pb-2 border-b border-slate-200">
-                        <h2 class="text-2xl font-semibold text-slate-800">Chapters</h2>
-                        <button type="button" id="add-chapter" class="btn-primary flex items-center">
-                            <i class="fas fa-plus mr-2"></i> Add Chapter
-                        </button>
-                    </div>
-                    
-                    <div id="chapters-container" class="space-y-6">
-                        <!-- Chapter template will be added here dynamically -->
-                    </div>
-                </div>
-                
-                <!-- Form Actions -->
-                <div class="flex justify-end space-x-4 pt-4 border-t border-slate-200">
-                    <button type="button" id="preview-json" class="btn-secondary">
-                        Preview JSON
-                    </button>
-                    <button type="submit" class="btn-primary flex items-center">
-                        <i class="fas fa-save mr-2"></i> Create Story
-                    </button>
-                </div>
-            </form>
-        </div>
-        
-        <!-- JSON Preview -->
-        <div id="json-preview" class="bg-white rounded-xl shadow-lg p-6 hidden border border-slate-200">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-semibold text-slate-800">JSON Output</h2>
-                <div class="flex space-x-2">
-                    <button id="copy-json" class="btn-secondary flex items-center">
-                        <i class="fas fa-copy mr-2"></i> Copy JSON
-                    </button>
-                    <button id="close-json" class="btn-secondary flex items-center">
-                        <i class="fas fa-times mr-2"></i> Close
-                    </button>
-                </div>
-            </div>
-            <pre id="json-output" class="p-4 rounded-lg overflow-auto max-h-96"></pre>
-        </div>
-    </div>
 
-    <!-- Chapter Template (Hidden) -->
-    <template id="chapter-template">
-        <div class="chapter-card bg-white p-6 rounded-xl border border-slate-200 shadow-sm animate-fade-in">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-medium text-slate-800">Chapter <span class="chapter-number">1</span></h3>
-                <div class="flex space-x-2">
-                    <button type="button" class="duplicate-chapter text-blue-500 hover:text-blue-700" title="Duplicate this chapter">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                    <button type="button" class="delete-chapter text-red-500 hover:text-red-700" title="Delete this chapter">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Chapter Title*</label>
-                    <input type="text" class="chapter-title w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., Polly runs a basic query" required>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-    <label class="block text-sm font-medium text-slate-700 mb-2">Datasource*</label>
-    <select id="validatedConnections" name="pack_name" class="chapter-datasource w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
-      <#if ValidatedConnectionData?has_content>
-					            <#list ValidatedConnectionData?keys as key>
-					                <option value="${key}">${key}</option>
-					            </#list>
-				            <#else>
-			                	<option value="">No options available</option>
-			            	</#if>
-    </select>
-</div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Query ID*</label>
-                        <input type="number" class="chapter-query_id w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., 500" required>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Pause in Milliseconds*</label>
-                    <div class="flex items-center">
-                        <input type="range" min="1000" max="10000" step="1000" class="chapter-pause w-full mr-4">
-                        <input type="number" min="1000" max="10000" step="1000" class="chapter-pause-value w-32 border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="5000">
-                    </div>
-                    <p class="text-xs text-slate-500 mt-2">Time to wait before next chapter (1000ms = 1 second)</p>
-                </div>
-            </div>
-        </div>
-    </template>
+      <div class="page-header">
+        <h2><i class="fa fa-pencil-square-o" style="margin-right:10px;"></i>Story Creator</h2>
+        <p>Build and configure story JSON for the Scenario Launch Platform</p>
+      </div>
 
-</div>
-  
-<!-- End Page Container -->
-      
-      
-      
-    <!-- End Middle Column -->
+      <div class="breadcrumb-bar">
+        <a href="/loggedIn/dashboard.ftl"><i class="fa fa-home"></i> Dashboard</a>
+        <span>&#8250;</span>
+        <a href="/loggedIn/myStories.ftl">My Stories</a>
+        <span>&#8250;</span>
+        <span>Story Creator</span>
+      </div>
+
+      <!-- Toast Notification -->
+      <div id="toast" class="toast">
+        <i class="fa fa-info-circle" id="toast-icon"></i>
+        <span id="toast-message"></span>
+      </div>
+
+      <!-- Story Information Card -->
+      <div class="form-card" style="margin-top:16px;">
+        <div class="form-card-header">
+          <h4><i class="fa fa-book"></i> Story Information</h4>
+        </div>
+        <div class="form-card-body">
+          <form id="story-form">
+            <div class="form-grid" style="margin-bottom:16px;">
+              <div class="form-group">
+                <label class="form-label" for="name">Story Name <span class="required">*</span></label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="e.g., Polly Sees Violations" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="author">Author <span class="required">*</span></label>
+                <input type="text" id="author" name="author" class="form-input" placeholder="e.g., Polly" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="handbook">Handbook Path</label>
+                <input type="text" id="handbook" name="handbook" class="form-input" placeholder="e.g., /handbooks/PollySeesViolations.pdf">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="video">Video URL</label>
+                <input type="url" id="video" name="video" class="form-input" placeholder="e.g., https://example.com/video.mp4">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:16px;">
+              <label class="form-label" for="description">Description <span class="required">*</span></label>
+              <textarea id="description" name="description" rows="3" class="form-input" placeholder="Describe the story..." required></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="outcomes">Learning Outcomes <span class="required">*</span></label>
+              <textarea id="outcomes" name="outcomes" rows="2" class="form-input" placeholder="What will users learn from this story?" required></textarea>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Chapters Card -->
+      <div class="form-card">
+        <div class="form-card-header">
+          <h4><i class="fa fa-list-ol"></i> Chapters</h4>
+          <button type="button" id="add-chapter" class="btn btn-success btn-sm">
+            <i class="fa fa-plus"></i> Add Chapter
+          </button>
+        </div>
+        <div class="form-card-body">
+          <div id="chapters-container">
+            <!-- Chapters added dynamically -->
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="preview-json" class="btn btn-secondary">
+            <i class="fa fa-code"></i> Preview JSON
+          </button>
+          <button type="button" id="submit-story" class="btn btn-primary">
+            <i class="fa fa-save"></i> Create Story
+          </button>
+        </div>
+      </div>
+
+      <!-- JSON Preview Card -->
+      <div id="json-preview" class="form-card" style="display:none;">
+        <div class="form-card-header">
+          <h4><i class="fa fa-code"></i> JSON Output</h4>
+          <div style="display:flex;gap:8px;">
+            <button id="copy-json" class="btn btn-secondary btn-sm"><i class="fa fa-copy"></i> Copy JSON</button>
+            <button id="close-json" class="btn btn-secondary btn-sm"><i class="fa fa-times"></i> Close</button>
+          </div>
+        </div>
+        <div class="form-card-body">
+          <pre id="json-output" class="json-output"></pre>
+        </div>
+      </div>
+
     </div>
-    
-    <!-- Right Column -->
-    
-  
-      
-    <!-- End Right Column -->
-    </div>
-    
-  <!-- End Grid -->
   </div>
- 
-<!-- End Page Container -->
-
 </div>
- 
-
 <br>
-
-<!-- Footer -->
 <div id="footer"></div>
- 
+
+<!-- Chapter Template -->
+<template id="chapter-template">
+  <div class="chapter-card">
+    <div class="chapter-card-header">
+      <h5><i class="fa fa-bookmark" style="color:var(--primary);margin-right:8px;"></i>Chapter <span class="chapter-number">1</span></h5>
+      <div class="chapter-card-actions">
+        <button type="button" class="btn-icon info duplicate-chapter" title="Duplicate chapter"><i class="fa fa-copy"></i></button>
+        <button type="button" class="btn-icon danger delete-chapter" title="Delete chapter"><i class="fa fa-trash"></i></button>
+      </div>
+    </div>
+    <div class="chapter-card-body">
+      <div class="form-grid" style="margin-bottom:16px;">
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">Chapter Title <span class="required">*</span></label>
+          <input type="text" class="chapter-title form-input" placeholder="e.g., Polly runs a basic query" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Datasource <span class="required">*</span></label>
+          <select class="chapter-datasource form-input" required>
+            <#if ValidatedConnectionData?has_content>
+              <#list ValidatedConnectionData?keys as key>
+                <option value="${key}">${key}</option>
+              </#list>
+            <#else>
+              <option value="">No connections available</option>
+            </#if>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Query ID <span class="required">*</span></label>
+          <input type="number" class="chapter-query_id form-input" placeholder="e.g., 500" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pause in Milliseconds <span class="required">*</span></label>
+        <div class="pause-row">
+          <input type="range" min="1000" max="10000" step="1000" class="chapter-pause" value="5000">
+          <input type="number" min="1000" max="10000" step="1000" class="chapter-pause-value form-input" value="5000">
+        </div>
+        <div class="form-hint">Time to wait before next chapter (1000ms = 1 second)</div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script>
-       document.addEventListener('DOMContentLoaded', function() {
-            // DOM elements
-            const storyForm = document.getElementById('story-form');
-            const chaptersContainer = document.getElementById('chapters-container');
-            const addChapterBtn = document.getElementById('add-chapter');
-            const previewJsonBtn = document.getElementById('preview-json');
-            const jsonPreview = document.getElementById('json-preview');
-            const jsonOutput = document.getElementById('json-output');
-            const copyJsonBtn = document.getElementById('copy-json');
-            const closeJsonBtn = document.getElementById('close-json');
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-            
-            // Template
-            const chapterTemplate = document.getElementById('chapter-template').content;
-            
-            let chapterCount = 0;
-            
-            // Add first chapter
+$(document).ready(function() {
+    $.ajax({ url: '/loggedIn/includes/navbar.ftl', method: 'GET', success: function(r) { $('#navbar').html(r); } });
+    $.ajax({ url: '/loggedIn/includes/leftColumn2.ftl', method: 'GET', success: function(r) { $('#leftColumn').html(r); getQueryTypes(); } });
+    $.ajax({ url: '/loggedIn/includes/footer.ftl', method: 'GET', success: function(r) { $('#footer').html(r); } });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const chaptersContainer = document.getElementById('chapters-container');
+    const addChapterBtn = document.getElementById('add-chapter');
+    const previewJsonBtn = document.getElementById('preview-json');
+    const jsonPreview = document.getElementById('json-preview');
+    const jsonOutput = document.getElementById('json-output');
+    const copyJsonBtn = document.getElementById('copy-json');
+    const closeJsonBtn = document.getElementById('close-json');
+    const submitStoryBtn = document.getElementById('submit-story');
+    const chapterTemplate = document.getElementById('chapter-template').content;
+    let chapterCount = 0;
+
+    addChapter();
+
+    addChapterBtn.addEventListener('click', addChapter);
+
+    submitStoryBtn.addEventListener('click', function() {
+        const form = document.getElementById('story-form');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        addStory();
+    });
+
+    previewJsonBtn.addEventListener('click', function() {
+        generateJson();
+        jsonPreview.style.display = 'block';
+        jsonPreview.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    copyJsonBtn.addEventListener('click', function() {
+        const textArea = document.createElement('textarea');
+        textArea.value = jsonOutput.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast('JSON copied to clipboard!', true);
+    });
+
+    closeJsonBtn.addEventListener('click', function() { jsonPreview.style.display = 'none'; });
+
+    function addChapter() {
+        chapterCount++;
+        const chapterClone = document.importNode(chapterTemplate, true);
+        chapterClone.querySelector('.chapter-number').textContent = chapterCount;
+
+        chapterClone.querySelector('.duplicate-chapter').addEventListener('click', function() {
+            const card = this.closest('.chapter-card');
+            const title = card.querySelector('.chapter-title').value;
+            const datasource = card.querySelector('.chapter-datasource').value;
+            const queryId = card.querySelector('.chapter-query_id').value;
+            const pauseValue = card.querySelector('.chapter-pause-value').value;
             addChapter();
-            
-            // Add Chapter Button
-            addChapterBtn.addEventListener('click', addChapter);
-            
-            // Form Submit
-            storyForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                addStory(e);
-            });
-            
-            // Preview JSON Button
-            previewJsonBtn.addEventListener('click', function() {
-                generateJson();
-                jsonPreview.classList.remove('hidden');
-            });
-            
-            // Copy JSON Button
-            copyJsonBtn.addEventListener('click', function() {
-                const textArea = document.createElement('textarea');
-                textArea.value = jsonOutput.textContent;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                showToast('JSON copied to clipboard!', true);
-            });
-            
-            // Close JSON Preview Button
-            closeJsonBtn.addEventListener('click', function() {
-                jsonPreview.classList.add('hidden');
-            });
-            
-            // Add a new chapter
-            function addChapter() {
-                chapterCount++;
-                const chapterClone = document.importNode(chapterTemplate, true);
-                
-                // Update chapter number
-                chapterClone.querySelector('.chapter-number').textContent = chapterCount;
-                
-                // Add duplicate chapter event
-                chapterClone.querySelector('.duplicate-chapter').addEventListener('click', function() {
-                    const chapterCard = this.closest('.chapter-card');
-                    const title = chapterCard.querySelector('.chapter-title').value;
-                    const datasource = chapterCard.querySelector('.chapter-datasource').value;
-                    const queryId = chapterCard.querySelector('.chapter-query_id').value;
-                    const pauseValue = chapterCard.querySelector('.chapter-pause-value').value;
-                    
-                    addChapter();
-                    const newChapter = chaptersContainer.lastElementChild;
-                    newChapter.querySelector('.chapter-title').value = title;
-                    newChapter.querySelector('.chapter-datasource').value = datasource;
-                    newChapter.querySelector('.chapter-query_id').value = queryId;
-                    newChapter.querySelector('.chapter-pause-value').value = pauseValue;
-                    newChapter.querySelector('.chapter-pause').value = pauseValue;
-                });
-                
-                // Add delete chapter event
-                chapterClone.querySelector('.delete-chapter').addEventListener('click', function() {
-                    if (chaptersContainer.children.length > 1) {
-                        this.closest('.chapter-card').remove();
-                        updateChapterNumbers();
-                    } else {
-                        alert("A story must have at least one chapter!");
-                    }
-                });
-                
-                // Pause slider sync
-                const pauseSlider = chapterClone.querySelector('.chapter-pause');
-                const pauseValue = chapterClone.querySelector('.chapter-pause-value');
-                
-                pauseSlider.value = 5000;
-                pauseValue.value = 5000;
-                
-                pauseSlider.addEventListener('input', function() {
-                    pauseValue.value = this.value;
-                });
-                
-                pauseValue.addEventListener('input', function() {
-                    pauseSlider.value = this.value;
-                });
-                
-                chaptersContainer.appendChild(chapterClone);
-            }
-            
-            // Update chapter numbers
-            function updateChapterNumbers() {
-                const chapters = chaptersContainer.querySelectorAll('.chapter-card');
-                chapterCount = chapters.length;
-                
-                chapters.forEach((chapter, index) => {
-                    chapter.querySelector('.chapter-number').textContent = index + 1;
-                });
-            }
-            
-            // Generate JSON from form data
-            function generateJson() {
-                const storyData = {
-                    story: {
-                        author: document.getElementById('author').value,
-                        description: document.getElementById('description').value,
-                        handbook: document.getElementById('handbook').value || null,
-                        name: document.getElementById('name').value,
-                        outcomes: document.getElementById('outcomes').value,
-                        story: [],
-                        video: document.getElementById('video').value || null
-                    }
-                };
-                
-                // Collect chapters
-                const chapters = chaptersContainer.querySelectorAll('.chapter-card');
-                chapters.forEach(chapter => {
-                    const chapterData = {
-                        chapter: chapter.querySelector('.chapter-title').value,
-                        datasource: chapter.querySelector('.chapter-datasource').value,
-                        pause_in_seconds: parseInt(chapter.querySelector('.chapter-pause-value').value),
-                        query_id: parseInt(chapter.querySelector('.chapter-query_id').value)
-                    };
-                    
-                    storyData.story.story.push(chapterData);
-                });
-                
-                // Format and display JSON
-                jsonOutput.textContent = JSON.stringify(storyData, null, 2);
-                return storyData;
-            }
-            
-            // Show toast notification 
-            function showToast(message, isSuccess) {
-                toastMessage.textContent = message;
-                
-                // Clear existing classes
-                toast.className = 'toast';
-                
-                // Add appropriate classes
-                toast.classList.add('show');
-                toast.classList.add(isSuccess ? 'success' : 'error');
-                
-                // Set icon
-                toast.querySelector('i').className = isSuccess ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-                
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            }
-            
-            // AJAX function to add story
-            function addStory(event) {
-                event.preventDefault();
-                
-                // Get JWT token (in a real app, this would come from authentication)
-                 const jwtToken = '${tokenObject.jwt}'; // Ensure tokenObject is defined
-                // Generate the story data
-                const storyData = generateJson();
-                
-                // Create the request payload
-                const payload = {
-                    jwt: jwtToken,
-                    story: storyData.story
-                };
-                
-                console.log("Submitting story:", JSON.stringify(payload, null, 2));
-                
-                // Send AJAX request
-                $.ajax({
-                    url: '/api/addStory',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(payload),
-                    processData: false,
-                    success: function(response) {
-                        console.log('Success:', response);
-                        showToast('Story submitted successfully!', true);
-                        
-                        // Reset form after successful submission
-                        storyForm.reset();
-                        chaptersContainer.innerHTML = '';
-                        chapterCount = 0;
-                        addChapter();
-                        jsonPreview.classList.add('hidden');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', xhr.responseText);
-                        showToast('Failed to submit story: ' + xhr.responseText, false);
-                    }
-                });
+            const newChapter = chaptersContainer.lastElementChild;
+            newChapter.querySelector('.chapter-title').value = title;
+            newChapter.querySelector('.chapter-datasource').value = datasource;
+            newChapter.querySelector('.chapter-query_id').value = queryId;
+            newChapter.querySelector('.chapter-pause-value').value = pauseValue;
+            newChapter.querySelector('.chapter-pause').value = pauseValue;
+        });
+
+        chapterClone.querySelector('.delete-chapter').addEventListener('click', function() {
+            if (chaptersContainer.children.length > 1) {
+                this.closest('.chapter-card').remove();
+                updateChapterNumbers();
+            } else {
+                showToast('A story must have at least one chapter!', false);
             }
         });
-    </script>
-    </script> 
-<script>
-// Accordion
-function myFunction(id) {
-  var x = document.getElementById(id);
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-    x.previousElementSibling.className += " w3-theme-d1";
-  } else { 
-    x.className = x.className.replace("w3-show", "");
-    x.previousElementSibling.className = 
-    x.previousElementSibling.className.replace(" w3-theme-d1", "");
-  }
-}
 
-// Used to toggle the menu on smaller screens when clicking on the menu button
-function openNav() {
-  var x = document.getElementById("navDemo");
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-  }
-}
-</script>
+        const pauseSlider = chapterClone.querySelector('.chapter-pause');
+        const pauseValueInput = chapterClone.querySelector('.chapter-pause-value');
+        pauseSlider.value = 5000;
+        pauseValueInput.value = 5000;
+        pauseSlider.addEventListener('input', function() { pauseValueInput.value = this.value; });
+        pauseValueInput.addEventListener('input', function() { pauseSlider.value = this.value; });
 
-<script>
-	function closePack()
-	{
-		document.getElementById('id_edit_modal').style.display='none'
-		
-		toggleEditShowPack();
-		
-	}
-	
-	function toggleEditShowPack()
-	{
-		
-		const deletePackButton = document.getElementById('DeletePackButton');
-		const updatePackButton = document.getElementById('UpdatePackButton');
-		
-		
-		deletePackButton.style.display = 'block';
-		updatePackButton.style.display = 'block';
-		
-        
-	}
-	</script>
-
-<script>
-function addPack(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    // Create FormData object
-    let formData = new FormData();
-    
-    // Append individual form fields with correct names
-    formData.append('pack_name', document.querySelector('[name="pack_name"]').value);
-    formData.append('pack_file_path', document.querySelector('[name="pack_file_path"]').value);
-    formData.append('pack_output_path', document.querySelector('[name="pack_output_path"]').value);
-    pack_output_path
-  
-    
-    // Append file input
-    let fileInput = document.querySelector('[name="pack_file_content"]');
-    if (fileInput.files.length > 0) {
-        formData.append('pack_file_content', fileInput.files[0]);
+        chaptersContainer.appendChild(chapterClone);
     }
-    
-    // Append JWT token
-    const jwtToken = '${tokenObject.jwt}'; // Ensure tokenObject is defined
-    formData.append('jwt', jwtToken);
 
-    // Send AJAX request
+    function updateChapterNumbers() {
+        const chapters = chaptersContainer.querySelectorAll('.chapter-card');
+        chapterCount = chapters.length;
+        chapters.forEach((chapter, index) => { chapter.querySelector('.chapter-number').textContent = index + 1; });
+    }
+
+    function generateJson() {
+        const storyData = {
+            story: {
+                author: document.getElementById('author').value,
+                description: document.getElementById('description').value,
+                handbook: document.getElementById('handbook').value || null,
+                name: document.getElementById('name').value,
+                outcomes: document.getElementById('outcomes').value,
+                story: [],
+                video: document.getElementById('video').value || null
+            }
+        };
+        const chapters = chaptersContainer.querySelectorAll('.chapter-card');
+        chapters.forEach(chapter => {
+            storyData.story.story.push({
+                chapter: chapter.querySelector('.chapter-title').value,
+                datasource: chapter.querySelector('.chapter-datasource').value,
+                pause_in_seconds: parseInt(chapter.querySelector('.chapter-pause-value').value),
+                query_id: parseInt(chapter.querySelector('.chapter-query_id').value)
+            });
+        });
+        jsonOutput.textContent = JSON.stringify(storyData, null, 2);
+        return storyData;
+    }
+
+    function addStory() {
+        const jwtToken = '${tokenObject.jwt}';
+        const storyData = generateJson();
+        const payload = { jwt: jwtToken, story: storyData.story };
+        $.ajax({
+            url: '/api/addStory', type: 'POST', contentType: 'application/json',
+            data: JSON.stringify(payload), processData: false,
+            success: function(response) {
+                showToast('Story created successfully!', true);
+                document.getElementById('story-form').reset();
+                chaptersContainer.innerHTML = '';
+                chapterCount = 0;
+                addChapter();
+                jsonPreview.style.display = 'none';
+            },
+            error: function(xhr) { showToast('Failed to create story: ' + xhr.responseText, false); }
+        });
+    }
+});
+
+function showToast(message, isSuccess) {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-message');
+    const toastIcon = document.getElementById('toast-icon');
+    toastMsg.textContent = message;
+    toast.className = 'toast show ' + (isSuccess ? 'success' : 'error');
+    toastIcon.className = 'fa ' + (isSuccess ? 'fa-check-circle' : 'fa-exclamation-circle');
+    setTimeout(() => { toast.classList.remove('show'); }, 3000);
+}
+
+function getQueryTypes() {
+    const var_jwt = '${tokenObject.jwt}';
     $.ajax({
-        url: '/api/addContentPack',
-        type: 'POST',
-        data: formData,
-        processData: false, // Ensure jQuery does not process FormData
-        contentType: false, // Ensure correct content type for FormData
+        url: '/api/getQueryTypes', type: 'POST',
+        data: JSON.stringify({ jwt: var_jwt }),
+        contentType: 'application/json; charset=utf-8',
         success: function(response) {
-            console.log('Success:', response);
-            alert('Form submitted successfully!');
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', xhr.responseText);
-            alert('Failed to submit the form.');
+            const queryTypes = document.getElementById('queryTypes');
+            if (!queryTypes) return;
+            queryTypes.innerHTML = '';
+            if (Array.isArray(response)) {
+                $.each(response, function(index, item) {
+                    const span = document.createElement('span');
+                    span.textContent = item.query_type;
+                    span.classList.add('w3-tag', 'w3-small', 'w3-theme-d' + index);
+                    span.onclick = function() { window.location.href = 'databases.ftl?lookup=' + item.query_type; };
+                    queryTypes.appendChild(span);
+                });
+            }
         }
     });
 }
-
-// Attach event listener when the page loads
-document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById('packForm');
-    if (form) {
-        form.reset(); // This clears all form fields including text
-        const fileInput = document.querySelector('[name="pack_file_content"]');
-        if (fileInput) {
-            fileInput.value = ''; // Some browsers don’t clear file inputs with .reset()
-        }
-
-        form.addEventListener('submit', addPack);
-    }
-});
-
-
- $(document).ready(function() 
-  {
-  	getPacks();
-  	const table = $('#example').DataTable();
-  	table.on('click', 'tbody tr', function() 
-  	{
-  		console.log('API rows values : ', table.row(this).data()[0]);
-  		
-  		getPackByPackID(table.row(this).data()[0]);
-  		
-	})
-  });
-
- function getPacks()
-  {
-  	const table = $('#example').DataTable();
-  
-  	const jwtToken = '${tokenObject.jwt}';
-   
-  	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-        });
-  
-  
-	$.ajax({
-          url: '/api/getContentPacks', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	table.clear();
-            
-	            response.forEach((item) => {
-	                table.row.add([item.id, item.pack_name,item.pack_file_path,item.pack_output_path,item.pack_deployed,item.created_at]);
-	            });
-            
-           		table.draw();
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-  }
-  
-  /************************************************/
-function deletePackByPackId()
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const PackId = $('#packIdToEditId').val();
-	const PackName = $('#packNameToEditId').val();
-	const PackFilePath = $('#packFilePathToEditId').val();
-
-	
-	
-
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          id: PackId,
-          pack_name: PackName,
-          pack_schedule: PackSchedule,
-          pack_file_path: PackFilePath,
-          pack_os_type: PackOsType
-        });
-  	
-  	$.ajax({
-          url: '/api/deletePacksByPackId', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	getPacks();
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-
-}
-/************************************************/
-function updatePackByPackId()
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const PackId = $('#packIdToEditId').val();
-	const PackName = $('#packNameToEditId').val();
-	const PackDeployed = $('#packDeployedToEditId').val();
-	const PackZipFilePath = $('#packFilePathToEditId').val();
-	const PackOutputDir = $('#packOutputPathToEditId').val();
-	
-	console.log("Pack Name to Update: " + PackName);
-	
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          pack_id: PackId,
-          pack_name: PackName,
-          pack_loaded: PackDeployed,
-          zipFilePath: PackZipFilePath,
-          outputDir : PackOutputDir
-          });
-  	
-  	$.ajax({
-          url: '/api/updatePackByPackId', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	getPacks();
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-
-}
-
-/************************************************/
-function getPackByPackID(varId)
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const PackId = varId;
-	
-
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          pack_id: PackId,
-         });
-  	
-  	$.ajax({
-          url: '/api/getPackByPackId', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	document.getElementById('packNameToEditId').value = response[0].pack_name;
-             	document.getElementById('packFilePathToEditId').value = response[0].pack_file_path;
-             	document.getElementById('packOutputPathToEditId').value = response[0].pack_output_path;
-             	document.getElementById('packDeployedToEditId').value = response[0].pack_deployed;
-             	document.getElementById('packIdToEditId').value = response[0].id;
-  				document.getElementById('id_edit_modal').style.display='block';
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-}
-  
-  document.addEventListener("DOMContentLoaded", function() {
-    getPacks();
-});
-</script>
-<script>
- $(document).ready(function() 
- {
- 	 $.ajax({
-	       url: '/loggedIn/includes/navbar.ftl',  // The URL where the FreeMarker template is rendered
-	       method: 'GET',
-	       success: function(response) 
-	       {
-	          console.log("Updating Navbar");
-	          $('#navbar').html(response);
-	       },
-	       error: function(err) 
-	       {
-	           console.error('Error loading template:', err);
-	       }
-	    });
-	 $.ajax({
-	       url: '/loggedIn/includes/leftColumn2.ftl',  // The URL where the FreeMarker template is rendered
-	       method: 'GET',
-	       success: function(response) 
-	       {
-	          console.log("Updating leftColumn");
-	          $('#leftColumn').html(response);
-	          getQueryTypes();
-	       },
-	       error: function(err) 
-	       {
-	           console.error('Error loading template:', err);
-	       }
-	    });
-	 
-	 $.ajax({
-	       url: '/loggedIn/includes/footer.ftl',  // The URL where the FreeMarker template is rendered
-	       method: 'GET',
-	       success: function(response) 
-	       {
-	          console.log("Updating Footer");
-	          $('#footer').html(response);
-	       },
-	       error: function(err) 
-	       {
-	           console.error('Error loading template:', err);
-	       }
-	    });
-});
 </script>
 
-
-<script>
-
-	function openNewWindow() 
-	{
-		window.open('', '_blank');
-	}
-   
-    function getQueryTypes()
-	{
-		const var_jwt = '${tokenObject.jwt}';
-		const jsonData = JSON.stringify({
-		jwt:var_jwt,
-	});
-	
-	console.log(jsonData);
-		  
-		  
-	$.ajax({
-		url: '/api/getQueryTypes', 
-		type: 'POST',
-		data: jsonData,
-		contentType: 'application/json; charset=utf-8', // Set content type to JSON
-		success: function(response) 
-		{
-			const queryTypes = document.getElementById('queryTypes');
-		    queryTypes.innerHTML = "";
-		    console.log(response);
-		             	
-		    if (Array.isArray(response)) 
-		    {
-      			$.each(response, function(index, item) 
-				{
-					console.log(index, item);  
-					const span = document.createElement('span');
-					span.textContent = item.query_type;
-					span.classList.add('w3-tag');
-					span.classList.add('w3-small');
-					span.classList.add('w3-theme-d'+index);
-							
-					span.onclick = function() 
-					{
-                		console.log("Redirecting for: "+ item.query_type);
-                		window.location.href='databases.ftl?lookup='+ item.query_type;
-            		};
-					queryTypes.appendChild(span);
-				});
-			}             	
-		 },
-		 error: function(xhr, status, error) 
-		 {
-		 	$('#response').text('Error: ' + error);
-		 }
-	});
-}
-</script>
+<script src="/loggedIn/js/sweetalert.js"></script>
+<script src="/loggedIn/js/notifications.js"></script>
 </body>
-</html> 
+</html>

@@ -8,9 +8,10 @@
 <link rel="stylesheet" href="css/w3-theme-blue-grey.css">
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
 <link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel="stylesheet" href="css/health-dashboard.css">
-<script src="js/jquery.min.js"></script>
 <link rel='stylesheet' href='css/fonts.css'>
+<link rel="stylesheet" href="css/health-dashboard.css">
+<link rel="stylesheet" href="css/contentpacks-modern.css">
+<script src="js/jquery.min.js"></script>
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 </style>

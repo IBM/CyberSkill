@@ -116,10 +116,11 @@ function getConnectionById()
   
 function refreshConnections()
 {
-  	
-  	
-  	
-  	document.getElementById('refreshConnections').style.color = 'blue';
+  	const btn = document.getElementById('killConnectionsBtn');
+  	if (btn) {
+  		btn.style.opacity = '0.6';
+  		btn.disabled = true;
+  	}
   	
   	
   	const jwtToken = '${tokenObject.jwt}';
@@ -151,14 +152,22 @@ function refreshConnections()
 					$('#edit_db_alias').val(item.db_alias);
 					$('#edit_db_access').val(item.db_access);
 				});
-				document.getElementById('refreshConnections').style.color = 'green';
+				const btn = document.getElementById('killConnectionsBtn');
+				if (btn) {
+					btn.style.opacity = '1';
+					btn.disabled = false;
+				}
 				getConnections();
-	      },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-            document.getElementById('refreshConnections').style.color = 'red';
-          }
+				   },
+				      error: function(xhr, status, error)
+				      {
+				        $('#response').text('Error: ' + error);
+				        const btn = document.getElementById('killConnectionsBtn');
+				        if (btn) {
+				        	btn.style.opacity = '1';
+				        	btn.disabled = false;
+				        }
+				      }
           
         });
   }
@@ -213,11 +222,29 @@ function refreshConnections()
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding" style="overflow-x: auto;">
-              <h6 class="w3-opacity"><i class="fa fa-refresh" id="refreshConnections" onclick="refreshConnections();" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='purple'" onmouseout="this.style.color='gray'"></i> kill all active database connections
-              <div class="tooltip">
-      		Read how this works.
-      		<span class="tooltiptext">This process will destroy all current database connections, and will perform a database lookup to see what connections are set to active. It will then create new connections from this updated list. This is different to verifying connections, which uses the in memory objects to recreate the connections. A brief warning - depending on the speed of the database, rapidly calling this function, can attempt to create connections before the previous connections have fully closed, potentially meaning the database will refuse new connections. In such a case - just wait a minute and try again. Let the database chill baby! </span>
-    </div></h6>
+              <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <button id="killConnectionsBtn" onclick="refreshConnections();"
+                        class="w3-button w3-red w3-hover-deep-orange"
+                        style="font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3); transition: all 0.3s ease;">
+                  <i class="fa fa-times-circle" style="margin-right: 0.5rem;"></i>
+                  Kill All Active Database Connections
+                </button>
+                <div class="tooltip" style="display: inline-block;">
+                  <span style="color: #4d636f; cursor: help; font-weight: 600; text-decoration: underline; font-size: 0.9rem;">
+                    <i class="fa fa-info-circle"></i> How this works
+                  </span>
+                  <span class="tooltiptext" style="width: 400px; font-size: 0.9rem; line-height: 1.6;">
+                    <strong style="display: block; margin-bottom: 0.5rem; color: #2563eb;">⚠️ Important Information</strong>
+                    This process will destroy all current database connections and perform a database lookup to see what connections are set to active. It will then create new connections from this updated list.
+                    <br><br>
+                    <strong>Difference from Verify:</strong> This is different from verifying connections, which uses in-memory objects to recreate connections.
+                    <br><br>
+                    <strong style="color: #f59e0b;">⚡ Warning:</strong> Depending on database speed, rapidly calling this function can attempt to create connections before previous ones have fully closed, potentially causing the database to refuse new connections.
+                    <br><br>
+                    <em>If this happens, wait a minute and try again. Let the database chill! 😎</em>
+                  </span>
+                </div>
+              </div>
               
                <table id="connectionsTable" class="display nowrap" style="width:100%">
 	    <thead>

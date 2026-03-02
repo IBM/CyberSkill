@@ -1,1326 +1,581 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>SLP Databases</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel="stylesheet" href="css/datatables.min.css">
-<link rel='stylesheet' href='css/fonts.css'>
-<script src="js/jquery.min.js"></script>
-<script src="js/datatables.js"></script>
-
+  <title>SQL Queries - SLP</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/loggedIn/css/w3.css">
+  <link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+  <link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/loggedIn/css/fonts.css">
+  <link rel="stylesheet" href="/loggedIn/css/datatables.min.css">
+  <script src="/loggedIn/js/jquery.min.js"></script>
+  <script src="/loggedIn/js/datatables.min.js"></script>
 <style>
-html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: Roboto, sans-serif; background: #f1f5f9; }
+.page-header { background: linear-gradient(135deg, #4d636f, #3a4f5a); border-radius: 12px; padding: 1.5rem 1.75rem; margin-bottom: 1.5rem; color: white; }
+.page-header h4 { margin: 0 0 0.35rem; font-size: 1.3rem; font-weight: 700; }
+.page-header p  { margin: 0; font-size: 0.875rem; opacity: 0.85; }
+.breadcrumb-bar { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: #64748b; margin-bottom: 1rem; }
+.breadcrumb-bar a { color: #4d636f; text-decoration: none; font-weight: 500; }
+.breadcrumb-bar a:hover { text-decoration: underline; }
+.breadcrumb-bar .separator { color: #cbd5e1; }
+.breadcrumb-bar .current { color: #374151; font-weight: 600; }
+.section-card { border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; background: white; }
+.section-card-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; cursor: pointer; background: #f8fafc; border-bottom: 1px solid #e2e8f0; transition: background 0.15s; }
+.section-card-header:hover { background: #f1f5f9; }
+.section-card-title { font-size: 0.95rem; font-weight: 700; color: #374151; display: flex; align-items: center; gap: 0.5rem; }
+.section-card-title i { color: #4d636f; }
+.section-card-body { display: none; padding: 1.5rem; }
+.section-card-body.open { display: block; }
+.form-label { display: block; font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
+input[type="text"], select, textarea { width: 100%; padding: 0.55rem 0.85rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; color: #374151; background: white; transition: border-color 0.15s, box-shadow 0.15s; outline: none; }
+input[type="text"]:focus, select:focus, textarea:focus { border-color: #4d636f; box-shadow: 0 0 0 3px rgba(77,99,111,0.12); }
+textarea { resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.form-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.btn-save { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; background: #4d636f; color: white; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-save:hover { background: #3a4f5a; transform: translateY(-1px); }
+.btn-run { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-run:hover { background: #059669; transform: translateY(-1px); }
+table.dataTable thead th { background: #f8fafc; color: #374151; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 2px solid #e2e8f0 !important; padding: 0.85rem 1rem; }
+table.dataTable tbody td { padding: 0.75rem 1rem; font-size: 0.875rem; color: #374151; border-bottom: 1px solid #f1f5f9; vertical-align: middle; cursor: pointer; }
+table.dataTable tbody tr:hover { background: #f8fafc; }
+.w3-modal-content { border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+.modal-header-modern { background: linear-gradient(135deg, #4d636f, #3a4f5a); color: white; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+.modal-header-modern h2 { margin: 0; font-size: 1.1rem; font-weight: 700; }
+.modal-close-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; line-height: 1; }
+.modal-close-btn:hover { background: rgba(255,255,255,0.35); }
+.tab-bar { display: flex; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
+.tab-btn { padding: 0.75rem 1.25rem; border: none; background: transparent; font-size: 0.875rem; font-weight: 600; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+.tab-btn:hover { color: #4d636f; }
+.tab-btn.active { color: #4d636f; border-bottom-color: #4d636f; }
+.modal-footer-modern { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 1rem 1.5rem; display: flex; gap: 0.5rem; justify-content: flex-end; }
+.btn-modal-action { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: white; color: #374151; }
+.btn-modal-action:hover { background: #f1f5f9; }
+.btn-modal-action.primary { background: #4d636f; color: white; border-color: #4d636f; }
+.btn-modal-action.primary:hover { background: #3a4f5a; }
+.btn-modal-action.danger { background: #ef4444; color: white; border-color: #ef4444; }
+.btn-modal-action.danger:hover { background: #dc2626; }
+.city { display: none; height: 800px; background-color: white; }
+.custom-modal { width: 70%; height: 800px; }
 </style>
-<style>
-.city {
-	display:none
-	height: 800px;
-	background-color:white;
-}
-</style>
-
-<style>
-  .custom-modal {
-    width: 70%;
-    height: 800px;
-  }
-
-
-   .full-height-textarea {
-      width: 100%;         /* Ensure textarea takes full width */
-      height: 500px;        /* Make textarea fill the parent's height */
-      resize: none;        /* Optional: Prevent resizing the textarea */
-    }
-
-
-</style>
-
 </head>
 <body class="w3-theme-l5">
-
 <div id="navbar"></div>
-
-<!-- Page Container -->
-<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
-  <!-- The Grid -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <div class="w3-row">
-    <!-- Left Column -->
     <div id="leftColumn"></div>
-    <!-- End Left Column -->
-    
-    <!-- Middle Column -->
     <div class="w3-col m9">
-    
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Prepared database queries</h6>
-              
+              <div class="breadcrumb-bar">
+                <a href="/loggedIn/dashboard.ftl"><i class="fa fa-home"></i> Dashboard</a>
+                <span class="separator">&#8250;</span>
+                <span class="current"><i class="fa fa-database"></i> SQL Queries</span>
+              </div>
+              <div class="page-header">
+                <h4><i class="fa fa-database"></i> Prepared Database Queries</h4>
+                <p>Manage, run, and edit SQL queries for use in stories and testing scenarios</p>
+              </div>
               <table id="example" class="display" style="width:100%">
-			  <thead>
-			    <tr>
-			    	<th>id</th>
-			      	<th>query_usecase</th>
-			      	<th>query_db_type</th>
-			      	<th>query_type</th>
-			      	<th>query_loop</th>
-			    </tr>
-			  </thead>
-			  <tbody>
-			    <!-- Data will be inserted here by DataTables -->
-			  </tbody>
-			</table>
-              
-              
-              <!-- Card -->
-    
-    		
-    
-    
-    
-			
-			<div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <i class="fa fa-plus" onclick="toggleAddSqlDiv()" style="color: gray; transition: color 0.3s ease;" 
-   onmouseover="this.style.color='red'" 
-   onmouseout="this.style.color='gray'"></i> Add SQL
-        
-        <br>
-	        <hr class="w3-clear">
-        <div class ="addSQL" id="addSQL" style="display: none;"> 
-	        
-				        
-				<h2>Add SQL statement</h2>
-				<p>SQL can be added ; separated for each SQL statement. You can also take advantage of <a href="help.ftl#generic">SLPs generic feature</a> to help build dynamic data</p>
-				
-				
-				
-				<!-- -->
-				<div id="addSQLStatementModal" class="w3-modal">
-				    <div class="w3-modal-content">
-				      <div class="w3-container">
-				        <span onclick="document.getElementById('addSQLStatementModal').style.display='none';getSqlStatements();" class="w3-button w3-display-topright">&times;</span>
-				        <p id="addSQLStatementResponse"></p>
-				        
-				      </div>
-				    </div>
-				  </div>
-			<!-- -->	
-				
-				<div class="container">
-				    
-				    
-				    
-				    <div class="row">
-				        <p><textarea id="sqlStatementToAdd" name="sqlStatementToAdd" rows="10" cols="50"></textarea></p>
-				   	</div>
-				   	
-				   	<div class="row">
-				   	   	<div class="w3-half">
-					        <p>
-					        <select id="addSqlStatementDB" name="addSqlStatementDB">
-					          <option value="db2">db2</option>
-					          <option value="mysql">mysql</option>
-					          <option value="postgres">postgres</option>
-					          <option value="oracle">oracle</option>
-					        </select>
-					        </p>
-					    </div>
-					    <div class="w3-half">
-					   		<p>
-					        <select id="addSqlStatementType" name="addSqlStatementType">
-					          <option value="Select">Select</option>
-					          <option value="Update">Update</option>
-					          <option value="Alert">Alert</option>
-					          <option value="Delete">Delete</option>
-					        </select>
-					        </p>
-					   	</div>
-				    </div>    
-				    
-				    <div class="row">
-				    	<div class="w3-half">
-				    	    <p><input type="text" id="sqlStatementQueryLoop" placeholder="Add number of times to loop (1-99)" value="1" class="w3-right w3-white w3-border"></p>
-				  		</div>
-				  		<div class="w3-half">
-				  			<p><input type="text" id="sqlStatementQueryUsecase" placeholder="Add Use Case name. Example : insert_Update_delete" value="" class="w3-right w3-white w3-border"></p>
-				  		</div>
-				  	</div>			 
-				  			    
-				    <div class="row">
-				        <p><textarea id="sqlStatementQueryDescription" name="sqlStatementQueryDescription" placeholder="Description" rows="4" cols="50"></textarea></p>
-				   	</div>
-				   	
-				   	<div class="row">
-				        <p><input type="text" id="sqlStatementVideoLink" placeholder="Video URL" value="" class="w3-right w3-white w3-border"></p>
-				   	</div>
-				  
-				    <div class="row">
-				     	<div class="col-75">
-				        	<button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="addDatabaseQuery();"><i class="fa fa-save"></i>  Save</button> 
-				      	</div>	
-				    </div>
-				    </div>
-				</div>
-			
-			</div>
-			
-			
-			<!-- EOF Card -->  
-              
-              
-              
-              <!-- Card -->
-    
-    		
-    
-    
-    
-			
-		<div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <i class="fa fa-plus" onclick="toggleFreeStyle()" style="color: gray; transition: color 0.3s ease;" onmouseover="this.style.color='red'" onmouseout="this.style.color='gray'"></i> Freestyle SQL
-        
-        <br>
-	        <hr class="w3-clear">
-        <div class ="freestyleSQL" id="freestyleSQL" style="display: none;"> 
-	        
-				        
-				<h2>Create freestyle SQL statements</h2>
-				<p>SQL can be added ; separated for each SQL statement</p>
-				
-				
-				
-				<!-- -->
-				<div id="freestyleStatementModal" class="w3-modal">
-				    <div class="w3-modal-content">
-				      <div class="w3-container">
-				        <span onclick="document.getElementById('freestyleStatementModal').style.display='none';" class="w3-button w3-display-topright">&times;</span>
-				        <p id="addFreestyleSQLStatementResponse"></p>
-				        
-				      </div>
-				    </div>
-				  </div>
-			<!-- -->	
-				
-				<div class="container">
-				    
-				    
-				    <div class="row">
-				        <p><textarea id="freestyleSQLToRun" name="freestyleSQLToRun" rows="10" cols="50"></textarea></p>
-				   	</div>
-				   	
-				   	<div class="row">
-				        <p>
-				        <select id="validatedConnectionsForFreestyle" name="dropdown">
-	            			<#if ValidatedConnectionData?has_content>
-					            <#list ValidatedConnectionData?keys as key>
-					                <option value="${key}">${key}</option>
-					            </#list>
-				            <#else>
-			                	<option value="">No options available</option>
-			            	</#if>
-	        			</select>
-				        </p>
-				    </div>    
-				    		  
-				    <div class="row">
-				     	<div class="col-75">
-				        	<button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="runFreestyleQuery(0);"><i class="fa fa-rocket"></i>  Run</button> 
-				      	</div>	
-				    </div>
-				    </div>
-				</div>
-			
-			</div>
-			
-			
-			<!-- EOF Card -->  
-              
-              
-              
-              
-              
-              
-             </div>
+                <thead><tr><th>ID</th><th>Query Name</th><th>DB Type</th><th>Query Type</th><th>Loop</th></tr></thead>
+                <tbody></tbody>
+              </table>
+              <div class="section-card" style="margin-top:1.5rem;">
+                <div class="section-card-header" onclick="toggleSectionCard('addSQLCard', this)">
+                  <div class="section-card-title"><i class="fa fa-plus-circle"></i> Add SQL Statement</div>
+                  <i class="fa fa-chevron-down" style="color:#94a3b8; transition:transform 0.2s;"></i>
+                </div>
+                <div class="section-card-body" id="addSQLCard">
+                  <p style="color:#64748b; font-size:0.875rem; margin-bottom:1rem;">SQL can be added <code>;</code> separated for each SQL statement.</p>
+                  <div id="addSQLStatementModal" class="w3-modal">
+                    <div class="w3-modal-content" style="border-radius:12px; max-width:500px; margin:10% auto;">
+                      <div class="modal-header-modern"><h2><i class="fa fa-check-circle"></i> SQL Added</h2><button class="modal-close-btn" onclick="document.getElementById('addSQLStatementModal').style.display='none';getSqlStatements();">&times;</button></div>
+                      <div style="padding:1.5rem;"><p id="addSQLStatementResponse" style="color:#374151;"></p></div>
+                    </div>
+                  </div>
+                  <div style="margin-bottom:1rem;"><label class="form-label">SQL Statement</label><textarea id="sqlStatementToAdd" name="sqlStatementToAdd" rows="8" style="width:100%; font-family:'Courier New',monospace; font-size:0.875rem;"></textarea></div>
+                  <div class="form-row">
+                    <div><label class="form-label">Database Type</label><select id="addSqlStatementDB" name="addSqlStatementDB"><option value="db2">DB2</option><option value="mysql">MySQL</option><option value="postgres">PostgreSQL</option><option value="oracle">Oracle</option></select></div>
+                    <div><label class="form-label">Query Type</label><select id="addSqlStatementType" name="addSqlStatementType"><option value="Select">Select</option><option value="Update">Update</option><option value="Alert">Alert</option><option value="Delete">Delete</option></select></div>
+                  </div>
+                  <div class="form-row">
+                    <div><label class="form-label">Loop Count (1-99)</label><input type="text" id="sqlStatementQueryLoop" placeholder="1" value="1"></div>
+                    <div><label class="form-label">Use Case Name</label><input type="text" id="sqlStatementQueryUsecase" placeholder="e.g. insert_update_delete"></div>
+                  </div>
+                  <div style="margin-bottom:1rem;"><label class="form-label">Description</label><textarea id="sqlStatementQueryDescription" name="sqlStatementQueryDescription" placeholder="Describe what this query does..." rows="3" style="width:100%;"></textarea></div>
+                  <div style="margin-bottom:1.25rem;"><label class="form-label">Video URL (optional)</label><input type="text" id="sqlStatementVideoLink" placeholder="https://..."></div>
+                  <button type="button" class="btn-save" onclick="addDatabaseQuery();"><i class="fa fa-save"></i> Save SQL Statement</button>
+                </div>
+              </div>
+              <div class="section-card">
+                <div class="section-card-header" onclick="toggleSectionCard('freestyleSQLCard', this)">
+                  <div class="section-card-title"><i class="fa fa-rocket"></i> Freestyle SQL</div>
+                  <i class="fa fa-chevron-down" style="color:#94a3b8; transition:transform 0.2s;"></i>
+                </div>
+                <div class="section-card-body" id="freestyleSQLCard">
+                  <p style="color:#64748b; font-size:0.875rem; margin-bottom:1rem;">Run ad-hoc SQL statements directly against a validated connection.</p>
+                  <div id="freestyleStatementModal" class="w3-modal">
+                    <div class="w3-modal-content" style="border-radius:12px; max-width:500px; margin:10% auto;">
+                      <div class="modal-header-modern"><h2><i class="fa fa-check-circle"></i> Freestyle Result</h2><button class="modal-close-btn" onclick="document.getElementById('freestyleStatementModal').style.display='none';">&times;</button></div>
+                      <div style="padding:1.5rem;"><p id="addFreestyleSQLStatementResponse" style="color:#374151;"></p></div>
+                    </div>
+                  </div>
+                  <div style="margin-bottom:1rem;"><label class="form-label">SQL Statement</label><textarea id="freestyleSQLToRun" name="freestyleSQLToRun" rows="8" style="width:100%; font-family:'Courier New',monospace; font-size:0.875rem;"></textarea></div>
+                  <div style="margin-bottom:1.25rem;"><label class="form-label">Connection</label>
+                    <select id="validatedConnectionsForFreestyle" name="dropdown">
+                      <#if ValidatedConnectionData?has_content>
+                        <#list ValidatedConnectionData?keys as key>
+                          <option value="${key}">${key}</option>
+                        </#list>
+                      <#else>
+                        <option value="">No connections available</option>
+                      </#if>
+                    </select>
+                  </div>
+                  <button type="button" class="btn-run" onclick="runFreestyleQuery(0);"><i class="fa fa-rocket"></i> Run Query</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      
-      
-    <!-- End Middle Column -->
     </div>
-    
-   
-    </div>
-    
-  <!-- End Grid -->
   </div>
-<!-- End Page Container -->
 </div>
 <br>
-
-<!-- Modal for freestyle -->
-				<div id="freestyleModal" class="w3-modal">
-				  <div class="w3-modal-content w3-animate-zoom">
-				    <header class="w3-container w3-blue-grey">
-				      <span onclick="document.getElementById('freestyleModal').style.display='none';" class="w3-buttonw3-blue-grey w3-xlarge w3-display-topright">&times;</span>
-				      <h2>Freestyle Results</h2>
-				    </header>
-				    <div class="w3-container">
-				      <table id="freestyleTable" class="w3-table w3-bordered"></table>
-				    </div>
-				  </div>
-				</div>
- 		<!-- EOF Modal -->
- 
-
-
-
-<!-- Footer -->
+<div id="freestyleModal" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom" style="max-width:90%; margin:3% auto; border-radius:12px; overflow:hidden;">
+    <div class="modal-header-modern"><h2><i class="fa fa-table"></i> Freestyle Results</h2><button class="modal-close-btn" onclick="document.getElementById('freestyleModal').style.display='none';">&times;</button></div>
+    <div style="padding:1.5rem; overflow-x:auto;"><table id="freestyleTable" class="display" style="width:100%"></table></div>
+  </div>
+</div>
 <div id="footer"></div>
- 
- 
- 
-   <!-- Modal -->
-			
-			<div id="id_edit_modal" class="w3-modal">
-			 <div class="w3-modal-content w3-card-4 w3-animate-zoom custom-modal">
-			  <header class="w3-container w3-blue-grey"> 
-			   <span onclick="closeDatabaseQuery();" class="w3-buttonw3-blue-grey w3-xlarge w3-display-topright">&times;</span>
-			   <h2>SQL Data</h2>
-			  </header>
-			
-			  <div class="w3-bar w3-border-bottom">
-			   <button id="sqlData" class="tablink w3-bar-item w3-button" onclick="toggleEditResultsShowSQL()">SQL Data</button>
-			   <button id="sqlResults" class="tablink w3-bar-item w3-button" >Results[0]</button>
-			   <button id="sqlReport" class="tablink w3-bar-item w3-button" >Report</button>
-			   <button id="RunSQLButton"class="w3-button w3-right w3-white w3-border" onclick="runDatabaseQueryByDatasourceMap(0)">Run</button>
-
-			  </div>
-			  
-			  <div id="edit" class="w3-container city">
-			  
-			   <div class="row">
-	        		  <div class="col-25">
-				         Datasource  <input type="text" id="dropdownInput" placeholder="Filter..." style="width: 120px;" maxlength="10" size="15" onchange="filterDropdown()"> 
-				      </div>
-				      <div class="col-75">
-				        <select id="validatedConnections" name="dropdown">
-	            			<#if ValidatedConnectionData?has_content>
-					            <#list ValidatedConnectionData?keys as key>
-					                <option value="${key}">${key} [${ValidatedConnectionData[key].status}]</option>
-					            </#list>
-				            <#else>
-			                	<option value="">No options available</option>
-			            	</#if>
-	        			</select>
-				      </div>
-	        	</div>
-	        
-	        	<div class="row">
-			   		  <div class="col-25">
-				         Query Id: 
-				      </div>
-				      <div class="col-75">
-				        <input type="text" id="sqlStatementToEditId" value="" class="w3-right w3-white w3-border" readonly>
-				      </div>
-			  	</div>
-			  
-			
-			  
-			 
-				 <div class="row" id="editRow">
-					    <p><textarea id="sqlStatementToEdit" name="sqlStatementToEdit" rows="16" cols="50"></textarea></p>
-				 </div>		        
-					        
-					
-				<div class="row">
-			   		  <div class="col-25">
-				         Suggested DB: 
-				      </div>
-				      <div class="col-75">		        
-					        <select id="sqlStatementToEditDB" name="sqlStatementToEditDB">
-					          <option value="db2">db2</option>
-					          <option value="mysql">mysql</option>
-					          <option value="postgres">postgres</option>
-					        </select>
-					  </div>
-				</div>
-				
-				<div class="row">
-			   		  <div class="col-25">
-				         Query Type: 
-				      </div>
-				      <div class="col-75">			        
-					          <select id="sqlStatementToEditType" name="sqlStatementToEditType">
-					          <option value="Select">Select</option>
-					          <option value="Update">Update</option>
-					          <option value="Alert">Alert</option>
-					        </select>
-					   </div>
-				</div>        
-				<div class="row">
-			   		  <div class="col-25">
-				         Loop (default 1): 
-				      </div>
-				      <div class="col-75">		        
-					       <input type="text" id="sqlStatementToEditQueryLoop" value="" class="w3-right w3-white w3-border">
-					  </div>
-				</div> 
-			
-				<div class="row">
-			   		  <div class="col-25">
-				         Query name 
-				      </div>
-				      <div class="col-75">	
-						 <input type="text" id="sqlStatementToEditQueryUsecase" value="" class="w3-right w3-white w3-border">
-					</div>
-				</div> 
-			
-				<div class="row">
-				        <p><textarea id="sqlStatementToEditDescription" name="sqlStatementToEditDescription" placeholder="Description" rows="4" cols="50"></textarea></p>
-				</div>
-					
-				<div class="row">
-			   		 	<div class="col-25" style="text-align:right; padding-right:20px">
-				          <i class="fa fa-video-camera" aria-hidden="true" style="font-size: 50px; color: black; transition: color 0.3s ease-in-out;" onmouseover="this.style.color='teal'" onmouseout="this.style.color='black'" onclick="watchVideo()"></i>
-					    </div>
-					    <div class="col-75">	
-							 <input type="text" id="sqlStatementToEditVideoLink" value="" class="w3-l w3-white w3-border">
-						</div>
-						 
-				</div> 
-					
-					
-					
-					
-					
-					<div class="row" id="resultsRow" style="display:none;overflow-y: scroll;">
-						
-					
-						<table id="resultsTable" class="display" style="width:100%">
-						  
-						</table>
-					
-					
-					</div>
-					
-					
-			 </div>
-			  <div class="w3-container w3-blue-grey w3-padding">
-			   <button id="DeleteSQLButton" class="w3-button w3-right w3-white w3-border" onclick="deleteDatabaseQueryByQueryId()">Delete</button>
-			   <button id="UpdateSQLButton" class="w3-button w3-right w3-white w3-border" onclick="updateDatabaseQueryByQueryId()">Update</button>
-			   <button id="RunSQLButton"class="w3-button w3-right w3-white w3-border" onclick="runDatabaseQueryByDatasourceMap(0)">Run</button>
-			   <button id="CloseSQLButton" class="w3-button w3-right w3-white w3-border" onclick="closeDatabaseQuery()">Close</button>
-			  </div>
-			</div>
-			
-			<!-- EOF Modal --> 
- 
- 			<!-- Modal for displaying reports -->
-				<div id="reportsModal" class="w3-modal">
-				  <div class="w3-modal-content w3-animate-zoom">
-				    <header class="w3-container w3-blue-grey">
-				      <span onclick="closeModal()" class="w3-buttonw3-blue-grey w3-xlarge w3-display-topright">&times;</span>
-				      <h2>Reports</h2>
-				    </header>
-				    <div class="w3-container">
-				      <table id="reportsTable" class="w3-table w3-bordered"></table>
-				    </div>
-				  </div>
-				</div>
- 		<!-- EOF Modal -->
- 		
- 		
- 		
- 
-<script>
-
-
-window.onload = function() {
-    quickSearch();
-};
-
-
-function watchVideo()
-{ 
-	
-	const videoLink = document.getElementById('sqlStatementToEditVideoLink'); 
-	console.log("videoLink: " + videoLink.value);
-	if (videoLink.value === null || videoLink.value === "" || videoLink.value === undefined) 
-	{
-    	console.log("video value is null, empty, or undefined - not opening video link");
-	}
-	else
-	{
-		window.open(videoLink.value, "_blank");
-	}
-}
-
-
-function quickSearch()
-{
-	const urlParams = new URLSearchParams(window.location.search);
-
-	if (urlParams.has('lookup')) 
-	{
-	    console.log("Parameter 'lookup' exists in the URL");
-	    const querytype = urlParams.get('lookup');
-		if (querytype) 
-		{
-		    console.log("query type:", querytype);
-		    var table = $('#example').DataTable();
-		  	table.search(querytype).draw();
-		}
-	    
-	}
-}
-
-
-
-
-
-
-
-
-// Accordion
-function myFunction(id) {
-  var x = document.getElementById(id);
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-    x.previousElementSibling.className += " w3-theme-d1";
-  } else { 
-    x.className = x.className.replace("w3-show", "");
-    x.previousElementSibling.className = 
-    x.previousElementSibling.className.replace(" w3-theme-d1", "");
-  }
-}
-
-// Used to toggle the menu on smaller screens when clicking on the menu button
-function openNav() {
-  var x = document.getElementById("navDemo");
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-  }
-}
-</script>
+<div id="id_edit_modal" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom custom-modal" style="border-radius:12px; overflow:hidden;">
+    <div class="modal-header-modern"><h2><i class="fa fa-code"></i> SQL Query Editor</h2><button class="modal-close-btn" onclick="closeDatabaseQuery();">&times;</button></div>
+    <div class="tab-bar">
+      <button id="sqlData" class="tab-btn tablink active" onclick="toggleEditResultsShowSQL()"><i class="fa fa-code"></i> SQL Data</button>
+      <button id="sqlResults" class="tab-btn tablink"><i class="fa fa-table"></i> Results[0]</button>
+      <button id="sqlReport" class="tab-btn tablink"><i class="fa fa-bar-chart"></i> Report</button>
+      <button class="tab-btn" style="margin-left:auto; color:#10b981;" onclick="runDatabaseQueryByDatasourceMap(0)"><i class="fa fa-play"></i> Run</button>
+    </div>
+    <div id="edit" class="w3-container city" style="padding:1.5rem;">
+      <div style="display:grid; grid-template-columns:auto 1fr; gap:1rem; align-items:end; margin-bottom:1rem;">
+        <div><label class="form-label">Filter</label><input type="text" id="dropdownInput" placeholder="Filter connections..." style="width:160px;" maxlength="20" onchange="filterDropdown()"></div>
+        <div><label class="form-label">Datasource</label>
+          <select id="validatedConnections" name="dropdown">
+            <#if ValidatedConnectionData?has_content>
+              <#list ValidatedConnectionData?keys as key>
+                <option value="${key}">${key} [${ValidatedConnectionData[key].status}]</option>
+              </#list>
+            <#else>
+              <option value="">No connections available</option>
+            </#if>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem;"><label class="form-label">Query ID</label><input type="text" id="sqlStatementToEditId" value="" readonly style="background:#f8fafc; color:#64748b;"></div>
+      <div id="editRow" style="margin-bottom:1rem;"><label class="form-label">SQL Statement</label><textarea id="sqlStatementToEdit" name="sqlStatementToEdit" rows="12" style="width:100%; font-family:'Courier New',monospace; font-size:0.875rem;"></textarea></div>
+      <div class="form-row-4" style="margin-bottom:1rem;">
+        <div><label class="form-label">Suggested DB</label><select id="sqlStatementToEditDB" name="sqlStatementToEditDB"><option value="db2">DB2</option><option value="mysql">MySQL</option><option value="postgres">PostgreSQL</option></select></div>
+        <div><label class="form-label">Query Type</label><select id="sqlStatementToEditType" name="sqlStatementToEditType"><option value="Select">Select</option><option value="Update">Update</option><option value="Alert">Alert</option></select></div>
+        <div><label class="form-label">Loop (default 1)</label><input type="text" id="sqlStatementToEditQueryLoop" value=""></div>
+        <div><label class="form-label">Query Name</label><input type="text" id="sqlStatementToEditQueryUsecase" value=""></div>
+      </div>
+      <div style="margin-bottom:1rem;"><label class="form-label">Description</label><textarea id="sqlStatementToEditDescription" name="sqlStatementToEditDescription" placeholder="Description" rows="3" style="width:100%;"></textarea></div>
+      <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+        <i class="fa fa-video-camera" style="font-size:2rem; color:#4d636f; cursor:pointer; transition:color 0.2s;" onmouseover="this.style.color='#10b981'" onmouseout="this.style.color='#4d636f'" onclick="watchVideo()" title="Watch video"></i>
+        <div style="flex:1;"><label class="form-label">Video URL</label><input type="text" id="sqlStatementToEditVideoLink" value="" placeholder="https://..."></div>
+      </div>
+      <div id="resultsRow" style="display:none; overflow-y:scroll; max-height:400px;"><table id="resultsTable" class="display" style="width:100%"></table></div>
+    </div>
+    <div class="modal-footer-modern">
+      <button id="CloseSQLButton" class="btn-modal-action" onclick="closeDatabaseQuery()"><i class="fa fa-times"></i> Close</button>
+      <button id="DeleteSQLButton" class="btn-modal-action danger" onclick="deleteDatabaseQueryByQueryId()"><i class="fa fa-trash"></i> Delete</button>
+      <button id="UpdateSQLButton" class="btn-modal-action" onclick="updateDatabaseQueryByQueryId()"><i class="fa fa-save"></i> Update</button>
+      <button id="RunSQLButton" class="btn-modal-action primary" onclick="runDatabaseQueryByDatasourceMap(0)"><i class="fa fa-play"></i> Run</button>
+    </div>
+  </div>
+</div>
+<div id="reportsModal" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom" style="max-width:90%; margin:3% auto; border-radius:12px; overflow:hidden;">
+    <div class="modal-header-modern"><h2><i class="fa fa-bar-chart"></i> Query Reports</h2><button class="modal-close-btn" onclick="closeModal()">&times;</button></div>
+    <div style="padding:1.5rem; overflow-x:auto;"><table id="reportsTable" class="display" style="width:100%"></table></div>
+  </div>
+</div>
 
 <script>
-	function closeDatabaseQuery()
-	{
-		document.getElementById('id_edit_modal').style.display='none'
-		$("#sqlResults").html('Results[0]');
-		$('#resultsTable').DataTable().destroy();
-		$('#resultsTable').empty();
-		toggleEditResultsShowSQL();
-		//setQueryResultSearch(0);
-		
-		const $button = $('#sqlResults');
-		$button.off('click');
-	}
-	function toggleFreeStyle()
-	{
-		const div = document.getElementById('freestyleSQL');
-        if (div.style.display === 'none' || div.style.display === '') 
-        {
-        	div.style.display = 'block'; // Show the div
-        } 
-        else 
-        {
-        	div.style.display = 'none'; // Hide the div
-        }
-	}
-	function toggleEditResultsShowResults()
-	{
-		const editRow = document.getElementById('editRow');
-		const resultRow = document.getElementById('resultRow');
-		
-		const deleteSQLButton = document.getElementById('DeleteSQLButton');
-		const updateSQLButton = document.getElementById('UpdateSQLButton');
-		const runSQLButton = document.getElementById('RunSQLButton');
-		
-		editRow.style.display = 'none';
-		deleteSQLButton.style.display = 'none';
-		updateSQLButton.style.display = 'none';
-		runSQLButton.style.display = 'none';
-		
-        resultsRow.style.display = 'block';
+window.onload = function() { quickSearch(); };
+
+function watchVideo() {
+    var videoLink = document.getElementById('sqlStatementToEditVideoLink');
+    if (videoLink.value === null || videoLink.value === "" || videoLink.value === undefined) {
+        console.log("video value is null, empty, or undefined");
+    } else {
+        window.open(videoLink.value, "_blank");
     }
-	function toggleEditResultsShowSQL()
-	{
-		const editRow = document.getElementById('editRow');
-		const resultRow = document.getElementById('resultRow');
-		
-		const deleteSQLButton = document.getElementById('DeleteSQLButton');
-		const updateSQLButton = document.getElementById('UpdateSQLButton');
-		const runSQLButton = document.getElementById('RunSQLButton');
-		
-		editRow.style.display = 'block'; 
-		
-		deleteSQLButton.style.display = 'block';
-		updateSQLButton.style.display = 'block';
-		runSQLButton.style.display = 'block';
-		
-		resultsRow.style.display = 'none'; 
-        
-	}
-	function toggleAddSqlDiv() 
-   	{
-    	const div = document.getElementById('addSQL');
-        if (div.style.display === 'none' || div.style.display === '') 
-        {
-        	div.style.display = 'block'; // Show the div
-        } 
-        else 
-        {
-        	div.style.display = 'none'; // Hide the div
-        }
-   	}
-</script>
-
-
-<script>
-function runFreestyleQuery(result)
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const queryString = $('#freestyleSQLToRun').val();
-	const dbConnection = $('#validatedConnectionsForFreestyle').val();
-	
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          sql: queryString,
-          datasource: dbConnection,
-         });
-         
-   	$.ajax({
-          url: '/api/runDatabaseQueryByDatasourceMap', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	console.log("response size: " + response.length);
-             	const resultSize = response.length;
-             	console.log("resultSize: " + resultSize);
-             	
-             	if (!Array.isArray(response) || response.length === 0) 
-             	{
-                	console.error("Error: Response is empty or not an array");
-                	$('#response').text('Error: No results found');
-                	return;
-                }
-                
-                if (!response[result] || !Array.isArray(response[result]) || response[result].length === 0) 
-                {
-                	console.error("Error: response[result] is not valid");
-                	$('#response').text('Error: No data found for the result');
-                	return;
-                }
-                
-                console.log("Response size: " + response.length);
-            	console.log("Result index: " + result);
-            	
-            	// Lets get the first entry of the resposne[result] and do some checking
-            	const firstEntry = response[result][0];
-            	
-            	if (!firstEntry || !firstEntry.Result || !firstEntry.SQL) {
-                console.error("Error: Expected Result and SQL fields are missing");
-                $('#response').text('Error: Invalid response format');
-                return;
-            }
-                
-             	let jsonData = firstEntry.Result;
-            	let jsonDataSQL = firstEntry.SQL;
-             	
-             	$("#freestyleResults").html('Results ['+ jsonDataSQL + ']');
-             	
-             	
-             	console.log("response[result][0].Result " + jsonData);
-             	console.log("response[result][0].SQL: " + jsonDataSQL);
-             	
-             	createTableForFreestyle(jsonData);
-             	
-             	
-             	openFreestyleModal();
-             	
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });      
 }
 
-var hold = 1; //remember the initial 0 element is shown
+function quickSearch() {
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('lookup')) {
+        var querytype = urlParams.get('lookup');
+        if (querytype) {
+            var table = $('#example').DataTable();
+            table.search(querytype).draw();
+        }
+    }
+}
 
-function runDatabaseQueryByDatasourceMap(result)
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const queryString = $('#sqlStatementToEdit').val();
-	const dbConnection = $('#validatedConnections').val();
-	const queryLoop = $('#sqlStatementToEditQueryLoop').val();
-	
-	console.log("Result interested in finding: " + result);
-	
-	
-	
-	console.log("Destroying datatable");
-	
-	toggleEditResultsShowResults();
-	
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          sql: queryString,
-          datasource: dbConnection,
-          query_loop:queryLoop
-         });
-     
-  	$.ajax({
-          url: '/api/runDatabaseQueryByDatasourceMap', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	console.log("response size: " + response.length);
-             	console.log("result: " + result);
-             	const resultSize = response.length;
-             	console.log("resultSize: " + resultSize);
-             	if (!Array.isArray(response) || response.length === 0) 
-             	{
-                console.error("Error: Response is empty or not an array");
-                $('#response').text('Error: No results found');
-                return;
-                }
-                
-                if (!response[result] || !Array.isArray(response[result]) || response[result].length === 0) 
-                {
-                console.error("Error: response[result] is not valid");
-                $('#response').text('Error: No data found for the result');
-                return;
-                }
-                
-                console.log("Response size: " + response.length);
-            	console.log("Result index: " + result);
-            	
-            	// Lets get the first entry of the resposne[result] and do some checking
-            	const firstEntry = response[result][0];
-            	
-            	if (!firstEntry || !firstEntry.Result || !firstEntry.SQL) {
-                console.error("Error: Expected Result and SQL fields are missing");
-                $('#response').text('Error: Invalid response format');
-                return;
-            }
-                
-             	let jsonData = firstEntry.Result;
-            	let jsonDataSQL = firstEntry.SQL;
-             	
-             	$("#sqlResults").html('Results ['+ jsonDataSQL + ']');
-             	
-             	
-             	console.log("response[result][0].Result " + jsonData);
-             	console.log("response[result][0].SQL: " + jsonDataSQL);
-             	
-             	createTableFromJSON(jsonData);
-             	
-             	
-             	const $button = $('#sqlResults');
-				$button.off('click');
-				
-				$button.on('click', function () 
-				{
-				    
-				    console.log("CLICKED ONCE - hold: " + hold);
-				    
-				    if(hold < response[result].length)
-	             	{
-	             		console.log("Hold index is currently: " + hold);
-	             		
-	             		//Now lets get the nextEntry and check if there is any data
-	             		const nextEntry = response[result][hold];
-	             		
+function toggleSectionCard(id, headerEl) {
+    var body = document.getElementById(id);
+    var chevron = headerEl.querySelector('.fa-chevron-down');
+    var isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+function myFunction(id) {
+    var x = document.getElementById(id);
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+        x.previousElementSibling.className += " w3-theme-d1";
+    } else {
+        x.className = x.className.replace("w3-show", "");
+        x.previousElementSibling.className = x.previousElementSibling.className.replace(" w3-theme-d1", "");
+    }
+}
+
+function openNav() {
+    var x = document.getElementById("navDemo");
+    if (x.className.indexOf("w3-show") == -1) { x.className += " w3-show"; }
+    else { x.className = x.className.replace(" w3-show", ""); }
+}
+</script>
+
+<script>
+function closeDatabaseQuery() {
+    document.getElementById('id_edit_modal').style.display = 'none';
+    $("#sqlResults").html('Results[0]');
+    $('#resultsTable').DataTable().destroy();
+    $('#resultsTable').empty();
+    toggleEditResultsShowSQL();
+    var $button = $('#sqlResults');
+    $button.off('click');
+}
+
+function toggleEditResultsShowResults() {
+    document.getElementById('editRow').style.display = 'none';
+    document.getElementById('DeleteSQLButton').style.display = 'none';
+    document.getElementById('UpdateSQLButton').style.display = 'none';
+    document.getElementById('RunSQLButton').style.display = 'none';
+    document.getElementById('resultsRow').style.display = 'block';
+}
+
+function toggleEditResultsShowSQL() {
+    document.getElementById('editRow').style.display = 'block';
+    document.getElementById('DeleteSQLButton').style.display = 'block';
+    document.getElementById('UpdateSQLButton').style.display = 'block';
+    document.getElementById('RunSQLButton').style.display = 'block';
+    document.getElementById('resultsRow').style.display = 'none';
+}
+
+function toggleAddSqlDiv() {
+    var div = document.getElementById('addSQL');
+    div.style.display = (div.style.display === 'none' || div.style.display === '') ? 'block' : 'none';
+}
+</script>
+
+<script>
+function runFreestyleQuery(result) {
+    var jwtToken = '${tokenObject.jwt}';
+    var queryString = $('#freestyleSQLToRun').val();
+    var dbConnection = $('#validatedConnectionsForFreestyle').val();
+    var jsonData = JSON.stringify({ jwt: jwtToken, sql: queryString, datasource: dbConnection });
+    $.ajax({
+        url: '/api/runDatabaseQueryByDatasourceMap', type: 'POST', data: jsonData,
+        contentType: 'application/json; charset=utf-8',
+        success: function(response) {
+            if (!Array.isArray(response) || response.length === 0) { $('#response').text('Error: No results found'); return; }
+            if (!response[result] || !Array.isArray(response[result]) || response[result].length === 0) { $('#response').text('Error: No data found'); return; }
+            var firstEntry = response[result][0];
+            if (!firstEntry || !firstEntry.Result || !firstEntry.SQL) { $('#response').text('Error: Invalid response format'); return; }
+            var jsonData = firstEntry.Result;
+            var jsonDataSQL = firstEntry.SQL;
+            $("#freestyleResults").html('Results [' + jsonDataSQL + ']');
+            createTableForFreestyle(jsonData);
+            openFreestyleModal();
+        },
+        error: function(xhr, status, error) { $('#response').text('Error: ' + error); }
+    });
+}
+
+var hold = 1;
+
+function runDatabaseQueryByDatasourceMap(result) {
+    var jwtToken = '${tokenObject.jwt}';
+    var queryString = $('#sqlStatementToEdit').val();
+    var dbConnection = $('#validatedConnections').val();
+    var queryLoop = $('#sqlStatementToEditQueryLoop').val();
+    toggleEditResultsShowResults();
+    var jsonData = JSON.stringify({ jwt: jwtToken, sql: queryString, datasource: dbConnection, query_loop: queryLoop });
+    $.ajax({
+        url: '/api/runDatabaseQueryByDatasourceMap', type: 'POST', data: jsonData,
+        contentType: 'application/json; charset=utf-8',
+        success: function(response) {
+            if (!Array.isArray(response) || response.length === 0) { $('#response').text('Error: No results found'); return; }
+            if (!response[result] || !Array.isArray(response[result]) || response[result].length === 0) { $('#response').text('Error: No data found'); return; }
+            var firstEntry = response[result][0];
+            if (!firstEntry || !firstEntry.Result || !firstEntry.SQL) { $('#response').text('Error: Invalid response format'); return; }
+            var jsonData = firstEntry.Result;
+            var jsonDataSQL = firstEntry.SQL;
+            $("#sqlResults").html('Results [' + jsonDataSQL + ']');
+            createTableFromJSON(jsonData);
+            var $button = $('#sqlResults');
+            $button.off('click');
+            $button.on('click', function() {
+                if (hold < response[result].length) {
+                    var nextEntry = response[result][hold];
                     if (nextEntry && nextEntry.Result && nextEntry.SQL) {
-                        jsonData = nextEntry.Result;
-                        jsonDataSQL = nextEntry.SQL;
-
-                        console.log("response[result][" + hold + "].Result: ", jsonData);
-                        console.log("response[result][" + hold + "].SQL: " + jsonDataSQL);
-
+                        jsonData = nextEntry.Result; jsonDataSQL = nextEntry.SQL;
                         $("#sqlResults").html('Results [' + jsonDataSQL + ']');
                         createTableFromJSON(jsonData);
-                    } else {
-                        console.warn("Warning: Entry at index " + hold + " is missing required fields");
                     }
-	             		console.log(">>>>>>>>>>>>>>>>>>result incremented :" + response[result][0]);
-	             		hold ++;
-	             	}
-	             	else
-	             	{
-	             		
-	             		console.log("Limit reached reset hold: " + hold);
-	             		hold = 0;
-	             		console.log(">>>>>>>>>>>>>>>>>>result reset");
-	             	}
-				});
-			// Open the modal when the report button is clicked
-			$('#sqlReport').off('click');
-			$('#sqlReport').on('click', function () {
-			    createReportsTableFromJSON(response); // Open the modal with the DataTable
-			});
-					           
-          },
-          error: function(xhr, status, error) 
-          {
-            console.error("AJAX Error: ", error);
-            $('#response').text('Error: ' + error);
-          }
-        });
- }
+                    hold++;
+                } else { hold = 0; }
+            });
+            $('#sqlReport').off('click');
+            $('#sqlReport').on('click', function() { createReportsTableFromJSON(response); });
+        },
+        error: function(xhr, status, error) { console.error("AJAX Error: ", error); $('#response').text('Error: ' + error); }
+    });
+}
 
-    function createTableFromJSON(jsonArray) 
-    {
-       $('#resultsTable').DataTable().destroy();
-	   $('#resultsTable').empty();
-      
-      console.log("Removed Tables");
-      // Dynamically generate columns from JSON keys
-      const columns = Object.keys(jsonArray[0]).map(key => ({
-        title: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize the header
-        data: key // Map data from JSON key
-      }));
-	 console.log("Generated Headers");
-      // Initialize DataTable
-      $('#resultsTable').DataTable({
-        data: jsonArray, // Pass JSON data
-        columns: columns // Use dynamically generated columns
-      });
-     console.log("Generated Data");
-    }
-    
-    
-    
-    function createTableForFreestyle(jsonArray) 
-    {
-       $('#freestyleTable').DataTable().destroy();
-	   $('#freestyleTable').empty();
-      
-      console.log("Removed Tables");
-      // Dynamically generate columns from JSON keys
-      const columns = Object.keys(jsonArray[0]).map(key => ({
-        title: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize the header
-        data: key // Map data from JSON key
-      }));
-	 console.log("Generated Headers");
-      // Initialize DataTable
-      $('#freestyleTable').DataTable({
-        data: jsonArray, // Pass JSON data
-        columns: columns // Use dynamically generated columns
-      });
-     console.log("Generated Data");
-    }
-    
-    function createReportsTableFromJSON(jsonArray) {
-    console.log("Creating the reports function!!");
-    console.log("This is the data to work with");
-    console.log(jsonArray);
+function createTableFromJSON(jsonArray) {
+    $('#resultsTable').DataTable().destroy();
+    $('#resultsTable').empty();
+    var columns = Object.keys(jsonArray[0]).map(function(key) { return { title: key.charAt(0).toUpperCase() + key.slice(1), data: key }; });
+    $('#resultsTable').DataTable({ data: jsonArray, columns: columns });
+}
 
-    // Flatten data and extract all keys for dynamic columns
-    const rows = [];
-    const columnsSet = new Set();
-    let rowNumber = 1; // Initialize the row number
-    
-    jsonArray.forEach((iteration, iterationIndex) => {
-        iteration.forEach((entry, entryIndex) => {
-            const { Result, SQL, loopIndex } = entry;
+function createTableForFreestyle(jsonArray) {
+    $('#freestyleTable').DataTable().destroy();
+    $('#freestyleTable').empty();
+    var columns = Object.keys(jsonArray[0]).map(function(key) { return { title: key.charAt(0).toUpperCase() + key.slice(1), data: key }; });
+    $('#freestyleTable').DataTable({ data: jsonArray, columns: columns });
+}
 
+function createReportsTableFromJSON(jsonArray) {
+    var rows = []; var columnsSet = new Set(); var rowNumber = 1;
+    jsonArray.forEach(function(iteration, iterationIndex) {
+        iteration.forEach(function(entry) {
+            var Result = entry.Result; var SQL = entry.SQL;
             if (Array.isArray(Result)) {
-             let errorValue = null;
-                const containsError = Result.some((item) => {
-                    return Object.values(item).some((value) => {
-                    	     if ((typeof value === "string" && value.toLowerCase().includes("error")) || (typeof value === "string" && value.toLowerCase().includes("fatal")) || (typeof value === "string" && value.toLowerCase().includes("denied")) || (typeof value === "string" && value.toLowerCase().includes("exception")) || (typeof value === "string" && value.toLowerCase().includes("failed"))) {
-                            errorValue = value;  // Capture the error value
-                            return true;  // Stop once error is found
+                var errorValue = null;
+                var containsError = Result.some(function(item) {
+                    return Object.values(item).some(function(value) {
+                        if (typeof value === "string" && (value.toLowerCase().includes("error") || value.toLowerCase().includes("fatal") || value.toLowerCase().includes("denied") || value.toLowerCase().includes("exception") || value.toLowerCase().includes("failed"))) {
+                            errorValue = value; return true;
                         }
                         return false;
                     });
                 });
-				
-				// Calculate the record count for the current SQL entry
-                const recordCount = Result.length;
-                
-                // Dynamically gather columns based on the structure
-                const row = {
-                	RowNumber: rowNumber++, // Increment the row number
-                    SQL: SQL || "SQL not provided", // Default if SQL is missing
-                    Iteration: iterationIndex,
-                    //LoopIndex: loopIndex,
-                   // EntryIndex: entryIndex,
-                    RecordCount: recordCount, // Include the count of returned records
-                    Status: containsError ? "Error found" : "Success",
-                    Error: errorValue || "No error",  // Add the error value or a default message
-                };
-
-                Object.keys(row).forEach((key) => columnsSet.add(key)); // Collect column names dynamically
+                var row = { RowNumber: rowNumber++, SQL: SQL || "SQL not provided", Iteration: iterationIndex, RecordCount: Result.length, Status: containsError ? "Error found" : "Success", Error: errorValue || "No error" };
+                Object.keys(row).forEach(function(key) { columnsSet.add(key); });
                 rows.push(row);
             }
         });
     });
-
-    // Convert the column set to an array
-    const columnsArray = Array.from(columnsSet).map((col) => {
+    var columnsArray = Array.from(columnsSet).map(function(col) {
         if (col === "Status") {
-            return {
-                title: col,
-                data: col,
-                render: (data) => {
-                    if (data === "Error found") {
-                        return '<img id="sqlError" src="/w3images/warning.png" alt="Error" style="width:20px;height:20px;">';
-                    } else if (data === "Success") {
-                        return '<img id="sqlSuccess" src="/w3images/success.png" alt="Success" style="width:20px;height:20px;">';
-                    }
-                    return data; // Fallback in case of unexpected values
-                },
-            };
+            return { title: col, data: col, render: function(data) {
+                if (data === "Error found") return '<img src="/w3images/warning.png" alt="Error" style="width:20px;height:20px;">';
+                if (data === "Success") return '<img src="/w3images/success.png" alt="Success" style="width:20px;height:20px;">';
+                return data;
+            }};
         }
-
-        return {
-            title: col,
-            data: col,
-        };
+        return { title: col, data: col };
     });
-	
-	 // Destroy the previous DataTable instance if it exists
-    if ($.fn.dataTable.isDataTable('#reportsTable')) {
-        $('#reportsTable').DataTable().destroy();
-    }
-    
-    // Initialize DataTable with dynamic columns and rows
-    $('#reportsTable').DataTable({
-        data: rows,
-        columns: columnsArray,
-    });
-
-    // Open the modal after the table is created
+    if ($.fn.dataTable.isDataTable('#reportsTable')) { $('#reportsTable').DataTable().destroy(); }
+    $('#reportsTable').DataTable({ data: rows, columns: columnsArray });
     openModal();
 }
 
-// Function to open the modal
-function openModal() {
-    document.getElementById('reportsModal').style.display = 'block';
-}
-
-// Function to close the modal
-function closeModal() {
-    document.getElementById('reportsModal').style.display = 'none';
-}
-
-
-function openFreestyleModal() {
-	console.log("Opening freestyle modal");
-    document.getElementById('freestyleModal').style.display = 'block';
-}
-
-function closeFreestyleModal() {
-    document.getElementById('freestyleModal').style.display = 'none';
-}
+function openModal() { document.getElementById('reportsModal').style.display = 'block'; }
+function closeModal() { document.getElementById('reportsModal').style.display = 'none'; }
+function openFreestyleModal() { document.getElementById('freestyleModal').style.display = 'block'; }
+function closeFreestyleModal() { document.getElementById('freestyleModal').style.display = 'none'; }
 </script>
-
-
 
 <script>
 document.getElementsByClassName("tablink")[0].click();
-
 function openCity(evt, cityName) {
-  var i, x, tablinks;
-  x = document.getElementsByClassName("city");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < x.length; i++) {
-    tablinks[i].classList.remove("w3-light-grey");
-  }
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.classList.add("w3-light-grey");
+    var i, x, tablinks;
+    x = document.getElementsByClassName("city");
+    for (i = 0; i < x.length; i++) { x[i].style.display = "none"; }
+    tablinks = document.getElementsByClassName("tablink");
+    for (i = 0; i < x.length; i++) { tablinks[i].classList.remove("w3-light-grey"); }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.classList.add("w3-light-grey");
 }
 </script>
 
 <script>
 
-
-
-	
-  $(document).ready(function() 
-  {
-  	getSqlStatements();
-  	const table = $('#example').DataTable();
-  	table.on('click', 'tbody tr', function() 
-  	{
-  		console.log('API rows values : ', table.row(this).data()[0]);
-  		
-  		getDatabaseQueryByQueryId(table.row(this).data()[0]);
-  		
-	})
-  });
-  
-  function getSqlStatements()
-  {
-  	const table = $('#example').DataTable();
-  
-  	const jwtToken = '${tokenObject.jwt}';
-   
-  	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-        });
-  
-  
-	$.ajax({
-          url: '/api/getDatabaseQuery', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	table.clear();
-            
-	            response.forEach((item) => 
-	            {
-	                
-	                
-	                table.row.add([item.id, item.query_usecase, item.query_type, item.query_db_type, item.query_loop]);
-	            });
-            
-           		table.draw();
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-  }
-</script>
-
-
-<script>
-function addDatabaseQuery()
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const queryDb = $('#addSqlStatementDB').val();
-	const queryDbType = $('#addSqlStatementType').val();
-	const queryString = $('#sqlStatementToAdd').val();
-	const queryUsecase = $('#sqlStatementQueryUsecase').val();
-	const queryLoop = $('#sqlStatementQueryLoop').val();
-	const queryDescription = $('#sqlStatementQueryDescription').val();
-	const queryVideoLink = $('#sqlStatementVideoLink').val();
-	
-    console.log("query_loop value : " + queryLoop);
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          query_type: queryDb,
-          query_db_type: queryDbType,
-          query_string: queryString,
-          db_connection_id: "35",
-          query_usecase:queryUsecase,
-          query_loop: queryLoop,
-          query_description: queryDescription,
-          video_link: queryVideoLink
-        });
-  	
-  	$.ajax({
-          url: '/api/addDatabaseQuery', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	document.getElementById('addSQLStatementResponse').innerHTML = response[0].response;
-             	document.getElementById('addSQLStatementModal').style.display='block';
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-
-}
-/************************************************/
-function deleteDatabaseQueryByQueryId()
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const QueryId = $('#sqlStatementToEditId').val();
-	const queryDbType = $('#addSqlStatementType').val();
-	const queryString = $('#sqlStatementToAdd').val();
-
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          query_id: QueryId
-        });
-  	
-  	$.ajax({
-          url: '/api/deleteDatabaseQueryByQueryId', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	getSqlStatements();
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-
-}
-/************************************************/
-function updateDatabaseQueryByQueryId()
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const QueryId = $('#sqlStatementToEditId').val();
-	const dbConnectionId = "35";
-	const queryDbType = $('#sqlStatementToEditDB').val();
-	const queryString = $('#sqlStatementToEdit').val();
-	const queryType = $('#sqlStatementToEditType').val();
-	const queryUsecase = $('#sqlStatementToEditQueryUsecase').val();
-	const queryLoop = $('#sqlStatementToEditQueryLoop').val();
-	const queryDescription = $('#sqlStatementToEditDescription').val();
-	const queryVideoLink = $('#sqlStatementToEditVideoLink').val();
-	
-	
-	console.log("query_usecase: " + queryUsecase);
-	
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          query_id: QueryId,
-          query_db_type: queryDbType,
-          db_connection_id: dbConnectionId,
-          query_string: queryString,
-          query_type: queryType,
-          query_usecase: queryUsecase,
-          query_loop:queryLoop,
-          query_description: queryDescription,
-          video_link: queryVideoLink
-        });
-  	
-  	$.ajax({
-          url: '/api/updateDatabaseQueryByQueryId', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	getSqlStatements();
-             	//document.getElementById('addSQLStatementResponse').innerHTML = response[0].response;
-             	//document.getElementById('addSQLStatementModal').style.display='block';
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
-
-}
-
-
-/************************************************/
-function getDatabaseQueryByQueryId(varId)
-{
-	const jwtToken = '${tokenObject.jwt}';
-	const QueryId = varId;
-	
-
-	const jsonData = JSON.stringify({
-          jwt: jwtToken,
-          query_id: QueryId,
-         });
-  	
-  	$.ajax({
-          url: '/api/getDatabaseQueryByQueryId', 
-          type: 'POST',
-          data: jsonData,
-          contentType: 'application/json; charset=utf-8', // Set content type to JSON
-          success: function(response) 
-          {
-             	console.log(response);
-             	document.getElementById('sqlStatementToEdit').value = response[0].query_string;
-             	document.getElementById('sqlStatementToEditDB').value = response[0].query_type;
-             	document.getElementById('sqlStatementToEditDB').option = response[0].query_type;
-             	
-             	
-             	document.getElementById('sqlStatementToEditId').value = response[0].id;
-             	
-             	document.getElementById('sqlStatementToEditType').value = response[0].query_db_type;
-             	
-             	document.getElementById('sqlStatementToEditQueryUsecase').value = response[0].query_usecase;
-             	document.getElementById('sqlStatementToEditQueryLoop').value = response[0].query_loop;
-             	document.getElementById('sqlStatementToEditDescription').value = response[0].query_description;
-             	document.getElementById('sqlStatementToEditVideoLink').value = response[0].video_link;
-             	
-  				document.getElementById('id_edit_modal').style.display='block';
-          },
-          error: function(xhr, status, error) 
-          {
-            $('#response').text('Error: ' + error);
-          }
-        });
+function getSqlStatements() {
+    var table = $('#example').DataTable();
+    var jwtToken = '${tokenObject.jwt}';
+    var jsonData = JSON.stringify({ jwt: jwtToken });
+    $.ajax({
+        url: '/api/getDatabaseQuery', type: 'POST', data: jsonData,
+        contentType: 'application/json; charset=utf-8',
+        success: function(response) {
+            table.clear();
+            response.forEach(function(item) { table.row.add([item.id, item.query_usecase, item.query_type, item.query_db_type, item.query_loop]); });
+            table.draw();
+        },
+        error: function(xhr, status, error) { $('#response').text('Error: ' + error); }
+    });
 }
 </script>
 
+<script>
+function addDatabaseQuery() {
+    var jwtToken = '${tokenObject.jwt}';
+    var jsonData = JSON.stringify({
+        jwt: jwtToken, query_type: $('#addSqlStatementDB').val(), query_db_type: $('#addSqlStatementType').val(),
+        query_string: $('#sqlStatementToAdd').val(), db_connection_id: "35",
+        query_usecase: $('#sqlStatementQueryUsecase').val(), query_loop: $('#sqlStatementQueryLoop').val(),
+        query_description: $('#sqlStatementQueryDescription').val(), video_link: $('#sqlStatementVideoLink').val()
+    });
+    $.ajax({
+        url: '/api/addDatabaseQuery', type: 'POST', data: jsonData, contentType: 'application/json; charset=utf-8',
+        success: function(response) {
+            document.getElementById('addSQLStatementResponse').innerHTML = response[0].response;
+            document.getElementById('addSQLStatementModal').style.display = 'block';
+        },
+        error: function(xhr, status, error) { $('#response').text('Error: ' + error); }
+    });
+}
+
+function deleteDatabaseQueryByQueryId() {
+    var jwtToken = '${tokenObject.jwt}';
+    var jsonData = JSON.stringify({ jwt: jwtToken, query_id: $('#sqlStatementToEditId').val() });
+    $.ajax({
+        url: '/api/deleteDatabaseQueryByQueryId', type: 'POST', data: jsonData, contentType: 'application/json; charset=utf-8',
+        success: function(response) { getSqlStatements(); },
+        error: function(xhr, status, error) { $('#response').text('Error: ' + error); }
+    });
+}
+
+function updateDatabaseQueryByQueryId() {
+    var jwtToken = '${tokenObject.jwt}';
+    var jsonData = JSON.stringify({
+        jwt: jwtToken, query_id: $('#sqlStatementToEditId').val(), query_db_type: $('#sqlStatementToEditDB').val(),
+        db_connection_id: "35", query_string: $('#sqlStatementToEdit').val(), query_type: $('#sqlStatementToEditType').val(),
+        query_usecase: $('#sqlStatementToEditQueryUsecase').val(), query_loop: $('#sqlStatementToEditQueryLoop').val(),
+        query_description: $('#sqlStatementToEditDescription').val(), video_link: $('#sqlStatementToEditVideoLink').val()
+    });
+    $.ajax({
+        url: '/api/updateDatabaseQueryByQueryId', type: 'POST', data: jsonData, contentType: 'application/json; charset=utf-8',
+        success: function(response) { getSqlStatements(); },
+        error: function(xhr, status, error) { $('#response').text('Error: ' + error); }
+    });
+}
+
+function getDatabaseQueryByQueryId(varId) {
+    var jwtToken = '${tokenObject.jwt}';
+    var jsonData = JSON.stringify({ jwt: jwtToken, query_id: varId });
+    $.ajax({
+        url: '/api/getDatabaseQueryByQueryId', type: 'POST', data: jsonData, contentType: 'application/json; charset=utf-8',
+        success: function(response) {
+            document.getElementById('sqlStatementToEdit').value = response[0].query_string;
+            document.getElementById('sqlStatementToEditDB').value = response[0].query_type;
+            document.getElementById('sqlStatementToEditId').value = response[0].id;
+            document.getElementById('sqlStatementToEditType').value = response[0].query_db_type;
+            document.getElementById('sqlStatementToEditQueryUsecase').value = response[0].query_usecase;
+            document.getElementById('sqlStatementToEditQueryLoop').value = response[0].query_loop;
+            document.getElementById('sqlStatementToEditDescription').value = response[0].query_description;
+            document.getElementById('sqlStatementToEditVideoLink').value = response[0].video_link;
+            document.getElementById('id_edit_modal').style.display = 'block';
+        },
+        error: function(xhr, status, error) { $('#response').text('Error: ' + error); }
+    });
+}
+</script>
 
 <script>
- $(document).ready(function() 
- {
- 	 $.ajax({
-	       url: '/loggedIn/includes/navbar.ftl',  // The URL where the FreeMarker template is rendered
-	       method: 'GET',
-	       success: function(response) 
-	       {
-	          console.log("Updating Navbar");
-	          $('#navbar').html(response);
-	       },
-	       error: function(err) 
-	       {
-	           console.error('Error loading template:', err);
-	       }
-	    });
-	 $.ajax({
-	       url: '/loggedIn/includes/leftColumn2.ftl',  // The URL where the FreeMarker template is rendered
-	       method: 'GET',
-	       success: function(response) 
-	       {
-	          console.log("Updating leftColumn");
-	          $('#leftColumn').html(response);
-	          getQueryTypes();
-	       },
-	       error: function(err) 
-	       {
-	           console.error('Error loading template:', err);
-	       }
-	    });
-	 
-	 $.ajax({
-	       url: '/loggedIn/includes/footer.ftl',  // The URL where the FreeMarker template is rendered
-	       method: 'GET',
-	       success: function(response) 
-	       {
-	          console.log("Updating Footer");
-	          $('#footer').html(response);
-	       },
-	       error: function(err) 
-	       {
-	           console.error('Error loading template:', err);
-	       }
-	    });
+$(document).ready(function() {
+    // Load includes
+    $.ajax({ url: '/loggedIn/includes/navbar.ftl', method: 'GET',
+        success: function(response) { $('#navbar').html(response); },
+        error: function(err) { console.error('Error loading navbar:', err); }
+    });
+    $.ajax({ url: '/loggedIn/includes/leftColumn2.ftl', method: 'GET',
+        success: function(response) { $('#leftColumn').html(response); getQueryTypes(); },
+        error: function(err) { console.error('Error loading left column:', err); }
+    });
+    $.ajax({ url: '/loggedIn/includes/footer.ftl', method: 'GET',
+        success: function(response) { $('#footer').html(response); },
+        error: function(err) { console.error('Error loading footer:', err); }
+    });
+
+    // Initialize DataTable and load SQL statements
+    getSqlStatements();
+    var table = $('#example').DataTable();
+    table.on('click', 'tbody tr', function() {
+        getDatabaseQueryByQueryId(table.row(this).data()[0]);
+    });
 });
 </script>
 
-
 <script>
+function openNewWindow() { window.open('', '_blank'); }
 
-	function openNewWindow() 
-	{
-		window.open('', '_blank');
-	}
-    
-    function getQueryTypes()
-	{
-		const var_jwt = '${tokenObject.jwt}';
-		const jsonData = JSON.stringify({jwt:var_jwt });
-	
-		console.log(jsonData);
-		  
-		  
-		$.ajax({
-			url: '/api/getQueryTypes', 
-			type: 'POST',
-			data: jsonData,
-			contentType: 'application/json; charset=utf-8', // Set content type to JSON
-			success: function(response) 
-			{
-				const queryTypes = document.getElementById('queryTypes');
-			    queryTypes.innerHTML = "";
-			    console.log(response);
-			             	
-			    if (Array.isArray(response)) 
-			    {
-	      			$.each(response, function(index, item) 
-					{
-						console.log(index, item);  
-						const span = document.createElement('span');
-						span.textContent = item.query_type;
-						span.classList.add('w3-tag');
-						span.classList.add('w3-small');
-						span.classList.add('w3-theme-d'+index);
-								
-						span.onclick = function() 
-						{
-	                		console.log("Redirecting for: "+ item.query_type);
-	                		window.location.href='databases.ftl?lookup='+ item.query_type;
-	            		};
-						queryTypes.appendChild(span);
-					});
-				}             	
-			 },
-			 error: function(xhr, status, error) 
-			 {
-			 	$('#response').text('Error: ' + error);
-			 }
-		});
-	}
-	let originalOptions = [];
-	$(document).ready(function() 
-  	{
-  		const dropdown = document.getElementById('validatedConnections');
-  		originalOptions = Array.from(dropdown.options).map(option => option.text);
-  	});
- 
+function getQueryTypes() {
+    var var_jwt = '${tokenObject.jwt}';
+    var jsonData = JSON.stringify({ jwt: var_jwt });
+    $.ajax({
+        url: '/api/getQueryTypes', type: 'POST', data: jsonData, contentType: 'application/json; charset=utf-8',
+        success: function(response) {
+            var queryTypes = document.getElementById('queryTypes');
+            queryTypes.innerHTML = "";
+            if (Array.isArray(response)) {
+                $.each(response, function(index, item) {
+                    var span = document.createElement('span');
+                    span.textContent = item.query_type;
+                    span.classList.add('w3-tag', 'w3-small', 'w3-theme-d' + index);
+                    span.onclick = function() { window.location.href = 'databases.ftl?lookup=' + item.query_type; };
+                    queryTypes.appendChild(span);
+                });
+            }
+        },
+        error: function(xhr, status, error) { $('#response').text('Error: ' + error); }
+    });
+}
 
-function filterDropdown() 
-{
-    const filterText  = document.getElementById('dropdownInput').value.toLowerCase();
-    const dropdown = document.getElementById('validatedConnections');
-	
- 	console.log("Ready to filter: " + originalOptions);
-   // Clear existing options
+var originalOptions = [];
+$(document).ready(function() {
+    var dropdown = document.getElementById('validatedConnections');
+    originalOptions = Array.from(dropdown.options).map(function(option) { return option.text; });
+});
+
+function filterDropdown() {
+    var filterText = document.getElementById('dropdownInput').value.toLowerCase();
+    var dropdown = document.getElementById('validatedConnections');
     dropdown.innerHTML = '';
-
-    // Filter and re-add
-    const matches = originalOptions.filter(item =>
-      item.toLowerCase().includes(filterText)
-    );
-
-    if (matches.length > 0) 
-    {
-      matches.forEach(text => 
-      {
-        const option = document.createElement('option');
-        option.text = text;
-        dropdown.appendChild(option);
-        console.log("found match:" + text);
-      });
-    } else 
-    {
-      const noMatch = document.createElement('option');
-      noMatch.text = 'No matches';
-      noMatch.disabled = true;
-      dropdown.appendChild(noMatch);
-      console.log("No match");
+    var matches = originalOptions.filter(function(item) { return item.toLowerCase().includes(filterText); });
+    if (matches.length > 0) {
+        matches.forEach(function(text) { var option = document.createElement('option'); option.text = text; dropdown.appendChild(option); });
+    } else {
+        var noMatch = document.createElement('option'); noMatch.text = 'No matches'; noMatch.disabled = true; dropdown.appendChild(noMatch);
     }
-  }
-  
+}
 </script>
 </body>
-</html> 
+</html>

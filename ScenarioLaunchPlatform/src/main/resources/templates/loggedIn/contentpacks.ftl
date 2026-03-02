@@ -11,114 +11,13 @@
 <link rel="stylesheet" href="css/font-awesome.min.css">
 <link rel="stylesheet" href="css/datatables.min.css">
 <link rel='stylesheet' href='css/fonts.css'>
-
+<link rel="stylesheet" href="css/contentpacks-modern.css">
 
 <script src="js/jquery.min.js"></script>
 <script src="js/datatables.js"></script>
 
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
-</style>
-<style>
-.city {
-	display:none
-	height: 800px;
-	background-color:white;
-}
-</style>
-
-<style>
-  .custom-modal {
-    width: 70%;
-    height: 800px;
-  }
-
-
-   .full-height-textarea {
-      width: 100%;         /* Ensure textarea takes full width */
-      height: 500px;        /* Make textarea fill the parent's height */
-      resize: none;        /* Optional: Prevent resizing the textarea */
-    }
-
-
-</style>
-<style>
-  /* Add custom tooltip styles */
-  .pack-tooltip {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-  }
-  
-  .pack-tooltip .tooltip-content {
-    visibility: hidden;
-    background-color: white;
-    color: #333;
-    text-align: left;
-    border-radius: 4px;
-    padding: 10px;
-    position: absolute;
-    z-index: 1000;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 300px;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-  }
-  
-  .pack-tooltip:hover .tooltip-content {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-  }
-  
-  .tooltip-header {
-    font-weight: bold;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-    margin-bottom: 8px;
-  }
-  
-  .tooltip-row {
-    display: flex;
-    margin-bottom: 5px;
-  }
-  
-  .tooltip-label {
-    font-weight: bold;
-    width: 120px;
-  }
-  
-  .tooltip-value {
-    flex: 1;
-  }
-</style>
-<style>
-.packs-toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #323232;
-  color: #fff;
-  padding: 14px 24px;
-  border-radius: 6px;
-  font-size: 16px;
-  opacity: 0;
-  z-index: 9999;
-  transition: opacity 0.5s ease-in-out;
-  pointer-events: none;
-}
-
-.packs-toast.show {
-  opacity: 1;
-}
-
-
 </style>
 </head>
 <body class="w3-theme-l5">
@@ -142,29 +41,31 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Upload your content pack</h6>
+              <i class="fa fa-plus" onclick="toggleUploadDiv()" style="color: gray; transition: color 0.3s ease; cursor: pointer;"
+                 onmouseover="this.style.color='#4d636f'" onmouseout="this.style.color='gray'"></i>
+              <h6 class="w3-opacity" style="display: inline-block; margin-left: 10px;">Upload your content pack</h6>
               <!-- -->
-  				<form id="packForm" enctype="multipart/form-data">
-     <div id="edit" class="w3-container city">
-	<div class="row">
-					<div class="col-25">
-				         Pack File 
-				      </div>
-					<div class="col-75">
-						<input type="file" id="pack_file_content" class="w3-left w3-white w3-border" name="pack_file_content" accept=".zip" required>
-						</div>
-					</div>
-	</div>
-	    <div class="row">
-		<div class="col-25">
-	 
-				      </div>
-					<div class="col-75">
-					<button class="w3-button w3-right w3-blue w3-border" type="submit">Submit</button>
+      <form id="packForm" enctype="multipart/form-data">
+     <div id="uploadSection" class="w3-container city">
+ <div class="row">
+     <div class="col-25">
+             Pack File
+          </div>
+     <div class="col-75">
+      <input type="file" id="pack_file_content" class="w3-left w3-white w3-border" name="pack_file_content" accept=".zip" required>
+      </div>
+     </div>
+ </div>
+     <div class="row">
+  <div class="col-25">
+  
+          </div>
+     <div class="col-75">
+     <button class="w3-button w3-right w3-blue w3-border" type="submit">Submit</button>
 
-					</div>
-		</div>
-		</div>
+     </div>
+  </div>
+  </div>
    
     
 </form>
@@ -270,20 +171,31 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 			   
 			   <button id="UpdatePackButton" class="w3-button w3-right w3-white w3-border" onclick="installPack()">Install</button>
 			   <button id="UpdatePackButton" class="w3-button w3-right w3-white w3-border" onclick="uninstallPack()">Uninstall</button>
+			   <button class="w3-button w3-right w3-white w3-border" onclick="window.location.href='storyRunner.ftl'" title="View and run stories from installed packs"><i class="fa fa-list"></i> View Stories</button>
 			  </div>
 			</div>
 </div>
 			<!-- EOF Modal --> 
 <script>
+// Toggle upload section
+function toggleUploadDiv() {
+  const div = document.getElementById('uploadSection');
+  if (div.style.display === 'none' || div.style.display === '') {
+    div.style.display = 'block';
+  } else {
+    div.style.display = 'none';
+  }
+}
+
 // Accordion
 function myFunction(id) {
   var x = document.getElementById(id);
   if (x.className.indexOf("w3-show") == -1) {
     x.className += " w3-show";
     x.previousElementSibling.className += " w3-theme-d1";
-  } else { 
+  } else {
     x.className = x.className.replace("w3-show", "");
-    x.previousElementSibling.className = 
+    x.previousElementSibling.className =
     x.previousElementSibling.className.replace(" w3-theme-d1", "");
   }
 }
@@ -293,7 +205,7 @@ function openNav() {
   var x = document.getElementById("navDemo");
   if (x.className.indexOf("w3-show") == -1) {
     x.className += " w3-show";
-  } else { 
+  } else {
     x.className = x.className.replace(" w3-show", "");
   }
 }

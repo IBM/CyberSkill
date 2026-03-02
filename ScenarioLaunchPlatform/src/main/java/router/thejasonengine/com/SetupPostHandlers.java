@@ -141,6 +141,8 @@ public class SetupPostHandlers
 	public Handler<RoutingContext> getAllStories;
 	public Handler<RoutingContext> runStoryById;
 	public Handler<RoutingContext> deleteStoryById;
+	public Handler<RoutingContext> getStoryById;
+	public Handler<RoutingContext> updateStoryChapterDatasources;
 	public Handler<RoutingContext> getAvailablePlugins;
 	
 	public Handler<RoutingContext> getSwagger;
@@ -211,6 +213,8 @@ public class SetupPostHandlers
 		getAllStories = SetupPostHandlers.this::handleGetAllStories;
 		runStoryById = SetupPostHandlers.this::handleRunStoryById;
 		deleteStoryById = SetupPostHandlers.this::handleDeleteStoryById;
+		getStoryById = StoryHandler::handleGetStoryById;
+		updateStoryChapterDatasources = StoryHandler::handleUpdateStoryChapterDatasources;
 		
 		
 		getSwagger = SetupPostHandlers.this::handleGetSwagger;

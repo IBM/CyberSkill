@@ -42,6 +42,8 @@ public class StoryRoutes {
         router.post("/api/getAllStories").handler(BodyHandler.create()).handler(setupPostHandlers.getAllStories);
         router.post("/api/runStoryById").handler(BodyHandler.create()).handler(setupPostHandlers.runStoryById);
         router.post("/api/deleteStoryById").handler(BodyHandler.create()).handler(setupPostHandlers.deleteStoryById);
+        router.post("/api/getStoryById").handler(BodyHandler.create()).handler(setupPostHandlers.getStoryById);
+        router.post("/api/updateStoryChapterDatasources").handler(BodyHandler.create()).handler(setupPostHandlers.updateStoryChapterDatasources);
         
         // Schedule jobs
         router.post("/api/getScheduleJobs").handler(BodyHandler.create()).handler(setupPostHandlers.getScheduleJobs);

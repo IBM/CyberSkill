@@ -31,6 +31,8 @@
          </div>
          <button onclick="window.location.href='/loggedIn/attackLibrary.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-shield fa-fw w3-margin-right"></i> Attack Library</button>
          <button onclick="window.location.href='/loggedIn/outliers.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-clock-o fa-fw w3-margin-right"></i> Outliers</button>
+         <button onclick="window.location.href='/loggedIn/live-timeline.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-rss fa-fw w3-margin-right"></i> Live Timeline</button>
+         <button onclick="window.location.href='/loggedIn/analytics-dashboard.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-line-chart fa-fw w3-margin-right"></i> Analytics</button>
          <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-book fa-fw w3-margin-right"></i> Documentation</button>
           <div id="Demo3" class="w3-hide w3-container">
            <a href="/loggedIn/documents/SLPHandbook.pdf" target="_blank"><i class="fa fa-link" aria-hidden="true"></i>SLP handbook</a>

@@ -8,16 +8,11 @@
 <link rel="stylesheet" href="css/w3-theme-blue-grey.css">
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
 <link rel="stylesheet" href="css/font-awesome.min.css">
-<script src="js/jquery.min.js"></script>
 <link rel='stylesheet' href='css/fonts.css'>
+<link rel="stylesheet" href="css/contentpacks-modern.css">
+<script src="js/jquery.min.js"></script>
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
-
-.row {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Adds spacing between h3 and h4 */
-}
 </style>
 
 </head>
@@ -126,7 +121,10 @@ function buildStory(data)
 		     onmouseover="this.style.color='red'" onmouseout="this.style.color='gray'"></i><strong> Story:</strong> TITLE
 		     
 		     
-		  <span class="w3-right w3-opacity"><button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="runStoryById(STORY_ID);"><i class="fa fa-rocket"></i>  Run</button></span>
+		  <span class="w3-right w3-opacity">
+		    <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right-align" onclick="runStoryById(STORY_ID);"><i class="fa fa-rocket"></i>  Run</button>
+		    <button type="button" class="w3-button w3-blue-grey w3-margin-bottom w3-right-align" onclick="openStoryEditor(STORY_ID);" title="Configure datasource connections for this story"><i class="fa fa-plug"></i>  Configure</button>
+		  </span>
 		  <br>
 		  <hr class="w3-clear">
 		
@@ -254,6 +252,11 @@ function runStoryById(id)
 {
 	const storyID = id;
 	openMyStories(storyID);
+}
+
+function openStoryEditor(storyID)
+{
+	window.location.href = '/loggedIn/storyEditor.ftl?storyID=' + storyID;
 }
 
 function getConnections()

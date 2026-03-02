@@ -8,9 +8,10 @@
 <link rel="stylesheet" href="css/w3-theme-blue-grey.css">
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
 <link rel="stylesheet" href="css/font-awesome.min.css">
+<link rel="stylesheet" href="css/contentpacks-modern.css">
 <script src="js/jquery.min.js"></script>
 <style>
-html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
+html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 </style>
 </head>
 <body class="w3-theme-l5">
@@ -18,14 +19,12 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 <div id="navbar"></div>
 
 <!-- Page Container -->
-<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <!-- The Grid -->
   <div class="w3-row">
     <!-- Left Column -->
     <div id="leftColumn"></div>
-    
     <!-- End Left Column -->
-    
     
     <!-- Middle Column -->
     <div class="w3-col m9">
@@ -39,7 +38,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
               
               <div class="w3-row-padding" style="margin-top:20px">
                 <div class="w3-col m6 l4">
-                  <div class="w3-card w3-round w3-white w3-hover-shadow" style="cursor:pointer" onclick="window.location.href='/loggedIn/health-dashboard.ftl'">
+                  <div class="w3-card w3-round w3-white w3-hover-shadow" style="cursor:pointer; transition: all 0.3s ease;" onclick="window.location.href='/loggedIn/health-dashboard.ftl'" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
                     <div class="w3-container w3-padding" style="text-align:center">
                       <h3><i class="fa fa-heartbeat w3-text-red"></i></h3>
                       <h5><b>Health Dashboard</b></h5>
@@ -51,28 +50,27 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
                   </div>
                 </div>
                 
-                <!-- Placeholder for future dashboards -->
                 <div class="w3-col m6 l4">
-                  <div class="w3-card w3-round w3-white" style="opacity:0.5">
+                  <div class="w3-card w3-round w3-white w3-hover-shadow" style="cursor:pointer; transition: all 0.3s ease;" onclick="window.location.href='/loggedIn/database-dashboard.ftl'" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
                     <div class="w3-container w3-padding" style="text-align:center">
                       <h3><i class="fa fa-database w3-text-blue"></i></h3>
                       <h5><b>Database Dashboard</b></h5>
-                      <p class="w3-text-grey">Coming soon...</p>
-                      <button class="w3-button w3-grey w3-margin-top" disabled>
-                        <i class="fa fa-lock"></i> Coming Soon
+                      <p class="w3-text-grey">Monitor database connections, schemas, and performance metrics</p>
+                      <button class="w3-button w3-theme w3-margin-top">
+                        <i class="fa fa-arrow-right"></i> Open Dashboard
                       </button>
                     </div>
                   </div>
                 </div>
                 
                 <div class="w3-col m6 l4">
-                  <div class="w3-card w3-round w3-white" style="opacity:0.5">
+                  <div class="w3-card w3-round w3-white w3-hover-shadow" style="cursor:pointer; transition: all 0.3s ease;" onclick="window.location.href='/loggedIn/analytics-dashboard.ftl'" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
                     <div class="w3-container w3-padding" style="text-align:center">
                       <h3><i class="fa fa-line-chart w3-text-green"></i></h3>
                       <h5><b>Analytics Dashboard</b></h5>
-                      <p class="w3-text-grey">Coming soon...</p>
-                      <button class="w3-button w3-grey w3-margin-top" disabled>
-                        <i class="fa fa-lock"></i> Coming Soon
+                      <p class="w3-text-grey">Track stories, queries, users, and active executions in real-time</p>
+                      <button class="w3-button w3-theme w3-margin-top">
+                        <i class="fa fa-arrow-right"></i> Open Dashboard
                       </button>
                     </div>
                   </div>
@@ -84,13 +82,6 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       </div>
       
     <!-- End Middle Column -->
-    </div>
-    
-    <!-- Right Column -->
-    
-  
-      
-    <!-- End Right Column -->
     </div>
     
   <!-- End Grid -->

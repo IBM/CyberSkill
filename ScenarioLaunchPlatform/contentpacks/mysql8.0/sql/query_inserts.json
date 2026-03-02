@@ -59,7 +59,7 @@
             "id": 6,
             "query_type": "mysql",
             "query_db_type": "Policy Violation",
-            "query_string": "create table if not exists testTable (text varchar(100), id int);\nselect * from testTable where text='&lt;!--#exec%20cmd=&quot;/usr/bin/id;--&gt;';\n\\select * from testTable where text='& ping -n 30 127.0.0.1 &';\n\\select * from testTable where text='$;/usr/bin/id';\n\\select * from testTable where text='cat /etc/passwd';\n\\select * from testTable where text='<?php system(\"sleep 10\");?>';\n\\insert into testTable(text, id) values ('ifconfig', 333);\n\\insert into testTable(text, id) values ('ls -l /etc/', 444);\n\\select * from testTable where text='| netstat -an';\n\\select * from testTable where text='which python';\n\\select * from testTable where text='&& whoami';",
+            "query_string": "create table if not exists testTable (text varchar(100), id int);\nselect * from testTable where text='&lt;!--#exec%20cmd=&quot;/usr/bin/id;--&gt;';\nselect * from testTable where text='& ping -n 30 127.0.0.1 &';\nselect * from testTable where text='$;/usr/bin/id';\nselect * from testTable where text='cat /etc/passwd';\nselect * from testTable where text='<?php system(\"sleep 10\");?>';\ninsert into testTable(text, id) values ('ifconfig', 333);\ninsert into testTable(text, id) values ('ls -l /etc/', 444);\nselect * from testTable where text='| netstat -an';\nselect * from testTable where text='which python';\nselect * from testTable where text='&& whoami';",
             "db_connection_id": 35,
             "query_usecase": "OS Command Injection",
             "query_loop": 1,
