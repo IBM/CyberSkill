@@ -688,11 +688,13 @@ function loadRecentCompletions() {
             let html = '';
             // Show up to 10 most recent stories
             stories.slice(0, 10).forEach(function(story) {
-                const name   = story.name        || story.story_name  || 'Unnamed Story';
-                const author = story.author      || story.created_by  || '—';
-                const type   = story.story_type  || story.type        || 'Standard';
-                const id     = story.id          || story.story_id    || '';
-                const chapters = (story.story && Array.isArray(story.story)) ? story.story.length : (story.chapter_count || '—');
+                // Story metadata is nested in story.story object
+                const storyData = story.story || {};
+                const name   = storyData.name        || story.name        || story.story_name  || 'Unnamed Story';
+                const author = storyData.author      || story.author      || story.created_by  || '—';
+                const type   = storyData.story_type  || story.story_type  || story.type        || 'Standard';
+                const id     = story.id              || story.story_id    || '';
+                const chapters = (storyData.story && Array.isArray(storyData.story)) ? storyData.story.length : (story.chapter_count || '—');
                 
                 html += '<tr>' +
                     '<td style="font-weight:600; color:#1e293b;">' + name + '</td>' +

@@ -1,151 +1,453 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario Launch Platform - Login</title>
 <link rel="stylesheet" href="css/styles.css">
 <link rel='stylesheet' href='css/fonts.css'>
-<script src="js/jquery.min.js"></script>
-
 <link rel="stylesheet" href="css/font-awesome.min.css">
+<script src="js/jquery.min.js"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #4d636f 0%, #3a4f5a 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1100px;
+    width: 100%;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        grid-template-columns: 1fr;
+    }
+    .info-panel {
+        display: none;
+    }
+}
+
+.login-panel {
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.login-header h1 {
+    font-size: 2rem;
+    color: #2d3748;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.login-header p {
+    color: #718096;
+    font-size: 0.95rem;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0aec0;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 16px 14px 45px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4d636f;
+    box-shadow: 0 0 0 3px rgba(77, 99, 111, 0.1);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #4d636f 0%, #3a4f5a 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 10px;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(77, 99, 111, 0.4);
+}
+
+.login-btn:active {
+    transform: translateY(0);
+}
+
+.version-info {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #a0aec0;
+}
+
+.info-panel {
+    background: linear-gradient(135deg, #4d636f 0%, #3a4f5a 100%);
+    padding: 60px 50px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.info-header {
+    margin-bottom: 40px;
+}
+
+.info-header h2 {
+    font-size: 2.2rem;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+.info-header p {
+    font-size: 1.05rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.features {
+    margin-bottom: 40px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.feature-icon i {
+    font-size: 1.2rem;
+}
+
+.feature-content h3 {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.feature-content p {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    line-height: 1.5;
+}
+
+.developers-section {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+}
+
+.developers-section h3 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.developer-card {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.developer-card:last-child {
+    margin-bottom: 0;
+}
+
+.developer-avatar {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.developer-info h4 {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.developer-info p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+.error-message {
+    background: #fed7d7;
+    color: #c53030;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+</style>
 </head>
 <body>
 
-<div id="LoginPanel">
-	<h2>Scenario Launch Platform</h2>
+<div class="login-container">
+    <!-- Login Panel -->
+    <div class="login-panel">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to access the Scenario Launch Platform</p>
+        </div>
 
-  <div class="container" style="background-color:#f1f1f1">
+        <div class="error-message" id="errorMessage">
+            Invalid credentials. Please try again.
+        </div>
 
-  </div>
+        <form onsubmit="event.preventDefault(); login();">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <div class="input-wrapper">
+                    <i class="fa fa-user"></i>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="username">
+                </div>
+            </div>
 
-  <div class="container">
-    <input type="text" placeholder="Enter Username" name="username" id="username" required>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <i class="fa fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+            </div>
 
-    <input type="password" placeholder="Enter Password" name="password" id="password" required>
-        
-    <button type="submit" onclick="login(document.getElementById('username').value,document.getElementById('password').value)">Login</button>
-  </div>
+            <button type="submit" class="login-btn">
+                <i class="fa fa-sign-in"></i> Sign In
+            </button>
+        </form>
 
-  <div class="container" style="background-color:#f1f1f1; font-size: x-small">
-	<div class="buildVersion" id="buildVersion">Build:0000X?</div> <div class="patchVersion" id="patchVersion">Patch:0000X?</div> 
-	
-	
-	
-	
-  </div>
+        <div class="version-info">
+            <span id="buildVersion">Build: Loading...</span>
+            <span id="patchVersion">Patch: Loading...</span>
+        </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="info-panel">
+        <div>
+            <div class="info-header">
+                <h2>Scenario Launch Platform</h2>
+                <p>A powerful platform for managing and executing database scenarios, stories, and automated testing workflows.</p>
+            </div>
+
+            <div class="features">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fa fa-database"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Multi-Database Support</h3>
+                        <p>Connect to MySQL, PostgreSQL, Oracle, SQL Server, and DB2</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fa fa-book"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Story Execution</h3>
+                        <p>Run complex multi-step scenarios with dynamic datasource mapping</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fa fa-clock-o"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Scheduled Tasks</h3>
+                        <p>Automate scenario execution with flexible scheduling options</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="developers-section">
+            <h3><i class="fa fa-code"></i> Developed By</h3>
+            <div class="developer-card">
+                <div class="developer-avatar">JF</div>
+                <div class="developer-info">
+                    <h4>Jason Flood</h4>
+                    <p>Lead Developer & Architect</p>
+                </div>
+            </div>
+            <div class="developer-card">
+                <div class="developer-avatar">JC</div>
+                <div class="developer-info">
+                    <h4>John Clarke</h4>
+                    <p>Core Developer & Engineer</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-  
-
 
 <script>
 window.onload = ReadBuildDetails;
 
-/*************************************************************/
-function Register(var_username, var_password, var_password_match)
-{
-	$.ajax({
-        type: "POST",
-        url: "/api/registerUser",
-        contentType: 'application/json;charset=UTF-8',
-        data: JSON.stringify({'username': var_username, 'password': var_password, 'passwordMatchCheck': var_password_match}),
-        success: function (data) 
-        {
-            console.log(data);
-            if(data.result == "ok")
-            {
-            	 $('#regResult').html("Registration Successful"); 	
-            }
-            else
-            {
-            	 $('#regResult').html("Registration Incomplete"); 	
-            }
-           
-        }
-        
- 	});
-}	
-/*************************************************************/
-function login(var_username, var_password)
-{
-	$.ajax({
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('errorMessage');
+    
+    errorMsg.classList.remove('show');
+    
+    $.ajax({
         type: "POST",
         url: "/web/login",
         contentType: 'application/json;charset=UTF-8',
-        data: JSON.stringify({'username': var_username, 'password': var_password}),
-        success: function (data) 
-        {
+        data: JSON.stringify({'username': username, 'password': password}),
+        success: function (data) {
             console.log(data);
-            if (data.redirect) 
-            {
-            	console.log("here: " + data.redirect);
-            	window.location.href = "loggedIn/dashboard.ftl";
-            }
-            else 
-            {
-            	console.log("there: " + data.redirect);
-            	window.location.href = "loggedIn/dashboard.ftl";
-            }
+            window.location.href = "loggedIn/dashboard.ftl";
+        },
+        error: function(xhr, status, error) {
+            console.error('Login failed:', error);
+            errorMsg.classList.add('show');
         }
-        
- 	});
-}	
-/*************************************************************/
-function ReadBuildDetails()
-{
-	// Fetch the JSON file from a relative path
-    fetch('build.json') // The relative path to the JSON file
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json(); // Parse the JSON data
-      })
-      .then(data => {
-        // Output the parsed JSON data
-        //const jsonData = JSON.stringify(data, null, 2);
-        //const jsonPayload = JSON.parse(data);
-        console.log("Build.json: " + data.BUILD_VERSION);
-        document.getElementById('buildVersion').innerHTML = "Build V1." + data.BUILD_VERSION;
-      })
-      .catch(error => {
-        console.error('Error loading JSON file:', error);
-      });
+    });
+}
+
+function ReadBuildDetails() {
+    // Fetch build version from build.json
+    fetch('build.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Build.json: " + data.BUILD_VERSION);
+            document.getElementById('buildVersion').innerHTML = "Build V1." + data.BUILD_VERSION;
+        })
+        .catch(error => {
+            console.error('Error loading JSON file:', error);
+            document.getElementById('buildVersion').innerHTML = "Build: Unknown";
+        });
+    
+    // Fetch patch version from API
     $.ajax({
         type: "GET",
         url: "/api/getDatabaseVersion",
         contentType: 'application/json;charset=UTF-8',
         data: JSON.stringify({'JWT':''}),
-        success: function (data) 
-        {
+        success: function (data) {
             console.log(data);
             document.getElementById('patchVersion').innerHTML = "Patch " + data.version;
-            
+        },
+        error: function() {
+            document.getElementById('patchVersion').innerHTML = "Patch: Unknown";
         }
-        
- 	});
-    
-}	
-
-function checkForUpdate()
-{
-	$.ajax({
-        type: "POST",
-        url: "/api/checkForUpgrade",
-        contentType: 'application/json;charset=UTF-8',
-        data: JSON.stringify({'JWT':''}),
-        success: function (data) 
-        {
-            console.log(data);
-            document.getElementById('patchVersion').innerHTML = "Patch " + data.version;
-            
-        }
-        
- 	});
-	
-	
+    });
 }
-</script>	
-	
-	
+
+// Allow Enter key to submit
+document.getElementById('password').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        login();
+    }
+});
+</script>
+
 </body>
 </html>

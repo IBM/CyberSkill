@@ -1,6 +1,6 @@
 <div class="w3-col m3">
       <!-- Profile -->
-      <div class="w3-card w3-round w3-white">
+      <div class="w3-card w3-white" style="border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
         <div class="w3-container">
          <h4 class="w3-center">${tokenObject.username}</h4>
          <p class="w3-center"><img src="/w3images/avatar3.png" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
@@ -13,7 +13,7 @@
       <br>
       
       <!-- Accordion -->
-      <div class="w3-card w3-round">
+      <div class="w3-card" style="border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
         <div class="w3-white">
           <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i> Connections</button>
           <div id="Demo1" class="w3-hide w3-container">
@@ -44,8 +44,8 @@
       </div>
       <br>
       
-      <!-- Interests --> 
-      <div class="w3-card w3-round w3-white w3-hide-small">
+      <!-- Interests -->
+      <div class="w3-card w3-white w3-hide-small" style="border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
         <div class="w3-container">
           <p>Query Types</p>
           <p id="queryTypes">
@@ -56,12 +56,12 @@
       <br>
       
       <!-- Alert Box -->
-      <div class="w3-card w3-round w3-white w3-padding-16 w3-center">
+      <div class="w3-card w3-white w3-padding-16 w3-center" style="border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
         <p><a href="https://github.com/IBM/CyberSkill/issues/new" target="_blank">Suggestion box</a></p>
       </div>
       <br>
       
-      <div class="w3-card w3-round w3-white w3-padding-32 w3-center">
+      <div class="w3-card w3-white w3-padding-32 w3-center" style="border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
         <p><a href="https://github.com/IBM/CyberSkill/issues/new" target="_blank"><i class="fa fa-bug w3-xxlarge"></i></a></p>
       </div>
       

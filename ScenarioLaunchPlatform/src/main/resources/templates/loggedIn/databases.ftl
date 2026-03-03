@@ -70,8 +70,8 @@ table.dataTable tbody tr:hover { background: #f8fafc; }
     <div class="w3-col m9">
       <div class="w3-row-padding">
         <div class="w3-col m12">
-          <div class="w3-card w3-round w3-white">
-            <div class="w3-container w3-padding">
+          <div style="background:white; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1); overflow:hidden;">
+            <div style="padding:1.5rem;">
               <div class="breadcrumb-bar">
                 <a href="/loggedIn/dashboard.ftl"><i class="fa fa-home"></i> Dashboard</a>
                 <span class="separator">&#8250;</span>
