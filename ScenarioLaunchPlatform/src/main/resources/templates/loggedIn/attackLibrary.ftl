@@ -356,7 +356,9 @@ function executePattern() {
             const compatibleConnections = connections.filter(conn => currentPattern.targetDatabases.includes(conn.db_type.toLowerCase()));
             if (compatibleConnections.length === 0) { Swal.fire({ icon: 'warning', title: 'No Compatible Databases', text: 'This pattern requires: ' + currentPattern.targetDatabases.join(', ') }); return; }
             let options = '';
-            compatibleConnections.forEach(function(conn) { options += '<option value="' + conn.id + '">' + (conn.db_connection_id || conn.connection || 'Connection') + ' (' + conn.db_type + ')</option>'; });
+            compatibleConnections.forEach(function(conn) {
+                options += '<option value="' + conn.db_connection_id + '">' + conn.db_connection_id + ' (' + conn.db_type + ')</option>';
+            });
             Swal.fire({
                 title: 'Select Target Database',
                 html: '<select id="targetDb" class="swal2-input">' + options + '</select><p style="margin-top:15px;color:#ef4444;"><i class="fa fa-warning"></i> <strong>Warning:</strong> This will execute ' + currentPattern.sqlQueries.length + ' SQL queries against the selected database.</p>',
@@ -375,10 +377,25 @@ function executePatternQueries(dbConnectionId) {
     currentPattern.sqlQueries.forEach((query, index) => {
         $.ajax({
             url: '/api/runDatabaseQueryByDatasourceMap', type: 'POST',
-            data: JSON.stringify({ jwt: jwtToken, db_connection_id: dbConnectionId, query: query }),
+            data: JSON.stringify({
+                jwt: jwtToken,
+                datasource: dbConnectionId,
+                sql: query,
+                query_loop: "1"
+            }),
             contentType: 'application/json; charset=utf-8',
-            success: function(response) { results.push({ query: index + 1, status: 'success', response: response }); completed++; checkCompletion(); },
-            error: function(err) { results.push({ query: index + 1, status: 'error', error: err.responseText }); completed++; checkCompletion(); }
+            success: function(response) {
+                console.log('Query ' + (index + 1) + ' response:', response);
+                results.push({ query: index + 1, status: 'success', response: response });
+                completed++;
+                checkCompletion();
+            },
+            error: function(err) {
+                console.error('Query ' + (index + 1) + ' error:', err);
+                results.push({ query: index + 1, status: 'error', error: err.responseText });
+                completed++;
+                checkCompletion();
+            }
         });
     });
     function checkCompletion() {
@@ -386,9 +403,78 @@ function executePatternQueries(dbConnectionId) {
         if (completed === currentPattern.sqlQueries.length) {
             const successCount = results.filter(r => r.status === 'success').length;
             const errorCount = results.filter(r => r.status === 'error').length;
+            
+            // Build detailed results HTML with JSON data
+            let resultsHtml = '<div style="text-align:left;max-height:400px;overflow-y:auto;">';
+            resultsHtml += '<p><strong>Pattern:</strong> ' + currentPattern.name + '</p>';
+            resultsHtml += '<p><strong>Successful:</strong> ' + successCount + ' | <strong>Failed:</strong> ' + errorCount + '</p>';
+            resultsHtml += '<hr style="margin:10px 0;">';
+            
+            results.forEach((result, idx) => {
+                resultsHtml += '<div style="margin-bottom:15px;padding:10px;background:#f8f9fa;border-radius:5px;">';
+                resultsHtml += '<strong>Query ' + result.query + ':</strong> ';
+                resultsHtml += '<span style="color:' + (result.status === 'success' ? '#10b981' : '#ef4444') + ';">' + result.status.toUpperCase() + '</span>';
+                resultsHtml += '<div style="margin-top:5px;"><code style="font-size:11px;">' + currentPattern.sqlQueries[idx] + '</code></div>';
+                
+                if (result.status === 'success' && result.response) {
+                    // Display JSON results if available
+                    try {
+                        let jsonData = result.response;
+                        if (typeof jsonData === 'string') {
+                            jsonData = JSON.parse(jsonData);
+                        }
+                        
+                        // Response structure: [[{Result: [...], SQL: "...", loopIndex: 0}]]
+                        // Extract the actual data
+                        let actualData = null;
+                        
+                        if (Array.isArray(jsonData) && jsonData.length > 0) {
+                            // Unwrap nested arrays
+                            let innerData = jsonData[0];
+                            if (Array.isArray(innerData) && innerData.length > 0) {
+                                let queryResult = innerData[0];
+                                if (queryResult.Result) {
+                                    actualData = queryResult.Result;
+                                }
+                            }
+                        }
+                        
+                        // Display the results
+                        if (actualData && Array.isArray(actualData) && actualData.length > 0) {
+                            resultsHtml += '<div style="margin-top:8px;"><strong>Results (' + actualData.length + ' rows):</strong></div>';
+                            resultsHtml += '<pre style="background:#1e293b;color:#e2e8f0;padding:10px;border-radius:4px;font-size:11px;max-height:200px;overflow:auto;">';
+                            resultsHtml += JSON.stringify(actualData.slice(0, 5), null, 2); // Show first 5 rows
+                            if (actualData.length > 5) {
+                                resultsHtml += '\n\n... (' + (actualData.length - 5) + ' more rows)';
+                            }
+                            resultsHtml += '</pre>';
+                        } else if (actualData && Array.isArray(actualData) && actualData.length === 0) {
+                            resultsHtml += '<div style="margin-top:5px;color:#6b7280;"><em>Query executed successfully (0 rows returned)</em></div>';
+                        } else {
+                            resultsHtml += '<div style="margin-top:5px;color:#6b7280;"><em>Query executed successfully</em></div>';
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e);
+                        resultsHtml += '<div style="margin-top:5px;color:#ef4444;"><em>Error parsing results: ' + e.message + '</em></div>';
+                    }
+                } else if (result.status === 'error') {
+                    resultsHtml += '<div style="margin-top:5px;color:#ef4444;"><strong>Error:</strong> ' + (result.error || 'Unknown error') + '</div>';
+                }
+                resultsHtml += '</div>';
+            });
+            
+            resultsHtml += '<hr style="margin:10px 0;">';
+            resultsHtml += '<p style="color:var(--info);"><i class="fa fa-info-circle"></i> Check Guardium for alert: <strong>' + currentPattern.expectedGuardiumAlert + '</strong></p>';
+            resultsHtml += '</div>';
+            
             Swal.fire({
-                icon: successCount > 0 ? 'success' : 'error', title: 'Execution Complete',
-                html: '<p><strong>Pattern:</strong> ' + currentPattern.name + '</p><p><strong>Successful:</strong> ' + successCount + '</p><p><strong>Failed:</strong> ' + errorCount + '</p><p style="margin-top:15px;color:var(--info);"><i class="fa fa-info-circle"></i> Check Guardium for alert: <strong>' + currentPattern.expectedGuardiumAlert + '</strong></p>'
+                icon: successCount > 0 ? 'success' : 'error',
+                title: 'Execution Complete',
+                html: resultsHtml,
+                width: '800px',
+                customClass: {
+                    popup: 'attack-results-modal'
+                }
             });
         }
     }

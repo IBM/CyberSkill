@@ -478,12 +478,7 @@ public class ClusteredVerticle extends AbstractVerticle {
   LOGGER.info("Health dashboard page route registered");
   LOGGER.info("Health check and metrics endpoints registered");
   
-  // Initialize and register library handler
-  libraryHandler = new LibraryHandler();
-  libraryHandler.registerRoutes(router);
-  LOGGER.info("Attack Pattern Library endpoints registered");
-  
-  // Initialize and register outliers handler
+  // Initialize and register outliers handler (doesn't need DB pool)
   outliersHandler = new OutliersHandler();
   outliersHandler.registerRoutes(router);
   LOGGER.info("Outliers (Scheduled Scripts) endpoints registered");
@@ -504,27 +499,33 @@ public class ClusteredVerticle extends AbstractVerticle {
   
   //router.route().handler(this::handleNotFound);
   
-		/*Now add the router to memory - for extension with plugins*/
-		
-		ram.setRouter(router);
+  /*Now add the router to memory - for extension with plugins*/
+  
+  ram.setRouter(router);
 
-		
-		
-		
-		
-		
-		
-		/*BOF - (todo)There is a race condition here - and this should not start until a message from the hazelcast telling it to begin arrives*/
-		
-		LOGGER.debug("Started the ClusteredVerticle Router");
-		
-		
-		JsonObject configs = ram.getSystemConfig();
-		LOGGER.debug("System configuration: " + configs.encodePrettily());
-		
-		
-		/* Create a DB instance called jdbcClient and add it to the context */
-		DatabaseController DB = new DatabaseController(vertx);
+  
+  
+  
+  
+  
+  
+  /*BOF - (todo)There is a race condition here - and this should not start until a message from the hazelcast telling it to begin arrives*/
+  
+  LOGGER.debug("Started the ClusteredVerticle Router");
+  
+  
+  JsonObject configs = ram.getSystemConfig();
+  LOGGER.debug("System configuration: " + configs.encodePrettily());
+  
+  
+  /* Create a DB instance called jdbcClient and add it to the context */
+  DatabaseController DB = new DatabaseController(vertx);
+  
+  // NOW initialize and register library handler AFTER DatabaseController creates the pool
+  LOGGER.info("Initializing Attack Pattern Library...");
+  libraryHandler = new LibraryHandler();
+  libraryHandler.registerRoutes(router);
+  LOGGER.info("Attack Pattern Library endpoints registered");
 		
 		
 		
