@@ -13,23 +13,27 @@
       <br>
       
       <!-- Accordion -->
-      <div class="w3-card" style="border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-        <div class="w3-white">
-          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i> Connections</button>
+      <div class="w3-card w3-white" style="border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+        <div>
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align" style="border-radius:0 !important;"><i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i> Connections</button>
           <div id="Demo1" class="w3-hide w3-container">
-            	<#if ValidatedConnectionData?has_content>
-		            <#list ValidatedConnectionData?keys as key>
-		                <li>${key}</li>
-		            </#list>
-	            <#else>
+             	<#if ValidatedConnectionData?has_content>
+             <#list ValidatedConnectionData?keys as key>
+                 <li>${key}</li>
+             </#list>
+            <#else>
                 	No connections
             	</#if>
           </div>
-          <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-bolt fa-fw w3-margin-right"></i> API Access</button>
+          <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align" style="border-radius:0 !important;"><i class="fa fa-bolt fa-fw w3-margin-right"></i> API Access</button>
           <div id="Demo2" class="w3-hide w3-container">
-           <a href="/swagger-ui/index.html" target="_blank"><i class="fa fa-link" aria-hidden="true"></i>Swagger</a>  
-          </div>
-          <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-book fa-fw w3-margin-right"></i> Documentation</button>
+           <a href="/swagger-ui/index.html" target="_blank"><i class="fa fa-link" aria-hidden="true"></i>Swagger</a>
+         </div>
+         <button onclick="window.location.href='/loggedIn/attackLibrary.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align" style="border-radius:0 !important;"><i class="fa fa-shield fa-fw w3-margin-right"></i> Attack Library</button>
+         <button onclick="window.location.href='/loggedIn/outliers.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align" style="border-radius:0 !important;"><i class="fa fa-clock-o fa-fw w3-margin-right"></i> Outliers</button>
+         <button onclick="window.location.href='/loggedIn/live-timeline.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align" style="border-radius:0 !important;"><i class="fa fa-rss fa-fw w3-margin-right"></i> Live Timeline</button>
+         <button onclick="window.location.href='/loggedIn/analytics-dashboard.ftl'" class="w3-button w3-block w3-theme-l1 w3-left-align" style="border-radius:0 !important;"><i class="fa fa-line-chart fa-fw w3-margin-right"></i> Analytics</button>
+         <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align" style="border-radius:0 !important;"><i class="fa fa-book fa-fw w3-margin-right"></i> Documentation</button>
           <div id="Demo3" class="w3-hide w3-container">
            <a href="/loggedIn/documents/SLPHandbook.pdf" target="_blank"><i class="fa fa-link" aria-hidden="true"></i>SLP handbook</a>
          <div class="w3-row-padding">
@@ -136,12 +140,7 @@
 		            $('#response').text('Error: ' + error);
 		          }
 		        });
-		
 		}
-      </script>
-      
-      
-      
-      
-      
+</script>
+</div>
       

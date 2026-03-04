@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/loggedIn/css/w3.css">
   <link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="/loggedIn/css/navbar-fix.css">
   <link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
   <link rel="stylesheet" href="/loggedIn/css/fonts.css">
   <link rel="stylesheet" href="/loggedIn/css/datatables.min.css">
@@ -66,7 +67,7 @@ table.dataTable tbody tr:hover { background: #f8fafc; }
 <div id="navbar"></div>
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <div class="w3-row">
-    <div id="leftColumn"></div>
+    <#include "includes/leftColumn2.ftl">
     <div class="w3-col m9">
       <div class="w3-row-padding">
         <div class="w3-col m12">
@@ -516,10 +517,8 @@ $(document).ready(function() {
         success: function(response) { $('#navbar').html(response); },
         error: function(err) { console.error('Error loading navbar:', err); }
     });
-    $.ajax({ url: '/loggedIn/includes/leftColumn2.ftl', method: 'GET',
-        success: function(response) { $('#leftColumn').html(response); getQueryTypes(); },
-        error: function(err) { console.error('Error loading left column:', err); }
-    });
+    // leftColumn is now included server-side, no need to load via AJAX
+    getQueryTypes(); // Still need to populate query types
     $.ajax({ url: '/loggedIn/includes/footer.ftl', method: 'GET',
         success: function(response) { $('#footer').html(response); },
         error: function(err) { console.error('Error loading footer:', err); }

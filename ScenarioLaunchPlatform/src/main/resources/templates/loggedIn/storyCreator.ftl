@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/loggedIn/css/w3.css">
 <link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="/loggedIn/css/navbar-fix.css">
 <link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
 <link rel="stylesheet" href="/loggedIn/css/fonts.css">
 <script src="/loggedIn/js/jquery.min.js"></script>

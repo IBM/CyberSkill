@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/loggedIn/css/w3.css">
 <link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="/loggedIn/css/navbar-fix.css">
 <link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
 <link rel="stylesheet" href="/loggedIn/css/fonts.css">
 <script src="/loggedIn/js/jquery.min.js"></script>
@@ -156,6 +157,16 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; 
 .swal2-container { z-index: 20000 !important; }
 .swal2-popup { z-index: 20001 !important; }
 </style>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+.w3-top, .w3-top *, .w3-bar, .w3-bar *, .w3-bar-item, .w3-button { 
+  border-radius: 0 !important; 
+}
+.w3-bar .w3-button:hover, .w3-bar .w3-bar-item:hover {
+  background-color: white !important;
+  color: #000 !important;
+}
+</style>
 </head>
 <body class="w3-theme-l5">
 
@@ -163,7 +174,7 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; 
 
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <div class="w3-row">
-    <div id="leftColumn"></div>
+    <#include "includes/leftColumn2.ftl">
     <div class="w3-col m9">
 
       <div class="page-header">
@@ -236,7 +247,7 @@ function toggleSectionCard(header) {
 
 $(document).ready(function() {
     $.ajax({ url: '/loggedIn/includes/navbar.ftl', method: 'GET', success: function(r) { $('#navbar').html(r); } });
-    $.ajax({ url: '/loggedIn/includes/leftColumn2.ftl', method: 'GET', success: function(r) { $('#leftColumn').html(r); } });
+    // leftColumn is now included server-side
     $.ajax({ url: '/loggedIn/includes/footer.ftl', method: 'GET', success: function(r) { $('#footer').html(r); } });
     loadStatistics();
     loadCategories();

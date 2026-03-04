@@ -4,12 +4,12 @@
 <title>Live Story Timeline - SLP</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel='stylesheet' href='css/fonts.css'>
-<script src="js/jquery.min.js"></script>
+<link rel="stylesheet" href="/loggedIn/css/w3.css">
+<link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="/loggedIn/css/navbar-fix.css">
+<link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
+<link rel="stylesheet" href="/loggedIn/css/fonts.css">
+<script src="/loggedIn/js/jquery.min.js"></script>
 <style>
 html, body, h1, h2, h3, h4, h5 { font-family: "Roboto", sans-serif; }
 *, *::before, *::after { box-sizing: border-box; }
@@ -355,7 +355,7 @@ html, body, h1, h2, h3, h4, h5 { font-family: "Roboto", sans-serif; }
 // ── Load includes ──────────────────────────────────────────────────────────
 $(document).ready(function() {
     $.ajax({ url: '/loggedIn/includes/navbar.ftl',     method: 'GET', success: function(r){ $('#navbar').html(r); } });
-    $.ajax({ url: '/loggedIn/includes/leftColumn.ftl', method: 'GET', success: function(r){ $('#leftColumn').html(r); } });
+    $.ajax({ url: '/loggedIn/includes/leftColumn2.ftl', method: 'GET', success: function(r){ $('#leftColumn').html(r); } });
     $.ajax({ url: '/loggedIn/includes/footer.ftl',     method: 'GET', success: function(r){ $('#footer').html(r); } });
 });
 

@@ -4,15 +4,15 @@
 <title>Story Editor - SLP</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel='stylesheet' href='css/fonts.css'>
-<link rel="stylesheet" href="css/contentpacks-modern.css">
-<script src="js/jquery.min.js"></script>
+<link rel="stylesheet" href="/loggedIn/css/w3.css">
+<link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="/loggedIn/css/navbar-fix.css">
+<link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
+<link rel="stylesheet" href="/loggedIn/css/fonts.css">
+<link rel="stylesheet" href="/loggedIn/css/contentpacks-modern.css">
+<script src="/loggedIn/js/jquery.min.js"></script>
 <style>
-html, body, h1, h2, h3, h4, h5 { font-family: "Roboto", normal; }
+html, body, h1, h2, h3, h4, h5 { font-family: Roboto, sans-serif; }
 
 /* Page header */
 .editor-header-card {
@@ -172,6 +172,16 @@ html, body, h1, h2, h3, h4, h5 { font-family: "Roboto", normal; }
 .bulk-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
 .bulk-row label { font-size: 0.82rem; font-weight: 600; color: #475569; min-width: 130px; }
 </style>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+.w3-top, .w3-top *, .w3-bar, .w3-bar *, .w3-bar-item, .w3-button { 
+  border-radius: 0 !important; 
+}
+.w3-bar .w3-button:hover, .w3-bar .w3-bar-item:hover {
+  background-color: white !important;
+  color: #000 !important;
+}
+</style>
 </head>
 <body class="w3-theme-l5">
 
@@ -302,7 +312,7 @@ $(document).ready(function() {
 
 function loadIncludes() {
     $.get('/loggedIn/includes/navbar.ftl',     r => $('#navbar').html(r));
-    $.get('/loggedIn/includes/leftColumn.ftl', r => $('#leftColumn').html(r));
+    $.get('/loggedIn/includes/leftColumn2.ftl', r => $('#leftColumn').html(r));
     $.get('/loggedIn/includes/footer.ftl',     r => $('#footer').html(r));
 }
 

@@ -4,23 +4,22 @@
 <title>Admin Functions</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel="stylesheet" href="css/datatables.min.css">
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel='stylesheet' href='css/fonts.css'>
-<script src="js/jquery.min.js"></script>
-<script src="js/datatables.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="/loggedIn/css/w3.css">
+<link rel="stylesheet" href="/loggedIn/css/styles.css">
+<link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
+<link rel="stylesheet" href="/loggedIn/css/datatables.min.css">
+<link rel="stylesheet" href="/loggedIn/css/bootstrap.min.css">
+<link rel="stylesheet" href="/loggedIn/css/fonts.css">
+<script src="/loggedIn/js/jquery.min.js"></script>
+<script src="/loggedIn/js/datatables.js"></script>
+<script src="/loggedIn/js/bootstrap.bundle.min.js"></script>
 
 
 
 
 <style>
-html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
+html, body, h1, h2, h3, h4, h5 {font-family: Roboto, sans-serif}
 </style>
 <style>
 .city {

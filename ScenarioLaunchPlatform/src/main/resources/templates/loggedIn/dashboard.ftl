@@ -4,14 +4,25 @@
 <title>SLP dashboard</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel="stylesheet" href="css/contentpacks-modern.css">
-<script src="js/jquery.min.js"></script>
+<link rel="stylesheet" href="/loggedIn/css/w3.css">
+<link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="/loggedIn/css/navbar-fix.css">
+<link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
+<link rel="stylesheet" href="/loggedIn/css/fonts.css">
+<link rel="stylesheet" href="/loggedIn/css/contentpacks-modern.css">
+<script src="/loggedIn/js/jquery.min.js"></script>
 <style>
-html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
+html, body, h1, h2, h3, h4, h5 {font-family: Roboto, sans-serif}
+</style>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+.w3-top, .w3-top *, .w3-bar, .w3-bar *, .w3-bar-item, .w3-button { 
+  border-radius: 0 !important; 
+}
+.w3-bar .w3-button:hover, .w3-bar .w3-bar-item:hover {
+  background-color: white !important;
+  color: #000 !important;
+}
 </style>
 </head>
 <body class="w3-theme-l5">
@@ -23,7 +34,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
   <!-- The Grid -->
   <div class="w3-row">
     <!-- Left Column -->
-    <div id="leftColumn"></div>
+      <#include "includes/leftColumn2.ftl">
     <!-- End Left Column -->
     
     <!-- Middle Column -->

@@ -4,16 +4,16 @@
 <title>Database Dashboard - SLP</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel='stylesheet' href='css/fonts.css'>
-<link rel="stylesheet" href="css/contentpacks-modern.css">
-<link rel="stylesheet" href="css/dashboard-modern.css">
-<script src="js/jquery.min.js"></script>
+<link rel="stylesheet" href="/loggedIn/css/w3.css">
+<link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="/loggedIn/css/navbar-fix.css">
+<link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
+<link rel="stylesheet" href="/loggedIn/css/fonts.css">
+<link rel="stylesheet" href="/loggedIn/css/contentpacks-modern.css">
+<link rel="stylesheet" href="/loggedIn/css/dashboard-modern.css">
+<script src="/loggedIn/js/jquery.min.js"></script>
 <style>
-html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
+html, body, h1, h2, h3, h4, h5 {font-family: Roboto, sans-serif}
 /* CRM Schema Tab Styles */
 .crm-tab {
   padding: 7px 16px; border-radius: 20px; cursor: pointer; font-size: 0.82rem;
@@ -38,6 +38,16 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Roboto", normal}
 .crm-cb-nn { background: #f0fdf4; color: #166534; border: 1px solid #86efac; padding: 1px 8px; border-radius: 10px; font-size: 0.7rem; }
 .crm-cb-uq { background: #fdf4ff; color: #7e22ce; border: 1px solid #d8b4fe; padding: 1px 8px; border-radius: 10px; font-size: 0.7rem; }
 .crm-cb-ai { background: #fff7ed; color: #9a3412; border: 1px solid #fdba74; padding: 1px 8px; border-radius: 10px; font-size: 0.7rem; }
+</style>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+.w3-top, .w3-top *, .w3-bar, .w3-bar *, .w3-bar-item, .w3-button { 
+  border-radius: 0 !important; 
+}
+.w3-bar .w3-button:hover, .w3-bar .w3-bar-item:hover {
+  background-color: white !important;
+  color: #000 !important;
+}
 </style>
 </head>
 <body class="w3-theme-l5">
