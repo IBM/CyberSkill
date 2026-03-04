@@ -717,8 +717,8 @@ setInterval(loadAll, 5000);
 
 // Load navbar and left column
 $(document).ready(function() {
-    $("#navbar").load("navbar.html");
-    $("#leftColumn").load("leftColumn.html");
+    $("#navbar").load("/loggedIn/includes/navbar.ftl");
+    $("#leftColumn").load("/loggedIn/includes/leftColumn2.ftl");
 });
 </script>
 

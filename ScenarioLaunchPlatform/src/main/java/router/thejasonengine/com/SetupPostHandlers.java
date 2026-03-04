@@ -4434,9 +4434,8 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                                                 }
                                                 LOGGER.debug("QUERY LOOP IS : " + queryLoop);
                                                 
-                                                // Start metrics tracking for story execution
+                                                // Track query/chapter execution time (not story-level)
                                                 storyStartTime[0] = System.currentTimeMillis();
-                                                metrics.incrementActiveStories();
                                                 storyStarted[0] = true;
                                                 
                                                 StringTokenizer tokenizer = new StringTokenizer(sqlParameter, "\r\n");
@@ -4447,7 +4446,6 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                                                 // Add null check to prevent NullPointerException
                                                 if (databasePoolPojo == null) {
                                                     LOGGER.error("Datasource '" + datasource + "' not found in dataSourceMap. Available datasources: " + dataSourceMap.keySet());
-                                                    metrics.decrementActiveStories();
                                                     long storyDuration = System.currentTimeMillis() - storyStartTime[0];
                                                     metrics.recordStory(false, storyDuration);
                                                     metrics.recordError("NullPointerException", "Datasource not found: " + datasource, "Datasource '" + datasource + "' does not exist in the connection pool");
@@ -4677,8 +4675,7 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                                                 if (storyStarted[0]) {
                                                     long storyDuration = System.currentTimeMillis() - storyStartTime[0];
                                                     metrics.recordStory(true, storyDuration);
-                                                    metrics.decrementActiveStories();
-                                                    LOGGER.debug("Story execution completed successfully in " + storyDuration + "ms");
+                                                    LOGGER.debug("Query execution completed successfully in " + storyDuration + "ms");
                                                 }
                                             }
                                             LOGGER.debug("Query run successfully");
@@ -4691,7 +4688,6 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                                         	if (storyStarted[0]) {
                                         	    long storyDuration = System.currentTimeMillis() - storyStartTime[0];
                                         	    metrics.recordStory(false, storyDuration);
-                                        	    metrics.decrementActiveStories();
                                         	    metrics.recordError("QueryExecutionError", "Query failed", res.cause().toString());
                                         	}
                                         }
@@ -4714,7 +4710,6 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                             if (storyStarted[0]) {
                                 long storyDuration = System.currentTimeMillis() - storyStartTime[0];
                                 metrics.recordStory(false, storyDuration);
-                                metrics.decrementActiveStories();
                             }
                             metrics.recordError("DataSourceInitError", "Failed to initialize data sources", e.toString());
                             

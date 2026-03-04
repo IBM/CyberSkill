@@ -1,0 +1,1306 @@
+{
+    "stories":  [
+                    {
+                        "id":  2701,
+                        "story":  {
+                                      "name":  "MySQL Account Takeover (ATO) - Time-Based Pattern (5 Hours)",
+                                      "description":  "Simulates normal access pattern (50 SELECTs on object1 for 4 hours) followed by sudden access to all 5 objects (250 SELECTs total in hour 5) to detect account takeover. Pattern: Object1 only → 1 hour → Object1 only → 1 hour → Object1 only → 1 hour → Object1 only → 1 hour → ALL 5 OBJECTS SPIKE",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  2701,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  2702,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Database and 5 Objects"
+                                                    },
+                                                    {
+                                                        "query_id":  2703,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 1000 Records into Each Object"
+                                                    },
+                                                    {
+                                                        "query_id":  2704,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - Access Object1 Only (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2705,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - Access Object1 Only (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2706,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - Access Object1 Only (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2707,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - Access Object1 Only (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2708,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ATO SPIKE - Access Object1 (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2709,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "ATO SPIKE - Access Object2 (50 SELECTs - NEW!)"
+                                                    },
+                                                    {
+                                                        "query_id":  2710,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "ATO SPIKE - Access Object3 (50 SELECTs - NEW!)"
+                                                    },
+                                                    {
+                                                        "query_id":  2711,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "ATO SPIKE - Access Object4 (50 SELECTs - NEW!)"
+                                                    },
+                                                    {
+                                                        "query_id":  2712,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "ATO SPIKE - Access Object5 (50 SELECTs - NEW!)"
+                                                    },
+                                                    {
+                                                        "query_id":  2713,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify ATO Pattern"
+                                                    },
+                                                    {
+                                                        "query_id":  2714,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  2702,
+                        "story":  {
+                                      "name":  "MySQL Account Takeover (ATO) - Quick Demo (5 sec pauses)",
+                                      "description":  "Quick demonstration version with 5-second pauses. Same pattern: 4 hours accessing only object1, then sudden access to all 5 objects indicating account takeover.",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  2701,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  2702,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Database and 5 Objects"
+                                                    },
+                                                    {
+                                                        "query_id":  2703,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 1000 Records into Each Object"
+                                                    },
+                                                    {
+                                                        "query_id":  2704,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - Access Object1 Only (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2705,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - Access Object1 Only (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2706,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - Access Object1 Only (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2707,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - Access Object1 Only (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2708,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ATO SPIKE - Access Object1 (50 SELECTs)"
+                                                    },
+                                                    {
+                                                        "query_id":  2709,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "ATO SPIKE - Access Object2 (50 SELECTs - NEW!)"
+                                                    },
+                                                    {
+                                                        "query_id":  2710,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "ATO SPIKE - Access Object3 (50 SELECTs - NEW!)"
+                                                    },
+                                                    {
+                                                        "query_id":  2711,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "ATO SPIKE - Access Object4 (50 SELECTs - NEW!)"
+                                                    },
+                                                    {
+                                                        "query_id":  2712,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "ATO SPIKE - Access Object5 (50 SELECTs - NEW!)"
+                                                    },
+                                                    {
+                                                        "query_id":  2713,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify ATO Pattern"
+                                                    },
+                                                    {
+                                                        "query_id":  2714,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1601,
+                        "story":  {
+                                      "name":  "MySQL Data Leak Command Anomaly - Time-Based Pattern (5 Hours)",
+                                      "description":  "Simulates normal SELECT baseline (50/hour for 4 hours) followed by massive SELECT spike (1000 operations in hour 5) to detect data exfiltration. Pattern: Setup → 50 SELECTs → 1 hour → 50 SELECTs → 1 hour → 50 SELECTs → 1 hour → 50 SELECTs → 1 hour → 1000 SELECT SPIKE",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1601,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1602,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1603,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 10000 Test Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1604,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 SELECTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1605,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 SELECTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1606,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 SELECTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1607,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 SELECTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1608,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 1000 Rapid SELECTs (Data Exfiltration)"
+                                                    },
+                                                    {
+                                                        "query_id":  1609,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Table Statistics"
+                                                    },
+                                                    {
+                                                        "query_id":  1610,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1602,
+                        "story":  {
+                                      "name":  "MySQL Data Leak Command Anomaly - Quick Demo (5 sec pauses)",
+                                      "description":  "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline SELECTs followed by massive spike to detect data exfiltration attempts.",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1601,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1602,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1603,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 10000 Test Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1604,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 SELECTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1605,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 SELECTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1606,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 SELECTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1607,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 SELECTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1608,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 1000 Rapid SELECTs (Data Exfiltration)"
+                                                    },
+                                                    {
+                                                        "query_id":  1609,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Table Statistics"
+                                                    },
+                                                    {
+                                                        "query_id":  1610,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1101,
+                        "story":  {
+                                      "name":  "MySQL Data Tampering - Time-Based Anomaly (5 Hours)",
+                                      "description":  "Simulates data tampering attack with time-based anomaly pattern in DELETE operations. Establishes normal baseline (50 DELETEs/hour for 4 hours) followed by massive spike (1000 DELETEs in hour 5) to detect unauthorized bulk data deletion. Pattern: Pre-cleanup → Create table → Insert 2000 records → 50 DELETEs → 1 hour → 50 DELETEs → 1 hour → 50 DELETEs → 1 hour → 50 DELETEs → 1 hour → 1000 DELETE SPIKE",
+                                      "author":  "SLP Team",
+                                      "outcomes":  "Understand how Guardium detects time-based anomalies in data deletion patterns, specifically identifying sudden spikes in DELETE operations that deviate from established baselines. Learn to recognize data tampering attacks through temporal analysis of DML operations.",
+                                      "handbook":  "https://www.ibm.com/docs/en/guardium",
+                                      "video":  "VideoURL",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1101,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Drop Table from Previous Run"
+                                                    },
+                                                    {
+                                                        "query_id":  1102,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Test Table for Data Tampering"
+                                                    },
+                                                    {
+                                                        "query_id":  1103,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 2000 Test Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1104,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 DELETE Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1105,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 DELETE Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1106,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 DELETE Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1107,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 DELETE Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1108,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 1000 Rapid DELETEs (Data Tampering)"
+                                                    },
+                                                    {
+                                                        "query_id":  1109,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Data Deletion Impact"
+                                                    },
+                                                    {
+                                                        "query_id":  1110,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1102,
+                        "story":  {
+                                      "name":  "MySQL Data Tampering - Quick Demo (5 sec pauses)",
+                                      "description":  "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline DELETEs (50 each) followed by massive 1000-DELETE spike to detect data tampering.",
+                                      "author":  "SLP Team",
+                                      "outcomes":  "Quick demonstration of data tampering detection for testing and validation purposes. Same detection patterns as the full story but compressed into a short timeframe.",
+                                      "handbook":  "https://www.ibm.com/docs/en/guardium",
+                                      "video":  "VideoURL",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1101,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Drop Table from Previous Run"
+                                                    },
+                                                    {
+                                                        "query_id":  1102,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Test Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1103,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 2000 Test Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1104,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 DELETEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1105,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 DELETEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1106,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 DELETEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1107,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 DELETEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1108,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 SPIKE - 1000 Rapid DELETEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1109,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Deletion"
+                                                    },
+                                                    {
+                                                        "query_id":  1110,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1801,
+                        "story":  {
+                                      "name":  "MySQL Denial of Service (DoS) - Time-Based Pattern (5 Hours)",
+                                      "description":  "Simulates normal query baseline (1001 queries/hour for 4 hours) followed by massive DoS spike (205000 queries in hour 5) to detect resource exhaustion attacks. Pattern: 1001 queries → 1 hour → 1001 queries → 1 hour → 1001 queries → 1 hour → 1001 queries → 1 hour → 205000 QUERY SPIKE",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1801,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1802,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1803,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 10000 Test Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1804,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 1001 Queries"
+                                                    },
+                                                    {
+                                                        "query_id":  1805,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 1001 Queries"
+                                                    },
+                                                    {
+                                                        "query_id":  1806,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 1001 Queries"
+                                                    },
+                                                    {
+                                                        "query_id":  1807,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 1001 Queries"
+                                                    },
+                                                    {
+                                                        "query_id":  1808,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 205000 Queries (DoS Attack)"
+                                                    },
+                                                    {
+                                                        "query_id":  1809,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Table Statistics"
+                                                    },
+                                                    {
+                                                        "query_id":  1810,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1802,
+                        "story":  {
+                                      "name":  "MySQL Denial of Service (DoS) - Quick Demo (5 sec pauses)",
+                                      "description":  "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline (1001 queries each) followed by massive 205000-query spike to detect DoS attacks.",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1801,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1802,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1803,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 10000 Test Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1804,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 1001 Queries"
+                                                    },
+                                                    {
+                                                        "query_id":  1805,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 1001 Queries"
+                                                    },
+                                                    {
+                                                        "query_id":  1806,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 1001 Queries"
+                                                    },
+                                                    {
+                                                        "query_id":  1807,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 1001 Queries"
+                                                    },
+                                                    {
+                                                        "query_id":  1808,
+                                                        "pause_in_seconds":  30000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 205000 Queries (DoS Attack)"
+                                                    },
+                                                    {
+                                                        "query_id":  1809,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Table Statistics"
+                                                    },
+                                                    {
+                                                        "query_id":  1810,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1301,
+                        "story":  {
+                                      "name":  "MySQL INSERT Anomaly - Time-Based Attack Pattern (5 Hours)",
+                                      "description":  "Simulates normal INSERT baseline (50/hour for 4 hours) followed by massive INSERT spike (1000 operations in hour 5) to detect data injection attacks. Pattern: 50 INSERTs → 1 hour → 50 INSERTs → 1 hour → 50 INSERTs → 1 hour → 50 INSERTs → 1 hour → 1000 INSERT SPIKE",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1301,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1302,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1303,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1304,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1305,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1309,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1306,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 1000 Rapid INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1307,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1308,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1302,
+                        "story":  {
+                                      "name":  "MySQL INSERT Anomaly - Quick Demo (5 sec pauses)",
+                                      "description":  "Quick demonstration version with 5-second pauses instead of hours. Same pattern: 4 hours baseline INSERTs followed by massive spike to detect data injection attacks.",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1301,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1302,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1303,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1304,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1305,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1309,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1306,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 1000 Rapid INSERTs"
+                                                    },
+                                                    {
+                                                        "query_id":  1307,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1308,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1501,
+                        "story":  {
+                                      "name":  "MySQL Massive GRANT Anomaly - Time-Based Pattern (5 Hours)",
+                                      "description":  "Simulates normal GRANT baseline (1 grant/hour for 4 hours) followed by massive GRANT spike (21 grants in hour 5) to detect privilege escalation. Pattern: 1 GRANT → 1 hour → 1 GRANT → 1 hour → 1 GRANT → 1 hour → 1 GRANT → 1 hour → 21 GRANT SPIKE",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1501,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1502,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Database and Objects 1-5"
+                                                    },
+                                                    {
+                                                        "query_id":  1503,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Objects 6-25"
+                                                    },
+                                                    {
+                                                        "query_id":  1504,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Test Users"
+                                                    },
+                                                    {
+                                                        "query_id":  1505,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - GRANT on Object 1"
+                                                    },
+                                                    {
+                                                        "query_id":  1506,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - GRANT on Object 2"
+                                                    },
+                                                    {
+                                                        "query_id":  1507,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - GRANT on Object 3"
+                                                    },
+                                                    {
+                                                        "query_id":  1508,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - GRANT on Object 4"
+                                                    },
+                                                    {
+                                                        "query_id":  1509,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 21 GRANTs on Multiple Objects"
+                                                    },
+                                                    {
+                                                        "query_id":  1510,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify GRANT Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1511,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1502,
+                        "story":  {
+                                      "name":  "MySQL Massive GRANT Anomaly - Quick Demo (5 sec pauses)",
+                                      "description":  "Quick demonstration version with 5-second pauses. Same pattern: 1 grant per hour baseline followed by 21-grant spike to detect privilege escalation.",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1501,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1502,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Database and Objects 1-5"
+                                                    },
+                                                    {
+                                                        "query_id":  1503,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Objects 6-25"
+                                                    },
+                                                    {
+                                                        "query_id":  1504,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Test Users"
+                                                    },
+                                                    {
+                                                        "query_id":  1505,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - GRANT on Object 1"
+                                                    },
+                                                    {
+                                                        "query_id":  1506,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - GRANT on Object 2"
+                                                    },
+                                                    {
+                                                        "query_id":  1507,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - GRANT on Object 3"
+                                                    },
+                                                    {
+                                                        "query_id":  1508,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - GRANT on Object 4"
+                                                    },
+                                                    {
+                                                        "query_id":  1509,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 21 GRANTs on Multiple Objects"
+                                                    },
+                                                    {
+                                                        "query_id":  1510,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify GRANT Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1511,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1401,
+                        "story":  {
+                                      "name":  "MySQL REVOKE Anomaly - Time-Based Attack Pattern (5 Hours)",
+                                      "description":  "Simulates normal REVOKE baseline (50/hour for 4 hours) followed by massive REVOKE spike (1000 operations in hour 5) to detect privilege escalation attacks. Pattern: Setup → 50 REVOKEs → 1 hour → 50 REVOKEs → 1 hour → 50 REVOKEs → 1 hour → 50 REVOKEs → 1 hour → 1000 REVOKE SPIKE",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1401,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1402,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Database and Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1403,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Grant Initial Privileges to 100 Users"
+                                                    },
+                                                    {
+                                                        "query_id":  1404,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1405,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1410,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1406,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1407,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 1000 Rapid REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1408,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify User Privileges"
+                                                    },
+                                                    {
+                                                        "query_id":  1409,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1402,
+                        "story":  {
+                                      "name":  "MySQL REVOKE Anomaly - Quick Demo (5 sec pauses)",
+                                      "description":  "Quick demonstration version with 5-second pauses instead of hours. Same pattern: 4 hours baseline REVOKEs followed by massive spike to detect privilege escalation attacks.",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1401,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Ensure Clean State"
+                                                    },
+                                                    {
+                                                        "query_id":  1402,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Database and Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1403,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Grant Initial Privileges to 100 Users"
+                                                    },
+                                                    {
+                                                        "query_id":  1404,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1405,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1410,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1406,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1407,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 1000 Rapid REVOKEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1408,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify User Privileges"
+                                                    },
+                                                    {
+                                                        "query_id":  1409,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1001,
+                        "story":  {
+                                      "name":  "MySQL Schema Tampering - Time-Based Anomaly (5 Hours)",
+                                      "description":  "Simulates schema tampering attack with time-based anomaly pattern in ALTER TABLE operations. Establishes normal baseline (5 ALTERs/hour for 4 hours) followed by massive spike (100 ALTERs in hour 5) to detect unauthorized bulk schema changes. Pattern: Pre-cleanup → Create tables → 5 ALTERs → 1 hour → 5 ALTERs → 1 hour → 5 ALTERs → 1 hour → 5 ALTERs → 1 hour → 100 ALTER SPIKE",
+                                      "author":  "SLP Team",
+                                      "outcomes":  "Understand how Guardium detects time-based anomalies in schema modification patterns, specifically identifying sudden spikes in ALTER TABLE operations that deviate from established baselines. Learn to recognize schema tampering attacks through temporal analysis of DDL operations.",
+                                      "handbook":  "https://www.ibm.com/docs/en/guardium",
+                                      "video":  "VideoURL",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1001,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Drop Tables from Previous Run"
+                                                    },
+                                                    {
+                                                        "query_id":  1002,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Base Tables for Schema Tampering Test"
+                                                    },
+                                                    {
+                                                        "query_id":  1003,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 5 ALTER Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1004,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 5 ALTER Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1008,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 5 ALTER Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1009,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 5 ALTER Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1007,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 100 Rapid ALTER Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1005,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Schema Changes"
+                                                    },
+                                                    {
+                                                        "query_id":  1006,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1002,
+                        "story":  {
+                                      "name":  "MySQL Schema Tampering - Quick Demo (5 sec pauses)",
+                                      "description":  "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline ALTERs (5 each) followed by massive 100-ALTER spike to detect schema tampering.",
+                                      "author":  "SLP Team",
+                                      "outcomes":  "Quick demonstration of schema tampering detection for testing and validation purposes. Same detection patterns as the full story but compressed into a short timeframe.",
+                                      "handbook":  "https://www.ibm.com/docs/en/guardium",
+                                      "video":  "VideoURL",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1001,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Drop Tables from Previous Run"
+                                                    },
+                                                    {
+                                                        "query_id":  1002,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Base Tables"
+                                                    },
+                                                    {
+                                                        "query_id":  1003,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 5 ALTERs"
+                                                    },
+                                                    {
+                                                        "query_id":  1004,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 5 ALTERs"
+                                                    },
+                                                    {
+                                                        "query_id":  1008,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 5 ALTERs"
+                                                    },
+                                                    {
+                                                        "query_id":  1009,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 5 ALTERs"
+                                                    },
+                                                    {
+                                                        "query_id":  1007,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 SPIKE - 100 Rapid ALTERs"
+                                                    },
+                                                    {
+                                                        "query_id":  1005,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Changes"
+                                                    },
+                                                    {
+                                                        "query_id":  1006,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1201,
+                        "story":  {
+                                      "name":  "MySQL Update Anomaly - Time-Based Pattern (5 Hours)",
+                                      "description":  "Simulates update anomaly attack with time-based pattern in UPDATE operations. Establishes normal baseline (50 UPDATEs/hour for 4 hours) followed by massive spike (1000 UPDATEs in hour 5) to detect unauthorized bulk data modification. Pattern: Pre-cleanup → Create table → Insert 10000 records → 50 UPDATEs → 1 hour → 50 UPDATEs → 1 hour → 50 UPDATEs → 1 hour → 50 UPDATEs → 1 hour → 1000 UPDATE SPIKE",
+                                      "author":  "SLP Team",
+                                      "outcomes":  "Understand how Guardium detects time-based anomalies in data modification patterns, specifically identifying sudden spikes in UPDATE operations that deviate from established baselines. Learn to recognize update anomaly attacks through temporal analysis of DML operations.",
+                                      "handbook":  "https://www.ibm.com/docs/en/guardium",
+                                      "video":  "VideoURL",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1201,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Drop Table from Previous Run"
+                                                    },
+                                                    {
+                                                        "query_id":  1202,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Test Table for Update Anomaly"
+                                                    },
+                                                    {
+                                                        "query_id":  1203,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 10000 Test Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1204,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 UPDATE Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1205,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 UPDATE Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1206,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 UPDATE Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1207,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 UPDATE Operations"
+                                                    },
+                                                    {
+                                                        "query_id":  1208,
+                                                        "pause_in_seconds":  3600000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 ANOMALY SPIKE - 1000 Rapid UPDATEs (Data Modification)"
+                                                    },
+                                                    {
+                                                        "query_id":  1209,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Data Modification Impact"
+                                                    },
+                                                    {
+                                                        "query_id":  1210,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    },
+                    {
+                        "id":  1202,
+                        "story":  {
+                                      "name":  "MySQL Update Anomaly - Quick Demo (5 sec pauses)",
+                                      "description":  "Quick demonstration version with 5-second pauses. Same pattern: 4 hours baseline UPDATEs (50 each) followed by massive 1000-UPDATE spike to detect data modification attacks.",
+                                      "author":  "SLP Team",
+                                      "outcomes":  "Quick demonstration of update anomaly detection for testing and validation purposes. Same detection patterns as the full story but compressed into a short timeframe.",
+                                      "handbook":  "https://www.ibm.com/docs/en/guardium",
+                                      "video":  "VideoURL",
+                                      "story":  [
+                                                    {
+                                                        "query_id":  1201,
+                                                        "pause_in_seconds":  500,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Pre-Cleanup - Drop Table from Previous Run"
+                                                    },
+                                                    {
+                                                        "query_id":  1202,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Create Test Table"
+                                                    },
+                                                    {
+                                                        "query_id":  1203,
+                                                        "pause_in_seconds":  10000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Insert 10000 Test Records"
+                                                    },
+                                                    {
+                                                        "query_id":  1204,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 1 - 50 UPDATEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1205,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 2 - 50 UPDATEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1206,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 3 - 50 UPDATEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1207,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_polly",
+                                                        "chapter":  "Baseline Hour 4 - 50 UPDATEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1208,
+                                                        "pause_in_seconds":  5000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_liher",
+                                                        "chapter":  "HOUR 5 SPIKE - 1000 Rapid UPDATEs"
+                                                    },
+                                                    {
+                                                        "query_id":  1209,
+                                                        "pause_in_seconds":  2000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Verify Modification"
+                                                    },
+                                                    {
+                                                        "query_id":  1210,
+                                                        "pause_in_seconds":  1000,
+                                                        "datasource":  "mysql_192.168.100.13_crm_jason",
+                                                        "chapter":  "Cleanup"
+                                                    }
+                                                ]
+                                  }
+                    }
+                ]
+}

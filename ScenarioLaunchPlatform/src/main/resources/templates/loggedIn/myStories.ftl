@@ -41,8 +41,17 @@ html, body, h1, h2, h3, h4, h5 {font-family: Roboto, sans-serif}
 
 .story-header-card p {
     margin: 0;
-    opacity: 0.85;
+    opacity: 1;
     font-size: 0.95rem;
+    line-height: 1.6;
+    color: #ffffff;
+}
+
+#storyMeta {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
 }
 
 /* Chapter card */

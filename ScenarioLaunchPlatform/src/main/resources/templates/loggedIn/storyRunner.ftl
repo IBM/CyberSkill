@@ -141,17 +141,17 @@ function buildStory(data)
 		  <!-- Hidden story content, initially hidden with style display: none -->
 	
 		<div class="story1" id="story1" style="display: none;">
-    <div class="row">
-        <strong>Outcome:</strong> OUTCOMES
+    <div class="row" style="margin-bottom: 8px;">
+        <strong>Outcome:</strong> <span style="color: #333; font-size: 14px;">OUTCOMES</span>
     </div>
-    <div class="row">
-        <strong>Creator:</strong><i>AUTHOR</i>
+    <div class="row" style="margin-bottom: 8px;">
+        <strong>Creator:</strong> <i style="color: #555; font-size: 14px;">AUTHOR</i>
     </div>
-    <div class="container">
+    <div class="container" style="margin-top: 10px;">
       
-           <strong>Summary:</strong> DESCRIPTION
-           	<div id="storyVideo">
-           	<a href="VIDEOURL" target="_blank"><i class="fa fa-film"></i></a>
+           <strong>Summary:</strong> <span style="color: #333; font-size: 14px;">DESCRIPTION</span>
+           	<div id="storyVideo" style="margin-top: 8px;">
+           	<a href="VIDEOURL" target="_blank"><i class="fa fa-film"></i> Watch Video</a>
     		</div>
     </div>
     
