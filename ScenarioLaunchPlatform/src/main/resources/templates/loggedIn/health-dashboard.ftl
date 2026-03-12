@@ -39,7 +39,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: Roboto, sans-serif}
     <!-- End Left Column -->
     
     <!-- Middle Column -->
-    <div class="w3-col m12">
+    <div class="w3-col m9">
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">

@@ -4386,9 +4386,20 @@ LOGGER.info("Inside SetupPostHandlers.handleGetAdminFunctions");
                         {
                             Pool pool = ram.getPostGresSystemPool();
                             HashMap<String, DatabasePoolPOJO> dataSourceMap = ram.getDBPM();
-    			        	
-    			        	LOGGER.debug("Successfully initialized the datasource");
-                            if (pool == null) 
+                
+                LOGGER.debug("Successfully initialized the datasource");
+                
+                // Check if dataSourceMap is null
+                if (dataSourceMap == null) {
+                    LOGGER.error("dataSourceMap is null - database connections not initialized");
+                    response.setStatusCode(500).end(new JsonObject()
+                        .put("error", "Database connections not initialized")
+                        .put("message", "Please configure database connections before running queries")
+                        .encodePrettily());
+                    return;
+                }
+                
+                            if (pool == null)
                             {
                                 database.thejasonengine.com.DatabaseController dbController = new database.thejasonengine.com.DatabaseController(routingContext.vertx());
                                 LOGGER.debug("Have set the DB Controller");

@@ -24,7 +24,14 @@ html, body, h1, h2, h3, h4, h5 { font-family: Roboto, sans-serif; }
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
 }
 .editor-header-card h4 { margin: 0 0 0.4rem 0; font-size: 1.4rem; font-weight: 700; }
-.editor-header-card p  { margin: 0; opacity: 0.85; font-size: 0.95rem; }
+.editor-header-card p  { margin: 0; opacity: 1; font-size: 0.95rem; line-height: 1.6; color: #ffffff; }
+
+#storyMeta {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+}
 
 /* Breadcrumb */
 .breadcrumb-bar {
