@@ -59,7 +59,8 @@ table.dataTable tbody tr:hover { background: #f8fafc; }
 .btn-modal-action.primary:hover { background: #3a4f5a; }
 .btn-modal-action.danger { background: #ef4444; color: white; border-color: #ef4444; }
 .btn-modal-action.danger:hover { background: #dc2626; }
-.city { display: none; height: 800px; background-color: white; }
+.tab-content { display: none; height: 800px; background-color: white; }
+.tab-content.active { display: block; }
 .custom-modal { width: 70%; height: 800px; }
 </style>
 </head>
@@ -160,12 +161,12 @@ table.dataTable tbody tr:hover { background: #f8fafc; }
   <div class="w3-modal-content w3-animate-zoom custom-modal" style="border-radius:12px; overflow:hidden;">
     <div class="modal-header-modern"><h2><i class="fa fa-code"></i> SQL Query Editor</h2><button class="modal-close-btn" onclick="closeDatabaseQuery();">&times;</button></div>
     <div class="tab-bar">
-      <button id="sqlData" class="tab-btn tablink active" onclick="toggleEditResultsShowSQL()"><i class="fa fa-code"></i> SQL Data</button>
-      <button id="sqlResults" class="tab-btn tablink"><i class="fa fa-table"></i> Results[0]</button>
-      <button id="sqlReport" class="tab-btn tablink"><i class="fa fa-bar-chart"></i> Report</button>
+      <button id="sqlData" class="tab-btn active" onclick="toggleEditResultsShowSQL()"><i class="fa fa-code"></i> SQL Data</button>
+      <button id="sqlResults" class="tab-btn"><i class="fa fa-table"></i> Results[0]</button>
+      <button id="sqlReport" class="tab-btn"><i class="fa fa-bar-chart"></i> Report</button>
       <button class="tab-btn" style="margin-left:auto; color:#10b981;" onclick="runDatabaseQueryByDatasourceMap(0)"><i class="fa fa-play"></i> Run</button>
     </div>
-    <div id="edit" class="w3-container city" style="padding:1.5rem;">
+    <div id="edit" class="w3-container tab-content active" style="padding:1.5rem;">
       <div style="display:grid; grid-template-columns:auto 1fr; gap:1rem; align-items:end; margin-bottom:1rem;">
         <div><label class="form-label">Filter</label><input type="text" id="dropdownInput" placeholder="Filter connections..." style="width:160px;" maxlength="20" onchange="filterDropdown()"></div>
         <div><label class="form-label">Datasource</label>
@@ -413,18 +414,6 @@ function openFreestyleModal() { document.getElementById('freestyleModal').style.
 function closeFreestyleModal() { document.getElementById('freestyleModal').style.display = 'none'; }
 </script>
 
-<script>
-document.getElementsByClassName("tablink")[0].click();
-function openCity(evt, cityName) {
-    var i, x, tablinks;
-    x = document.getElementsByClassName("city");
-    for (i = 0; i < x.length; i++) { x[i].style.display = "none"; }
-    tablinks = document.getElementsByClassName("tablink");
-    for (i = 0; i < x.length; i++) { tablinks[i].classList.remove("w3-light-grey"); }
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.classList.add("w3-light-grey");
-}
-</script>
 
 <script>
 

@@ -222,4 +222,3 @@ INSERT INTO public.tb_attack_patterns (id, name, category, description, severity
 SELECT COUNT(*) as total_patterns FROM public.tb_attack_patterns;
 SELECT category, COUNT(*) as count FROM public.tb_attack_patterns GROUP BY category ORDER BY category;
 
--- Made with Bob

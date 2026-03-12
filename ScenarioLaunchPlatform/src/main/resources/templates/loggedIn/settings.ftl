@@ -592,11 +592,26 @@ function refreshConnections()
 			   "db_password": "password",
 			   "db_port": "3306",
 			   "db_database": "testdb",
-			   "db_url": "jdbc:mysql://192.168.100.13:3306/testdb",
+			   "db_url": "localhost",
 			   "db_jdbcClassName": "com.mysql.cj.jdbc.Driver",
 			   "db_userIcon": "fa-user",
 			   "db_databaseIcon": "fa-database",
 			   "db_alias": "MySQL Test",
+			   "db_access": "public"
+			 },
+			 {
+			   "status": "active",
+			   "db_type": "postgresql",
+			   "db_version": "14.0",
+			   "db_username": "root",
+			   "db_password": "password",
+			   "db_port": "5432",
+			   "db_database": "testdb",
+			   "db_url": "localhost",
+			   "db_jdbcClassName": "org.postgresql.Driver",
+			   "db_userIcon": "fa-user",
+			   "db_databaseIcon": "fa-database",
+			   "db_alias": "Postgres Test",
 			   "db_access": "public"
 			 }
 		]
