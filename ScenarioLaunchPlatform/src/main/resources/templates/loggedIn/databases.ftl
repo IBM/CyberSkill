@@ -59,9 +59,9 @@ table.dataTable tbody tr:hover { background: #f8fafc; }
 .btn-modal-action.primary:hover { background: #3a4f5a; }
 .btn-modal-action.danger { background: #ef4444; color: white; border-color: #ef4444; }
 .btn-modal-action.danger:hover { background: #dc2626; }
-.tab-content { display: none; height: 800px; background-color: white; }
+.tab-content { display: none; max-height: 85vh; overflow-y: auto; background-color: white; }
 .tab-content.active { display: block; }
-.custom-modal { width: 70%; height: 800px; }
+.custom-modal { width: 90%; max-width: 1400px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
 </style>
 </head>
 <body class="w3-theme-l5">
@@ -196,10 +196,10 @@ table.dataTable tbody tr:hover { background: #f8fafc; }
       </div>
       <div id="resultsRow" style="display:none; overflow-y:scroll; max-height:400px;"><table id="resultsTable" class="display" style="width:100%"></table></div>
     </div>
-    <div class="modal-footer-modern">
+    <div class="modal-footer-modern" style="flex-shrink: 0;">
       <button id="CloseSQLButton" class="btn-modal-action" onclick="closeDatabaseQuery()"><i class="fa fa-times"></i> Close</button>
       <button id="DeleteSQLButton" class="btn-modal-action danger" onclick="deleteDatabaseQueryByQueryId()"><i class="fa fa-trash"></i> Delete</button>
-      <button id="UpdateSQLButton" class="btn-modal-action" onclick="updateDatabaseQueryByQueryId()"><i class="fa fa-save"></i> Update</button>
+      <button id="UpdateSQLButton" class="btn-modal-action" style="background: #4d636f; color: white; border-color: #4d636f;" onclick="updateDatabaseQueryByQueryId()"><i class="fa fa-save"></i> Update</button>
       <button id="RunSQLButton" class="btn-modal-action primary" onclick="runDatabaseQueryByDatasourceMap(0)"><i class="fa fa-play"></i> Run</button>
     </div>
   </div>

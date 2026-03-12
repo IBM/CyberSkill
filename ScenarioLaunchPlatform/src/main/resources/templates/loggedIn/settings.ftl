@@ -601,7 +601,7 @@ function refreshConnections()
 			 },
 			 {
 			   "status": "active",
-			   "db_type": "postgresql",
+			   "db_type": "postgres",
 			   "db_version": "14.0",
 			   "db_username": "root",
 			   "db_password": "password",

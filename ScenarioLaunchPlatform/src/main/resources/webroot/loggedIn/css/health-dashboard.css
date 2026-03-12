@@ -7,7 +7,7 @@
 
 .health-dashboard-container {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #4d636f 0%, #3a4f5a 100%);
     min-height: 100vh;
     padding: 20px;
 }
@@ -53,7 +53,7 @@
 
 .log-toggle-btn:hover {
     background: white;
-    color: #667eea;
+    color: #4d636f;
 }
 
 .health-dashboard {
@@ -222,7 +222,7 @@
 .health-big-number {
     font-size: 2.5em;
     font-weight: 700;
-    color: #667eea;
+    color: #4d636f;
     text-align: center;
     margin: 20px 0;
 }
