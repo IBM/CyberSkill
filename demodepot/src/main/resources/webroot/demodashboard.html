@@ -3,97 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Demo Requests Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Public Dashboard - DemoDepot</title>
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/toast.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Optional: favicons/meta -->
-  <meta name="description" content="Visualization of all demo requests"/>
+  <meta name="description" content="Public visualization of all demo requests"/>
 </head>
-<body class="min-h-screen bg-gray-50">
-  <!-- Inline navbar web component (no external dependency) -->
-  <script>
-    class CustomNavbar extends HTMLElement {
-      connectedCallback() {
-        this.innerHTML = `
-          <nav class="bg-white border-b border-gray-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div class="flex justify-between h-16">
-                <div class="flex">
-                  <a href="#" class="flex items-center">
-                    <span class="text-xl font-bold text-indigo-600">Demo Hub</span>
-                  </a>
-                </div>
-                <div class="flex items-center space-x-6">
-                  <a href="demodashboard.html" class="text-gray-600 hover:text-gray-900 text-sm">Dashboard</a>
-                  <a href="demorequest.html" class="text-gray-600 hover:text-gray-900 text-sm">Request Form</a>
-                  
-                </div>
-              </div>
-            </div>
-          </nav>
-        `;
-      }
-    }
-    customElements.define('custom-navbar', CustomNavbar);
-  </script>
+<body>
+  <!-- Dynamic Navbar -->
+  <div id="app-navbar"></div>
+  
+  <div id="toast-container"></div>
 
-  <custom-navbar></custom-navbar>
+  <div class="page-container">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
+      
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 class="page-title">📊 Public Demo Dashboard</h1>
+        <p style="color: var(--text-secondary); font-size: 1.125rem;">Visualization of all demo requests</p>
+      </div>
 
-  <div class="container mx-auto px-4 py-8">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-800">Demo Requests Dashboard</h1>
-      <p class="text-gray-600 mt-2">Visualization of all demo requests</p>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-      <div class="bg-white rounded-xl shadow-lg p-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-700">Requests by Demo Type</h2>
-        <div class="h-80">
-          <canvas id="typeChart"></canvas>
+      <!-- Charts Section -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+        <div class="card">
+          <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--text-primary);">
+            📈 Requests by Demo Type
+          </h2>
+          <div style="height: 320px;">
+            <canvas id="typeChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--text-primary);">
+            📅 Monthly Requests
+          </h2>
+          <div style="height: 320px;">
+            <canvas id="monthlyChart"></canvas>
+          </div>
         </div>
       </div>
-      <div class="bg-white rounded-xl shadow-lg p-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-700">Monthly Requests</h2>
-        <div class="h-80">
-          <canvas id="monthlyChart"></canvas>
-        </div>
-      </div>
-    </div>
 
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-      <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-700">Recent Demo Requests</h2>
-        <div class="flex items-center space-x-3">
-          <button id="refreshBtn" class="px-3 py-2 text-sm font-medium bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-            Refresh
-          </button>
-          <span id="dataSourceBadge" class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">Source: Fallback</span>
+      <!-- Table Section -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+          <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--text-primary);">
+            📋 Recent Demo Requests
+          </h2>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <button id="refreshBtn" class="btn btn-primary" style="padding: 0.5rem 1rem;">
+              <span>🔄</span> Refresh
+            </button>
+            <span id="dataSourceBadge" class="badge badge-info">Source: Loading...</span>
+          </div>
+        </div>
+        
+        <div style="overflow-x: auto;">
+          <table id="requestsTable">
+            <thead>
+              <tr>
+                <th>PM Owner</th>
+                <th>Demo Type</th>
+                <th>Product</th>
+                <th>Delivery Date</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Existing Doc</th>
+                <th>Demo Script</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 2rem;" id="loadingMessage">
+                  Loading demo requests...
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200" id="requestsTable">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PM Owner</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Demo Type</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery Date</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Existing Doc</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Demo Script</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr>
-              <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500" id="loadingMessage">
-                Loading demo requests...
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      
     </div>
   </div>
 
@@ -236,10 +225,10 @@
      // return null; // Use fallback until backend is ready.
     //}
     
-    // --- 2) Actual API fetch ---
+    // --- 2) Actual API fetch (public endpoint) ---
 async function fetchDemoRequestsFromAPI() {
   try {
-    const res = await fetch("/api/demo-requests");
+    const res = await fetch("/api/demo-requests/public");
     if (!res.ok) {
       throw new Error("Failed to fetch demo requests");
     }
@@ -287,45 +276,54 @@ async function fetchDemoRequestsFromAPI() {
     
 
     // --- 5) Table rendering ---
-   function renderTable(items) {
-  const tbody = document.querySelector("#requestsTable tbody");
-  const loadingRow = document.getElementById("loadingMessage");
-  if (loadingRow) loadingRow.parentElement.remove();
+    function renderTable(items) {
+      const tbody = document.querySelector("#requestsTable tbody");
+      const loadingRow = document.getElementById("loadingMessage");
+      if (loadingRow) loadingRow.parentElement.remove();
 
-  const fragment = document.createDocumentFragment();
+      const fragment = document.createDocumentFragment();
 
-  for (const r of items) {
-    const tr = document.createElement("tr");
+      for (const r of items) {
+        const tr = document.createElement("tr");
+        
+        const statusBadges = {
+          'draft': 'badge-draft',
+          'submitted': 'badge-submitted',
+          'in_progress': 'badge-in-progress',
+          'completed': 'badge-completed',
+          'cancelled': 'badge-cancelled'
+        };
+        const badgeClass = statusBadges[r.status] || 'badge-draft';
 
-    tr.innerHTML = `
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${r.pm_owner}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${r.demo_type}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${r.product_name}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${formatDateISOToDisplay(r.delivery_date)}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-        <a href="${r.demo_url}" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline">${r.title}</a>
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${status.class}">
-          ${r.status}
-        </span>
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-        ${r.existing_docs_path 
-          ? `<a href="uploads/${r.existing_docs_path}" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline">Download Docs</a>` 
-          : "—"}
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-        ${r.demo_script_path 
-          ? `<a href="uploads/${r.demo_script_path}" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline">Download Script</a>` 
-          : "—"}
-      </td>
-    `;
-    fragment.appendChild(tr);
-  }
+        tr.innerHTML = `
+          <td>${r.pm_owner}</td>
+          <td>${r.demo_type}</td>
+          <td>${r.product_name}</td>
+          <td>${formatDateISOToDisplay(r.delivery_date)}</td>
+          <td>
+            <a href="${r.demo_url}" target="_blank" style="color: var(--primary-color); text-decoration: underline;">${r.title}</a>
+          </td>
+          <td>
+            <span class="badge ${badgeClass}">
+              ${r.status ? r.status.replace('_', ' ') : 'N/A'}
+            </span>
+          </td>
+          <td>
+            ${r.existing_docs_path
+              ? `<a href="uploads/${r.existing_docs_path}" target="_blank" style="color: var(--primary-color); text-decoration: underline;">📄 Download</a>`
+              : "—"}
+          </td>
+          <td>
+            ${r.demo_script_path
+              ? `<a href="uploads/${r.demo_script_path}" target="_blank" style="color: var(--primary-color); text-decoration: underline;">📄 Download</a>`
+              : "—"}
+          </td>
+        `;
+        fragment.appendChild(tr);
+      }
 
-  tbody.appendChild(fragment);
-}
+      tbody.appendChild(fragment);
+    }
 
     // --- 6) Charts ---
     let typeChart, monthlyChart;
@@ -403,58 +401,83 @@ async function fetchDemoRequestsFromAPI() {
     }
 
     // --- 7) Bootstrap flow + UI wiring ---
-  async function loadDataAndRender() {
-  const badge = document.getElementById("dataSourceBadge");
-  let data;
+    async function loadDataAndRender() {
+      console.log('[Public Dashboard] Loading data...');
+      const badge = document.getElementById("dataSourceBadge");
+      let data;
 
-  try {
-    const apiData = await fetchDemoRequestsFromAPI();
-    if (apiData && Array.isArray(apiData.demo_requests) && apiData.demo_requests.length) {
-      data = apiData;
-      if (badge) {
-        badge.textContent = "Source: API";
-        badge.className = "px-2 py-1 text-xs rounded bg-green-100 text-green-800";
+      try {
+        const apiData = await fetchDemoRequestsFromAPI();
+        if (apiData && Array.isArray(apiData.demo_requests) && apiData.demo_requests.length) {
+          data = apiData;
+          console.log('[Public Dashboard] Using API data:', data.demo_requests.length, 'requests');
+          if (badge) {
+            badge.textContent = "✅ Source: API";
+            badge.className = "badge badge-completed";
+          }
+        } else {
+          data = fallbackData;
+          console.log('[Public Dashboard] Using fallback data:', data.demo_requests.length, 'requests');
+          if (badge) {
+            badge.textContent = "⚠️ Source: Fallback";
+            badge.className = "badge badge-info";
+          }
+        }
+      } catch (e) {
+        console.error('[Public Dashboard] Error loading data:', e);
+        data = fallbackData;
+        if (badge) {
+          badge.textContent = "⚠️ Source: Fallback";
+          badge.className = "badge badge-info";
+        }
       }
-    } else {
-      data = fallbackData;
-      if (badge) {
-        badge.textContent = "Source: Fallback";
-        badge.className = "px-2 py-1 text-xs rounded bg-blue-100 text-blue-800";
-      }
+
+      const items = data.demo_requests;
+
+      // Clear table body before re-render
+      const tbody = document.querySelector("#requestsTable tbody");
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align: center; padding: 2rem;">Loading demo requests...</td>
+        </tr>
+      `;
+
+      // Render table
+      renderTable(items);
+
+      // Render charts
+      const typeCtx = document.getElementById("typeChart");
+      const monthlyCtx = document.getElementById("monthlyChart");
+      renderTypeChart(typeCtx, items);
+      renderMonthlyChart(monthlyCtx, items);
+      
+      console.log('[Public Dashboard] Rendering complete');
     }
-  } catch (e) {
-    data = fallbackData;
-    if (badge) {
-      badge.textContent = "Source: Fallback";
-      badge.className = "px-2 py-1 text-xs rounded bg-blue-100 text-blue-800";
-    }
-  }
 
-  const items = data.demo_requests;
-
-  // Clear table body before re-render
-  const tbody = document.querySelector("#requestsTable tbody");
-  tbody.innerHTML = `
-    <tr>
-      <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Loading demo requests...</td>
-    </tr>
-  `;
-
-  // Render table
-  renderTable(items);
-
-  // Render charts
-  const typeCtx = document.getElementById("typeChart");
-  const monthlyCtx = document.getElementById("monthlyChart");
-  renderTypeChart(typeCtx, items);
-  renderMonthlyChart(monthlyCtx, items);
-}
-
+  </script>
+  
+  <!-- Required Scripts - Load before initialization -->
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  
+  <!-- Initialize after scripts are loaded -->
+  <script>
     document.addEventListener("DOMContentLoaded", () => {
+      console.log('[Public Dashboard] Page loaded');
+      
+      // Initialize navbar (public page - no auth required)
+      const auth = checkAuth();
+      const navbar = new Navbar('app-navbar', auth);
+      navbar.init();
+      
+      // Load data
       loadDataAndRender();
 
+      // Refresh button
       const refreshBtn = document.getElementById("refreshBtn");
       refreshBtn.addEventListener("click", () => {
+        console.log('[Public Dashboard] Refresh clicked');
+        showToast('Refreshing data...', 'info');
         loadDataAndRender();
       });
     });

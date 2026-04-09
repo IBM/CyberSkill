@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: cyberskill-db
+    environment:
+      POSTGRES_DB: cyberskill
+      POSTGRES_USER: cyberskill_user
+      POSTGRES_PASSWORD: changeme
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cyberskill-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cyberskill_user -d cyberskill"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # CyberSkill Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cyberskill-app
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=cyberskill
+      - DATABASE_USERNAME=cyberskill_user
+      - DATABASE_PASSWORD=changeme
+      - SERVER_PORT=8080
+      - SERVER_HOST=0.0.0.0
+      - JWT_SECRET=${JWT_SECRET:-CHANGE_THIS_SECRET_IN_PRODUCTION}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - cyberskill-network
+    restart: unless-stopped
+    volumes:
+      - app_logs:/app/logs
+      - certificates:/app/certificates
+      - content:/app/content
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: cyberskill-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app
+    networks:
+      - cyberskill-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local
+  app_logs:
+    driver: local
+  certificates:
+    driver: local
+  content:
+    driver: local
+
+networks:
+  cyberskill-network:
+    driver: bridge
+
+# Made with Bob

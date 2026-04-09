@@ -3,270 +3,603 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Request Form</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen bg-gray-50">
-<div id="toast-container" class="fixed top-4 right-4 space-y-2 z-50"></div>
-
-      <script>
-    class CustomNavbar extends HTMLElement {
-      connectedCallback() {
-        this.innerHTML = `
-          <nav class="bg-white border-b border-gray-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div class="flex justify-between h-16">
-                <div class="flex">
-                  <a href="#" class="flex items-center">
-                    <span class="text-xl font-bold text-indigo-600">Demo Hub</span>
-                  </a>
-                </div>
-                <div class="flex items-center space-x-6">
-                  <a href="demodashboard.html" class="text-gray-600 hover:text-gray-900 text-sm">Dashboard</a>
-                  <a href="demorequest.html" class="text-gray-600 hover:text-gray-900 text-sm">Request Form</a>
-                  
-                </div>
-              </div>
-            </div>
-          </nav>
-        `;
+    <title>New Demo Request - DemoDepot</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/toast.css">
+    <style>
+      body {
+        background: linear-gradient(135deg, #f4f4f4 0%, #e0e0e0 100%);
+        font-family: 'IBM Plex Sans', sans-serif;
+        min-height: 100vh;
       }
-    }
-    customElements.define('custom-navbar', CustomNavbar);
-  </script>
-      <custom-navbar></custom-navbar>
-    <div class="container mx-auto px-4 py-12">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-12">
-                <h1 class="text-4xl font-bold mb-4 text-gray-800">Demo Request Form</h1>
-                <p class="text-lg text-gray-600">Submit your demo request details</p>
-            </div>
-	<!--<div id="info-banner" class="mb-6 p-4 rounded-lg bg-blue-100 border border-blue-300 text-blue-800 flex justify-between items-center">
-  <span>
-    <strong>Important:</strong> Drafts capability will come soon and then can be saved without file uploads. 
-    Full submissions require attaching files where applicable.
-  </span>
-  <button id="close-banner" class="ml-4 text-blue-800 hover:text-blue-600 font-bold">X</button>
-</div>  -->
-
-	
-            <form class="bg-white rounded-xl shadow-lg overflow-hidden p-8" id="demoRequestForm" enctype="multipart/form-data">
-                <div class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">PM Owner Name*</label>
-                            <input type="text" name="pm_owner" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter PM owner name">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Demo Type*</label>
-                            <input type="text" name="demo_type" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter demo type">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Date*</label>
-                            <input type="date" name="delivery_date" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Name*</label>
-                            <input type="text" name="product_name" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter product name">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Title*</label>
-                        <input type="text" name="title" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter title">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Sub Title</label>
-                        <input type="text" name="subtitle" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter sub title">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Value Proposition*</label>
-                        <textarea name="value_proposition" rows="4" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Describe the value proposition"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Feature Focus*</label>
-                        <textarea name="feature_focus" rows="4" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Describe the feature focus"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Flow Sequence*</label>
-                        <textarea name="flow_sequence" rows="4" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Describe the flow sequence"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Existing Docs</label>
-                        <input type="file" name="existing_docs" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">URL For Demo System</label>
-                        <input type="url" name="demo_url" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent" placeholder="Enter demo URL">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Demo Script</label>
-                        <input type="file" name="demo_script" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-opacity-50 focus:border-transparent">
-                    </div>
-                </div>
-
-                <button type="submit" class="mt-8 w-full bg-primary-500 hover:bg-primary-600 text-black font-medium py-3 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 shadow-md">
-                    Submit Request
-                </button>
-        <!--     <button type="button" id="saveDraftBtn" class="mt-8 w-full bg-primary-500 hover:bg-primary-600 text-black font-medium py-3 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 shadow-md">Save Draft</button>  
-              -->
-            </form>
-        </div>
+      
+      .form-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+      
+      .form-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+      
+      .form-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #161616;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+      }
+      
+      .form-header p {
+        font-size: 1.125rem;
+        color: #525252;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      .form-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        padding: 3rem;
+        border-top: 4px solid #0f62fe;
+      }
+      
+      .form-section {
+        margin-bottom: 2.5rem;
+      }
+      
+      .form-section:last-of-type {
+        margin-bottom: 0;
+      }
+      
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #161616;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .form-grid {
+        display: grid;
+        gap: 1.75rem;
+      }
+      
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.75rem;
+      }
+      
+      .form-field {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .form-field.full-width {
+        grid-column: 1 / -1;
+      }
+      
+      .form-label {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: #161616;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+      
+      .required-mark {
+        color: #da1e28;
+        font-weight: 700;
+      }
+      
+      .field-icon {
+        font-size: 1rem;
+      }
+      
+      .form-input, .form-textarea {
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 0.9375rem;
+        font-family: inherit;
+        transition: all 0.2s;
+        background: #fafafa;
+        color: #161616;
+      }
+      
+      .form-input::placeholder, .form-textarea::placeholder {
+        color: #6f6f6f;
+        opacity: 1;
+      }
+      
+      .form-input:hover, .form-textarea:hover {
+        background: white;
+        border-color: #c6c6c6;
+      }
+      
+      .form-input:focus, .form-textarea:focus {
+        outline: none;
+        background: white;
+        border-color: #0f62fe;
+        box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.1);
+      }
+      
+      /* Auto-filled email field styling */
+      #requester_email {
+        background: #e8f4fd;
+        border-color: #0f62fe;
+        color: #161616;
+        font-weight: 500;
+      }
+      
+      #requester_email::placeholder {
+        color: #525252;
+        opacity: 0.7;
+      }
+      
+      .form-textarea {
+        resize: vertical;
+        min-height: 120px;
+        line-height: 1.6;
+      }
+      
+      .form-help {
+        font-size: 0.8125rem;
+        color: #6f6f6f;
+        margin-top: 0.375rem;
+        font-style: italic;
+      }
+      
+      .file-input-wrapper {
+        position: relative;
+      }
+      
+      .form-input[type="file"] {
+        cursor: pointer;
+      }
+      
+      .submit-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e0e0e0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      
+      .submit-btn, .draft-btn {
+        padding: 1.125rem 2rem;
+        border-radius: 8px;
+        font-size: 1.125rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+      }
+      
+      .submit-btn {
+        background: linear-gradient(135deg, #0f62fe 0%, #0043ce 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(15, 98, 254, 0.3);
+      }
+      
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(15, 98, 254, 0.4);
+      }
+      
+      .submit-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(15, 98, 254, 0.3);
+      }
+      
+      .draft-btn {
+        background: white;
+        color: #0f62fe;
+        border: 2px solid #0f62fe;
+      }
+      
+      .draft-btn:hover {
+        background: #e8f4fd;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(15, 98, 254, 0.2);
+      }
+      
+      .draft-btn:active {
+        transform: translateY(0);
+      }
+      
+      @media (max-width: 768px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        
+        .form-card {
+          padding: 2rem 1.5rem;
+        }
+        
+        .form-header h1 {
+          font-size: 2rem;
+        }
+        
+        .section-title {
+          font-size: 1.125rem;
+        }
+      }
+    </style>
+</head>
+<body>
+  <!-- Dynamic Navbar -->
+  <div id="app-navbar"></div>
+  
+  <div id="toast-container"></div>
+  
+  <div class="form-container">
+    <div class="form-header">
+      <h1><span>📝</span> New Demo Request</h1>
+      <p>Fill out the form below to submit your demo request. Fields marked with <span class="required-mark">*</span> are required.</p>
     </div>
 
-    <script src="script.js"></script>
-    <script>
+    <div class="form-card">
+      <form id="demoRequestForm" enctype="multipart/form-data">
+        
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h2 class="section-title"><span>👤</span> Basic Information</h2>
+          <div class="form-grid">
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">
+                  <span class="field-icon">👨‍💼</span>
+                  PM Owner Name
+                  <span class="required-mark">*</span>
+                </label>
+                <input type="text" name="pm_owner" required class="form-input" placeholder="John Doe">
+                <span class="form-help">Enter the name of the project manager</span>
+              </div>
+              <div class="form-field">
+                <label class="form-label">
+                  <span class="field-icon">🏷️</span>
+                  Demo Type
+                  <span class="required-mark">*</span>
+                </label>
+                <input type="text" name="demo_type" required class="form-input" placeholder="e.g., Product Demo, Sales Demo">
+                <span class="form-help">Specify the type of demonstration</span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">
+                  <span class="field-icon">📅</span>
+                  Delivery Date
+                  <span class="required-mark">*</span>
+                </label>
+                <input type="date" name="delivery_date" required class="form-input">
+                <span class="form-help">When do you need this demo?</span>
+              </div>
+              <div class="form-field">
+                <label class="form-label">
+                  <span class="field-icon">📦</span>
+                  Product Name
+                  <span class="required-mark">*</span>
+                </label>
+                <input type="text" name="product_name" required class="form-input" placeholder="IBM Product Name">
+                <span class="form-help">Name of the product being demonstrated</span>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">
+                  <span class="field-icon">📧</span>
+                  Your Email
+                  <span class="required-mark">*</span>
+                </label>
+                <input type="email" name="requester_email" id="requester_email" required class="form-input" placeholder="your.email@example.com">
+                <span class="form-help">Your contact email (auto-filled from your account)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demo Details Section -->
+        <div class="form-section">
+          <h2 class="section-title"><span>📋</span> Demo Details</h2>
+          <div class="form-grid">
+            <div class="form-field full-width">
+              <label class="form-label">
+                <span class="field-icon">✏️</span>
+                Title
+                <span class="required-mark">*</span>
+              </label>
+              <input type="text" name="title" required class="form-input" placeholder="Enter a descriptive title for your demo">
+              <span class="form-help">A clear, concise title for the demonstration</span>
+            </div>
+
+            <div class="form-field full-width">
+              <label class="form-label">
+                <span class="field-icon">📝</span>
+                Sub Title
+              </label>
+              <input type="text" name="subtitle" class="form-input" placeholder="Optional subtitle or tagline">
+              <span class="form-help">Additional context or tagline (optional)</span>
+            </div>
+
+            <div class="form-field full-width">
+              <label class="form-label">
+                <span class="field-icon">💡</span>
+                Value Proposition
+                <span class="required-mark">*</span>
+              </label>
+              <textarea name="value_proposition" required class="form-textarea" placeholder="Describe the key value and benefits this demo will showcase..."></textarea>
+              <span class="form-help">Explain the main value and benefits of this demonstration</span>
+            </div>
+
+            <div class="form-field full-width">
+              <label class="form-label">
+                <span class="field-icon">🎯</span>
+                Feature Focus
+                <span class="required-mark">*</span>
+              </label>
+              <textarea name="feature_focus" required class="form-textarea" placeholder="List the key features that will be highlighted..."></textarea>
+              <span class="form-help">Specify which features will be demonstrated</span>
+            </div>
+
+            <div class="form-field full-width">
+              <label class="form-label">
+                <span class="field-icon">🔄</span>
+                Flow Sequence
+                <span class="required-mark">*</span>
+              </label>
+              <textarea name="flow_sequence" required class="form-textarea" placeholder="Describe the step-by-step flow of the demonstration..."></textarea>
+              <span class="form-help">Outline the sequence of steps in the demo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resources Section -->
+        <div class="form-section">
+          <h2 class="section-title"><span>📎</span> Resources & Links</h2>
+          <div class="form-grid">
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">
+                  <span class="field-icon">📄</span>
+                  Existing Documentation
+                </label>
+                <div class="file-input-wrapper">
+                  <input type="file" name="existing_docs" class="form-input" accept=".pdf,.doc,.docx,.txt">
+                </div>
+                <span class="form-help">Upload any existing documentation (PDF, DOC, TXT)</span>
+              </div>
+              <div class="form-field">
+                <label class="form-label">
+                  <span class="field-icon">📜</span>
+                  Demo Script
+                </label>
+                <div class="file-input-wrapper">
+                  <input type="file" name="demo_script" class="form-input" accept=".pdf,.doc,.docx,.txt">
+                </div>
+                <span class="form-help">Upload the demo script if available</span>
+              </div>
+            </div>
+
+            <div class="form-field full-width">
+              <label class="form-label">
+                <span class="field-icon">🔗</span>
+                Demo System URL
+              </label>
+              <input type="url" name="demo_url" class="form-input" placeholder="https://demo.example.com">
+              <span class="form-help">Link to the demo system or environment (if applicable)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="submit-section">
+          <button type="button" id="saveDraftBtn" class="draft-btn">
+            <span>💾</span>
+            <span>Save as Draft</span>
+          </button>
+          <button type="submit" class="submit-btn">
+            <span>🚀</span>
+            <span>Submit Demo Request</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    console.log('[Demo Request] Page loaded');
+
+    // Check authentication on page load
+    const auth = checkAuth();
+    if (!auth.isAuthenticated) {
+      console.log('[Demo Request] Not authenticated, redirecting to login');
+      toast.warning('Please login to submit a demo request');
+      setTimeout(() => window.location.href = '/login.html', 1500);
+    } else {
+      console.log('[Demo Request] User authenticated:', auth.username);
+      
+      // Auto-fill email field from localStorage
+      const userEmail = localStorage.getItem('email') || localStorage.getItem('username') || '';
+      const emailField = document.getElementById('requester_email');
+      if (emailField && userEmail) {
+        emailField.value = userEmail;
+        console.log('[Demo Request] Auto-filled email:', userEmail);
+      }
+      
+      // Initialize navbar
+      const navbar = new Navbar('app-navbar', auth);
+      navbar.init();
+      
+      // Check if editing a draft
+      const urlParams = new URLSearchParams(window.location.search);
+      const editId = urlParams.get('edit');
+      if (editId) {
+        console.log('[Demo Request] Loading draft for editing:', editId);
+        loadDraft(editId);
+      }
+    }
+
+    // Load draft data into form
+    async function loadDraft(id) {
+      const loadingToast = toast.loading('Loading draft...');
+      
+      try {
+        const data = await authFetch(`/api/demo-requests/${id}`);
+        toast.removeLoading(loadingToast);
+        
+        console.log('[Demo Request] Draft data loaded:', data);
+        const draft = data.demo_request;
+        
+        // Fill form fields
+        document.querySelector('[name="pm_owner"]').value = draft.pm_owner || '';
+        document.querySelector('[name="demo_type"]').value = draft.demo_type || '';
+        document.querySelector('[name="product_name"]').value = draft.product_name || '';
+        document.querySelector('[name="delivery_date"]').value = draft.delivery_date || '';
+        document.querySelector('[name="title"]').value = draft.title || '';
+        document.querySelector('[name="subtitle"]').value = draft.subtitle || '';
+        document.querySelector('[name="value_proposition"]').value = draft.value_proposition || '';
+        document.querySelector('[name="feature_focus"]').value = draft.feature_focus || '';
+        document.querySelector('[name="flow_sequence"]').value = draft.flow_sequence || '';
+        document.querySelector('[name="demo_url"]').value = draft.demo_url || '';
+        document.querySelector('[name="requester_email"]').value = draft.requester_email || '';
+        
+        // Update page title
+        document.querySelector('.form-header h1').innerHTML = '<span>✏️</span> Edit Draft Demo Request';
+        document.querySelector('.form-header p').textContent = 'Continue editing your draft demo request. You can save it again or submit it.';
+        
+        // Store draft ID for update
+        document.getElementById('demoRequestForm').dataset.draftId = id;
+        
+        toast.success('Draft loaded successfully');
+      } catch (err) {
+        console.error('[Demo Request] Error loading draft:', err);
+        toast.removeLoading(loadingToast);
+        toast.error('Failed to load draft');
+      }
+    }
+
+    // Form submission handler
     document.getElementById("demoRequestForm").addEventListener("submit", async (e) => {
-    	  e.preventDefault();
-    	  const form = e.target;
-    	  const formData = new FormData(form);
+      e.preventDefault();
+      console.log('[Demo Request] Form submitted');
+      
+      const form = e.target;
+      const formData = new FormData(form);
+      const draftId = form.dataset.draftId;
 
-    	  // Info toast about full submit rules
-    	  showToast("Full submits accept file uploads. Ensure required files are attached.", "info");
+      const loadingToast = toast.loading(draftId ? "Updating demo request..." : "Submitting your demo request...");
 
-    	  try {
-    	    const res = await fetch("/api/create-demo-requests", {
-    	      method: "POST",
-    	      body: formData
-    	    });
+      try {
+        // Use regular fetch for FormData (file uploads), not authFetch
+        const token = localStorage.getItem('token');
+        
+        // If editing a draft, use PUT to update; otherwise POST to create
+        const url = draftId ? `/api/demo-requests/${draftId}` : "/api/create-demo-requests";
+        const method = draftId ? "PUT" : "POST";
+        
+        // For updates, set status to submitted
+        if (draftId) {
+          formData.append('status', 'submitted');
+        }
+        
+        const res = await fetch(url, {
+          method: method,
+          headers: {
+            'Authorization': `Bearer ${token}`
+            // Don't set Content-Type - browser will set it with boundary for FormData
+          },
+          body: formData
+        });
 
-    	    const result = await res.json();
-    	    if (res.ok) {
-    	      showToast("Demo request created with ID: " + result.id, "success");
-    	    } else {
-    	      showToast("Error: " + result.error, "error");
-    	    }
-    	  } catch (err) {
-    	    showToast("Network error: " + err.message, "error");
-    	  }
-    	});
+        const result = await res.json();
+        console.log('[Demo Request] Server response:', result);
+        
+        toast.removeLoading(loadingToast);
+        
+        if (res.ok) {
+          toast.success(draftId ? `✅ Demo request updated and submitted!` : `✅ Demo request created successfully! ID: ${result.id}`);
+          setTimeout(() => window.location.href = '/loggedIn/user-dashboard.html', 2000);
+        } else {
+          toast.error(`❌ Error: ${result.error}`);
+        }
+      } catch (err) {
+        console.error('[Demo Request] Network error:', err);
+        toast.removeLoading(loadingToast);
+        toast.error(`❌ Network error: ${err.message}`);
+      }
+    });
 
-    
+    // Save as Draft handler
     document.getElementById("saveDraftBtn").addEventListener("click", async () => {
-    	  const form = document.getElementById("demoRequestForm");
-    	  const formData = new FormData(form);
-    	  const jsonData = {};
+      console.log('[Demo Request] Saving as draft');
+      
+      const form = document.getElementById("demoRequestForm");
+      const formData = new FormData(form);
+      const draftId = form.dataset.draftId;
+      
+      // Add status=draft to the form data
+      formData.append('status', 'draft');
 
-    	  formData.forEach((value, key) => {
-    	    if (!(value instanceof File)) {
-    	      jsonData[key] = typeof value === "string" ? value.trim() : value;
-    	    }
-    	  });
+      const loadingToast = toast.loading(draftId ? "Updating draft..." : "Saving draft...");
 
-    	  // Add dummy defaults for required fields
-    	  const defaults = {
-    	    pm_owner: "Unknown Owner",
-    	    demo_type: "Draft Type",
-    	    product_name: "Draft Product",
-    	    delivery_date: "2099-01-01",
-    	    title: "Untitled Draft",
-    	    value_proposition: "TBD",
-    	    feature_focus: "TBD",
-    	    flow_sequence: "TBD"
-    	  };
-    	  Object.keys(defaults).forEach(field => {
-    	    if (!jsonData[field] || jsonData[field].trim() === "") {
-    	      jsonData[field] = defaults[field];
-    	    }
-    	  });
+      try {
+        const token = localStorage.getItem('token');
+        
+        // If editing a draft, use PUT to update; otherwise POST to create
+        const url = draftId ? `/api/demo-requests/${draftId}` : "/api/create-demo-requests";
+        const method = draftId ? "PUT" : "POST";
+        
+        const res = await fetch(url, {
+          method: method,
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
 
-    	  jsonData.existing_docs_path = "";
-    	  jsonData.demo_script_path = "";
-
-    	  try {
-    	    const res = await fetch("/api/demo-requests/draft", {
-    	      method: "POST",
-    	      headers: { "Content-Type": "application/json" },
-    	      body: JSON.stringify(jsonData)
-    	    });
-    	    const result = await res.json();
-    	    if (res.ok) {
-    	      showToast("Draft saved with ID: " + result.id, "success");
-    	      localStorage.setItem("draftId", result.id);
-    	    } else {
-    	      showToast("Error: " + result.error, "error");
-    	    }
-    	  } catch (err) {
-    	    showToast("Network error: " + err.message, "error");
-    	  }
-    	});
-
-
-
-    function showToast(message, type="info") {
-    	  const container = document.getElementById("toast-container");
-    	  const toast = document.createElement("div");
-    	  const colors = {
-    	    info: "bg-blue-500",
-    	    success: "bg-green-500",
-    	    error: "bg-red-500",
-    	    warning: "bg-yellow-500"
-    	  };
-    	  toast.className = `${colors[type]} text-white px-4 py-2 rounded shadow-md animate-fade-in`;
-    	  toast.textContent = message;
-    	  container.appendChild(toast);
-
-    	  setTimeout(() => {
-    	    toast.classList.add("opacity-0", "transition-opacity", "duration-500");
-    	    setTimeout(() => toast.remove(), 500);
-    	  }, 3000);
-    	}
-    document.getElementById("close-banner").addEventListener("click", () => {
-    	  const banner = document.getElementById("info-banner");
-    	  banner.style.display = "none";
-    	});
-
-    window.addEventListener("DOMContentLoaded", async () => {
-    	  const draftId = localStorage.getItem("draftId");
-    	  if (!draftId) return; // nothing to load
-
-    	  try {
-    	    const res = await fetch(`/api/demo-requests/draft/${draftId}`);
-    	    if (!res.ok) {
-    	      console.warn("No draft found:", await res.text());
-    	      return;
-    	    }
-    	    const draft = await res.json();
-
-    	    // Fill form fields with draft data or dummy defaults
-    	    const form = document.getElementById("demoRequestForm");
-    	    const defaults = {
-    	      pm_owner: "Unknown Owner",
-    	      demo_type: "Draft Type",
-    	      product_name: "Draft Product",
-    	      delivery_date: "2099-01-01",
-    	      title: "Untitled Draft",
-    	      subtitle: "",
-    	      value_proposition: "TBD",
-    	      feature_focus: "TBD",
-    	      flow_sequence: "TBD",
-    	      demo_url: ""
-    	    };
-
-    	    Object.keys(defaults).forEach(field => {
-    	      const input = form.querySelector(`[name="${field}"]`);
-    	      if (input) {
-    	        input.value = draft[field] && draft[field].trim() !== ""
-    	          ? draft[field]
-    	          : defaults[field];
-    	      }
-    	    });
-    	  } catch (err) {
-    	    console.error("Error loading draft:", err);
-    	  }
-    	});
-
-</script>
+        const result = await res.json();
+        console.log('[Demo Request] Draft save response:', result);
+        
+        toast.removeLoading(loadingToast);
+        
+        if (res.ok) {
+          toast.success(draftId ? `💾 Draft updated successfully!` : `💾 Draft saved successfully! You can continue editing later.`);
+          setTimeout(() => window.location.href = '/loggedIn/user-dashboard.html', 2000);
+        } else {
+          toast.error(`❌ Error: ${result.error}`);
+        }
+      } catch (err) {
+        console.error('[Demo Request] Draft save error:', err);
+        toast.removeLoading(loadingToast);
+        toast.error(`❌ Network error: ${err.message}`);
+      }
+    });
+  </script>
 </body>
 </html>

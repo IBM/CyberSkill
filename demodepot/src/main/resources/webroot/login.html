@@ -4,28 +4,33 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>DemoDepot — Sign up / Sign in</title>
+  <link rel="stylesheet" href="/css/toast.css">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+    
     :root{
-      --bg:#f6f8fa;
+      /* IBM Design Language Colors */
+      --bg:#f4f4f4;
       --card:#ffffff;
-      --accent:#2563eb;
-      --muted:#6b7280;
-      --success:#16a34a;
-      --danger:#dc2626;
-      --radius:12px;
+      --accent:#0f62fe;
+      --accent-hover:#0043ce;
+      --muted:#525252;
+      --success:#24a148;
+      --danger:#da1e28;
+      --radius:4px;
       --max-width:920px;
       --gap:18px;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
     html,body{height:100%}
     body{
       margin:0;
-      background:linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%);
+      background:#f4f4f4;
       display:flex;
       align-items:center;
       justify-content:center;
       padding:32px;
-      color:#0f172a;
+      color:#161616;
     }
     .container{
       width:100%;
@@ -40,8 +45,9 @@
     .hero{
       padding:32px;
       border-radius:var(--radius);
-      background:linear-gradient(180deg, rgba(37,99,235,0.06), rgba(99,102,241,0.02));
-      box-shadow: 0 6px 20px rgba(2,6,23,0.06);
+      background:linear-gradient(135deg, #0f62fe 0%, #4589ff 100%);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      color: white;
     }
     .logo{
       display:flex;
@@ -50,88 +56,107 @@
       margin-bottom:18px;
     }
     .logo .mark{
-      width:48px;height:48px;border-radius:10px;background:var(--accent);
-      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;
-      box-shadow: 0 6px 18px rgba(37,99,235,0.18);
+      width:48px;height:48px;border-radius:var(--radius);background:white;
+      display:flex;align-items:center;justify-content:center;color:#0f62fe;font-weight:700;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    h1{margin:0 0 8px 0;font-size:28px}
-    p.lead{margin:0;color:var(--muted);line-height:1.5}
+    h1{margin:0 0 8px 0;font-size:28px;color:white}
+    p.lead{margin:0;color:white;line-height:1.5}
 
     /* Right card */
     .card{
       background:var(--card);
       border-radius:var(--radius);
-      padding:22px;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.06);
+      padding:24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    .tabs{display:flex;gap:8px;margin-bottom:18px}
+    .tabs{display:flex;gap:4px;margin-bottom:18px;background:#e0e0e0;padding:4px;border-radius:var(--radius)}
     .tab{
       flex:1;
       text-align:center;
       padding:10px 12px;
-      border-radius:10px;
+      border-radius:var(--radius);
       cursor:pointer;
       font-weight:600;
       color:var(--muted);
       background:transparent;
-      border:1px solid transparent;
+      border:none;
+      transition: all 0.2s;
     }
     .tab.active{
-      background:linear-gradient(90deg, rgba(37,99,235,0.08), rgba(99,102,241,0.04));
-      color:var(--accent);
-      border-color:rgba(37,99,235,0.08);
+      background:white;
+      color:#161616;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
-    form{display:grid;gap:12px}
-    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    form{display:grid;gap:16px}
+    label{font-size:14px;color:#161616;display:block;margin-bottom:8px;font-weight:600}
     input[type="text"], input[type="password"], input[type="email"]{
       width:100%;
-      padding:10px 12px;
-      border-radius:8px;
-      border:1px solid #e6edf3;
+      padding:12px;
+      border-radius:var(--radius);
+      border:1px solid #c6c6c6;
       background:#fff;
       font-size:14px;
       box-sizing:border-box;
+      font-family: inherit;
+      transition: border-color 0.2s;
     }
-    .row{display:flex;gap:10px}
+    input[type="text"]:hover, input[type="password"]:hover, input[type="email"]:hover{
+      border-color:#8d8d8d;
+    }
+    input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus{
+      outline:none;
+      border-color:#0f62fe;
+      box-shadow: 0 0 0 2px rgba(15,98,254,0.1);
+    }
+    .row{display:flex;gap:12px}
     .row .col{flex:1}
 
-    .actions{display:flex;gap:10px;align-items:center;margin-top:6px}
+    .actions{display:flex;gap:12px;align-items:center;margin-top:8px}
     button.primary{
       background:var(--accent);
       color:white;
       border:none;
-      padding:10px 14px;
-      border-radius:8px;
+      padding:12px 16px;
+      border-radius:var(--radius);
       cursor:pointer;
       font-weight:600;
+      font-size:14px;
+      transition: background 0.2s;
+    }
+    button.primary:hover{
+      background:var(--accent-hover);
     }
     button.ghost{
       background:transparent;
-      border:1px solid #e6edf3;
-      padding:10px 12px;
-      border-radius:8px;
+      border:1px solid #c6c6c6;
+      padding:12px 16px;
+      border-radius:var(--radius);
       cursor:pointer;
+      font-weight:600;
+      transition: all 0.2s;
+    }
+    button.ghost:hover{
+      background:#f4f4f4;
+      border-color:#8d8d8d;
     }
 
     .muted{color:var(--muted);font-size:13px}
-    .hint{font-size:13px;color:var(--muted);margin-top:6px}
-    .small{font-size:12px;color:#94a3b8}
+    .hint{font-size:13px;color:var(--muted);margin-top:8px}
+    .small{font-size:12px;color:#6f6f6f}
+    .hero .small{color:rgba(255,255,255,0.95)}
 
     .password-row{display:flex;gap:8px;align-items:center}
-    .toggle-pass{background:transparent;border:none;color:var(--muted);cursor:pointer;padding:6px;border-radius:6px}
+    .toggle-pass{background:transparent;border:none;color:var(--muted);cursor:pointer;padding:6px;border-radius:var(--radius)}
 
     .strength{
-      height:8px;border-radius:6px;background:#f1f5f9;overflow:hidden;margin-top:6px;
+      height:4px;border-radius:2px;background:#e0e0e0;overflow:hidden;margin-top:8px;
     }
-    .strength > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#ef4444,#f59e0b,#10b981);transition:width .25s ease}
-
-    .toast{
-      position:fixed;right:20px;bottom:20px;background:#111827;color:white;padding:10px 14px;border-radius:8px;box-shadow:0 8px 30px rgba(2,6,23,0.3);
-      z-index:9999;font-size:13px;
-    }
+    .strength > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#da1e28,#f1c21b,#24a148);transition:width .25s ease}
 
     .link{color:var(--accent);cursor:pointer;text-decoration:underline}
+    .link:hover{color:var(--accent-hover)}
 
     /* Responsive */
     @media (max-width:900px){
@@ -153,9 +178,9 @@
 
       <h1>Sign in or create an account</h1>
       <p class="lead">Securely sign up and sign in to manage your demos. Each user only sees demos they own. Tokens are stored locally for convenience.</p>
-      <div style="margin-top:18px" class="muted">
+      <div style="margin-top:18px;color:white">
         <div><strong>Quick tips</strong></div>
-        <ul style="margin:8px 0 0 18px;color:var(--muted)">
+        <ul style="margin:8px 0 0 18px;color:white">
           <li>Use a valid email as your username.</li>
           <li>Passwords should be at least 8 characters.</li>
           <li>Sign up once, then use the token to access protected endpoints.</li>
@@ -201,7 +226,16 @@
           <label for="signup-username">Email</label>
           <input id="signup-username" name="username" type="email" required placeholder="you@example.com" />
         </div>
-
+<div class="row">
+  <div class="col">
+    <label for="signup-fullname">Full Name</label>
+    <input id="signup-fullname" name="full_name" type="text" required placeholder="John Doe" />
+  </div>
+  <div class="col">
+    <label for="signup-email">Email</label>
+    <input id="signup-email" name="email" type="email" required placeholder="you@example.com" />
+  </div>
+</div>
         <div>
           <label for="signup-password">Password</label>
           <div class="password-row">
@@ -225,15 +259,9 @@
     </div>
   </div>
 
+  <script src="/js/toast.js"></script>
   <script>
-    // Simple toast
-    function showToast(msg, timeout = 3500) {
-      const t = document.createElement('div');
-      t.className = 'toast';
-      t.textContent = msg;
-      document.body.appendChild(t);
-      setTimeout(() => t.remove(), timeout);
-    }
+    console.log('[Login Page] Initializing...');
 
     // Tab switching
     const tabLogin = document.getElementById('tab-login');
@@ -287,24 +315,31 @@
       else pwBar.style.background = '#10b981';
     });
 
-    // Auth helper: store token and pm_owner
-    function saveAuth(token, pm_owner) {
-      localStorage.setItem('jwt', token);
-      if (pm_owner) localStorage.setItem('pm_owner', pm_owner);
-    }
-    function authFetch(url, options = {}) {
-      options.headers = options.headers || {};
-      const token = localStorage.getItem('jwt');
-      if (token) options.headers['Authorization'] = 'Bearer ' + token;
-      return fetch(url, options);
-    }
+    // Auth helper: store token and user info
+    function saveAuth(token, username, role, email, fullName) {
+       console.log('[Auth] Saving credentials:', { username,email, role, tokenLength: token?.length });
+  localStorage.setItem('token', token);
+  localStorage.setItem('username', username);
+  localStorage.setItem('role', role);
+  localStorage.setItem('email', email || username);
+  localStorage.setItem('fullName', fullName || username);
+  toast.success(`Welcome ${fullName || username}!`);
+}
 
     // Login submit
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const username = document.getElementById('login-username').value.trim();
       const password = document.getElementById('login-password').value;
-      if (!username || !password) { showToast('Please enter username and password'); return; }
+      
+      console.log('[Login] Attempting login for:', username);
+      
+      if (!username || !password) {
+        toast.warning('Please enter username and password');
+        return;
+      }
+
+      const loadingToast = toast.loading('Signing in...');
 
       try {
         const res = await fetch('/api/login', {
@@ -312,17 +347,32 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
         });
+        
+        console.log('[Login] Response status:', res.status);
         const json = await res.json();
+        console.log('[Login] Response data:', json);
+        
+        toast.removeLoading(loadingToast);
+        
         if (res.ok && json.token) {
-          saveAuth(json.token, json.pm_owner || username);
-          showToast('Signed in successfully');
-          // redirect or refresh to load protected UI
-          setTimeout(() => location.reload(), 600);
+          saveAuth(json.token, json.username, json.role, json.email, json.fullName);
+          console.log('[Login] Success! Redirecting to dashboard...');
+          
+          // Redirect based on role
+          setTimeout(() => {
+            const redirectUrl = json.role === 'admin' ? '/loggedIn/admin-dashboard.html' : '/loggedIn/user-dashboard.html';
+            console.log('[Login] Redirecting to:', redirectUrl);
+            window.location.href = redirectUrl;
+          }, 1000);
         } else {
-          showToast('Sign in failed: ' + (json.error || res.statusText));
+          const errorMsg = json.error || json.message || res.statusText || 'Login failed';
+          console.error('[Login] Failed:', errorMsg);
+          toast.error('Sign in failed: ' + errorMsg);
         }
       } catch (err) {
-        showToast('Network error: ' + err.message);
+        console.error('[Login] Exception:', err);
+        toast.removeLoading(loadingToast);
+        toast.error('Network error: ' + err.message);
       }
     });
 
@@ -331,32 +381,65 @@
       e.preventDefault();
       const username = document.getElementById('signup-username').value.trim();
       const password = document.getElementById('signup-password').value;
-      if (!username || !password) { showToast('Please enter username and password'); return; }
-      if (password.length < 8) { showToast('Password must be at least 8 characters'); return; }
+      
+      console.log('[Signup] Attempting signup for:', username);
+      
+      if (!username || !password) {
+        toast.warning('Please enter username and password');
+        return;
+      }
+      if (password.length < 8) {
+        toast.warning('Password must be at least 8 characters');
+        return;
+      }
+
+      const loadingToast = toast.loading('Creating account...');
 
       try {
         const res = await fetch('/api/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ 
+  username, 
+  password,
+  email: document.getElementById('signup-email').value.trim(),
+  full_name: document.getElementById('signup-fullname').value.trim()
+})
         });
+        
+        console.log('[Signup] Response status:', res.status);
         const json = await res.json();
+        console.log('[Signup] Response data:', json);
+        
+        toast.removeLoading(loadingToast);
+        
         if (res.ok && json.token) {
-          saveAuth(json.token, json.pm_owner || username);
-          showToast('Account created and signed in');
-          setTimeout(() => location.reload(), 600);
+          saveAuth(json.token, json.username, json.role, json.email, json.fullName);
+          console.log('[Signup] Success! Redirecting to dashboard...');
+          
+          setTimeout(() => {
+            const redirectUrl = json.role === 'admin' ? '/admin-dashboard.html' : '/user-dashboard.html';
+            console.log('[Signup] Redirecting to:', redirectUrl);
+            window.location.href = redirectUrl;
+          }, 1000);
         } else {
-          showToast('Sign up failed: ' + (json.error || res.statusText));
+          const errorMsg = json.error || json.message || res.statusText || 'Signup failed';
+          console.error('[Signup] Failed:', errorMsg);
+          toast.error('Sign up failed: ' + errorMsg);
         }
       } catch (err) {
-        showToast('Network error: ' + err.message);
+        console.error('[Signup] Exception:', err);
+        toast.removeLoading(loadingToast);
+        toast.error('Network error: ' + err.message);
       }
     });
 
-    // If already signed in, show a small toast
-    if (localStorage.getItem('jwt')) {
-      // optional: verify token by calling a lightweight protected endpoint
-      showToast('You are signed in', 2000);
+    // Check if already signed in
+    const existingToken = localStorage.getItem('token');
+    const existingUsername = localStorage.getItem('username');
+    if (existingToken && existingUsername) {
+      console.log('[Login Page] User already logged in:', existingUsername);
+      toast.info(`Already signed in as ${existingUsername}`, 3000);
     }
   </script>
 </body>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Portal - DemoDepot</title>
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/toast.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <!-- Dynamic Navbar -->
+  <div id="app-navbar"></div>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">⚙️ Admin Portal</h1>
+      <p class="page-subtitle">Manage all demo requests and update statuses across the platform</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">📊 All Demo Requests</h2>
+        <button id="refreshBtn" class="btn btn-primary" style="background-color: #0f62fe; border-color: #0f62fe;">
+          <span>🔄</span> Refresh
+        </button>
+      </div>
+      <div class="table-container">
+        <table id="requestsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>PM Owner</th>
+              <th>Product</th>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Existing Docs</th>
+              <th>Demo Script</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
+            <tr>
+              <td colspan="9" class="px-6 py-4 text-center text-sm text-gray-500">
+                Loading demo requests...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Update Modal -->
+  <div id="statusModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" style="backdrop-filter: blur(4px);">
+    <div class="relative top-20 mx-auto p-6 border-0 w-96 shadow-xl rounded-xl bg-white">
+      <div class="mt-2">
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">📝 Update Request Status</h3>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Select New Status</label>
+          <select id="statusSelect" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" style="font-size: 0.9375rem;">
+            <option value="submitted">📤 Submitted</option>
+            <option value="in_progress">⚙️ In Progress</option>
+            <option value="completed">✅ Completed</option>
+            <option value="cancelled">❌ Cancelled</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button id="cancelBtn" class="btn btn-outline">Cancel</button>
+          <button id="updateBtn" class="btn btn-primary" style="background-color: #0f62fe; border-color: #0f62fe;">
+            <span>💾</span> Update Status
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    console.log('[Admin Dashboard] Initializing...');
+
+    function checkAdminAuth() {
+      // Call the global checkAuth() from toast.js
+      const auth = window.checkAuth();
+      if (!auth.isAuthenticated) {
+        console.log('[Admin Dashboard] Not authenticated, redirecting to login');
+        toast.warning('Please login to access admin dashboard');
+        setTimeout(() => window.location.href = '/login.html', 1000);
+        return false;
+      }
+      
+      if (auth.role !== 'admin') {
+        console.log('[Admin Dashboard] Not admin, access denied');
+        toast.error('Admin access required');
+        setTimeout(() => window.location.href = '/user-dashboard.html', 2000);
+        return false;
+      }
+      
+      console.log('[Admin Dashboard] Authenticated as admin:', auth.username);
+      return true;
+    }
+
+    // Load demo requests
+    async function loadDemoRequests() {
+      console.log('[Admin Dashboard] Loading demo requests...');
+      const loadingToast = toast.loading('Loading demo requests...');
+      
+      try {
+        const data = await authFetch('/api/admin/demo-requests');
+        toast.removeLoading(loadingToast);
+        
+        console.log('[Admin Dashboard] Loaded requests:', data);
+        const requests = data.demo_requests || [];
+        toast.success(`Loaded ${requests.length} demo request(s)`);
+        renderTable(requests);
+      } catch (err) {
+        console.error('[Admin Dashboard] Error loading demo requests:', err);
+        toast.removeLoading(loadingToast);
+        // Error toast already shown by authFetch
+      }
+    }
+
+    function renderTable(requests) {
+      console.log('[Admin Dashboard] Rendering table with', requests.length, 'requests');
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      if (requests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-4 text-center text-sm text-gray-500">No demo requests found</td></tr>';
+        return;
+      }
+
+      requests.forEach(req => {
+        const tr = document.createElement('tr');
+        const statusBadges = {
+          'draft': 'badge-draft',
+          'submitted': 'badge-submitted',
+          'in_progress': 'badge-in-progress',
+          'completed': 'badge-completed',
+          'cancelled': 'badge-cancelled'
+        };
+        const badgeClass = statusBadges[req.status] || 'badge-draft';
+
+        tr.innerHTML = `
+          <td>${req.id}</td>
+          <td>${req.username || 'N/A'}</td>
+          <td>${req.pm_owner}</td>
+          <td>${req.product_name}</td>
+          <td>${req.title}</td>
+          <td>
+            <span class="badge ${badgeClass}">
+              ${req.status.replace('_', ' ')}
+            </span>
+          </td>
+          <td>
+            ${req.existing_docs_path
+              ? `<a href="/uploads/${req.existing_docs_path}" target="_blank" style="color: #0f62fe; text-decoration: underline; font-size: 0.875rem;">📄 Download</a>`
+              : '<span style="color: #8d8d8d; font-size: 0.875rem;">—</span>'}
+          </td>
+          <td>
+            ${req.demo_script_path
+              ? `<a href="/uploads/${req.demo_script_path}" target="_blank" style="color: #0f62fe; text-decoration: underline; font-size: 0.875rem;">📝 Download</a>`
+              : '<span style="color: #8d8d8d; font-size: 0.875rem;">—</span>'}
+          </td>
+          <td>
+            <button onclick="openStatusModal(${req.id}, '${req.status}')" class="btn btn-primary" style="padding: 0.375rem 0.75rem; font-size: 0.8125rem; background-color: #0f62fe; border-color: #0f62fe;">
+              <span>✏️</span> Update
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    let currentRequestId = null;
+
+    window.openStatusModal = function(id, currentStatus) {
+      console.log('[Admin Dashboard] Opening status modal for request:', id);
+      currentRequestId = id;
+      document.getElementById('statusSelect').value = currentStatus;
+      document.getElementById('statusModal').classList.remove('hidden');
+    };
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+      console.log('[Admin Dashboard] Cancelled status update');
+      document.getElementById('statusModal').classList.add('hidden');
+      currentRequestId = null;
+    });
+
+    document.getElementById('updateBtn').addEventListener('click', async () => {
+      const newStatus = document.getElementById('statusSelect').value;
+      console.log('[Admin Dashboard] Updating request', currentRequestId, 'to status:', newStatus);
+      
+      const loadingToast = toast.loading('Updating status...');
+      
+      try {
+        const data = await authFetch(`/api/demo-requests/${currentRequestId}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        toast.removeLoading(loadingToast);
+        console.log('[Admin Dashboard] Status update response:', data);
+        toast.success('Status updated successfully');
+        document.getElementById('statusModal').classList.add('hidden');
+        loadDemoRequests();
+      } catch (err) {
+        console.error('[Admin Dashboard] Status update error:', err);
+        toast.removeLoading(loadingToast);
+        // Error toast already shown by authFetch
+      }
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      console.log('[Admin Dashboard] Manual refresh triggered');
+      loadDemoRequests();
+    });
+
+    // Initialize
+    console.log('[Admin Dashboard] Checking authentication...');
+    if (checkAdminAuth()) {
+      loadDemoRequests();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+/* Toast Notification Styles - IBM Design Language */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-left: 4px solid #0f62fe;
+  opacity: 0;
+  transform: translateX(400px);
+  transition: all 0.3s cubic-bezier(0.2, 0, 0.38, 0.9);
+  min-width: 300px;
+  max-width: 400px;
+  word-wrap: break-word;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.toast-icon {
+  font-size: 20px;
+  font-weight: bold;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #161616;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #525252;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.toast-close:hover {
+  color: #161616;
+}
+
+/* Toast Types - IBM Colors */
+.toast-success {
+  border-left-color: #24a148;
+}
+
+.toast-success .toast-icon {
+  color: #24a148;
+  background: #defbe6;
+}
+
+.toast-error {
+  border-left-color: #da1e28;
+}
+
+.toast-error .toast-icon {
+  color: #da1e28;
+  background: #fff1f1;
+}
+
+.toast-warning {
+  border-left-color: #f1c21b;
+}
+
+.toast-warning .toast-icon {
+  color: #8e6a00;
+  background: #fcf4d6;
+}
+
+.toast-info {
+  border-left-color: #0f62fe;
+}
+
+.toast-info .toast-icon {
+  color: #0f62fe;
+  background: #d0e2ff;
+}
+
+.toast-loading {
+  border-left-color: #525252;
+}
+
+.toast-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #e0e0e0;
+  border-top: 3px solid #0f62fe;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .toast-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .toast {
+    min-width: auto;
+    max-width: none;
+  }
+}
+
+/* Dark mode support - IBM Gray 90 */
+@media (prefers-color-scheme: dark) {
+  .toast {
+    background: #262626;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+  
+  .toast-message {
+    color: #f4f4f4;
+  }
+  
+  .toast-close {
+    color: #8d8d8d;
+  }
+  
+  .toast-close:hover {
+    color: #f4f4f4;
+  }
+}
+
+/* Made with Bob - IBM Design Language */

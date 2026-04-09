@@ -1,0 +1,31 @@
+[professional]
+ "Transparent Database Encryption protects sensitive data at rest, but its effectiveness depends on how encryption keys are managed. If keys are stored alongside the data, protection is weakened. That's why compliance standards require centralized, secure lifecycle management of encryption keys."
+ Page: Main Dashboard
+
+[reassuring]
+ "Guardium Cryptography Manager provides that centralized control. It separates keys from databases, enforces consistent management across platforms, and follows industry best practices. With KMIP support, authenticated mTLS communication, and complete audit trails, encryption remains secure and compliant."
+ Page: Main TDEKM Page
+
+[reassuring]
+ "Getting started is simple. Register the database as a TDE client, upload its certificate, and establish trust. Databases such as MongoDB then securely request their master keys. Guardium generates and manages AES-256 keys by default, with full visibility and lifecycle control."
+ Pages:
+
+Configure TDE Client Page
+TDE Client → Keys / Certificates Page
+
+
+[professional]
+ "Governance is enforced through policy. System-defined policies align with NIST guidance, including key rotation recommendations of up to two years. Organizations can also define stricter custom policies, such as 180-day rotation. Any deviation is automatically detected and flagged."
+ Pages:
+
+Policy Management Page
+Compliance / Violations Page
+
+
+[reassuring]
+ "Beyond compliance, Guardium simplifies operations. Administrators no longer need to manually track or replace keys. Centralized visibility and policy-driven alerts reduce operational effort and risk."
+ Page: Cryptographic Posture Management Dashboard
+
+[questioning]
+ "So what does this deliver? Transparent encryption without application disruption, centralized key management across databases, continuous compliance monitoring, and detailed audit trails for every operation."
+ Page: Cryptographic Posture Management Dashboard

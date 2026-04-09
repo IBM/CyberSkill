@@ -1,0 +1,931 @@
+openapi: 3.0.3
+info:
+  title: CyberSkill Learning Platform API
+  description: |
+    Enterprise-grade cybersecurity learning platform API with authentication, 
+    learning paths, progress tracking, quizzes, badges, and certificates.
+    
+    ## Authentication
+    Most endpoints require JWT authentication. Include the access token in the Authorization header:
+    ```
+    Authorization: Bearer <access_token>
+    ```
+    
+    ## Base URL
+    - Development: `http://localhost:8080`
+    - Production: `https://api.cyberskill.com`
+  version: 1.0.0
+  contact:
+    name: CyberSkill Platform Team
+    email: support@cyberskill.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.cyberskill.com
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization endpoints
+  - name: Learning Paths
+    description: Learning path management and retrieval
+  - name: User Profile
+    description: User profile and progress management
+  - name: Admin
+    description: Administrative endpoints (requires ADMIN role)
+  - name: Health
+    description: System health and monitoring
+
+paths:
+  /api/health:
+    get:
+      tags:
+        - Health
+      summary: Health check endpoint
+      description: Returns the health status of the application
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Application is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "UP"
+                  timestamp:
+                    type: string
+                    format: date-time
+                  version:
+                    type: string
+                    example: "1.0.0"
+
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Create a new user account with username, email, and password
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 100
+                  example: "john_doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john.doe@example.com"
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  description: |
+                    Password must contain:
+                    - At least 8 characters
+                    - One uppercase letter
+                    - One lowercase letter
+                    - One digit
+                    - One special character (!@#$%^&*)
+                  example: "SecurePass123!"
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Invalid input or validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and receive JWT tokens
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "admin@cyberskill.com"
+                password:
+                  type: string
+                  format: password
+                  example: "Admin@123"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token
+      description: Get a new access token using a valid refresh token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  expiresIn:
+                    type: integer
+                    example: 3600
+        '401':
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Invalidate the current refresh token
+      operationId: logout
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged out successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/change-password:
+    post:
+      tags:
+        - Authentication
+      summary: Change user password
+      description: Change the password for the authenticated user
+      operationId: changePassword
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - currentPassword
+                - newPassword
+              properties:
+                currentPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+                  minLength: 8
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password changed successfully"
+        '400':
+          description: Invalid password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized or incorrect current password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/paths:
+    get:
+      tags:
+        - Learning Paths
+      summary: Get all learning paths
+      description: Retrieve all available learning paths
+      operationId: getAllLearningPaths
+      responses:
+        '200':
+          description: List of learning paths
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LearningPath'
+
+    post:
+      tags:
+        - Learning Paths
+      summary: Create a new learning path
+      description: Create a new learning path (Admin only)
+      operationId: createLearningPath
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LearningPathInput'
+      responses:
+        '201':
+          description: Learning path created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPath'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Admin role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/paths/{id}:
+    get:
+      tags:
+        - Learning Paths
+      summary: Get learning path by ID
+      description: Retrieve a specific learning path with all its modules, sections, and lessons
+      operationId: getLearningPathById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Learning path ID
+      responses:
+        '200':
+          description: Learning path details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPathDetailed'
+        '404':
+          description: Learning path not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Learning Paths
+      summary: Update learning path
+      description: Update an existing learning path (Admin only)
+      operationId: updateLearningPath
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LearningPathInput'
+      responses:
+        '200':
+          description: Learning path updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPath'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Admin role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Learning path not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Learning Paths
+      summary: Delete learning path
+      description: Delete a learning path (Admin only)
+      operationId: deleteLearningPath
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Learning path deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Admin role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Learning path not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/user/profile:
+    get:
+      tags:
+        - User Profile
+      summary: Get user profile
+      description: Retrieve the authenticated user's profile information
+      operationId: getUserProfile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/user/progress:
+    get:
+      tags:
+        - User Profile
+      summary: Get user progress
+      description: Retrieve the authenticated user's learning progress across all paths
+      operationId: getUserProgress
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User progress
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProgress'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/user/badges:
+    get:
+      tags:
+        - User Profile
+      summary: Get user badges
+      description: Retrieve all badges earned by the authenticated user
+      operationId: getUserBadges
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User badges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Badge'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/user/certificates:
+    get:
+      tags:
+        - User Profile
+      summary: Get user certificates
+      description: Retrieve all certificates earned by the authenticated user
+      operationId: getUserCertificates
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User certificates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Certificate'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get all users
+      description: Retrieve all users (Admin only)
+      operationId: getAllUsers
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserResponse'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Admin role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/admin/analytics:
+    get:
+      tags:
+        - Admin
+      summary: Get platform analytics
+      description: Retrieve platform-wide analytics and statistics (Admin only)
+      operationId: getAnalytics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Platform analytics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Analytics'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Admin role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token obtained from /api/auth/login
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid credentials"
+        message:
+          type: string
+          example: "The email or password you entered is incorrect"
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+          example: "/api/auth/login"
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "john_doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        role:
+          type: string
+          enum: [USER, ADMIN]
+          example: "USER"
+        isActive:
+          type: boolean
+          example: true
+        emailVerified:
+          type: boolean
+          example: false
+        mfaEnabled:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        lastLogin:
+          type: string
+          format: date-time
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refreshToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        expiresIn:
+          type: integer
+          example: 3600
+          description: Access token expiry in seconds
+        user:
+          $ref: '#/components/schemas/UserResponse'
+
+    LearningPath:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Penetration Testing"
+        slug:
+          type: string
+          example: "penetration-testing"
+        description:
+          type: string
+          example: "Master the art of ethical hacking and penetration testing"
+        icon:
+          type: string
+          example: "🔐"
+        orderIndex:
+          type: integer
+          example: 1
+        isActive:
+          type: boolean
+          example: true
+        estimatedHours:
+          type: integer
+          example: 40
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    LearningPathInput:
+      type: object
+      required:
+        - name
+        - slug
+        - description
+      properties:
+        name:
+          type: string
+          example: "Penetration Testing"
+        slug:
+          type: string
+          example: "penetration-testing"
+        description:
+          type: string
+          example: "Master the art of ethical hacking"
+        icon:
+          type: string
+          example: "🔐"
+        orderIndex:
+          type: integer
+          example: 1
+        isActive:
+          type: boolean
+          example: true
+        estimatedHours:
+          type: integer
+          example: 40
+
+    LearningPathDetailed:
+      allOf:
+        - $ref: '#/components/schemas/LearningPath'
+        - type: object
+          properties:
+            modules:
+              type: array
+              items:
+                $ref: '#/components/schemas/Module'
+
+    Module:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        orderIndex:
+          type: integer
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Section'
+
+    Section:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        orderIndex:
+          type: integer
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lesson'
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        contentType:
+          type: string
+          enum: [TEXT, VIDEO, INTERACTIVE, QUIZ]
+        duration:
+          type: integer
+          description: Duration in minutes
+        orderIndex:
+          type: integer
+
+    UserProfile:
+      allOf:
+        - $ref: '#/components/schemas/UserResponse'
+        - type: object
+          properties:
+            totalProgress:
+              type: number
+              format: float
+              example: 45.5
+            completedPaths:
+              type: integer
+              example: 2
+            badgesEarned:
+              type: integer
+              example: 15
+            certificatesEarned:
+              type: integer
+              example: 2
+
+    UserProgress:
+      type: object
+      properties:
+        learningPathId:
+          type: integer
+        learningPathName:
+          type: string
+        progress:
+          type: number
+          format: float
+          example: 65.5
+        completedLessons:
+          type: integer
+        totalLessons:
+          type: integer
+        lastAccessedAt:
+          type: string
+          format: date-time
+
+    Badge:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: "First Steps"
+        description:
+          type: string
+          example: "Completed your first lesson"
+        icon:
+          type: string
+          example: "🏆"
+        earnedAt:
+          type: string
+          format: date-time
+
+    Certificate:
+      type: object
+      properties:
+        id:
+          type: integer
+        certificateId:
+          type: string
+          example: "CERT-2024-001234"
+        learningPathName:
+          type: string
+          example: "Penetration Testing"
+        issuedAt:
+          type: string
+          format: date-time
+        downloadUrl:
+          type: string
+          example: "/api/certificates/download/CERT-2024-001234"
+
+    Analytics:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+          example: 1250
+        activeUsers:
+          type: integer
+          example: 850
+        totalLearningPaths:
+          type: integer
+          example: 4
+        totalLessons:
+          type: integer
+          example: 120
+        completionRate:
+          type: number
+          format: float
+          example: 68.5
+        averageProgress:
+          type: number
+          format: float
+          example: 45.2
+        certificatesIssued:
+          type: integer
+          example: 320
+
+# Made with Bob

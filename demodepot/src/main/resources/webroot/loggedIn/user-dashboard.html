@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Demo Requests - DemoDepot</title>
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/toast.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <!-- Dynamic Navbar -->
+  <div id="app-navbar"></div>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">📋 My Demo Requests</h1>
+      <p class="page-subtitle">View and manage your demo requests</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Your Demo Requests</h2>
+        <div class="flex gap-3">
+          <a href="/loggedIn/demorequest.html" class="btn btn-secondary">
+            <span>➕</span> New Request
+          </a>
+          <button id="refreshBtn" class="btn btn-primary" style="background-color: #0f62fe; border-color: #0f62fe;">
+            <span>🔄</span> Refresh
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table id="requestsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Product</th>
+              <th>Title</th>
+              <th>Delivery Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
+            <tr>
+              <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                Loading your demo requests...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Details Modal -->
+  <div id="detailsModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+      <div class="mt-3">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-medium text-gray-900">Demo Request Details</h3>
+          <button id="closeDetailsBtn" class="text-gray-400 hover:text-gray-600">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div id="detailsContent" class="space-y-4">
+          <!-- Details will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    console.log('[User Dashboard] Initializing...');
+
+    function checkUserAuth() {
+      // Call the global checkAuth() from toast.js
+      const auth = window.checkAuth();
+      if (!auth.isAuthenticated) {
+        console.log('[User Dashboard] Not authenticated, redirecting to login');
+        toast.warning('Please login to access your dashboard');
+        setTimeout(() => window.location.href = '/login.html', 1000);
+        return false;
+      }
+      
+      console.log('[User Dashboard] Authenticated as:', auth.username);
+      return true;
+    }
+
+    // Load user's demo requests
+    async function loadDemoRequests() {
+      console.log('[User Dashboard] Loading demo requests...');
+      const loadingToast = toast.loading('Loading your demo requests...');
+      
+      try {
+        const data = await authFetch('/api/demo-requests');
+        toast.removeLoading(loadingToast);
+        
+        console.log('[User Dashboard] Loaded requests:', data);
+        const requests = data.demo_requests || [];
+        allRequests = requests;
+        toast.success(`Loaded ${requests.length} demo request(s)`);
+        renderTable(requests);
+      } catch (err) {
+        console.error('[User Dashboard] Error loading demo requests:', err);
+        toast.removeLoading(loadingToast);
+        // Error toast already shown by authFetch
+      }
+    }
+
+    function renderTable(requests) {
+      console.log('[User Dashboard] Rendering table with', requests.length, 'requests');
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      if (requests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="padding: 2rem; text-align: center;">No demo requests found. <a href="/loggedIn/demorequest.html" class="text-indigo-600 hover:underline">Create your first request</a></td></tr>';
+        return;
+      }
+
+      requests.forEach(req => {
+        const tr = document.createElement('tr');
+        const statusBadges = {
+          'draft': 'badge-draft',
+          'submitted': 'badge-submitted',
+          'in_progress': 'badge-in-progress',
+          'completed': 'badge-completed',
+          'cancelled': 'badge-cancelled'
+        };
+        const badgeClass = statusBadges[req.status] || 'badge-draft';
+
+        tr.innerHTML = `
+          <td>${req.id}</td>
+          <td>${req.product_name}</td>
+          <td>${req.title}</td>
+          <td>${req.delivery_date || 'N/A'}</td>
+          <td>
+            <span class="badge ${badgeClass}">
+              ${req.status.replace('_', ' ')}
+            </span>
+          </td>
+          <td>
+            <button onclick="viewDetails(${req.id})" class="btn btn-primary" style="padding: 0.375rem 0.75rem; font-size: 0.8125rem; margin-right: 0.5rem; background-color: #0f62fe; border-color: #0f62fe;">
+              <span>👁️</span> View
+            </button>
+            ${req.status === 'draft' ? `
+              <button onclick="editDraft(${req.id})" class="btn btn-secondary" style="padding: 0.375rem 0.75rem; font-size: 0.8125rem; margin-right: 0.5rem; background-color: #24a148; border-color: #24a148;">
+                <span>✏️</span> Edit
+              </button>
+              <button onclick="deleteRequest(${req.id})" class="btn btn-danger" style="padding: 0.375rem 0.75rem; font-size: 0.8125rem;">
+                <span>🗑️</span> Delete
+              </button>
+            ` : ''}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    let allRequests = [];
+
+    window.viewDetails = function(id) {
+      console.log('[User Dashboard] Viewing details for request:', id);
+      const req = allRequests.find(r => r.id === id);
+      if (!req) {
+        toast.error('Request not found');
+        return;
+      }
+
+      const content = document.getElementById('detailsContent');
+      content.innerHTML = `
+        <div class="grid grid-cols-2 gap-4">
+          <div><strong>PM Owner:</strong> ${req.pm_owner}</div>
+          <div><strong>Demo Type:</strong> ${req.demo_type}</div>
+          <div><strong>Product:</strong> ${req.product_name}</div>
+          <div><strong>Delivery Date:</strong> ${req.delivery_date || 'N/A'}</div>
+          <div class="col-span-2"><strong>Title:</strong> ${req.title}</div>
+          <div class="col-span-2"><strong>Subtitle:</strong> ${req.subtitle || 'N/A'}</div>
+          <div class="col-span-2"><strong>Value Proposition:</strong><br>${req.value_proposition}</div>
+          <div class="col-span-2"><strong>Feature Focus:</strong><br>${req.feature_focus}</div>
+          <div class="col-span-2"><strong>Flow Sequence:</strong><br>${req.flow_sequence}</div>
+          <div class="col-span-2"><strong>Demo URL:</strong> ${req.demo_url ? `<a href="${req.demo_url}" target="_blank" class="text-indigo-600 hover:underline">${req.demo_url}</a>` : 'N/A'}</div>
+          ${req.existing_docs_path ? `<div class="col-span-2"><strong>Existing Docs:</strong> <a href="/uploads/${req.existing_docs_path}" target="_blank" class="text-indigo-600 hover:underline">Download</a></div>` : ''}
+          ${req.demo_script_path ? `<div class="col-span-2"><strong>Demo Script:</strong> <a href="/uploads/${req.demo_script_path}" target="_blank" class="text-indigo-600 hover:underline">Download</a></div>` : ''}
+        </div>
+      `;
+      document.getElementById('detailsModal').classList.remove('hidden');
+    };
+
+    document.getElementById('closeDetailsBtn').addEventListener('click', () => {
+      document.getElementById('detailsModal').classList.add('hidden');
+    });
+
+    window.deleteRequest = async function(id) {
+      console.log('[User Dashboard] Delete request:', id);
+      if (!confirm('Are you sure you want to delete this draft?')) {
+        console.log('[User Dashboard] Delete cancelled by user');
+        return;
+      }
+
+      const loadingToast = toast.loading('Deleting draft...');
+
+      try {
+        const data = await authFetch(`/api/demo-requests/${id}`, {
+          method: 'DELETE'
+        });
+
+        toast.removeLoading(loadingToast);
+        console.log('[User Dashboard] Delete response:', data);
+        toast.success('Draft deleted successfully');
+        loadDemoRequests();
+      } catch (err) {
+        console.error('[User Dashboard] Delete error:', err);
+        toast.removeLoading(loadingToast);
+        // Error toast already shown by authFetch
+      }
+    };
+
+    window.editDraft = function(id) {
+      console.log('[User Dashboard] Editing draft:', id);
+      // Store the draft ID in localStorage so the form can load it
+      localStorage.setItem('editDraftId', id);
+      // Redirect to the demo request form
+      window.location.href = '/loggedIn/demorequest.html?edit=' + id;
+    };
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      console.log('[User Dashboard] Manual refresh triggered');
+      loadDemoRequests();
+    });
+
+    // Initialize
+    console.log('[User Dashboard] Checking authentication...');
+    if (checkUserAuth()) {
+      loadDemoRequests();
+    }
+  </script>
+</body>
+</html>

@@ -6,17 +6,32 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         // If not dashboard, check for demo request form
         const demoRequestForm = document.getElementById('demoRequestForm');
-    if (demoRequestForm) {
-demoRequestForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(demoRequestForm);
-            try {
-                // In a real app, you would send this to your backend
-                const response = await fetch('/api/demo-requests', {
-                    method: 'POST',
-                    body: formData
+        if (demoRequestForm) {
+            demoRequestForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(demoRequestForm);
+                try {
+                    const response = await fetch('/api/create-demo-requests', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        alert('Demo request submitted successfully!');
+                        demoRequestForm.reset();
+                    } else {
+                        throw new Error('Submission failed');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to submit demo request. Please try again.');
+                }
+            });
+        }
+    }
 });
+
 // Dashboard functions
 async function initDashboard() {
     try {
@@ -223,16 +238,3 @@ function renderRequestsTable(requests) {
         tbody.appendChild(row);
     });
 }
-            if (response.ok) {
-                alert('Demo request submitted successfully!');
-                demoRequestForm.reset();
-            } else {
-                throw new Error('Submission failed');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to submit demo request. Please try again.');
-        }
-    });
-    }
-});
