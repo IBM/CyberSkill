@@ -1,0 +1,24 @@
+# Compiled Java classes
+*.class
+
+# MySQL Connector JAR
+mysql-connector-java-*.jar
+mysql-connector-j-*.jar
+
+# Database configuration (contains passwords)
+db.properties
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log

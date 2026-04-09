@@ -1,39 +1,39 @@
+
 $f = 'src\main\resources\templates\loggedIn\database-dashboard.ftl'
-$a = @'
-<!DOCTYPE html>
-<html>
-<head>
-<title>Database Dashboard - SLP</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/loggedIn/css/w3.css">
-<link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">
-<link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">
-<link rel="stylesheet" href="/loggedIn/css/fonts.css">
-<link rel="stylesheet" href="/loggedIn/css/contentpacks-modern.css">
-<link rel="stylesheet" href="/loggedIn/css/dashboard-modern.css">
-<script src="/loggedIn/js/jquery.min.js"></script>
-<style>
-:root{--primary:#4d636f;--primary-dark:#3a4f5a;--success:#10b981;--danger:#ef4444;--warning:#f59e0b;--info:#3b82f6;--bg:#f0f4f7;--card-bg:#ffffff;--border:#d1dde3;--text:#1e293b;--text-muted:#64748b;}
-html,body{font-family:"Roboto","Open Sans",sans-serif;background:var(--bg);color:var(--text);margin:0;}
-.page-header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;padding:28px 32px 20px;border-radius:0 0 12px 12px;}
-.page-header h2{margin:0 0 6px;font-size:1.6rem;font-weight:700;}
-.page-header p{margin:0;opacity:0.85;font-size:0.95rem;}
-.breadcrumb-bar{background:white;border-bottom:1px solid var(--border);padding:10px 32px;font-size:0.85rem;color:var(--text-muted);display:flex;align-items:center;justify-content:space-between;}
-.breadcrumb-bar a{color:var(--primary);text-decoration:none;}
-.breadcrumb-bar a:hover{text-decoration:underline;}
-.breadcrumb-bar span{margin:0 6px;}
-.stats-row{display:flex;gap:16px;margin:20px 0 0;flex-wrap:wrap;}
-.stat-hdr{flex:1;min-width:120px;background:rgba(255,255,255,0.15);border-radius:10px;padding:14px 18px;text-align:center;border:1px solid rgba(255,255,255,0.25);}
-.stat-hdr .sn{font-size:1.8rem;font-weight:700;color:white;line-height:1;}
-.stat-hdr .sl{font-size:0.78rem;color:rgba(255,255,255,0.8);margin-top:4px;}
-.stat-hdr.green{background:rgba(16,185,129,0.25);border-color:rgba(16,185,129,0.4);}
-.stat-hdr.orange{background:rgba(245,158,11,0.25);border-color:rgba(245,158,11,0.4);}
-.stat-hdr.blue{background:rgba(59,130,246,0.25);border-color:rgba(59,130,246,0.4);}
-.section-card{background:var(--card-bg);border-radius:10px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
-.sc-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--card-bg);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
-.sc-header:hover{background:#f8fafc;}
-.sc-header h5{margin:0;font-size:1rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:10px;}
+$lines = New-Object System.Collections.Generic.List[string]
+$lines.Add('<!DOCTYPE html>')
+$lines.Add('<html>')
+$lines.Add('<head>')
+$lines.Add('<title>Database Dashboard - SLP</title>')
+$lines.Add('<meta charset="UTF-8">')
+$lines.Add('<meta name="viewport" content="width=device-width, initial-scale=1">')
+$lines.Add('<link rel="stylesheet" href="/loggedIn/css/w3.css">')
+$lines.Add('<link rel="stylesheet" href="/loggedIn/css/w3-theme-blue-grey.css">')
+$lines.Add('<link rel="stylesheet" href="/loggedIn/css/font-awesome.min.css">')
+$lines.Add('<link rel="stylesheet" href="/loggedIn/css/fonts.css">')
+$lines.Add('<link rel="stylesheet" href="/loggedIn/css/contentpacks-modern.css">')
+$lines.Add('<link rel="stylesheet" href="/loggedIn/css/dashboard-modern.css">')
+$lines.Add('<script src="/loggedIn/js/jquery.min.js"></script>')
+$lines.Add('<style>')
+$lines.Add(':root{--primary:#4d636f;--primary-dark:#3a4f5a;--success:#10b981;--danger:#ef4444;--warning:#f59e0b;--info:#3b82f6;--bg:#f0f4f7;--card-bg:#ffffff;--border:#d1dde3;--text:#1e293b;--text-muted:#64748b;}')
+$lines.Add('html,body{font-family:"Roboto","Open Sans",sans-serif;background:var(--bg);color:var(--text);margin:0;}')
+$lines.Add('.page-header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;padding:28px 32px 20px;border-radius:0 0 12px 12px;}')
+$lines.Add('.page-header h2{margin:0 0 6px;font-size:1.6rem;font-weight:700;}')
+$lines.Add('.page-header p{margin:0;opacity:0.85;font-size:0.95rem;}')
+$lines.Add('.breadcrumb-bar{background:white;border-bottom:1px solid var(--border);padding:10px 32px;font-size:0.85rem;color:var(--text-muted);display:flex;align-items:center;justify-content:space-between;}')
+$lines.Add('.breadcrumb-bar a{color:var(--primary);text-decoration:none;}')
+$lines.Add('.breadcrumb-bar a:hover{text-decoration:underline;}')
+$lines.Add('.breadcrumb-bar span{margin:0 6px;}')
+$lines.Add('.stats-row{display:flex;gap:16px;margin:20px 0 0;flex-wrap:wrap;}')
+$lines.Add('.stat-hdr{flex:1;min-width:120px;background:rgba(255,255,255,0.15);border-radius:10px;padding:14px 18px;text-align:center;border:1px solid rgba(255,255,255,0.25);}')
+$lines.Add('.stat-hdr .sn{font-size:1.8rem;font-weight:700;color:white;line-height:1;}')
+$lines.Add('.stat-hdr .sl{font-size:0.78rem;color:rgba(255,255,255,0.8);margin-top:4px;}')
+$lines.Add('.stat-hdr.green{background:rgba(16,185,129,0.25);border-color:rgba(16,185,129,0.4);}')
+$lines.Add('.stat-hdr.orange{background:rgba(245,158,11,0.25);border-color:rgba(245,158,11,0.4);}')
+$lines.Add('.stat-hdr.blue{background:rgba(59,130,246,0.25);border-color:rgba(59,130,246,0.4);}')
+$lines.Add('.section-card{background:var(--card-bg);border-radius:10px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);}')
+$lines.Add('.sc-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--card-bg);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}')
+$lines.Add('.sc-header:hover{background:#f8fafc;}')
 .sc-header h5 i{color:var(--primary);}
 .sc-header .chevron{color:var(--text-muted);transition:transform 0.2s;}
 .sc-header.open .chevron{transform:rotate(180deg);}

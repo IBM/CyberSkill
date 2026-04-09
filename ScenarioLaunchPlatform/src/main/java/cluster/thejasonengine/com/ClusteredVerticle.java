@@ -369,28 +369,25 @@ public class ClusteredVerticle extends AbstractVerticle {
     	 */
     	/***************************************************************************************/
     	router.route("/loggedIn/*").handler(
-    		    ctx -> 
+    		    ctx ->
     		    	{
     		    		LOGGER.info("verifying access to the logged in file");
     		    		Cookie cookie = (Cookie) ctx.getCookie("JWT");
-    		    		if (cookie != null) 
+    		    		if (cookie != null)
     		    		{
     		    			LOGGER.info("Found a cookie with the correct name");
     		    			if(verifyCookie(cookie))
     		    			{
     		    				LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> : "+ctx.normalizedPath());
-    		    				String file2send = ctx.normalizedPath();
     		    				LOGGER.info("Session: " + setupSession.getTokenFromSession(ctx, "username"));
-    		    				ctx.response().sendFile("webroot/"+file2send.substring(1)); //drop starting slash
+    		    				ctx.next();
+    		    				return;
     		    			}
     		    		}
-    		    		else if (cookie == null) 
-    		    		{
-    		    			LOGGER.error("Did not find a cookie name JWT when calling the (loggedIn/*) webpage: " + ctx.normalizedPath());
-    		    			//ctx.response().end("NO JWT TOKEN");
-    		    			ctx.response().sendFile("webroot/index.html"); //drop starting slash
-    		    		}
-    		    	}).failureHandler(frc-> 
+    		    		
+    		    		LOGGER.error("Did not find a valid cookie when calling the (loggedIn/*) webpage: " + ctx.normalizedPath());
+    		    		ctx.redirect("/index.html");
+    		    	}).failureHandler(frc->
     		    	{
     		  		  	//frc.response().setStatusCode( 400 ).end("Sorry! Not today");
     		    		frc.redirect("../index.html");

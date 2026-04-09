@@ -45,6 +45,9 @@
       <a style="border-radius:0 !important;" href="#" class="w3-bar-item w3-button">Welcome to the all new - turbo charged Scenario Launch Platform.</a>
     </div>
   </div>
+  <a style="border-radius:0 !important;" href="/" class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-white" title="Logout" onclick="return confirmLogout();">
+    <i class="fa fa-sign-out"></i>
+  </a>
   <#if accessFlag?? && accessFlag>
   <a style="border-radius:0 !important;" href="/loggedIn/adminFunctions.ftl" class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-white" title="Account Functions">
   <img src="/w3images/avatar2.png" class="w3-circle" style="height:23px;width:23px" alt="Avatar"></a>
@@ -125,5 +128,15 @@
 		 }
 	});
 	
+	// Logout confirmation function
+	function confirmLogout() {
+		if (confirm('Are you sure you want to logout?')) {
+			// Clear any session data if needed
+			sessionStorage.clear();
+			localStorage.removeItem('jwt');
+			return true; // Allow navigation to logout
+		}
+		return false; // Cancel logout
+	}
 
 </script>
