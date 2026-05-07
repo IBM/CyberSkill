@@ -1,1 +1,0 @@
-do not putr content in this folder, instead replicate the folder under webroot and place content there. The template folders are only for FTL. We replicate the folder structure for logical reasons.
